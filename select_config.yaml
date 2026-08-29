@@ -1,0 +1,6 @@
+default:
+  threshold_dd: 5
+loose:
+  threshold_dd: 2
+strict:
+  threshold_dd: 10
