@@ -18,7 +18,8 @@ D:\cases data analisis\
 ├── README.md
 ├── PROBLEMS.md                    进 git，纯记录，不得被脚本读取
 ├── select_config.yaml
-├── corpus\                        gitignore，只读语料
+├── download_corpus.sh             语料快照下载脚本（HF 枚举、断点续传、SHA256 校验；bash/WSL）
+├── corpus\                        gitignore，只读快照；下载日期与指纹登记于技术规格 §1.3
 │   ├── SCC.parquet
 │   └── ONCA.parquet
 ├── decisions\                     进 git，唯一事实源
