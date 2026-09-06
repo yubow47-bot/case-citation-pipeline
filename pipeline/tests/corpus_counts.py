@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""corpus_counts.py — 语料级诊断计数的唯一产生脚本（规格 §13.1）
+r"""corpus_counts.py — 语料级诊断计数的唯一产生脚本（规格 §13.1）
 
 规格与 PROBLEMS.md 引用的全部语料级数字必须能由本脚本重放（约束九）：
 模式字典逐字记录每个数字的口径；PATTERN_ASSERTIONS 在扫描前钉住每个模式的
@@ -89,6 +89,15 @@ PATTERNS = dict(
 )
 DOC_PATTERNS = {"neutral", "vxn", "vxparen"}  # doc 计；其余为 occ 计
 
+# 预过滤字面量（扫描加速，不改计数结果；键集与 PATTERNS 一致性在 run_assertions 校验）
+_SCR_NEED = ("S.C.R", "SCR", "SC.R", "S.CR", "S. C. R")
+PREFILTER = {k: _SCR_NEED for k in
+             ("scr_dots_any", "scr_spaced", "scr_dotted_full", "scr_dotless",
+              "scr_bare", "scr_halfdot1", "scr_halfdot2")}
+PREFILTER.update({"or_strict": ("O.R.",), "ccc_strict": ("C.C.C.",),
+                  "dlr_strict": ("D.L.R.",), "wwr_strict": ("W.W.R.",),
+                  "neutral": ("SCC",), "vxn": ("v.",), "vxparen": ("v.",)})
+
 # ---- 模式断言（P0）：测量正则本身必须先被测过 --------------------------------------
 # (模式名, 样本, 期望命中数)。启动即断言，任一失败 exit 1，不进扫描。
 PATTERN_ASSERTIONS = [
@@ -126,6 +135,8 @@ PATTERN_ASSERTIONS = [
 
 def run_assertions():
     bad = []
+    if set(PREFILTER) != set(PATTERNS):
+        bad.append(("PREFILTER-keys", sorted(set(PREFILTER) ^ set(PATTERNS)), "same", "diff"))
     for name, sample, want in PATTERN_ASSERTIONS:
         got = len(PATTERNS[name].findall(sample))
         if got != want:
@@ -174,21 +185,7 @@ def default_mode():
             if "S.C.R." in text:
                 occ["scr_literal_recon"] += text.count("S.C.R.")
             for k, rx in PATTERNS.items():
-                if k.startswith("scr"):
-                    need = ("S.C.R", "SCR", "SC.R", "S.CR", "S. C. R")
-                elif k == "or_strict":
-                    need = ("O.R.",)
-                elif k == "ccc_strict":
-                    need = ("C.C.C.",)
-                elif k == "dlr_strict":
-                    need = ("D.L.R.",)
-                elif k == "wwr_strict":
-                    need = ("W.W.R.",)
-                elif k == "neutral":
-                    need = ("SCC",)
-                else:  # vxn / vxparen
-                    need = ("v.",)
-                if not any(lit in text for lit in need):
+                if not any(lit in text for lit in PREFILTER[k]):
                     continue
                 n = len(rx.findall(text))
                 occ[k] += n
@@ -422,7 +419,7 @@ def gen_sample_mode():
                 samples.append({"court": court, "stratum": "%d-%d" % (a, b),
                                 "row": None, "date": None, "corpus_start": None,
                                 "corpus_end": None,
-                                "note": "该层可取散文判决不足（含 1877 前无判决的可能）"})
+                                "note": "该层无候选：语料不含该年代判决（或判决不足 8,000 字符）"})
                 got += 1
     filled = [s for s in samples if s["row"] is not None]
     total_chars = sum(s["corpus_end"] - s["corpus_start"] for s in filled)
@@ -444,17 +441,20 @@ def gen_sample_mode():
                               "filled_docs": len(filled), "total_chars": total_chars},))
     lines.append("SAMPLES = %r" % (samples,))
     out_path = os.path.join(HERE, "prose_sample.py")
-    with open(out_path, "w", encoding="utf-8", newline="\n") as f:
+    tmp_path = out_path + ".tmp"
+    with open(tmp_path, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(lines) + "\n")
+    os.replace(tmp_path, out_path)
     print("written", out_path, "| filled:", len(filled), "/", len(samples),
           "| chars:", total_chars)
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dedup", action="store_true")
-    ap.add_argument("--prose-sample", action="store_true")
-    ap.add_argument("--gen-sample", action="store_true")
+    g = ap.add_mutually_exclusive_group()
+    g.add_argument("--dedup", action="store_true")
+    g.add_argument("--prose-sample", action="store_true")
+    g.add_argument("--gen-sample", action="store_true")
     args = ap.parse_args()
     if args.dedup:
         dedup_mode()

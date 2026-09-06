@@ -46,26 +46,25 @@ def extract(text, shapes):
     return rows
 
 
-def dedup_v1(rows, order):
-    """规格 §7.4 的旧实现口径：主键起点升序。v1 回归用。"""
-    group = sorted(rows, key=lambda r: (r["start"], -r["span"], order.index(r["shape_name"])))
+def _dedup(rows, order, key):
     kept = []
-    for r in group:
-        if any(r["start"] < a["end"] and a["start"] < r["end"] for a in kept):
-            continue
-        kept.append(r)
+    for r in sorted(rows, key=key):
+        if not any(r["start"] < a["end"] and a["start"] < r["end"] for a in kept):
+            kept.append(r)
     return sorted(kept, key=lambda r: (r["start"], r["end"]))
+
+
+def dedup_v1(rows, order):
+    """规格 §7.4 的旧实现口径：主键起点升序。钉住旧规格行为，v1 回归用。"""
+    return _dedup(rows, order,
+                  lambda r: (r["start"], -r["span"], order.index(r["shape_name"])))
 
 
 def dedup_v2(rows, order):
-    """规格 §7.4 的 v2 口径：主键跨度降序、起点次键、形状顺序末键；输出按起点重排。"""
-    group = sorted(rows, key=lambda r: (-r["span"], r["start"], order.index(r["shape_name"])))
-    kept = []
-    for r in group:
-        if any(r["start"] < a["end"] and a["start"] < r["end"] for a in kept):
-            continue
-        kept.append(r)
-    return sorted(kept, key=lambda r: (r["start"], r["end"]))
+    """规格 §7.4 的 v2 口径（v1.2 订正后）：主键跨度降序、起点次键、形状顺序末键；
+    输出按起点重排。"""
+    return _dedup(rows, order,
+                  lambda r: (-r["span"], r["start"], order.index(r["shape_name"])))
 
 
 def is_covered(truth_span, kept):
@@ -170,7 +169,7 @@ def fixture_run():
     from truth import TRUTH
 
     truth = TRUTH["fixtures"]
-    report = {"truth_status": TRUTH["_meta"]["status"], "fixtures": {}, "negative_fp": {}, "q_b_anchor": {}}
+    report = {"truth_status": TRUTH["_meta"]["status"], "fixtures": {}, "q_b_anchor": {}}
     for fx in FIXTURES:
         text, fid, kind = fx["text"], fx["id"], fx["kind"]
         truth_items = truth.get(fid, {}).get("items", [])
@@ -198,23 +197,17 @@ def fixture_run():
                 entry[ver]["false_positives"] = entry[ver]["kept"]  # 真值为空：全部命中即误报
         report["fixtures"][fid] = entry
 
-    # Q(b)：shape_vol_abbr_page 在负对照上的误报率（每百万字符）
-    neg = [fx for fx in FIXTURES if fx["kind"] in NEGATIVE_KINDS]
-    for ver, shapes, order, dedup in (("v1", V1_SHAPES, V1_ORDER, dedup_v1),
-                                      ("v2", V2_SHAPES, V2_ORDER, dedup_v2)):
-        n_chars = sum(len(fx["text"]) for fx in neg)
+    # Q(b)：shape_vol_abbr_page 在负对照上的误报率（每百万字符）；
+    # 复用夹具循环已存的 kept，不重新抽取。
+    neg_chars = sum(len(fx["text"]) for fx in FIXTURES if fx["kind"] in NEGATIVE_KINDS)
+    for ver in ("v1", "v2"):
+        kept = [k for e in report["fixtures"].values() if e["kind"] in NEGATIVE_KINDS
+                for k in e[ver]["kept"]]
         fp = {}
-        for r in ("shape_vol_abbr_page",):
-            cnt = 0
-            for fx in neg:
-                kept = dedup(extract(fx["text"], shapes), order)
-                cnt += sum(1 for k in kept if k["shape_name"] == r)
-            fp[r] = {"count": cnt, "chars": n_chars,
-                     "per_million_chars": round(cnt / n_chars * 1e6, 1) if n_chars else None}
-        allc = sum(len(e[ver]["kept"]) for e in report["fixtures"].values()
-                   if e["kind"] in NEGATIVE_KINDS)
-        fp["all_shapes"] = {"count": allc, "chars": n_chars,
-                            "per_million_chars": round(allc / n_chars * 1e6, 1) if n_chars else None}
+        for name in ("shape_vol_abbr_page", "all_shapes"):
+            cnt = sum(1 for k in kept if name == "all_shapes" or k[0] == name)
+            fp[name] = {"count": cnt, "chars": neg_chars,
+                        "per_million_chars": round(cnt / neg_chars * 1e6, 1) if neg_chars else None}
         report["q_b_anchor"][ver] = fp
     print(json.dumps(report, ensure_ascii=False, indent=1))
 
