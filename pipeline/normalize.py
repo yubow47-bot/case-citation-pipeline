@@ -17,7 +17,9 @@ def normalize_code(code: str) -> str:
 
 def dedup_overlapping(rows: list, shape_order: list) -> list:
     """同一判决内，区间重叠的匹配只保留跨度最长者。
-    跨度相同时按 shape_order 取靠前者。"""
+    主键跨度降序，起点作次键，形状顺序作末键（规格 §7.4 v1.2 订正后的口径；
+    旧版以起点升序为主键，会让起点更早的短匹配先占位挤掉更晚的长匹配）。
+    输出按 (match_start_offset, match_end_offset) 升序重排。"""
     from collections import defaultdict
 
     by_decision = defaultdict(list)
@@ -26,8 +28,8 @@ def dedup_overlapping(rows: list, shape_order: list) -> list:
 
     kept = []
     for _, group in by_decision.items():
-        group.sort(key=lambda r: (r["match_start_offset"],
-                                  -r["match_span"],
+        group.sort(key=lambda r: (-r["match_span"],
+                                  r["match_start_offset"],
                                   shape_order.index(r["shape_name"])))
         accepted = []
         for r in group:
@@ -37,4 +39,5 @@ def dedup_overlapping(rows: list, shape_order: list) -> list:
                 continue
             accepted.append(r)
         kept.extend(accepted)
-    return kept
+    return sorted(kept, key=lambda r: (r["match_start_offset"],
+                                       r["match_end_offset"]))

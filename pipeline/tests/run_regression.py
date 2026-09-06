@@ -130,6 +130,30 @@ def selftest():
     out["sep_comma_fp_probes"] = {
         p: [(r["shape_name"], r["raw"]) for r in dedup_v2(extract(p, V2_SHAPES), V2_ORDER)]
         for p in probes}
+
+    # 出货代码等价性：normalize.dedup_overlapping 必须与 dedup_v2 同口径
+    # （规格 §7.4 v1.2 订正后两处应逐字一致；一旦分叉，此处红——
+    #   本项保证回归真正跑到出货的共享函数，而不只是测试内的本地实现。）
+    import normalize as nzmod
+    eq_texts = ["See Smith 3 All E.R. 12 (1968)",
+                "(1936), 83 F. 2d 212",
+                "[1966] S.C.R. 238, 47 C.R. 400, 2 C.C.C. 273"]
+    eq = {}
+    for t in eq_texts:
+        rows = extract(t, V2_SHAPES)
+        reg = sorted((r["start"], r["end"], r["shape_name"])
+                     for r in dedup_v2(rows, V2_ORDER))
+        nz_rows = [{"source_decision_citation": "T",
+                    "match_start_offset": r["start"], "match_end_offset": r["end"],
+                    "match_span": r["span"], "shape_name": r["shape_name"]}
+                   for r in rows]
+        nz = sorted((r["match_start_offset"], r["match_end_offset"], r["shape_name"])
+                    for r in nzmod.dedup_overlapping(nz_rows, V2_ORDER))
+        eq[t] = {"identical": reg == nz, "kept": [list(x) for x in reg]}
+    out["normalize_equivalence"] = eq
+    if not all(v["identical"] for v in eq.values()):
+        print(json.dumps(out, ensure_ascii=False, indent=1))
+        sys.exit(1)
     print(json.dumps(out, ensure_ascii=False, indent=1))
 
 
