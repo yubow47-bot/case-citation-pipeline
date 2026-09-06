@@ -1,5 +1,17 @@
-# shapes.py — 正则形状定义（v2，七形状）
+# shapes.py — 正则形状定义（v2，七形状；v1.3 订正：分隔符按槽位分配）
 # 见技术规格 7.1-7.4
+#
+# v1.3 槽位订正（实测：两语料 leading_abbr 119,438 次命中中 91,356 次吞名
+# 由"前缀→卷号"槽的逗号独家承载，详见 PROBLEMS #18）：
+#   分隔符从单一 _SEP 拆为两个，按槽位语义分配——
+#     _SEP_COMMA（\s*,?\s+）：年份→卷、缩写→系列/括注/页。逗号出现在年份
+#       之后和页码之前（v2 原始证据：(1936), 83 F. 2d 212 / L.R. 5 H. of L., 86）。
+#     _SEP_TIGHT（\s+）：前缀→卷、卷→缩写。系列前缀与卷号紧绑定，其间出现
+#       逗号即句子边界而非引证内部（R. v. Vu, 2013 SCC 60 的吞名结构）。
+#   槽位语义贯穿全部七个形状：凡"卷号→缩写"槽（五个形状）与"前缀→卷"槽
+#   （一个形状）一律 _SEP_TIGHT；凡"年份→卷"与"缩写→页向"槽一律 _SEP_COMMA。
+#   实测代价：卷→缩写槽收紧损失 69 行（已逐条人审，见 PROBLEMS #18）；
+#   收益：neutral_bare 去重后行数 52,092 → 142,433（+90,341 条真引证复活）。
 #
 # v2 相对 v1 的改动（每条改动的实测依据见规格 §7.2 与 pipeline/tests/）：
 #   1. 序数分辨式补 d 后缀、补多位数：_SERIES -> _ORD。
@@ -8,13 +20,11 @@
 #   2. 页码后缀显式捕获（page_suffix 组）。v1 的 (?![A-Za-z]) 遇 `12n`
 #      不是拒绝而是回溯截断成 page=1；显式捕获后缀消除静默截断。
 #   3. _ABBR 段间分隔 [ .&]+（去掉 \s），不跨换行、不跨句点粘连。
-#   4. 形状级分隔 _SEP = \s*,?\s+：卷号与缩写之间等位置容忍逗号
-#      （19 世纪排版惯例）。注意与 _ABBR 段内分隔集是两回事，后者
-#      明确不收逗号（见规格 §7.2，案名吞噬风险）。
+#   4. 形状级分隔容忍逗号（v1.3 起按槽位分配，见上）。
 #   5. _ABBR 允许 2-3 字母小写段（法语汇编 R. de J. / C. de D.、
 #      英文 H. of L.），且小写段之后必须紧跟大写开头的段。
 #
-# 形状集结构变化：
+# 形状集结构变化（v2）：
 #   - 序数括注做成可选插槽 _SERP_SLOT，复用于多个形状；
 #     shape_series_paren 因此消失，功能被插槽吸收。
 #   - 新增 shape_neutral_bare（2019 SCC 65，无括注的中立引用）与
@@ -31,56 +41,57 @@ _ABBR = (
     r"\.?"
 )
 _YEAR = r"(?:1[6-9]|20)\d{2}"
-_SEP = r"\s*,?\s+"                                    # 形状级分隔，容忍一个逗号
+_SEP_COMMA = r"\s*,?\s+"                              # 年份→卷；缩写→系列/括注/页
+_SEP_TIGHT = r"\s+"                                   # 前缀→卷；卷→缩写
 _ORD = r"\d+(?:st|nd|rd|th|d)"
 _SERP = rf"\(\s*{_ORD}\s*\)"
-_SERP_SLOT = rf"(?:{_SEP}{_SERP})?"                   # 序数括注插槽，可复用
-_SERIES_OPT = rf"(?:{_SEP}(?P<series>{_ORD}))?"       # 裸序数系列（D.L.R. 4th 300）
+_SERP_SLOT = rf"(?:{_SEP_COMMA}{_SERP})?"             # 序数括注插槽，可复用
+_SERIES_OPT = rf"(?:{_SEP_COMMA}(?P<series>{_ORD}))?" # 裸序数系列（D.L.R. 4th 300）
 _PAGE = r"(?P<page>\d+)(?P<page_suffix>n)?(?![A-Za-z0-9])"
 
 SHAPES = [
     ("shape_bracket",
      rf"\[\s*(?P<year>{_YEAR})\s*\]\s*"
-     rf"(?:(?P<vol>\d+){_SEP})?"
+     rf"(?:(?P<vol>\d+){_SEP_TIGHT})?"                # 卷→token：TIGHT
      rf"(?P<token>{_ABBR})"
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
-     rf"{_SEP}{_PAGE}"),
+     rf"{_SEP_COMMA}{_PAGE}"),
 
     ("shape_vol_page_year",
-     rf"(?P<vol>\d+){_SEP}(?P<abbr>{_ABBR})"
+     rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"    # 卷→缩写：TIGHT
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
-     rf"{_SEP}{_PAGE}"
+     rf"{_SEP_COMMA}{_PAGE}"
      rf"\s*\(\s*(?P<year>{_YEAR})\s*\)"),
 
     ("shape_year_vol_page",
      rf"\(\s*(?P<year>{_YEAR})\s*\)"
-     rf"{_SEP}(?P<vol>\d+){_SEP}(?P<abbr>{_ABBR})"
+     rf"{_SEP_COMMA}(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"  # 年→卷 COMMA；卷→缩写 TIGHT
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
-     rf"{_SEP}{_PAGE}"),
+     rf"{_SEP_COMMA}{_PAGE}"),
 
     ("shape_nominate",
-     rf"(?P<vol>\d+){_SEP}(?P<abbr>{_ABBR})"
-     rf"{_SEP}\([^)]+\){_SEP}{_PAGE}"
+     rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"    # 卷→缩写：TIGHT
+     rf"{_SEP_COMMA}\([^)]+\){_SEP_COMMA}{_PAGE}"
      rf"\s*\(\s*(?P<year>{_YEAR})\s*\)"),
 
     ("shape_neutral_bare",
      rf"(?P<year>{_YEAR})\s+(?P<token>[A-Z]{{2,6}})"
-     rf"(?:{_SEP}(?P<series>[A-Z][A-Za-z]*))?"
-     rf"{_SEP}{_PAGE}"),
+     rf"(?:{_SEP_COMMA}(?P<series>[A-Z][A-Za-z]*))?"  # token→分辑词：页向，COMMA
+     rf"{_SEP_COMMA}{_PAGE}"),
 
     ("shape_vol_abbr_page",
-     rf"(?P<vol>\d+){_SEP}(?P<abbr>{_ABBR})"
+     rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"    # 卷→缩写：TIGHT
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
-     rf"{_SEP}{_PAGE}"),
+     rf"{_SEP_COMMA}{_PAGE}"),
 
     ("shape_leading_abbr",
      rf"(?P<leading_abbr>{_ABBR})"
-     rf"{_SEP}(?P<vol>\d+){_SEP}(?P<abbr>{_ABBR})"
-     rf"{_SEP}{_PAGE}"),
+     rf"{_SEP_TIGHT}(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"  # 前缀→卷、卷→缩写：TIGHT
+     rf"{_SEP_COMMA}{_PAGE}"),
 ]
 
 SHAPE_ORDER = [name for name, _ in SHAPES]

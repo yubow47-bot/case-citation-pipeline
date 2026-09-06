@@ -15,11 +15,14 @@ def normalize_code(code: str) -> str:
     return re.sub(r"[.\s\-]", "", code).upper()
 
 
-def dedup_overlapping(rows: list, shape_order: list) -> list:
+def dedup_overlapping(rows: list, shape_order: list) -> tuple:
     """同一判决内，区间重叠的匹配只保留跨度最长者。
     主键跨度降序，起点作次键，形状顺序作末键（规格 §7.4 v1.2 订正后的口径；
     旧版以起点升序为主键，会让起点更早的短匹配先占位挤掉更晚的长匹配）。
-    输出按 (match_start_offset, match_end_offset) 升序重排。"""
+    v1.3 起去重不删行（规格 §7.4）：返回 (kept, superseded) 二元组——
+    kept 按 (起点, 终点) 升序；superseded 每行带 superseded_by（挤掉它的
+    kept 行的 (起点, 终点, 形状名) 三元组），供"某行为何不在结果里"追溯
+    （约束五）。occurrence/decisions 计数只读 kept。"""
     from collections import defaultdict
 
     by_decision = defaultdict(list)
@@ -27,17 +30,24 @@ def dedup_overlapping(rows: list, shape_order: list) -> list:
         by_decision[r["source_decision_citation"]].append(r)
 
     kept = []
+    superseded = []
     for _, group in by_decision.items():
         group.sort(key=lambda r: (-r["match_span"],
                                   r["match_start_offset"],
                                   shape_order.index(r["shape_name"])))
         accepted = []
         for r in group:
-            if any(r["match_start_offset"] < a["match_end_offset"] and
-                   a["match_start_offset"] < r["match_end_offset"]
-                   for a in accepted):
-                continue
-            accepted.append(r)
+            hit = next((a for a in accepted
+                        if r["match_start_offset"] < a["match_end_offset"] and
+                        a["match_start_offset"] < r["match_end_offset"]), None)
+            if hit is None:
+                accepted.append(r)
+            else:
+                r = dict(r)
+                r["superseded_by"] = (hit["match_start_offset"],
+                                      hit["match_end_offset"],
+                                      hit["shape_name"])
+                superseded.append(r)
         kept.extend(accepted)
-    return sorted(kept, key=lambda r: (r["match_start_offset"],
-                                       r["match_end_offset"]))
+    kept.sort(key=lambda r: (r["match_start_offset"], r["match_end_offset"]))
+    return kept, superseded

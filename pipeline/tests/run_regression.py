@@ -133,7 +133,9 @@ def selftest():
 
     # 出货代码等价性：normalize.dedup_overlapping 必须与 dedup_v2 同口径
     # （规格 §7.4 v1.2 订正后两处应逐字一致；一旦分叉，此处红——
-    #   本项保证回归真正跑到出货的共享函数，而不只是测试内的本地实现。）
+    #   本项保证回归真正跑到出货的共享函数，而不只是测试内的本地实现。
+    #   v1.3 起 normalize 返回 (kept, superseded)，等价性只对 kept 断言，
+    #   并顺带校验 superseded 与 kept 的并集 = 全部原始命中（不删行）。）
     import normalize as nzmod
     eq_texts = ["See Smith 3 All E.R. 12 (1968)",
                 "(1936), 83 F. 2d 212",
@@ -147,11 +149,16 @@ def selftest():
                     "match_start_offset": r["start"], "match_end_offset": r["end"],
                     "match_span": r["span"], "shape_name": r["shape_name"]}
                    for r in rows]
+        nz_kept, nz_sup = nzmod.dedup_overlapping(nz_rows, V2_ORDER)
         nz = sorted((r["match_start_offset"], r["match_end_offset"], r["shape_name"])
-                    for r in nzmod.dedup_overlapping(nz_rows, V2_ORDER))
-        eq[t] = {"identical": reg == nz, "kept": [list(x) for x in reg]}
+                    for r in nz_kept)
+        union = sorted((r["match_start_offset"], r["match_end_offset"], r["shape_name"])
+                       for r in list(nz_kept) + list(nz_sup))
+        eq[t] = {"identical": reg == nz, "kept": [list(x) for x in reg],
+                 "no_row_lost": union == sorted((r["start"], r["end"], r["shape_name"])
+                                                for r in rows)}
     out["normalize_equivalence"] = eq
-    if not all(v["identical"] for v in eq.values()):
+    if not all(v["identical"] and v["no_row_lost"] for v in eq.values()):
         print(json.dumps(out, ensure_ascii=False, indent=1))
         sys.exit(1)
     print(json.dumps(out, ensure_ascii=False, indent=1))
