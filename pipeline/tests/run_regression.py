@@ -46,7 +46,7 @@ def extract(text, shapes):
     return rows
 
 
-def _dedup(rows, order, key):
+def _dedup(rows, key):
     kept = []
     for r in sorted(rows, key=key):
         if not any(r["start"] < a["end"] and a["start"] < r["end"] for a in kept):
@@ -56,14 +56,14 @@ def _dedup(rows, order, key):
 
 def dedup_v1(rows, order):
     """规格 §7.4 的旧实现口径：主键起点升序。钉住旧规格行为，v1 回归用。"""
-    return _dedup(rows, order,
+    return _dedup(rows,
                   lambda r: (r["start"], -r["span"], order.index(r["shape_name"])))
 
 
 def dedup_v2(rows, order):
     """规格 §7.4 的 v2 口径（v1.2 订正后）：主键跨度降序、起点次键、形状顺序末键；
     输出按起点重排。"""
-    return _dedup(rows, order,
+    return _dedup(rows,
                   lambda r: (-r["span"], r["start"], order.index(r["shape_name"])))
 
 
@@ -169,7 +169,8 @@ def fixture_run():
     from truth import TRUTH
 
     truth = TRUTH["fixtures"]
-    report = {"truth_status": TRUTH["_meta"]["status"], "fixtures": {}, "q_b_anchor": {}}
+    report = {"truth_status": TRUTH["_meta"]["status"], "fixtures": {},
+              "negative_fixture_fp": {}}
     for fx in FIXTURES:
         text, fid, kind = fx["text"], fx["id"], fx["kind"]
         truth_items = truth.get(fid, {}).get("items", [])
@@ -197,18 +198,19 @@ def fixture_run():
                 entry[ver]["false_positives"] = entry[ver]["kept"]  # 真值为空：全部命中即误报
         report["fixtures"][fid] = entry
 
-    # Q(b)：shape_vol_abbr_page 在负对照上的误报率（每百万字符）；
-    # 复用夹具循环已存的 kept，不重新抽取。
+    # 负对照（E/F）误报统计：夹具回归的回归哨兵，供 §13.1 负对照表使用。
+    # 注意：这不是 PROBLEMS #16 的阈值锚——#16 锚在冻结散文样本上，
+    # 由 corpus_counts.py --prose-sample 产出（v1.2 的夹具锚已废止）。
     neg_chars = sum(len(fx["text"]) for fx in FIXTURES if fx["kind"] in NEGATIVE_KINDS)
     for ver in ("v1", "v2"):
         kept = [k for e in report["fixtures"].values() if e["kind"] in NEGATIVE_KINDS
                 for k in e[ver]["kept"]]
-        fp = {}
+        fp = {"note": "负对照回归统计，非 #16 锚（锚见 corpus_counts.py --prose-sample）"}
         for name in ("shape_vol_abbr_page", "all_shapes"):
             cnt = sum(1 for k in kept if name == "all_shapes" or k[0] == name)
             fp[name] = {"count": cnt, "chars": neg_chars,
                         "per_million_chars": round(cnt / neg_chars * 1e6, 1) if neg_chars else None}
-        report["q_b_anchor"][ver] = fp
+        report["negative_fixture_fp"][ver] = fp
     print(json.dumps(report, ensure_ascii=False, indent=1))
 
 
