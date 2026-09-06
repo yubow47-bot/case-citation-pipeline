@@ -1,3 +1,4 @@
 corpus/
 data/
 *.parquet
+__pycache__/ 
