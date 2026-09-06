@@ -335,9 +335,15 @@ def sha256_file(path):
 
 
 def build_slice(text):
-    """自 len(text)//2 起取正文散文切片：剔除 [n] 脚注行；撞上 Cases Cited/Statutes/
-    Authors 类节头（含其后 Referred to 行）视为该判决中部不适合取散文，返回 None。
-    累计整行至 TARGET_MIN–TARGET_MAX 字符；单行超长时截取。返回 (start, end) 或 None。"""
+    """自 len(text)//2 起取正文散文切片。窗口只含累计的整行：
+    - 脚注行（[n]）是硬边界：撞到即结算（累计够 TARGET_MIN 就返回，否则弃掉
+      当前窗、从脚注块之后重新起窗）——v1.3 订正：旧版"跳过脚注行但窗口跨度
+      照伸"，脚注引证混进切片（实测 59/200 切片超预算、最大 37,419 字符、
+      94% 命中挤在脚注密集切片），锚基线因此作废重测过一次；
+    - 节头（Cases Cited 等）与其后 Referred to 行：整份弃；
+    - 单行超长：截取其前 TARGET_MAX 字符，截取段不得含节头痕迹；
+    - 空行只是版面，累计中跳过、计入跨度。
+    返回 (start, end) 或 None。"""
     n = len(text)
     line_offsets = []
     off = 0
@@ -351,21 +357,28 @@ def build_slice(text):
         if lo < n // 2:
             continue
         if FN.match(ln):
+            if seg_start is not None:
+                if total >= TARGET_MIN:
+                    return (seg_start, prev_end)
+                seg_start = None   # 不够长：脚注块之后重新起窗
+                total = 0
             continue
         if HEADER.match(ln) or REFERRED.match(ln):
             return None  # 中部撞节头：该判决中部不适合取散文，弃
         if not ln.strip():
-            if seg_start is None:
-                continue
-            if total >= TARGET_MIN:
+            if seg_start is not None and total >= TARGET_MIN:
                 return (seg_start, prev_end)
             continue
         if seg_start is None:
             seg_start = lo
+            total = 0
         if total + len(ln) > TARGET_MAX:
             if total >= TARGET_MIN:
                 return (seg_start, prev_end)
-            return (seg_start, seg_start + TARGET_MAX)  # 单行超长，截取
+            cut = text[lo:lo + TARGET_MAX]
+            if HEADER.search(cut) or REFERRED.match(cut):
+                return None
+            return (lo, lo + TARGET_MAX)
         total += len(ln) + 1
         prev_end = lo + len(ln)
         if total >= TARGET_MIN:
