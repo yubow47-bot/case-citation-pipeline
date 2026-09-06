@@ -301,11 +301,16 @@ def prose_sample_mode():
                          "context": slice_[ctx_s:ctx_e].replace("\n", "\\n")})
     m = len(hits)
     n = total_chars
+    filled = [s for s in SAMPLES if s["row"] is not None]
     anchor = ("基线实测 0 事件（n=%d 字符）→ rule of three：同一样本上误报事件上限 3 条"
               "（3/n 的 95%% 上界）" % n) if m == 0 else (
         "基线实测 %d 事件 / %.1f 每百万字符 —— 待逐条人工归类（已知类见 PROBLEMS #16）后定锚"
         % (m, m / n * 1e6))
-    print(json.dumps({"sample_chars": n, "docs": len(SAMPLES), "hit_count": m,
+    print(json.dumps({"sample_chars": n,
+                      "docs_filled": len(filled),
+                      "slots_total": len(SAMPLES),
+                      "slots_empty_placeholder": len(SAMPLES) - len(filled),
+                      "hit_count": m,
                       "hits": hits, "anchor": anchor, "meta": META},
                      ensure_ascii=False, indent=1))
 
