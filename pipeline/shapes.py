@@ -54,6 +54,10 @@ _SERP_SLOT = rf"(?:{_SEP_COMMA}{_SERP})?"             # 序数括注插槽，可
 # 粘连变体要求序数后缀（st/nd/rd/th/d），OCR 粘连页码（Q.B.D.43，无后缀）仍不收——
 # 与 PROBLEMS #12 的区分见规格 §7.2。series_glued 为独立捕获组，extract 时并入 series。
 _SERIES_OPT = rf"(?:{_SEP_COMMA}(?P<series>{_ORD})|(?P<series_glued>\d{{1,2}}(?:st|nd|rd|th|d)))?"
+# v1.4 封版前审计：编号标记槽提为共享子式——(?!No.) 边界的批准条件是"信息重定位"，
+# 重定位需要接收槽；守卫在共享 _ABBR 里而槽只在 bracket = 七分之一兑现，其余六个形状
+# 是纯排除。作用域必须一致（PROBLEMS #23 补记）
+_SERIAL_SLOT = r"(?:\s+(?P<serial_marker>No\.))?"
 # 页码：数字（可选字母斜杠前缀 D/、脚注后缀 n）或罗马页码（xi/vii，leave to appeal
 # 序册页）。罗马子式 {2} 最小长度挡空串与章节标记 c.；交替整体包在 (?:) 内，
 # 防止嵌入 _SEP_COMMA+ _PAGE 时 | 在错误层级分裂。
@@ -66,14 +70,14 @@ SHAPES = [
      rf"\[\s*(?P<year>{_YEAR})\s*\]\s*"
      rf"(?:(?P<vol>\d+){_SEP_TIGHT})?"
      rf"(?P<token>{_ABBR})"
-     rf"(?:\s+(?P<serial_marker>No\.))?"               # v1.4 债1：编号标记槽（显式
-     #                                                   捕获，token 不再被污染）
+     rf"{_SERIAL_SLOT}"                                # v1.4 债1：编号标记槽（共享子式）
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
      rf"{_SEP_COMMA}{_PAGE}"),
 
     ("shape_vol_page_year",
-     rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"    # 卷→缩写：TIGHT
+     rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"
+     rf"{_SERIAL_SLOT}"                                # 编号标记槽（共享）
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
      rf"{_SEP_COMMA}{_PAGE}"
@@ -82,12 +86,14 @@ SHAPES = [
     ("shape_year_vol_page",
      rf"\(\s*(?P<year>{_YEAR})\s*\)"
      rf"{_SEP_COMMA}(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"  # v1.4 修3 卷可选已回滚（PROBLEMS #21）
+     rf"{_SERIAL_SLOT}"                                # 编号标记槽（共享）
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
      rf"{_SEP_COMMA}{_PAGE}"),
 
     ("shape_nominate",
-     rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"    # 卷→缩写：TIGHT
+     rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"
+     rf"{_SERIAL_SLOT}"                                # 编号标记槽（共享）
      rf"{_SEP_COMMA}\([^)]+\){_SEP_COMMA}{_PAGE}"
      rf"\s*\(\s*(?P<year>{_YEAR})\s*\)"),
 
@@ -100,14 +106,19 @@ SHAPES = [
      rf"{_SEP_COMMA}{_PAGE}"),
 
     ("shape_vol_abbr_page",
-     rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"    # 卷→缩写：TIGHT
+     rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"
+     rf"{_SERIAL_SLOT}"                                # 编号标记槽（共享）
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
      rf"{_SEP_COMMA}{_PAGE}"),
 
     ("shape_leading_abbr",
+     rf"(?:\(\s*(?P<year>{_YEAR})\s*\){_SEP_COMMA})?"  # v1.4 改动一：年份前缀槽
+     #                                                   （(1866) L.R. 2 Ch. App. 127 类，
+     #                                                   年份印在紧邻位置，此前被丢弃）
      rf"(?P<leading_abbr>{_ABBR})"
-     rf"{_SEP_TIGHT}(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"  # 前缀→卷、卷→缩写：TIGHT
+     rf"{_SEP_TIGHT}(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"
+     rf"{_SERIAL_SLOT}"                                # 编号标记槽（共享）
      rf"{_SEP_COMMA}{_PAGE}"),
 ]
 
