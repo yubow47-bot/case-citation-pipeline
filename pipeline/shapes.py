@@ -75,14 +75,10 @@ SHAPES = [
 
     ("shape_year_vol_page",
      rf"\(\s*(?P<year>{_YEAR})\s*\)"
-     rf"{_SEP_COMMA}(?:(?P<vol>\d+){_SEP_TIGHT})?(?P<abbr>{_ABBR})"  # v1.4：卷可选（无卷号变体）
+     rf"{_SEP_COMMA}(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"  # v1.4 修3 卷可选已回滚（PROBLEMS #21）
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
-     rf"{_SEP_COMMA}{_PAGE}"
-     # 防误解析守卫：页码后紧跟"两个大写词+数字"（如 Ch. App. 127）说明刚才那个
-     # "页码"其实是卷号——有卷号形式 (1866) L.R. 1 Ch. App. 127 不得被解析成
-     # abbr=L.R. page=1。句点/逗号/分号续接（正文句子）不触发
-     rf"(?!\s+[A-Z][A-Za-z.]*\s+[A-Z][A-Za-z.]*\s+\d{{1,5}}(?![0-9A-Za-z.,;]))"),
+     rf"{_SEP_COMMA}{_PAGE}"),
 
     ("shape_nominate",
      rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"    # 卷→缩写：TIGHT

@@ -203,15 +203,30 @@ def fixture_run():
             for r in raw:
                 per_shape[r["shape_name"]] = per_shape.get(r["shape_name"], 0) + 1
             missing = []
+            exact_hits = 0
+            covered_not_exact = []
             for ti in truth_items:
                 if not is_covered(ti["span"], kept):
                     missing.append({"span": ti["span"], "what": ti["what"]})
+                    continue
+                # exact 档（v1.4）：区间重叠判据发现不了"抓到一个重叠的错串"——
+                # 修 3 的 (1874), L.R. 9 误解析挤掉 L.R. 9 Ex. 192 由此暴露
+                if any(k["raw"] == ti["what"] for k in kept):
+                    exact_hits += 1
+                else:
+                    covered_not_exact.append({
+                        "what": ti["what"],
+                        "overlapping_kept": [k["raw"] for k in kept
+                                             if k["start"] < ti["span"][1]
+                                             and ti["span"][0] < k["end"]]})
             entry[ver] = {
                 "raw_hits": len(raw),
                 "kept_hits": len(kept),
                 "per_shape_raw": per_shape,
                 "kept": [(k["shape_name"], k["start"], k["end"], k["raw"]) for k in kept],
                 "missing_vs_truth": missing,
+                "exact_hits": exact_hits,
+                "covered_not_exact": covered_not_exact,
             }
         if kind in NEGATIVE_KINDS:
             # 负对照真值为空：kept 即误报清单（§13.1 三列表的「额外误报」列），
