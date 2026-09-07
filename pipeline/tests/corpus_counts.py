@@ -125,18 +125,50 @@ _RX_BRACKET_NO = re.compile(
     r"\[\s*" + YEAR_B + r"\s*\]\s+(?:(?P<vol>\d{1,3})\s+)?"
     r"(?P<token>[A-Z][A-Za-z.]*)\s+No\.\s+(?P<page>\d{1,6})(?![0-9A-Za-z])")
 
+# ---- v1.4 封版前审计：四处槽位空缺的定量（findings 最后一轮收编）--------------
+# _ABBR_M = shapes._ABBR 同构（多词段 + 小写连接段 + 点尾）——测量模式的
+# abbr/lead 组必须用它：单 word 简化版匹配不了 Ch. App. 双词缩写（实测教训）
+_ABBR_M = r"[A-Z][A-Za-z]*(?:[ .&]+[A-Z][A-Za-z]*)*(?:[ .&]+[a-z]{2,3}[ .&]+[A-Z][A-Za-z]*)?\.?"
+# 改动一目标：(年) + 系列前缀 + 卷 + 缩写 + 页（年份被丢弃的 leading 形态，
+# (1866) L.R. 2 Ch. App. 127 类）
+_RX_LEAD_YEAR = re.compile(
+    r"(?<![0-9A-Za-z])\(\s*" + YEAR_B + r"\s*\)\s+"
+    r"(?P<lead>" + _ABBR_M + r")\s+"
+    r"(?P<vol>\d{1,4})\s+(?P<abbr>" + _ABBR_M + r")\s*,?\s+"
+    r"(?P<page>\d{1,5})(?![0-9A-Za-z])")
+# 改动二目标：非方括号路径的编号标记（词 + No. + 数字；与 bracket_No 的差集
+# 在 default_mode 内按跨度相减派生）
+_RX_SERIAL_ANY = re.compile(
+    r"(?<![0-9A-Za-z])(?P<lead>" + _ABBR_M + r")\s+No\.\s+(?P<page>\d{1,6})(?![0-9A-Za-z])")
+# 保留一（拟新增而最终不新增的槽）：leading 位 + 序数括注/裸序数 + 页
+_RX_LEAD_SERP = re.compile(
+    r"(?<![0-9A-Za-z])(?P<lead>" + _ABBR_M + r")\s+"
+    r"(?P<vol>\d{1,4})\s+(?P<abbr>" + _ABBR_M + r")\s*"
+    r"\(\s*\d{1,2}(?:st|nd|rd|th|d)\s*\)\s+(?P<page>\d{1,5})(?![0-9A-Za-z])")
+_RX_LEAD_SERIES = re.compile(
+    r"(?<![0-9A-Za-z])(?P<lead>" + _ABBR_M + r")\s+"
+    r"(?P<vol>\d{1,4})\s+(?P<abbr>" + _ABBR_M + r")\s+"
+    r"(?P<series>\d{1,2}(?:st|nd|rd|th|d))\s+(?P<page>\d{1,5})(?![0-9A-Za-z])")
+# 保留二（实测 0 的槽）：nominate 括注 + 裸序数 + 页
+_RX_NOM_SERIES = re.compile(
+    r"(?<![0-9A-Za-z])(?P<vol>\d{1,4})\s+(?P<abbr>" + _ABBR_M + r")\s*"
+    r"\([^)]{1,30}\)\s+(?P<series>\d{1,2}(?:st|nd|rd|th|d))\s+(?P<page>\d{1,5})(?![0-9A-Za-z])")
+
 PATTERNS = dict(
     [("scr_dots_any", RX_SCR_DOTS_ANY), ("scr_spaced", RX_SCR_SPACED),
      ("neutral", RX_NEUTRAL), ("vxn", RX_VXN), ("vxparen", RX_VXPAR),
      ("ord_glued", _RX_ORD_GLUED), ("ord_spaced", _RX_ORD_SPACED),
      ("novol_paren_year", _RX_NOVOL), ("roman_page", RX_ROMAN_PAGE),
      ("slash_page", _RX_SLASH), ("mixedcase_neutral", _RX_MIXED),
-     ("bracket_No", _RX_BRACKET_NO)]
+     ("bracket_No", _RX_BRACKET_NO), ("lead_year_gap", _RX_LEAD_YEAR),
+     ("serial_any", _RX_SERIAL_ANY), ("lead_serp", _RX_LEAD_SERP),
+     ("lead_series", _RX_LEAD_SERIES), ("nom_series", _RX_NOM_SERIES)]
     + SCR_FAMILY + REPORTERS
 )
 DOC_PATTERNS = {"neutral", "vxn", "vxparen", "ord_glued", "ord_spaced",
                 "novol_paren_year", "roman_page", "slash_page",
-                "mixedcase_neutral", "bracket_No"}  # doc 计；其余为 occ 计
+                "mixedcase_neutral", "bracket_No", "lead_year_gap",
+                "serial_any"}  # doc 计；其余为 occ 计
 
 # 预过滤字面量（扫描加速，不改计数结果；键集与 PATTERNS 一致性在 run_assertions 校验）
 # ("",) 表示无可预过滤字面量——恒扫描（"" in text 恒真）
@@ -150,7 +182,9 @@ PREFILTER.update({"or_strict": ("O.R.",), "ccc_strict": ("C.C.C.",),
                   "ord_glued": ("",), "ord_spaced": ("",),
                   "novol_paren_year": ("(",), "roman_page": ("[",),
                   "slash_page": ("/",), "mixedcase_neutral": ("19", "20"),
-                  "bracket_No": ("No.",)})
+                  "bracket_No": ("No.",), "lead_year_gap": ("(",),
+                  "serial_any": ("No.",), "lead_serp": ("(",),
+                  "lead_series": ("",), "nom_series": ("(",)})
 
 # ---- 模式断言（P0）：测量正则本身必须先被测过 --------------------------------------
 # (模式名, 样本, 期望命中数)。启动即断言，任一失败 exit 1，不进扫描。
@@ -209,6 +243,24 @@ PATTERN_ASSERTIONS = [
     ("bracket_No",      "[1989] B.C.J. No. 1393", 1),
     ("bracket_No",      "[1952] C.T.S. No. 14", 1),
     ("bracket_No",      "[1990] 2 F.C. 609", 0),  # 无 No. 体例
+    # ---- v1.4 封版前审计：四处槽位空缺的测量模式（正反样例钉口径）----
+    ("lead_year_gap",   "(1866) L.R. 2 Ch. App. 127", 1),
+    ("lead_year_gap",   "(1866) L.R. 1 C.P., 535", 1),
+    ("lead_year_gap",   "(1876) 1 P., 117", 0),  # 年→卷直连，无前缀，不属本模式
+    ("lead_year_gap",   "(1936), 83 F. 2d 212", 0),  # 年→卷直连
+    ("lead_year_gap",   "(1866) L.R. 2 Ch. App. 127. 127.", 1),
+    ("serial_any",      "26 Vict. No. 9", 1),
+    ("serial_any",      "24 O.R. No. 2245", 1),
+    ("serial_any",      "[2010] O.J. No. 3423", 1),  # 方括号路径也含词+No.，本模式通计
+    ("serial_any",      "[1990] 2 F.C. 609", 0),  # 无 No. 体例
+    ("lead_serp",       "Law Soc. of Alta. 35 Alta. L.R. (2d) 259", 1),
+    ("lead_serp",       "2 Q.B. (N.S.) 100 (1893)", 0),  # 无 lead 位
+    ("lead_series",     "AWH Corp. 415 F. 3d 1303", 1),
+    ("lead_series",     "211 D.L.R. 4th 300", 0),  # 无 lead 位
+    ("nom_series",      "(1893) 2 Q.B. (N.S.) 4th 115", 1),  # 合成正向（语料实测 0）
+    ("nom_series",      "2 Q.B. (N.S.) 100 (1893)", 0),  # 无裸序数
+    # 双连接段观测（E. and I. App. 体例）：(年) 前缀 卷 连接段 缩写 页
+    ("lead_year_gap",   "(1874) L.R. 7 E. and I. App. 135", 0),  # 双连接段：_ABBR 单连接段限制，单独登记观测
 ]
 
 
