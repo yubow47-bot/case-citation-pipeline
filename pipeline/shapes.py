@@ -50,7 +50,12 @@ _SERP_SLOT = rf"(?:{_SEP_COMMA}{_SERP})?"             # 序数括注插槽，可
 # 粘连变体要求序数后缀（st/nd/rd/th/d），OCR 粘连页码（Q.B.D.43，无后缀）仍不收——
 # 与 PROBLEMS #12 的区分见规格 §7.2。series_glued 为独立捕获组，extract 时并入 series。
 _SERIES_OPT = rf"(?:{_SEP_COMMA}(?P<series>{_ORD})|(?P<series_glued>\d{{1,2}}(?:st|nd|rd|th|d)))?"
-_PAGE = r"(?P<page>\d+)(?P<page_suffix>n)?(?![A-Za-z0-9])"
+# 页码：数字（可选字母斜杠前缀 D/、脚注后缀 n）或罗马页码（xi/vii，leave to appeal
+# 序册页）。罗马子式 {2} 最小长度挡空串与章节标记 c.；交替整体包在 (?:) 内，
+# 防止嵌入 _SEP_COMMA+ _PAGE 时 | 在错误层级分裂。
+_PAGE = (r"(?:(?:(?P<page_prefix>[A-Z]{1,2}/))?(?P<page>\d+)(?P<page_suffix>n)?(?![A-Za-z0-9])"
+         r"|(?P<page_roman>(?=[ivxlcdm]{2})(?:c[md]|d?c{0,3})(?:xc|xl|l?x{0,3})"
+         r"(?:ix|iv|v?i{0,3}))(?![a-z0-9]))")
 
 SHAPES = [
     ("shape_bracket",
@@ -70,10 +75,14 @@ SHAPES = [
 
     ("shape_year_vol_page",
      rf"\(\s*(?P<year>{_YEAR})\s*\)"
-     rf"{_SEP_COMMA}(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"  # 年→卷 COMMA；卷→缩写 TIGHT
+     rf"{_SEP_COMMA}(?:(?P<vol>\d+){_SEP_TIGHT})?(?P<abbr>{_ABBR})"  # v1.4：卷可选（无卷号变体）
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
-     rf"{_SEP_COMMA}{_PAGE}"),
+     rf"{_SEP_COMMA}{_PAGE}"
+     # 防误解析守卫：页码后紧跟"两个大写词+数字"（如 Ch. App. 127）说明刚才那个
+     # "页码"其实是卷号——有卷号形式 (1866) L.R. 1 Ch. App. 127 不得被解析成
+     # abbr=L.R. page=1。句点/逗号/分号续接（正文句子）不触发
+     rf"(?!\s+[A-Z][A-Za-z.]*\s+[A-Z][A-Za-z.]*\s+\d{{1,5}}(?![0-9A-Za-z.,;]))"),
 
     ("shape_nominate",
      rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"    # 卷→缩写：TIGHT
