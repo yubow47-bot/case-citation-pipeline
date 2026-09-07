@@ -150,6 +150,14 @@ def selftest():
                   "[1997] 2 S.C.R. xi", "[1982] 1 S.C.R. vii",
                   "[1927] R.S.C., c. 29"]}
 
+    # v1.4 债2 探针：neutral_bare token 放宽至 2-12 位（混合大小写 vendor 与
+    # 7 位法院代码），year 语义恢复；全大写短代码路径不受影响。
+    out["neutral_token_probes"] = {
+        p: [(r["shape_name"], r["raw"], r["groups"].get("year"), r["groups"].get("token"))
+            for r in dedup_v2(extract(p, V2_SHAPES), V2_ORDER)]
+        for p in ["1998 CanLII 13001", "2010 CarswellOnt 5877", "2024 FPSLREB 58",
+                  "2013 LNQCTAQ 3", "2019 SCC 65", "2003 EWCA Civ 1746"]}
+
     # 出货代码等价性：normalize.dedup_overlapping 必须与 dedup_v2 同口径
     # （规格 §7.4 v1.2 订正后两处应逐字一致；一旦分叉，此处红——
     #   本项保证回归真正跑到出货的共享函数，而不只是测试内的本地实现。

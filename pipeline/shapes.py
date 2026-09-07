@@ -86,7 +86,10 @@ SHAPES = [
      rf"\s*\(\s*(?P<year>{_YEAR})\s*\)"),
 
     ("shape_neutral_bare",
-     rf"(?P<year>{_YEAR})\s+(?P<token>[A-Z]{{2,6}})"
+     # v1.4：token 2-12 位（大写开头无空格纯字母段）。上界依据=观测到的最长
+     # 标识符+余量：法院代码最长 7 位（FPSLREB/CRTESPF），vendor 最长 11 位
+     # （CarswellOnt/Que）。不判断合法性（约束二），归 neutral_court_codes.csv
+     rf"(?P<year>{_YEAR})\s+(?P<token>[A-Z][A-Za-z]{{1,11}})"
      rf"(?:{_SEP_COMMA}(?P<series>[A-Z][A-Za-z]*))?"  # token→分辑词：页向，COMMA
      rf"{_SEP_COMMA}{_PAGE}"),
 
