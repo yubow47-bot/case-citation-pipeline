@@ -131,11 +131,16 @@ _RX_BRACKET_NO = re.compile(
 _ABBR_M = r"[A-Z][A-Za-z]*(?:[ .&]+[A-Z][A-Za-z]*)*(?:[ .&]+[a-z]{2,3}[ .&]+[A-Z][A-Za-z]*)?\.?"
 # 改动一目标：(年) + 系列前缀 + 卷 + 缩写 + 页（年份被丢弃的 leading 形态，
 # (1866) L.R. 2 Ch. App. 127 类）
+# 对齐 shape_leading_abbr 带 year 形态（v1.4 收口）：模式结构与形状逐段一致
+# （含 (?!No.) 边界与 serial_marker 槽），计数=形状实际产出的 year-bearing 命中数。
+# shapes.py 改动时本模式须同步。
+_ABBR_M_NO = r"[A-Z][A-Za-z]*(?:[ .&]+(?!No\.)[A-Z][A-Za-z]*)*" \
+             r"(?:[ .&]+[a-z]{2,3}[ .&]+[A-Z][A-Za-z]*)?\.?"
 _RX_LEAD_YEAR = re.compile(
-    r"(?<![0-9A-Za-z])\(\s*" + YEAR_B + r"\s*\)\s+"
-    r"(?P<lead>" + _ABBR_M + r")\s+"
-    r"(?P<vol>\d{1,4})\s+(?P<abbr>" + _ABBR_M + r")\s*,?\s+"
-    r"(?P<page>\d{1,5})(?![0-9A-Za-z])")
+    r"(?<![0-9A-Za-z])\(\s*" + YEAR_B + r"\s*\)\s*,?\s+"
+    r"(?P<lead>" + _ABBR_M_NO + r")\s+"
+    r"(?P<vol>\d{1,4})\s+(?P<abbr>" + _ABBR_M_NO + r")"
+    r"(?:\s+No\.)?\s*,?\s*(?P<page>\d{1,5})(?![0-9A-Za-z])")
 # 改动二目标：非方括号路径的编号标记（词 + No. + 数字；与 bracket_No 的差集
 # 在 default_mode 内按跨度相减派生）
 _RX_SERIAL_ANY = re.compile(
@@ -245,7 +250,9 @@ PATTERN_ASSERTIONS = [
     ("bracket_No",      "[1990] 2 F.C. 609", 0),  # 无 No. 体例
     # ---- v1.4 封版前审计：四处槽位空缺的测量模式（正反样例钉口径）----
     ("lead_year_gap",   "(1866) L.R. 2 Ch. App. 127", 1),
-    ("lead_year_gap",   "(1866) L.R. 1 C.P., 535", 1),
+    ("lead_year_gap",   "(1874), L.R. 9 Ex. 192", 1),
+    ("lead_year_gap",   "(1897) Q.R. 6 Q.B. 547.", 1),
+    ("lead_year_gap",   "(1874) L.R. 7 E. and I. App. 135", 0),  # 双连接段：_ABBR 单连接段限制（登记观测）
     ("lead_year_gap",   "(1876) 1 P., 117", 0),  # 年→卷直连，无前缀，不属本模式
     ("lead_year_gap",   "(1936), 83 F. 2d 212", 0),  # 年→卷直连
     ("lead_year_gap",   "(1866) L.R. 2 Ch. App. 127. 127.", 1),
