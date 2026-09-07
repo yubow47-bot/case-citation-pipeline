@@ -36,7 +36,11 @@
 
 _ABBR = (
     r"[A-Z][A-Za-z]*"
-    r"(?:[ .&]+[A-Z][A-Za-z]*)*"                      # 段间：仅普通空格/句点/&
+    r"(?:[ .&]+(?!No\.)[A-Z][A-Za-z]*)*"             # 段间：仅普通空格/句点/&；
+    #                                                   v1.4 债1：段起点 (?!No\.) 防编号词
+    #                                                   被吸进缩写（O.J. No. 3423 的
+    #                                                   token 污染）。唯一字面量例外，
+    #                                                   门槛见 §7.2 专节/PROBLEMS #23
     r"(?:[ .&]+[a-z]{2,3}[ .&]+[A-Z][A-Za-z]*)?"      # 可选小写段（of/de），后必大写段
     r"\.?"
 )
@@ -60,8 +64,10 @@ _PAGE = (r"(?:(?:(?P<page_prefix>[A-Z]{1,2}/))?(?P<page>\d+)(?P<page_suffix>n)?(
 SHAPES = [
     ("shape_bracket",
      rf"\[\s*(?P<year>{_YEAR})\s*\]\s*"
-     rf"(?:(?P<vol>\d+){_SEP_TIGHT})?"                # 卷→token：TIGHT
+     rf"(?:(?P<vol>\d+){_SEP_TIGHT})?"
      rf"(?P<token>{_ABBR})"
+     rf"(?:\s+(?P<serial_marker>No\.))?"               # v1.4 债1：编号标记槽（显式
+     #                                                   捕获，token 不再被污染）
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
      rf"{_SEP_COMMA}{_PAGE}"),

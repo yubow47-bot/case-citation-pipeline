@@ -158,6 +158,16 @@ def selftest():
         for p in ["1998 CanLII 13001", "2010 CarswellOnt 5877", "2024 FPSLREB 58",
                   "2013 LNQCTAQ 3", "2019 SCC 65", "2003 EWCA Civ 1746"]}
 
+    # v1.4 债1 探针：编号标记槽——token 不再吸 "No."，编号词进独立
+    # serial_marker 组；无编号体例与普通 token 路径不受影响。
+    out["serial_marker_probes"] = {
+        p: [(r["shape_name"], r["raw"], r["groups"].get("token"),
+             r["groups"].get("serial_marker"), r["groups"].get("page"))
+            for r in dedup_v2(extract(p, V2_SHAPES), V2_ORDER)]
+        for p in ["[2010] O.J. No. 3423", "[1989] B.C.J. No. 1393",
+                  "[1952] C.T.S. No. 14", "[1990] 2 F.C. 609",
+                  "[1978] A.C. 728", "[1978] 2 All E.R. 492"]}
+
     # 出货代码等价性：normalize.dedup_overlapping 必须与 dedup_v2 同口径
     # （规格 §7.4 v1.2 订正后两处应逐字一致；一旦分叉，此处红——
     #   本项保证回归真正跑到出货的共享函数，而不只是测试内的本地实现。
