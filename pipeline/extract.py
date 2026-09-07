@@ -69,8 +69,6 @@ SCHEMA = [
 ]
 SCHEMA_SUPER = SCHEMA + ["superseded_by"]
 
-_YEAR_IN_TEXT = re.compile(r"(?:1[6-9]|20)\d{2}")
-
 
 # ---------------------------------------------------------------- extraction
 def source_decision_citation(court, citation_en):
@@ -79,13 +77,12 @@ def source_decision_citation(court, citation_en):
 
 
 def decision_year(document_date_en):
-    """判决年份（§7.6：判决年份 ≠ 引证年份）。document_date_en 为 timestamp；
-    空得空串，不得推断。"""
+    """判决年份（§7.6：判决年份 ≠ 引证年份）。document_date_en 列类型为
+    timestamp（两语料 schema 已核实）或 NULL；NULL 得空串，不得推断。
+    刻意不设字符串解析分支——那是在本语料上永不执行的代码（§7.3
+    "关于 year_start"的同款教训）。"""
     if isinstance(document_date_en, datetime.datetime):
         return str(document_date_en.year)
-    if isinstance(document_date_en, str):
-        m = _YEAR_IN_TEXT.search(document_date_en)
-        return m.group(0) if m else ""
     return ""
 
 
