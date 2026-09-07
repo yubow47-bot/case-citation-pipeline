@@ -130,6 +130,15 @@ def selftest():
         p: [(r["shape_name"], r["raw"]) for r in dedup_v2(extract(p, V2_SHAPES), V2_ORDER)]
         for p in probes}
 
+    # v1.4 粘连序数探针：现代美式 F.2d/P.2d 写法（序数紧贴缩写句点）由
+    # series_glued 变体承接；老式带空格写法（83 F. 2d 212）走原 series 槽。
+    out["series_glued_probes"] = {
+        p: [(r["shape_name"], r["raw"], r["groups"].get("series"),
+             r["groups"].get("series_glued"))
+            for r in dedup_v2(extract(p, V2_SHAPES), V2_ORDER)]
+        for p in ["571 F.2d 1277 (1978)", "936 P.2d 1011 (1997)", "83 F. 2d 212",
+                  "211 D.L.R. 4th 300 (2004)", "15 App. Cas. 210-219"]}
+
     # 出货代码等价性：normalize.dedup_overlapping 必须与 dedup_v2 同口径
     # （规格 §7.4 v1.2 订正后两处应逐字一致；一旦分叉，此处红——
     #   本项保证回归真正跑到出货的共享函数，而不只是测试内的本地实现。
@@ -279,11 +288,75 @@ def verify():
     print(json.dumps({"verify": out}, ensure_ascii=False, indent=1))
 
 
+# ------------------------------------------------------------- field-audit
+def field_audit_mode():
+    """捕获组体检（v1.4 新仪器）：对全语料七形状 raw 命中断言字段不变量。
+    宽骨架差集只能发现漏抓；本模式专测"抓到了但字段是错的"（R1/R2/R5 族）。
+    五条不变量（违反按形状分类计数 + 样例）：
+      1  token/abbr/leading_abbr 含编号词 No./no.
+      2  token/abbr/leading_abbr 整值为单字母+句点（章节标记 c. 类）
+      3  page 之后紧跟 -数字（连字符页码/区间被静默截断）
+      4  page 之后紧跟 /
+      5  vol 为年份形状而该命中无 year 组（年份被当卷号）
+    此后 shapes.py 任何改动与夹具回归同级必跑。"""
+    import pyarrow.parquet as pq
+
+    YEAR_RE = re.compile(r"^(?:1[6-9]|20)\d{2}$")
+    NO_WORD = re.compile(r"\bNo\.|\bno\.")
+    # 章节标记是小写 c.（R.S.C., c. 29）；单字母大写 reporter（P./D./F.）是合法缩写，
+    # v1.4 首跑曾用 [A-Za-z] 双大小写误标它们——本不变量只查小写。
+    SINGLE_DOT = re.compile(r"^[a-z]\.$")
+    FIELDS = ("token", "abbr", "leading_abbr")
+    counts = {f"inv{i}": {} for i in (1, 2, 3, 4, 5)}
+    examples = {f"inv{i}": [] for i in (1, 2, 3, 4, 5)}
+
+    def record(inv, shape, court, row, hit, why):
+        counts[inv][shape] = counts[inv].get(shape, 0) + 1
+        if len(examples[inv]) < 8:
+            examples[inv].append({"court": court, "row": row, "shape": shape,
+                                  "why": why, "raw": hit["raw"][:70]})
+
+    for court in ("SCC", "ONCA"):
+        i = -1
+        for b in pq.ParquetFile(
+                os.path.join(os.path.dirname(PIPE), "corpus", court + ".parquet")
+        ).iter_batches(batch_size=500, columns=["unofficial_text_en"]):
+            for t in b.to_pydict()["unofficial_text_en"]:
+                i += 1
+                if not t:
+                    continue
+                for h in extract(t, V2_SHAPES):
+                    g = h["groups"]
+                    shape = h["shape_name"].replace("shape_", "")
+                    for f in FIELDS:
+                        v = g.get(f)
+                        if not v:
+                            continue
+                        if NO_WORD.search(v):
+                            record("inv1", shape, court, i, h, f"{f}={v!r} 含编号词")
+                        if SINGLE_DOT.match(v):
+                            record("inv2", shape, court, i, h, f"{f}={v!r} 单字母+句点")
+                    end = h["end"]
+                    nxt2 = t[end:end + 2]
+                    if len(nxt2) == 2 and nxt2[0] == "-" and nxt2[1].isdigit():
+                        record("inv3", shape, court, i, h, f"page 后连字符：{t[end:end + 8]!r}")
+                    if t[end:end + 1] == "/":
+                        record("inv4", shape, court, i, h, "page 后斜杠")
+                    vol = g.get("vol")
+                    if vol and YEAR_RE.match(vol) and "year" not in g:
+                        record("inv5", shape, court, i, h, f"vol={vol} 为年份形状且无 year 组")
+    out = {"method": "七形状 raw 命中字段不变量体检（全语料）",
+           "violations": counts, "examples": examples}
+    print(json.dumps(out, ensure_ascii=False, indent=1))
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--selftest", action="store_true")
-    ap.add_argument("--throughput", action="store_true")
-    ap.add_argument("--verify", action="store_true")
+    g = ap.add_mutually_exclusive_group()
+    g.add_argument("--selftest", action="store_true")
+    g.add_argument("--throughput", action="store_true")
+    g.add_argument("--verify", action="store_true")
+    g.add_argument("--field-audit", action="store_true")
     args = ap.parse_args()
     if args.selftest:
         selftest()
@@ -291,5 +364,7 @@ if __name__ == "__main__":
         throughput()
     elif args.verify:
         verify()
+    elif args.field_audit:
+        field_audit_mode()
     else:
         fixture_run()

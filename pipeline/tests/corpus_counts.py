@@ -82,21 +82,73 @@ RX_VXPAR = re.compile(r"v\.\s+[A-Z][A-Za-z'\-]*(?:\s+[A-Za-z'\-]+){0,4}\s*\(\d{1
 LITERALS = ["(2d)", "(3d)", "(N.S.)", "(Mass.)", "(Q. B.)",
             "H. of L.", "R. de J.", "C. de D.", "U, S. R.", "C.B., N.S."]
 
+# ---- v1.4 召回缺口测量模式（findings_local/remote 收编；口径=各断言） --------------
+YEAR_B = r"(?:1[6-9]|20)\d{2}"
+# 粘连序数：卷 + 点尾缩写 + 紧贴序数 + 页（571 F.2d 1277）。老式带空格（83 F. 2d 212）不属本模式
+_RX_ORD_GLUED = re.compile(
+    r"(?<![0-9A-Za-z])(?P<vol>\d{1,4})\s+"
+    r"(?P<abbr>[A-Z][A-Za-z]{0,6}\.\d{1,2}(?:st|nd|rd|th|d))\s+"
+    r"(?P<page>\d{1,5})(?![0-9A-Za-z])")
+# 空格序数：卷 + 缩写 + 空白序数 + 页（83 F. 2d 212 / 211 D.L.R. 4th 300）
+_RX_ORD_SPACED = re.compile(
+    r"(?<![0-9A-Za-z])(?P<vol>\d{1,4})\s+"
+    r"(?P<abbr>[A-Z][A-Za-z]*(?:\.[A-Za-z]*)*)\s+"
+    r"(?P<series>\d{1,2}(?:st|nd|rd|th|d))\s+"
+    r"(?P<page>\d{1,5})(?![0-9A-Za-z])")
+# 无卷号圆括号年份：(年) 缩写 页。尾部否定前瞻专防"有卷号被当无卷号"
+# （(1866) L.R. 1 Ch. App. 127 → abbr=L.R. page=1 的误解析）
+_RX_NOVOL = re.compile(
+    r"\(\s*" + YEAR_B + r"\s*\)\s+"
+    r"(?P<abbr>[A-Z][A-Za-z.]*(?:\s+[A-Z][A-Za-z.]*){0,2}?)\s+"
+    r"(?P<page>\d{1,5})(?![0-9A-Za-z])"
+    r"(?!\s+(?:[A-Z][A-Za-z.]*\s+){0,2}\d{1,5}(?![0-9A-Za-z]))")
+# 罗马页码子式：{2} 最小长度挡空串与章节标记 c.；前瞻+后视锁边界
+_ROMAN_SUB = r"(?=[ivxlcdm]{2})(?:c[md]|d?c{0,3})(?:xc|xl|l?x{0,3})(?:ix|iv|v?i{0,3})"
+RX_ROMAN_SUB = re.compile(_ROMAN_SUB)
+RX_ROMAN_PAGE = re.compile(
+    r"(?P<head>\[\s*" + YEAR_B + r"\s*\]\s+(?:\d{1,3}\s+)?[A-Z][A-Za-z.]*)\s+"
+    r"(?P<page_roman>" + _ROMAN_SUB + r")(?![a-z0-9])")
+# 字母斜杠页码：卷 缩写 D/数字（C.H.R.R. 体例）
+_RX_SLASH = re.compile(
+    r"(?<![0-9A-Za-z])(?P<vol>\d{1,4})\s+(?P<abbr>[A-Z][A-Za-z.]*)\s+"
+    r"(?P<page>[A-Z]{1,2}/\d{1,6})(?![0-9A-Za-z])")
+# 混合大小写中立引用：年 + 驼峰词 + 编号（CanLII / CarswellOnt）。全大写归 neutral_bare
+_RX_MIXED = re.compile(
+    r"(?<![0-9A-Za-z])(?P<year>\d{1,4})\s+"
+    r"(?P<token>[A-Z][a-z]+[A-Z][A-Za-z]*)\s+"
+    r"(?P<page>\d{1,6})(?![0-9A-Za-z])")
+# 方括号引证的 No. 体例：[年] (卷)? 缩写 No. 编号。缩写字符类不含空格，
+# 天然在 " No." 前停住——不会重蹈词组吞掉 No 的宽口径覆辙
+_RX_BRACKET_NO = re.compile(
+    r"\[\s*" + YEAR_B + r"\s*\]\s+(?:(?P<vol>\d{1,3})\s+)?"
+    r"(?P<token>[A-Z][A-Za-z.]*)\s+No\.\s+(?P<page>\d{1,6})(?![0-9A-Za-z])")
+
 PATTERNS = dict(
     [("scr_dots_any", RX_SCR_DOTS_ANY), ("scr_spaced", RX_SCR_SPACED),
-     ("neutral", RX_NEUTRAL), ("vxn", RX_VXN), ("vxparen", RX_VXPAR)]
+     ("neutral", RX_NEUTRAL), ("vxn", RX_VXN), ("vxparen", RX_VXPAR),
+     ("ord_glued", _RX_ORD_GLUED), ("ord_spaced", _RX_ORD_SPACED),
+     ("novol_paren_year", _RX_NOVOL), ("roman_page", RX_ROMAN_PAGE),
+     ("slash_page", _RX_SLASH), ("mixedcase_neutral", _RX_MIXED),
+     ("bracket_No", _RX_BRACKET_NO)]
     + SCR_FAMILY + REPORTERS
 )
-DOC_PATTERNS = {"neutral", "vxn", "vxparen"}  # doc 计；其余为 occ 计
+DOC_PATTERNS = {"neutral", "vxn", "vxparen", "ord_glued", "ord_spaced",
+                "novol_paren_year", "roman_page", "slash_page",
+                "mixedcase_neutral", "bracket_No"}  # doc 计；其余为 occ 计
 
 # 预过滤字面量（扫描加速，不改计数结果；键集与 PATTERNS 一致性在 run_assertions 校验）
+# ("",) 表示无可预过滤字面量——恒扫描（"" in text 恒真）
 _SCR_NEED = ("S.C.R", "SCR", "SC.R", "S.CR", "S. C. R")
 PREFILTER = {k: _SCR_NEED for k in
              ("scr_dots_any", "scr_spaced", "scr_dotted_full", "scr_dotless",
               "scr_bare", "scr_halfdot1", "scr_halfdot2")}
 PREFILTER.update({"or_strict": ("O.R.",), "ccc_strict": ("C.C.C.",),
                   "dlr_strict": ("D.L.R.",), "wwr_strict": ("W.W.R.",),
-                  "neutral": ("SCC",), "vxn": ("v.",), "vxparen": ("v.",)})
+                  "neutral": ("SCC",), "vxn": ("v.",), "vxparen": ("v.",),
+                  "ord_glued": ("",), "ord_spaced": ("",),
+                  "novol_paren_year": ("(",), "roman_page": ("[",),
+                  "slash_page": ("/",), "mixedcase_neutral": ("19", "20"),
+                  "bracket_No": ("No.",)})
 
 # ---- 模式断言（P0）：测量正则本身必须先被测过 --------------------------------------
 # (模式名, 样本, 期望命中数)。启动即断言，任一失败 exit 1，不进扫描。
@@ -130,6 +182,31 @@ PATTERN_ASSERTIONS = [
     ("vxn",             "Nowegijick v. The Queen, [1983] 1 S.C.R. 29", 0),
     ("vxparen",         "B-n v. B-n (1)", 1),
     ("vxparen",         "Breakey v. Carter (1881) 7 Q.L.R. 286", 0),  # 括号年份非页标记
+    # ---- v1.4 召回缺口测量模式（负样例是本表的重点：\bO\.R\.\b 就死在没有负样例上）
+    ("ord_glued",       "571 F.2d 1277 (1978)", 1),
+    ("ord_glued",       "936 P.2d 1011 (1997)", 1),
+    ("ord_glued",       "83 F. 2d 212", 0),        # 老式带空格：不属粘连模式
+    ("ord_glued",       "211 D.L.R. 4th 300 (2004)", 0),  # 点后无数字的空格系列
+    ("ord_spaced",      "83 F. 2d 212", 1),
+    ("ord_spaced",      "211 D.L.R. 4th 300 (2004)", 1),
+    ("ord_spaced",      "571 F.2d 1277 (1978)", 0),  # 粘连不属空格模式
+    ("novol_paren_year", "(1938) S.C.R. 423", 1),
+    ("novol_paren_year", "(1932) S.C.R. 529 at 536", 1),
+    ("novol_paren_year", "(1866) L.R. 1 Ch. App. 127", 0),  # 有卷号：防 B 的第三坑
+    ("novol_paren_year", "(1987), at p. 366", 0),  # 书目串
+    ("novol_paren_year", "(2019) The court held", 0),  # 后随非数字
+    ("roman_page",      "[1997] 2 S.C.R. xi", 1),
+    ("roman_page",      "[1982] 1 S.C.R. vii", 1),
+    ("roman_page",      "[1927] R.S.C., c. 29", 0),  # 章节标记 c 被 {2} 最小长度挡住
+    ("slash_page",      "6 C.H.R.R. D/2948", 1),
+    ("slash_page",      "6 C.H.R.R. 2948", 0),  # 无斜杠前缀不属本模式
+    ("mixedcase_neutral", "1998 CanLII 13001", 1),
+    ("mixedcase_neutral", "2010 CarswellOnt 5877", 1),
+    ("mixedcase_neutral", "2019 SCC 65", 0),  # 全大写归 neutral_bare
+    ("bracket_No",      "[2010] O.J. No. 3423", 1),
+    ("bracket_No",      "[1989] B.C.J. No. 1393", 1),
+    ("bracket_No",      "[1952] C.T.S. No. 14", 1),
+    ("bracket_No",      "[1990] 2 F.C. 609", 0),  # 无 No. 体例
 ]
 
 
@@ -137,6 +214,16 @@ def run_assertions():
     bad = []
     if set(PREFILTER) != set(PATTERNS):
         bad.append(("PREFILTER-keys", sorted(set(PREFILTER) ^ set(PATTERNS)), "same", "diff"))
+    # 罗马子式专项：空串不得匹配（v1.4 审计踩过的坑——三个全可选分组能配空串，
+    # 于是命中几乎所有方括号引证）；最小长度挡章节标记 c
+    if RX_ROMAN_SUB.match("") is not None:
+        bad.append(("roman_sub", "<empty string>", "no-match", "MATCH"))
+    if RX_ROMAN_SUB.fullmatch("vii") is None:
+        bad.append(("roman_sub", "vii", "fullmatch", None))
+    if RX_ROMAN_SUB.fullmatch("c") is not None:
+        bad.append(("roman_sub", "c", "no-match", "MATCH"))
+    if RX_ROMAN_SUB.fullmatch("via") is not None:
+        bad.append(("roman_sub", "via", "no-match", "MATCH"))
     for name, sample, want in PATTERN_ASSERTIONS:
         got = len(PATTERNS[name].findall(sample))
         if got != want:
@@ -204,8 +291,9 @@ def default_mode():
                                  + out["ONCA"]["regex_occ"]["scr_literal_recon"])
     for lit in LITERALS:
         both["lit:" + lit] = out["SCC"]["literal_counts"][lit] + out["ONCA"]["literal_counts"][lit]
-    for k in ("neutral", "vxn", "vxparen", "self_citation_head3000"):
-        both["docs:" + k] = out["SCC"]["regex_docs"][k] + out["ONCA"]["regex_docs"][k]
+    for k in list(DOC_PATTERNS) + ["self_citation_head3000"]:
+        both["docs:" + k] = (out["SCC"]["regex_docs"].get(k, 0)
+                             + out["ONCA"]["regex_docs"].get(k, 0))
     # S.C.R. 恒等式：逐语料与合计
     ident = {}
     ok_all = True

@@ -46,7 +46,10 @@ _SEP_TIGHT = r"\s+"                                   # 前缀→卷；卷→缩
 _ORD = r"\d+(?:st|nd|rd|th|d)"
 _SERP = rf"\(\s*{_ORD}\s*\)"
 _SERP_SLOT = rf"(?:{_SEP_COMMA}{_SERP})?"             # 序数括注插槽，可复用
-_SERIES_OPT = rf"(?:{_SEP_COMMA}(?P<series>{_ORD}))?" # 裸序数系列（D.L.R. 4th 300）
+# 裸序数系列（D.L.R. 4th 300）+ v1.4 粘连变体（F.2d：序数紧贴缩写句点，零空白）。
+# 粘连变体要求序数后缀（st/nd/rd/th/d），OCR 粘连页码（Q.B.D.43，无后缀）仍不收——
+# 与 PROBLEMS #12 的区分见规格 §7.2。series_glued 为独立捕获组，extract 时并入 series。
+_SERIES_OPT = rf"(?:{_SEP_COMMA}(?P<series>{_ORD})|(?P<series_glued>\d{{1,2}}(?:st|nd|rd|th|d)))?"
 _PAGE = r"(?P<page>\d+)(?P<page_suffix>n)?(?![A-Za-z0-9])"
 
 SHAPES = [
