@@ -44,6 +44,8 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPE = os.path.dirname(HERE)
 ROOT = os.path.dirname(PIPE)
+sys.path.insert(0, PIPE)
+from normalize import nk  # noqa: E402  (§6：共享纯函数集中定义，不各写一份)
 COLUMNS = ["citation_en", "document_date_en", "unofficial_text_en"]
 COURTS = ["SCC", "ONCA"]
 SNAPSHOT_SHA = {
@@ -232,10 +234,6 @@ def run_assertions():
         for name, sample, want, got in bad:
             print(f"ASSERTION FAILED: {name} on {sample!r}: want {want}, got {got}")
         sys.exit(1)
-
-
-def nk(s):
-    return re.sub(r"[^A-Za-z0-9]", "", s).lower()
 
 
 def iter_texts(court):

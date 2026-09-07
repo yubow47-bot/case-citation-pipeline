@@ -2,7 +2,6 @@
 # 见技术规格 6.1-6.3
 
 import re
-from typing import Any
 
 
 def nk(s: str) -> str:

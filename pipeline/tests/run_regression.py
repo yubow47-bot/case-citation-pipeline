@@ -19,6 +19,7 @@ import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPE = os.path.dirname(HERE)
+ROOT = os.path.dirname(PIPE)
 sys.path.insert(0, PIPE)
 
 import shapes as v2mod                    # noqa: E402  (现行 v2)
@@ -213,8 +214,9 @@ def fixture_run():
                 "missing_vs_truth": missing,
             }
         if kind in NEGATIVE_KINDS:
-            for ver in ("v1", "v2"):
-                entry[ver]["false_positives"] = entry[ver]["kept"]  # 真值为空：全部命中即误报
+            # 负对照真值为空：kept 即误报清单（§13.1 三列表的「额外误报」列），
+            # 不再向输出复制一份 false_positives 键
+            pass
         report["fixtures"][fid] = entry
 
     # 负对照（E/F）误报统计：夹具回归的回归哨兵，供 §13.1 负对照表使用。
@@ -236,7 +238,7 @@ def fixture_run():
 # ------------------------------------------------------------- throughput
 def throughput():
     import pyarrow.parquet as pq
-    path = os.path.join(os.path.dirname(PIPE), "corpus", "SCC.parquet")
+    path = os.path.join(ROOT, "corpus", "SCC.parquet")
     COLUMNS = ["citation_en", "document_date_en", "unofficial_text_en"]
     pf = pq.ParquetFile(path)
     acc = {"v1": {"t": 0.0, "n": 0, "hits": 0}, "v2": {"t": 0.0, "n": 0, "hits": 0}}
@@ -280,7 +282,7 @@ def verify():
     COLUMNS = ["citation_en", "document_date_en", "unofficial_text_en"]
     got = {}
     i = -1
-    for batch in pq.ParquetFile(os.path.join(os.path.dirname(PIPE), "corpus", "SCC.parquet")
+    for batch in pq.ParquetFile(os.path.join(ROOT, "corpus", "SCC.parquet")
                                 ).iter_batches(batch_size=500, columns=COLUMNS):
         d = batch.to_pydict()
         for cite, date, text in zip(d["citation_en"], d["document_date_en"], d["unofficial_text_en"]):
@@ -329,7 +331,7 @@ def field_audit_mode():
     for court in ("SCC", "ONCA"):
         i = -1
         for b in pq.ParquetFile(
-                os.path.join(os.path.dirname(PIPE), "corpus", court + ".parquet")
+                os.path.join(ROOT, "corpus", court + ".parquet")
         ).iter_batches(batch_size=500, columns=["unofficial_text_en"]):
             for t in b.to_pydict()["unofficial_text_en"]:
                 i += 1
