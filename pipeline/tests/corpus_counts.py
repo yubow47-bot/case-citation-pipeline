@@ -146,6 +146,32 @@ _RX_LEAD_YEAR = re.compile(
 _RX_SERIAL_ANY = re.compile(
     r"(?<![0-9A-Za-z])(?P<lead>" + _ABBR_M + r")\s+No\.\s+(?P<page>\d{1,6})(?![0-9A-Za-z])")
 # 保留一（拟新增而最终不新增的槽）：leading 位 + 序数括注/裸序数 + 页
+# ---- v1.5 缺口测量（由 audit/gap_audit.py 宽网差集发现，此处给形状级口径）----
+# 法语编号体例：[年] 缩写 no 编号（小写 no、无句点）。serial_marker 槽只认 No.
+_RX_FRENCH_NO = re.compile(
+    r"\[\s*" + YEAR_B + r"\s*\]\s+"
+    r"(?P<abbr>[A-Z][A-Za-z.]*(?:\s+[A-Z][A-Za-z.]*){0,2})\s+"
+    r"no\s+(?P<page>\d{1,6})(?![0-9A-Za-z])")
+# 撇号 reporter：缩写含撇号（Queen's L.J. / O'M. & H. / Lloyd's Rep.）
+# _ABBR 字符集不含撇号，整条失配
+_RX_APOS = re.compile(
+    r"(?<![0-9A-Za-z])(?P<vol>\d{1,4})\s+"
+    r"(?P<abbr>[A-Z][A-Za-z]*['’][A-Za-z]*\.?(?:\s+[A-Z&][A-Za-z.&]*){0,2})\s+"
+    r"(?P<page>\d{1,5})(?![0-9A-Za-z])")
+# 非序数括注：卷 + 缩写 + (大写短括注) + 页。括注为序数时归 _SERP，不计入本模式；
+# 排除 1960 (Can.), c. 43 类制定法（其括注前无缩写、括注后非页码）
+_RX_NONORD_PAREN = re.compile(
+    r"(?<![0-9A-Za-z])(?P<vol>\d{1,4})\s+"
+    r"(?P<abbr>[A-Z][A-Za-z.]*(?:\s+[A-Z][A-Za-z.]*){0,2})\s*"
+    r"\(\s*(?P<paren>[A-Z][A-Za-z. ]{0,8})\)\s+"
+    r"(?P<page>\d{1,5})(?![0-9A-Za-z])")
+# 单字符罗马页：v1.4 的 page_roman 要求 {2} 最小长度（挡 c. 章节标记），
+# 故 [1983] 2 S.C.R. v 类单字符仍零命中。尾部排除句点以剔 "v." (versus)
+_RX_ROMAN1 = re.compile(
+    r"\[\s*" + YEAR_B + r"\s*\]\s+(?:\d{1,3}\s+)?"
+    r"(?P<abbr>[A-Z][A-Za-z.]*(?:\s+[A-Z][A-Za-z.]*){0,2}\.)\s+"
+    r"(?P<page>[ivx])(?![A-Za-z0-9.])")
+
 _RX_LEAD_SERP = re.compile(
     r"(?<![0-9A-Za-z])(?P<lead>" + _ABBR_M + r")\s+"
     r"(?P<vol>\d{1,4})\s+(?P<abbr>" + _ABBR_M + r")\s*"
@@ -167,7 +193,9 @@ PATTERNS = dict(
      ("slash_page", _RX_SLASH), ("mixedcase_neutral", _RX_MIXED),
      ("bracket_No", _RX_BRACKET_NO), ("lead_year_gap", _RX_LEAD_YEAR),
      ("serial_any", _RX_SERIAL_ANY), ("lead_serp", _RX_LEAD_SERP),
-     ("lead_series", _RX_LEAD_SERIES), ("nom_series", _RX_NOM_SERIES)]
+     ("lead_series", _RX_LEAD_SERIES), ("nom_series", _RX_NOM_SERIES),
+     ("french_no", _RX_FRENCH_NO), ("apostrophe_reporter", _RX_APOS),
+     ("nonordinal_paren", _RX_NONORD_PAREN), ("roman_page_single", _RX_ROMAN1)]
     + SCR_FAMILY + REPORTERS
 )
 DOC_PATTERNS = {"neutral", "vxn", "vxparen", "ord_glued", "ord_spaced",
@@ -181,6 +209,8 @@ _SCR_NEED = ("S.C.R", "SCR", "SC.R", "S.CR", "S. C. R")
 PREFILTER = {k: _SCR_NEED for k in
              ("scr_dots_any", "scr_spaced", "scr_dotted_full", "scr_dotless",
               "scr_bare", "scr_halfdot1", "scr_halfdot2")}
+PREFILTER.update({"french_no": (" no ",), "apostrophe_reporter": ("'", "’"),
+                  "nonordinal_paren": ("(",), "roman_page_single": ("]",)})
 PREFILTER.update({"or_strict": ("O.R.",), "ccc_strict": ("C.C.C.",),
                   "dlr_strict": ("D.L.R.",), "wwr_strict": ("W.W.R.",),
                   "neutral": ("SCC",), "vxn": ("v.",), "vxparen": ("v.",),
@@ -268,6 +298,23 @@ PATTERN_ASSERTIONS = [
     ("nom_series",      "2 Q.B. (N.S.) 100 (1893)", 0),  # 无裸序数
     # 双连接段观测（E. and I. App. 体例）：(年) 前缀 卷 连接段 缩写 页
     ("lead_year_gap",   "(1874) L.R. 7 E. and I. App. 135", 0),  # 双连接段：_ABBR 单连接段限制，单独登记观测
+    # ---- v1.5 缺口测量（由 audit/gap_audit.py 宽网差集发现，此处给形状级口径）----
+    ("french_no",         "[2010] J.Q. no 9074", 1),
+    ("french_no",         "[2005] D.C.R.T.Q. no 225", 1),
+    ("french_no",         "[2010] O.J. No. 3423", 0),   # 大写 No. 已由 serial_marker 处置
+    ("french_no",         "[1978] A.C. 728", 0),
+    ("apostrophe_reporter", "45 Queen's L.J. 100", 1),
+    ("apostrophe_reporter", "1 O'M. & H. 12", 1),
+    ("apostrophe_reporter", "1 Lloyd's Rep. 555", 1),
+    ("apostrophe_reporter", "389 U.S. 347", 0),         # 无撇号
+    ("nonordinal_paren",  "4 Allen (Mass.) 447", 1),
+    ("nonordinal_paren",  "2 C.B.R. (N.S.) 121", 1),
+    ("nonordinal_paren",  "47 D.L.R. (2d) 400", 0),     # 序数括注归 _SERP
+    ("nonordinal_paren",  "1960 (Can.), c. 43", 0),     # 制定法：括注前无缩写、括注后非页码
+    ("roman_page_single", "[1983] 2 S.C.R. v", 1),
+    ("roman_page_single", "[1971] S.C.R. x", 1),
+    ("roman_page_single", "[1997] 2 S.C.R. xi", 0),     # 双字符已由 page_roman 覆盖
+    ("roman_page_single", "[1927] R.S.C., c. 11", 0),   # 章节标记
 ]
 
 
