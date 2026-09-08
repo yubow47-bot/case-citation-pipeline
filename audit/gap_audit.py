@@ -159,20 +159,23 @@ def load_covered(extracted_dir):
                      int(r["match_end_offset"]), r["shape_name"]))
     for k in cov:
         cov[k].sort()
-    return cov
+    # 回溯上界由数据自校准，不用魔法常数：区间最长跨度决定"往回看多远才安全"
+    maxspan = max((e - s) for lst in cov.values() for (s, e, _) in lst)
+    return cov, maxspan
 
 
-def overlaps(ivs, starts, s, e):
-    """[s,e) 是否与 ivs 中任一区间重叠。ivs 按起点排序，starts 为其起点列表。"""
+def overlaps(ivs, starts, s, e, maxspan):
+    """[s,e) 是否与 ivs 中任一区间重叠。ivs 按起点排序，starts 为其起点列表。
+    回溯终止条件用 maxspan（数据实测的最长区间跨度）：起点早于 s-maxspan 的
+    区间必然终止于 s 之前，不可能重叠。v1.5 自检订正——原版写死 200/300 的
+    常数，而实测最长跨度 380，会提前终止回溯、漏判重叠。"""
     j = bisect_left(starts, e) - 1
-    guard = 0
-    while j >= 0 and guard < 400:
+    while j >= 0:
         if ivs[j][0] < e and s < ivs[j][1]:
             return True
-        if ivs[j][1] <= s - 200:
+        if ivs[j][0] <= s - maxspan:
             break
         j -= 1
-        guard += 1
     return False
 
 
@@ -187,8 +190,9 @@ def main():
     if args.assert_only:
         return
 
-    cov = load_covered(os.path.join(ROOT, "extracted"))
-    print("已载入 %d 份判决的命中区间" % len(cov), file=sys.stderr)
+    cov, maxspan = load_covered(os.path.join(ROOT, "extracted"))
+    print("已载入 %d 份判决的命中区间（最长跨度 %d）" % (len(cov), maxspan),
+          file=sys.stderr)
 
     clusters = defaultdict(lambda: {"n": 0, "ex": []})
     per_wide = defaultdict(int)
@@ -214,7 +218,7 @@ def main():
                     for m in rx.finditer(text):
                         per_wide[wname] += 1
                         wide_iv.append((m.start(), m.end()))
-                        if overlaps(ivs, starts, m.start(), m.end()):
+                        if overlaps(ivs, starts, m.start(), m.end(), maxspan):
                             continue
                         per_wide_resid[wname] += 1
                         c = clusters[(wname, norm_form(m.group(0)))]
@@ -229,7 +233,7 @@ def main():
                 for s, e, shp in ivs:
                     shape_hits += 1
                     by_shape_total[shp] += 1
-                    if overlaps(wide_iv, wstarts, s, e):
+                    if overlaps(wide_iv, wstarts, s, e, maxspan):
                         shape_cov += 1
                         by_shape_cov[shp] += 1
                     elif len(uncov_ex[shp]) < 4:

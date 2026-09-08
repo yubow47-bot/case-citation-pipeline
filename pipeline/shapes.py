@@ -69,8 +69,11 @@ _SERIES_OPT = rf"(?:{_SEP_COMMA}(?P<series>{_ORD})|(?P<series_glued>\d{{1,2}}(?:
 #   [2010] J.Q. no 9074）。这是 _ABBR 字面量例外的**第二个成员**，按 §7.2（六）
 #   的闸门：自带槽（serial_marker，已存在）+ 自带 #16 测量（三门全过）+
 #   信息重定位证明（no 从 token 移入 serial_marker，零丢弃）——三条齐备。
-#   尾部 (?![A-Za-z]) 防 north/nothing 类词首误配。
-_SERIAL_SLOT = r"(?:\s+(?P<serial_marker>No\.|no(?![A-Za-z])))?"
+#   **不加 (?![A-Za-z]) 尾部守卫**：全语料实测该守卫零作用（north/nothing 类
+#   已由其后的 _SEP_COMMA + _PAGE 结构性拒绝——"no" 后必须是空白加数字）。
+#   加了就是"看着在防什么、实际从不执行"的代码，同 §7.3 对 year_raw.split("-")
+#   的告诫；v1.5 自检时按同一标准删除（原带守卫版与本版全语料命中集合逐位相同）。
+_SERIAL_SLOT = r"(?:\s+(?P<serial_marker>No\.|no))?"
 # 页码：数字（可选字母斜杠前缀 D/、脚注后缀 n）或罗马页码（xi/vii，leave to appeal
 # 序册页）。罗马子式 {2} 最小长度挡空串与章节标记 c.；交替整体包在 (?:) 内，
 # 防止嵌入 _SEP_COMMA+ _PAGE 时 | 在错误层级分裂。
