@@ -46,6 +46,7 @@
 | 文件 | 作用 |
 |---|---|
 | `gap_audit.py` | 抽取层缺口审计：宽骨架命中 减去 七形状命中 = 残差，按形态聚类 |
+| `table_coverage.py` | 决策表覆盖率审计：精确命中 / **仅归一命中** / 漏网三档分报，漏网按「厂商 / 噪声 / **疑似真法院码**」分类 |
 
 ### `gap_audit.py` 用法
 
@@ -66,3 +67,21 @@ python audit/gap_audit.py --out data/gap_audit.json
 
 但这个机制**不能长在生产线上**：宽网的每一条误报，在决策表填满后都会变成一条
 "看起来已验证"的错数据。所以它长在这里——喂形状设计，不喂产出表。
+
+### `table_coverage.py` 用法
+
+```
+python audit/table_coverage.py --assert-only          # 只跑断言（12 条形态分类 + 同口径断言）
+python audit/table_coverage.py
+python audit/table_coverage.py --json data/table_coverage.json
+```
+
+**两档设计是刻意的，不是冗余。**
+
+「仅归一命中」独立成档，测的是规格 §8.2 拿 `normalize_code` 作查表键这个设计的**净效应**——
+收益与实害各是多少行，混进「精确命中」就永远看不见（PROBLEMS #33 即由此档测出）。
+
+漏网里的「**疑似真法院码**」独立成档，测的是**静默假阴性**。首轮建表时我把漏网整体断言为
+「全是厂商码和噪声、落 UNSUPPORTED 是正确行为」并写进了规格与提交信息，实际里面有上百行真代码
+（PROBLEMS #34）。这一档存在的意义就是让那句话在机制上说不出口——数字自己会顶出来。
+「疑似」是实指：清单里混着 reporter 缩写去点后的同形串，是提案不是判定，入表前须人核。

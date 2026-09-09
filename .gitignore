@@ -2,3 +2,6 @@ corpus/
 data/
 *.parquet
 __pycache__/ 
+# 建表工具的 API 抓取缓存（机器产物；每行 source_locator 自带可重放端点，缓存无需入库）
+decisions/tools/cache/
+decisions/tools/*.json
