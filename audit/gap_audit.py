@@ -49,7 +49,7 @@ r"""gap_audit.py — 抽取层缺口审计（审计环工具）
 
 用法
     python audit/gap_audit.py                  # 全量，JSON 到 stdout
-    python audit/gap_audit.py --out data/gap_audit.json
+    python audit/gap_audit.py --out data/audit/gap_audit.json
     python audit/gap_audit.py --assert-only    # 只跑断言，不扫语料
 """
 import argparse
@@ -190,7 +190,7 @@ def main():
     if args.assert_only:
         return
 
-    cov, maxspan = load_covered(os.path.join(ROOT, "extracted"))
+    cov, maxspan = load_covered(os.path.join(ROOT, "data", "extract_out"))
     print("已载入 %d 份判决的命中区间（最长跨度 %d）" % (len(cov), maxspan),
           file=sys.stderr)
 

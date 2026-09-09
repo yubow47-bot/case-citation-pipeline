@@ -11,7 +11,7 @@
     python pipeline/extract.py --fixture-check     # 验收门：夹具 exact 档对照 §13.1
     python pipeline/extract.py --limit-batches 1   # 烟雾测试（显式参数，入 manifest）
 
-输出结构（--out，默认 <root>/extracted/）
+输出结构（--out，默认 <root>/data/extract_out/，规格 §4 的机器产物根）
     <out>/SCC/batch_NNNN.csv        每批 500 份判决的全部行（§7.7）
     <out>/SCC/progress.json         只记 last_batch（§7.7）
     <out>/ONCA/...
@@ -341,7 +341,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--corpus", action="append", choices=COURTS,
                     default=None, help="默认两语料都跑")
-    ap.add_argument("--out", default=os.path.join(ROOT, "extracted"))
+    ap.add_argument("--out",
+                    default=os.path.join(ROOT, "data", "extract_out"))
     ap.add_argument("--batch-size", type=int, default=500)
     ap.add_argument("--year-from", type=int, default=None,
                     help="显式判决年份下限（§7.6：默认不设）")
