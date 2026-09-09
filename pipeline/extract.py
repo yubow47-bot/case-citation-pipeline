@@ -215,7 +215,10 @@ def merge(out_root, courts=COURTS):
     """全部批次 → extracted.csv（kept）+ extracted_superseded.csv（败者）。
     流式逐批读写；按 superseded_by 列拆分。返回计数（供 manifest）。"""
     counts = {"kept_rows": 0, "superseded_rows": 0,
-              "per_shape_kept": {}, "batches_merged": 0}
+              "per_shape_kept": {}, "batches_merged": 0,
+              # 按语料的权威计数：merge 逐个批次文件读过一遍，与本次是否续跑
+              # 无关。run 段只记本次处理量（续跑时为 0），故行数以本段为准。
+              "by_court": {}}
     kept_path = os.path.join(out_root, "extracted.csv")
     sup_path = os.path.join(out_root, "extracted_superseded.csv")
     tmp_k, tmp_s = kept_path + ".tmp", sup_path + ".tmp"
@@ -231,6 +234,10 @@ def merge(out_root, courts=COURTS):
                 continue
             names = sorted(n for n in os.listdir(run_dir)
                            if re.fullmatch(r"batch_\d{4}\.csv", n))
+            bc = counts["by_court"].setdefault(
+                court, {"raw_rows": 0, "kept_rows": 0, "superseded_rows": 0,
+                        "batches": 0})
+            bc["batches"] = len(names)
             for n in names:
                 counts["batches_merged"] += 1
                 with open(os.path.join(run_dir, n), encoding="utf-8",
@@ -242,6 +249,8 @@ def merge(out_root, courts=COURTS):
                         if row[col["superseded_by"]]:
                             ws.writerow(row)
                             counts["superseded_rows"] += 1
+                            bc["superseded_rows"] += 1
+                            bc["raw_rows"] += 1
                         else:
                             wk.writerow(row[:col["superseded_by"]] +
                                         row[col["superseded_by"] + 1:])
@@ -249,6 +258,8 @@ def merge(out_root, courts=COURTS):
                                 counts["per_shape_kept"].get(
                                     row[col["shape_name"]], 0) + 1
                             counts["kept_rows"] += 1
+                            bc["kept_rows"] += 1
+                            bc["raw_rows"] += 1
     os.replace(tmp_k, kept_path)
     os.replace(tmp_s, sup_path)
     return counts
@@ -282,7 +293,9 @@ def write_manifest(out_root, run_stats, merge_counts, args):
                    "courts": args.corpus},
         "corpus": {c: {"sha256": sha256_file(
             os.path.join(ROOT, "corpus", c + ".parquet"))} for c in args.corpus},
-        "run": run_stats,
+        # run = **本次运行**处理的量；续跑时已完成批次被跳过，此段为 0
+        # 属正常。权威行数见 merge.by_court（merge 逐批读过全部文件）。
+        "run_this_invocation": run_stats,
         "merge": merge_counts,
         "note": ("计数口径：kept 行只存在于 extracted.csv（§7.4）；"
                  "raw_rows = kept + superseded。occurrence/decisions 统计"
