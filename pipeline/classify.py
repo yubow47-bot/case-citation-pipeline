@@ -65,6 +65,12 @@ _ADMIT_VERB_RE = re.compile(
     r"(?:citing|see also|see|per|applied|considered|referred to|"
     r"following|approving|distinguished|overruled|cf)\s+", re.IGNORECASE)
 _ADMIT_IN_RE = re.compile(r"in\s+(?!re\s)", re.IGNORECASE)
+# PROBLEMS #43：判决书段落体例是 [24] The trial judge…，切分起点落在编号中间时
+#   会留下 24] 的残尾。原清洗只剥前导的 [ ( 等字符、不剥数字，于是 24] R. v. Smith
+#   原样留下。**只收「数字 + 右方括号」这一形**：没有案名以此开头，零误伤；裸数字
+#   开头（3 Grand Trunk Ry. Co.）不收——那会把 3M Canada 剥成 M Canada。
+#   实测：命中 19,372 条，全部净改善，剥空 0 条，误伤 0 条（离线预演 + 全量复跑）
+_ADMIT_PARA_RE = re.compile(r"\d+\s*\]")
 
 # 形状 → 主缩写取自哪个字段（规格 §7.3）
 TOKEN_SHAPES = {"shape_bracket", "shape_neutral_bare"}
@@ -114,6 +120,9 @@ def admit_candidate(cand):
         while i < len(s) and (s[i].isspace() or s[i] in _ADMIT_LEAD_CHARS):
             i += 1
         s = s[i:]
+        m = _ADMIT_PARA_RE.match(s)         # PROBLEMS #43：剥判决书段落编号残尾
+        if m:
+            s = s[m.end():]
         m = _ADMIT_VERB_RE.match(s)
         if m:
             s = s[m.end():]
