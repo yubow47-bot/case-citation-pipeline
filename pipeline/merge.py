@@ -132,16 +132,25 @@ def main():
         # §9.3 案名众数投票：行级误报与切不出案名的行都排除
         valid = [m for m in counted if not m[4] and m[5]]
         if valid:
-            name_cnt = Counter(m[5] for m in valid)
-            recent = {}
+            # 两级投票（本实现对 §9.3 的补充，见文件头「规格未定义」一节）：
+            # 先按 nk() 折叠拼写变体，再在胜出组内取最常见的印刷形输出。
+            # 规格原式直接对 raw 串投票，等于让标点空格差异参与计票——
+            # R. v. W.(D.) / R. v. W. (D.) / R. v. W.(D) / R v. W.(D.) 是同一个
+            # 案名，却被拆成四票。而 nk() 正是项目为此备的工具（§6.1：A.C. 与
+            # AC 与 A. C. 全部归一为 ac）。折叠后 agreement 才是「大家是否叫得
+            # 一致」，否则它量的是印刷噪声，与 §9.3 自述的「质量校验」用途相悖。
+            by_nk = defaultdict(list)
             for m in valid:
-                y = int(m[2]) if (m[2] or "").isdigit() else 0
-                recent[m[5]] = max(recent.get(m[5], 0), y)
+                by_nk[nk(m[5])].append(m)
+            recent = {k: max((int(m[2]) if (m[2] or "").isdigit() else 0)
+                             for m in v) for k, v in by_nk.items()}
             # 排序键（出现次数，最近出现年份）：票数相同时取更近期的写法
-            name_modal = max(sorted(name_cnt.items()),
-                             key=lambda kv: (kv[1], recent[kv[0]]))[0]
-            agreement = round(name_cnt[name_modal] / len(valid), 2)
-            variants = len(name_cnt)
+            top_nk = max(sorted(by_nk), key=lambda k: (len(by_nk[k]), recent[k]))
+            forms = Counter(m[5] for m in by_nk[top_nk])
+            best = max(forms.values())
+            name_modal = sorted(f for f, c in forms.items() if c == best)[0]
+            agreement = round(len(by_nk[top_nk]) / len(valid), 2)
+            variants = len(by_nk)          # 折叠后的真实变体数，非印刷形种数
         else:
             name_modal, agreement, variants = "", 0.0, 0
 
