@@ -13,11 +13,12 @@
     <output>/folded_log.csv  折叠日志：每个归并键吞并了哪些原始写法（§9.5）
     <output>/manifest.json   参数与各项计数（约束九：数字须可重放）
 
-三条不变量（写表前断言，不过就拒绝写）
+四条不变量（写表前断言，不过就拒绝写）
     1. 每个键的 folded_log 计数之和 == 该键的 occurrence_count
     2. distinct_decisions_count 是**并集基数**，既不是各变体取最大值（旧管线的
        bug），也不是相加（重复计数）
     3. 行数守恒：merged 各键的成员数之和 == 输入行数（约束五：不删行）
+    4. 每个键的 decision_ids.csv 行数 == 该键的 distinct_decisions_count
 
 三处规格未定义、由实现补的决定（均须人复核）
 
@@ -219,7 +220,7 @@ def main():
     stats["merge_keys"] = len(merged)
     stats["folded_rows"] = len(folded)
 
-    # ---- 三条不变量，不过就拒绝写表 ----
+    # ---- 四条不变量，不过就拒绝写表 ----
     by_key_occ = {m["merge_key"]: m["occurrence_count"] for m in merged}
     fsum = Counter()
     for r in folded:
