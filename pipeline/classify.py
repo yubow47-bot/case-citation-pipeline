@@ -224,8 +224,24 @@ class Classifier(object):
         """§8.2 两表并查：都命中即 table_conflict 交人裁，不设优先级。"""
         has_vol = bool((row.get("vol") or "").strip())
         court_hit, court_mode = self._court_lookup(printed_token, has_vol)
-        reporter_hits = (lookup_all(printed_token, self.rep_exact) or
-                         lookup_all(nk(printed_token), self.rep_norm))
+
+        reporter_hits = lookup_all(printed_token, self.rep_exact)
+        rep_mode = "exact" if reporter_hits else ""
+        if not reporter_hits:
+            reporter_hits = lookup_all(nk(printed_token), self.rep_norm)
+            rep_mode = "normalized" if reporter_hits else ""
+
+        # 两表都命中，但**匹配成色不同档**时，精确的一方胜出——印刷串精确等于
+        # 哪张表的键，就归哪张。这不是给冲突开优先级（§8.2 禁的是那个），而是
+        # 认定「同档才算冲突」：FC 精确等于中立码、只在去标点后才碰到 reporter
+        # 的 F.C.，两者不是同一个印刷事实。与 #33 的裁决同源（精确 > 模糊），
+        # 方向相反：那次挡的是归一查法院表造假命中，这次挡的是归一查汇编表造假冲突。
+        if court_hit and reporter_hits and court_mode != rep_mode:
+            if court_mode == "exact":
+                reporter_hits = []          # 中立码胜出，按下方 neutral 分支定案
+            else:
+                court_hit = None            # 汇编胜出，落 Step 3 查法域
+            self.stats["conflict_resolved_by_match_grade"] += 1
 
         if court_hit and not reporter_hits:
             if court_mode == "normalized":

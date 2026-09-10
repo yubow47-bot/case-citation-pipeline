@@ -1,1 +1,167 @@
 abbreviation,normalized_key,jurisdiction,vol_range_start,vol_range_end,year_range_start,year_range_end,confidence,verification_level,source,source_locator,added_date,notes
+S.C.R.,scr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 scr：152326 行 / 19723 份判决印此缩写（约束七的键锚）,2026-09-09,Canada Supreme Court Reports
+C.C.C.,ccc,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ccc：30368 行 / 6466 份判决印此缩写（约束七的键锚）,2026-09-09,Canadian Criminal Cases
+O.R.,or,ON,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 or：29586 行 / 10146 份判决印此缩写（约束七的键锚）,2026-09-09,Ontario Reports
+D.L.R.,dlr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 dlr：18466 行 / 6790 份判决印此缩写（约束七的键锚）,2026-09-09,Dominion Law Reports（全国性）
+A.C.,ac,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ac：15461 行 / 3580 份判决印此缩写（约束七的键锚）,2026-09-09,Appeal Cases（英国 Law Reports，1891- ）。枢密院案件亦印于此，案件真实来源地属 case_origin.csv 辖区，与本列不必相等
+Can. S.C.R.,canscr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 canscr：7039 行 / 1888 份判决印此缩写（约束七的键锚）,2026-09-09,Canada Supreme Court Reports 的另一印刷形（归一族 canscr）
+O.J.,oj,ON,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 oj：6628 行 / 3482 份判决印此缩写（约束七的键锚）,2026-09-09,Ontario Judgments（电子汇编）
+W.W.R.,wwr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 wwr：6111 行 / 2379 份判决印此缩写（约束七的键锚）,2026-09-09,Western Weekly Reports —— **区域性，横跨 AB/BC/SK/MB**；本列单值装不下，取国别粒度。已知口径缺陷，须复核
+O.A.C.,oac,ON,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 oac：5638 行 / 3459 份判决印此缩写（约束七的键锚）,2026-09-09,Ontario Appeal Cases
+S.C.C.A.,scca,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 scca：4688 行 / 2448 份判决印此缩写（约束七的键锚）,2026-09-09,Supreme Court of Canada Applications（上诉许可申请）
+C.R.,cr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cr：3977 行 / 1689 份判决印此缩写（约束七的键锚）,2026-09-09,Criminal Reports
+All E.R.,aller,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 aller：3626 行 / 1326 份判决印此缩写（约束七的键锚）,2026-09-09,All England Law Reports
+App. Cas.,appcas,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 appcas：3248 行 / 1236 份判决印此缩写（约束七的键锚）,2026-09-09,Appeal Cases（英国 Law Reports 1875-1890，A.C. 前身）
+U.S.,us,US,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 us：3152 行 / 719 份判决印此缩写（约束七的键锚）,2026-09-09,United States Reports
+K.B.,kb,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 kb：3068 行 / 1179 份判决印此缩写（约束七的键锚）,2026-09-09,King's Bench（英国 Law Reports）。**与魁北克 Cour du banc du roi 同形**，并列两行交 §8.6 判，不替它猜
+K.B.,kb,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 kb：3068 行 / 1179 份判决印此缩写（约束七的键锚）,2026-09-09,Cour du banc du roi（魁北克）。与英国 K.B. 同形，见上一行
+B.C.L.R.,bclr,BC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 bclr：2746 行 / 970 份判决印此缩写（约束七的键锚）,2026-09-09,British Columbia Law Reports
+Q.B.,qb,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 qb：2556 行 / 1251 份判决印此缩写（约束七的键锚）,2026-09-09,Queen's Bench（英国 Law Reports）。**与魁北克 Cour du banc de la reine 及曼/萨王座法庭同形**，并列两行
+Q.B.,qb,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 qb：2556 行 / 1251 份判决印此缩写（约束七的键锚）,2026-09-09,Cour du banc de la reine（魁北克）。见上一行
+F.C.,fc,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 fc：2490 行 / 645 份判决印此缩写（约束七的键锚）,2026-09-09,Federal Court Reports。**本行入表会激活 §8.2 两表并查**：[1979] 1 F.C. 103 将同时命中中立码 FC 与本行，判 table_conflict 交人裁，正是 PROBLEMS #36 残留的既定解法
+R.F.L.,rfl,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 rfl：2255 行 / 574 份判决印此缩写（约束七的键锚）,2026-09-09,Reports of Family Law
+R.J.Q.,rjq,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 rjq：2240 行 / 478 份判决印此缩写（约束七的键锚）,2026-09-09,Recueils de jurisprudence du Québec
+A.R.,ar,AB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ar：2234 行 / 928 份判决印此缩写（约束七的键锚）,2026-09-09,Alberta Reports
+Ch. D.,chd,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 chd：2004 行 / 832 份判决印此缩写（约束七的键锚）,2026-09-09,Chancery Division（英国 Law Reports 1875-1890）
+E.R.,er,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 er：1945 行 / 736 份判决印此缩写（约束七的键锚）,2026-09-09,English Reports（旧 nominate reports 重印集）
+Ch.,ch,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ch：1876 行 / 751 份判决印此缩写（约束七的键锚）,2026-09-09,Chancery（英国 Law Reports 1891- ）
+Alta. L.R.,altalr,AB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 altalr：1857 行 / 759 份判决印此缩写（约束七的键锚）,2026-09-09,Alberta Law Reports
+C.B.R.,cbr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cbr：1833 行 / 502 份判决印此缩写（约束七的键锚）,2026-09-09,Canadian Bankruptcy Reports
+Ex. C.R.,excr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 excr：1767 行 / 744 份判决印此缩写（约束七的键锚）,2026-09-09,Exchequer Court Reports（1971 年由联邦法院取代）
+Q.B.D.,qbd,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 qbd：1639 行 / 798 份判决印此缩写（约束七的键锚）,2026-09-09,Queen's Bench Division（英国 Law Reports 1875-1890）。与裸 Q.B. 不同，本形只指英国系列，故单行
+C.R.R.,crr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 crr：1591 行 / 804 份判决印此缩写（约束七的键锚）,2026-09-09,Canadian Rights Reporter
+Man. R.,manr,MB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 manr：1456 行 / 680 份判决印此缩写（约束七的键锚）,2026-09-09,Manitoba Reports
+N.S.R.,nsr,NS,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nsr：1436 行 / 643 份判决印此缩写（约束七的键锚）,2026-09-09,Nova Scotia Reports
+F.,f,US,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 f：1434 行 / 361 份判决印此缩写（约束七的键锚）,2026-09-09,Federal Reporter（F./F.2d/F.3d，序数在 series 槽）
+B.C.A.C.,bcac,BC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 bcac：1427 行 / 703 份判决印此缩写（约束七的键锚）,2026-09-09,British Columbia Appeal Cases
+C.P.C.,cpc,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cpc：1366 行 / 785 份判决印此缩写（约束七的键锚）,2026-09-09,Carswell's Practice Cases
+Ont. L.R.,ontlr,ON,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ontlr：1326 行 / 465 份判决印此缩写（约束七的键锚）,2026-09-09,Ontario Law Reports
+B.C.J.,bcj,BC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 bcj：1283 行 / 646 份判决印此缩写（约束七的键锚）,2026-09-09,British Columbia Judgments（电子汇编）
+D.T.C.,dtc,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 dtc：1246 行 / 282 份判决印此缩写（约束七的键锚）,2026-09-09,Dominion Tax Cases
+O.L.R.,olr,ON,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 olr：1114 行 / 537 份判决印此缩写（约束七的键锚）,2026-09-09,Ontario Law Reports 的另一印刷形（归一族 olr）
+N.B.R.,nbr,NB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nbr：1074 行 / 459 份判决印此缩写（约束七的键锚）,2026-09-09,New Brunswick Reports
+C.A.,ca,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ca：1039 行 / 362 份判决印此缩写（约束七的键锚）,2026-09-09,Cour d'appel（魁北克上诉法院判例集，R.J.Q. 前身）。**存疑**：亦可能是英文 Court of Appeal 的标注词，须复核
+Sask. R.,saskr,SK,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 saskr：1005 行 / 389 份判决印此缩写（约束七的键锚）,2026-09-09,Saskatchewan Reports
+N.R.,nr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nr：993 行 / 503 份判决印此缩写（约束七的键锚）,2026-09-09,National Reporter
+C.P.R.,cpr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cpr：970 行 / 230 份判决印此缩写（约束七的键锚）,2026-09-09,Canadian Patent Reporter
+C.T.C.,ctc,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ctc：927 行 / 283 份判决印此缩写（约束七的键锚）,2026-09-09,Canada Tax Cases
+Ont. App. R.,ontappr,ON,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ontappr：891 行 / 479 份判决印此缩写（约束七的键锚）,2026-09-09,Ontario Appeal Reports
+Que. Q.B.,queqb,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 queqb：889 行 / 351 份判决印此缩写（约束七的键锚）,2026-09-09,Quebec Queen's Bench
+C.L.R.,clr,AU,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 clr：878 行 / 402 份判决印此缩写（约束七的键锚）,2026-09-09,Commonwealth Law Reports（澳大利亚）。**与加拿大 Construction Law Reports 同形**，并列两行交 §8.6 判
+C.L.R.,clr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 clr：878 行 / 402 份判决印此缩写（约束七的键锚）,2026-09-09,Construction Law Reports（加拿大）。见上一行
+Nfld. & P.E.I.R.,nfldpeir,NL,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nfldpeir：871 行 / 401 份判决印此缩写（约束七的键锚）,2026-09-09,Newfoundland & Prince Edward Island Reports —— **横跨两省**，并列两行交 §8.6 判
+Nfld. & P.E.I.R.,nfldpeir,PE,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nfldpeir：871 行 / 401 份判决印此缩写（约束七的键锚）,2026-09-09,同上一行，横跨 NL 与 PE
+B.L.R.,blr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 blr：866 行 / 435 份判决印此缩写（约束七的键锚）,2026-09-09,Business Law Reports
+W.L.R.,wlr,GB,,,1953,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 wlr：857 行 / 429 份判决印此缩写（约束七的键锚）,2026-09-09,Weekly Law Reports（英国，1953 起）。**与加拿大 Western Law Reporter 同形**，此处用年份区间消歧（§8.6），区间本身亦为推断
+W.L.R.,wlr,CA,,,1905,1916,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 wlr：857 行 / 429 份判决印此缩写（约束七的键锚）,2026-09-09,Western Law Reporter（加拿大，1905-1916）。见上一行
+Q.J.,qj,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 qj：807 行 / 313 份判决印此缩写（约束七的键锚）,2026-09-09,Quebec Judgments（电子汇编）
+U.C.Q.B.,ucqb,ON,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ucqb：802 行 / 342 份判决印此缩写（约束七的键锚）,2026-09-09,Upper Canada Queen's Bench（上加拿大，今安大略）
+F.C.R.,fcr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 fcr：779 行 / 214 份判决印此缩写（约束七的键锚）,2026-09-09,Federal Courts Reports（2003 年起的名称）
+O.W.N.,own,ON,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 own：744 行 / 358 份判决印此缩写（约束七的键锚）,2026-09-09,Ontario Weekly Notes
+Cr. App. R.,crappr,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 crappr：729 行 / 282 份判决印此缩写（约束七的键锚）,2026-09-09,Criminal Appeal Reports（英国）
+W.A.C.,wac,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 wac：719 行 / 624 份判决印此缩写（约束七的键锚）,2026-09-09,Western Appeal Cases
+M.V.R.,mvr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 mvr：710 行 / 333 份判决印此缩写（约束七的键锚）,2026-09-09,Motor Vehicle Reports
+C.C.L.I.,ccli,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ccli：691 行 / 336 份判决印此缩写（约束七的键锚）,2026-09-09,Canadian Cases on the Law of Insurance
+P.,p,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 p：679 行 / 271 份判决印此缩写（约束七的键锚）,2026-09-09,Probate（英国 Law Reports）。**与美国 Pacific Reporter 同形**，并列两行交 §8.6 判
+P.,p,US,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 p：679 行 / 271 份判决印此缩写（约束七的键锚）,2026-09-09,Pacific Reporter（美国）。见上一行
+C.C.E.L.,ccel,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ccel：679 行 / 247 份判决印此缩写（约束七的键锚）,2026-09-09,Canadian Cases on Employment Law
+C.S.,cs,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cs：653 行 / 194 份判决印此缩写（约束七的键锚）,2026-09-09,Cour supérieure（魁北克高等法院）
+R.P.R.,rpr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 rpr：613 行 / 341 份判决印此缩写（约束七的键锚）,2026-09-09,Real Property Reports
+F.T.R.,ftr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ftr：611 行 / 231 份判决印此缩写（约束七的键锚）,2026-09-09,Federal Trial Reports
+L.T.,lt,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 lt：577 行 / 356 份判决印此缩写（约束七的键锚）,2026-09-09,Law Times Reports（英国）
+M.P.L.R.,mplr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 mplr：561 行 / 248 份判决印此缩写（约束七的键锚）,2026-09-09,Municipal and Planning Law Reports
+A.J.,aj,AB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 aj：543 行 / 341 份判决印此缩写（约束七的键锚）,2026-09-09,Alberta Judgments（电子汇编）
+C.C.L.T.,cclt,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cclt：534 行 / 287 份判决印此缩写（约束七的键锚）,2026-09-09,Canadian Cases on the Law of Torts
+M. & W.,mw,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 mw：527 行 / 326 份判决印此缩写（约束七的键锚）,2026-09-09,Meeson & Welsby（英国 nominate reports）
+R.P.C.,rpc,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 rpc：525 行 / 106 份判决印此缩写（约束七的键锚）,2026-09-09,Reports of Patent Cases（英国）
+L. C. Jur.,lcjur,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 lcjur：505 行 / 221 份判决印此缩写（约束七的键锚）,2026-09-09,Lower Canada Jurist
+A.P.R.,apr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 apr：490 行 / 283 份判决印此缩写（约束七的键锚）,2026-09-09,Atlantic Provinces Reports —— **区域性，横跨 NB/NS/NL/PE**；取国别粒度，同 W.W.R.
+C.R.N.S.,crns,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 crns：486 行 / 208 份判决印此缩写（约束七的键锚）,2026-09-09,Criminal Reports New Series
+U.C.C.P.,uccp,ON,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 uccp：480 行 / 229 份判决印此缩写（约束七的键锚）,2026-09-09,Upper Canada Common Pleas
+B.C. Rep.,bcrep,BC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 bcrep：473 行 / 198 份判决印此缩写（约束七的键锚）,2026-09-09,British Columbia Reports
+Ch. App.,chapp,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 chapp：459 行 / 239 份判决印此缩写（约束七的键锚）,2026-09-09,Chancery Appeals（英国 Law Reports 1865-1875）
+F.C.J.,fcj,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 fcj：457 行 / 253 份判决印此缩写（约束七的键锚）,2026-09-09,Federal Court Judgments（电子汇编）
+C.N.L.R.,cnlr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cnlr：436 行 / 123 份判决印此缩写（约束七的键锚）,2026-09-09,Canadian Native Law Reporter
+E.T.R.,etr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 etr：429 行 / 193 份判决印此缩写（约束七的键锚）,2026-09-09,Estates and Trusts Reports
+J.Q.,jq,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 jq：425 行 / 205 份判决印此缩写（约束七的键锚）,2026-09-09,Jugements du Québec（电子汇编）
+Admin. L.R.,adminlr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 adminlr：424 行 / 218 份判决印此缩写（约束七的键锚）,2026-09-09,Administrative Law Reports
+Beav.,beav,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 beav：397 行 / 219 份判决印此缩写（约束七的键锚）,2026-09-09,Beavan（英国 nominate reports）
+C.H.R.R.,chrr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 chrr：395 行 / 65 份判决印此缩写（约束七的键锚）,2026-09-09,Canadian Human Rights Reporter
+Gr.,gr,ON,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 gr：390 行 / 205 份判决印此缩写（约束七的键锚）,2026-09-09,Grant's Chancery Reports（上加拿大）
+W.C.B.,wcb,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 wcb：386 行 / 237 份判决印此缩写（约束七的键锚）,2026-09-09,Weekly Criminal Bulletin
+Q.L.R.,qlr,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 qlr：385 行 / 190 份判决印此缩写（约束七的键锚）,2026-09-09,Quebec Law Reports
+Que. K.B.,quekb,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 quekb：382 行 / 146 份判决印此缩写（约束七的键锚）,2026-09-09,Quebec King's Bench
+N.Z.L.R.,nzlr,NZ,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nzlr：377 行 / 163 份判决印此缩写（约束七的键锚）,2026-09-09,New Zealand Law Reports
+Ex.,ex,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ex：368 行 / 224 份判决印此缩写（约束七的键锚）,2026-09-09,Exchequer（英国）
+B.C.R.,bcr,BC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 bcr：368 行 / 154 份判决印此缩写（约束七的键锚）,2026-09-09,British Columbia Reports
+R.L.,rl,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 rl：367 行 / 187 份判决印此缩写（约束七的键锚）,2026-09-09,Revue légale（魁北克）
+C.B.,cb,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cb：365 行 / 240 份判决印此缩写（约束七的键锚）,2026-09-09,Common Bench（英国 nominate reports）。**归一后与版权委员会中立码 CB 同形**，本行入表会激活 §8.2 两表并查（PROBLEMS #33 的既定解法）
+L.C.R.,lcr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 lcr：365 行 / 154 份判决印此缩写（约束七的键锚）,2026-09-09,Land Compensation Reports
+H.L. Cas.,hlcas,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 hlcas：347 行 / 212 份判决印此缩写（约束七的键锚）,2026-09-09,House of Lords Cases（Clark）
+M.P.R.,mpr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 mpr：341 行 / 151 份判决印此缩写（约束七的键锚）,2026-09-09,Maritime Provinces Reports —— 区域性，取国别粒度，同 W.W.R.
+N.Y.,ny,US,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ny：325 行 / 192 份判决印此缩写（约束七的键锚）,2026-09-09,New York Reports
+C.B.N.S.,cbns,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cbns：321 行 / 208 份判决印此缩写（约束七的键锚）,2026-09-09,Common Bench New Series（英国）
+P.D.,pd,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 pd：313 行 / 149 份判决印此缩写（约束七的键锚）,2026-09-09,Probate Division（英国 Law Reports 1875-1890）
+Times L.R.,timeslr,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 timeslr：310 行 / 178 份判决印此缩写（约束七的键锚）,2026-09-09,Times Law Reports（英国）
+N.S. Rep.,nsrep,NS,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nsrep：303 行 / 170 份判决印此缩写（约束七的键锚）,2026-09-09,Nova Scotia Reports 的另一印刷形
+A.,a,US,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 a：303 行 / 119 份判决印此缩写（约束七的键锚）,2026-09-09,Atlantic Reporter（美国）
+N.E.,ne,US,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ne：296 行 / 132 份判决印此缩写（约束七的键锚）,2026-09-09,North Eastern Reporter（美国）
+S.C.J.,scj,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 scj：290 行 / 241 份判决印此缩写（约束七的键锚）,2026-09-09,Supreme Court Judgments（电子汇编）
+U.S.R.,usr,US,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 usr：289 行 / 142 份判决印此缩写（约束七的键锚）,2026-09-09,United States Reports 的另一印刷形
+F. Supp.,fsupp,US,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 fsupp：288 行 / 116 份判决印此缩写（约束七的键锚）,2026-09-09,Federal Supplement（美国联邦地区法院）
+H. & N.,hn,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 hn：286 行 / 164 份判决印此缩写（约束七的键锚）,2026-09-09,Hurlstone & Norman（英国 nominate reports）
+T.L.R.,tlr,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 tlr：283 行 / 179 份判决印此缩写（约束七的键锚）,2026-09-09,Times Law Reports（英国）
+L.A.C.,lac,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 lac：283 行 / 71 份判决印此缩写（约束七的键锚）,2026-09-09,Labour Arbitration Cases
+B. & C.,bc,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 bc：276 行 / 186 份判决印此缩写（约束七的键锚）,2026-09-09,Barnewall & Cresswell（英国 nominate reports）
+Q.A.C.,qac,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 qac：267 行 / 139 份判决印此缩写（约束七的键锚）,2026-09-09,Quebec Appeal Cases
+Ves.,ves,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ves：261 行 / 152 份判决印此缩写（约束七的键锚）,2026-09-09,Vesey（英国 nominate reports）
+Lloyd's Rep.,lloydsrep,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 lloydsrep：258 行 / 79 份判决印此缩写（约束七的键锚）,2026-09-09,Lloyd's Law Reports（英国）
+R.D.J.,rdj,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 rdj：252 行 / 70 份判决印此缩写（约束七的键锚）,2026-09-09,Revue de droit judiciaire（魁北克）
+E. & B.,eb,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 eb：250 行 / 157 份判决印此缩写（约束七的键锚）,2026-09-09,Ellis & Blackburn（英国 nominate reports）
+R.R.A.,rra,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 rra：247 行 / 62 份判决印此缩写（约束七的键锚）,2026-09-09,Recueil en responsabilité et assurance（魁北克）
+B. & S.,bs,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 bs：244 行 / 155 份判决印此缩写（约束七的键锚）,2026-09-09,Best & Smith（英国 nominate reports）
+Cox C.C.,coxcc,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 coxcc：243 行 / 106 份判决印此缩写（约束七的键锚）,2026-09-09,Cox's Criminal Cases（英国）
+East,east,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 east：241 行 / 158 份判决印此缩写（约束七的键锚）,2026-09-09,East's Term Reports（英国 nominate reports）
+Moo. P.C.,moopc,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 moopc：233 行 / 131 份判决印此缩写（约束七的键锚）,2026-09-09,Moore's Privy Council Cases。枢密院案件，来源地属 case_origin.csv 辖区
+T.T.,tt,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 tt：233 行 / 22 份判决印此缩写（约束七的键锚）,2026-09-09,Tribunal du travail（魁北克劳动法庭）
+L.J. Ch.,ljch,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ljch：229 行 / 159 份判决印此缩写（约束七的键锚）,2026-09-09,"Law Journal Reports, Chancery（英国）"
+A.L.R.,alr,AU,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 alr：221 行 / 114 份判决印此缩写（约束七的键锚）,2026-09-09,Australian Law Reports。**与美国 American Law Reports 同形**，并列两行交 §8.6 判
+A.L.R.,alr,US,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 alr：221 行 / 114 份判决印此缩写（约束七的键锚）,2026-09-09,American Law Reports（美国）。见上一行
+S.C.,sc,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 sc：219 行 / 122 份判决印此缩写（约束七的键锚）,2026-09-09,Session Cases（苏格兰）。**与魁北克 Cour supérieure 同形**，并列两行
+S.C.,sc,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 sc：219 行 / 122 份判决印此缩写（约束七的键锚）,2026-09-09,Cour supérieure（魁北克）。见上一行
+L.J.Q.B.,ljqb,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ljqb：216 行 / 135 份判决印此缩写（约束七的键锚）,2026-09-09,"Law Journal Reports, Queen's Bench（英国）"
+L.J.K.B.,ljkb,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ljkb：211 行 / 121 份判决印此缩写（约束七的键锚）,2026-09-09,"Law Journal Reports, King's Bench（英国）"
+S.Ct.,sct,US,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 sct：206 行 / 107 份判决印此缩写（约束七的键锚）,2026-09-09,Supreme Court Reporter（美国）
+C.P.D.,cpd,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cpd：205 行 / 130 份判决印此缩写（约束七的键锚）,2026-09-09,Common Pleas Division（英国 Law Reports 1875-1890）
+T.R.,tr,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 tr：197 行 / 128 份判决印此缩写（约束七的键锚）,2026-09-09,Term Reports（英国 nominate reports）
+Mass.,mass,US,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 mass：187 行 / 115 份判决印此缩写（约束七的键锚）,2026-09-09,Massachusetts Reports
+Can. C.C.,cancc,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cancc：185 行 / 47 份判决印此缩写（约束七的键锚）,2026-09-09,Canadian Criminal Cases 的旧印刷形
+Bing.,bing,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 bing：184 行 / 114 份判决印此缩写（约束七的键锚）,2026-09-09,Bingham（英国 nominate reports）
+Sask. L.R.,sasklr,SK,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 sasklr：182 行 / 82 份判决印此缩写（约束七的键锚）,2026-09-09,Saskatchewan Law Reports
+C.C.P.B.,ccpb,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ccpb：181 行 / 77 份判决印此缩写（约束七的键锚）,2026-09-09,Canadian Cases on Pensions and Benefits
+B.R.,br,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 br：180 行 / 78 份判决印此缩写（约束七的键锚）,2026-09-09,Banc de la Reine / du Roi（魁北克）
+A.C.W.S.,acws,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 acws：177 行 / 127 份判决印此缩写（约束七的键锚）,2026-09-09,All Canada Weekly Summaries
+C. & P.,cp,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cp：176 行 / 105 份判决印此缩写（约束七的键锚）,2026-09-09,Carrington & Payne（英国 nominate reports）
+Imm. L.R.,immlr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 immlr：175 行 / 59 份判决印此缩写（约束七的键锚）,2026-09-09,Immigration Law Reporter
+N.B. Rep.,nbrep,NB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nbrep：174 行 / 100 份判决印此缩写（约束七的键锚）,2026-09-09,New Brunswick Reports 的另一印刷形
+L.C.J.,lcj,QC,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 lcj：173 行 / 78 份判决印此缩写（约束七的键锚）,2026-09-09,Lower Canada Jurist 的另一印刷形
+M.J.,mj,MB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 mj：171 行 / 110 份判决印此缩写（约束七的键锚）,2026-09-09,Manitoba Judgments（电子汇编）
+A. & E.,ae,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ae：169 行 / 101 份判决印此缩写（约束七的键锚）,2026-09-09,Adolphus & Ellis（英国 nominate reports）
+L. T. N. S.,ltns,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ltns：169 行 / 105 份判决印此缩写（约束七的键锚）,2026-09-09,"Law Times Reports, New Series（英国）"
+N.W.,nw,US,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nw：168 行 / 74 份判决印此缩写（约束七的键锚）,2026-09-09,North Western Reporter（美国）
+S.J.,sj,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 sj：167 行 / 111 份判决印此缩写（约束七的键锚）,2026-09-09,Solicitors' Journal（英国）
+Ont. W.N.,ontwn,ON,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ontwn：166 行 / 85 份判决印此缩写（约束七的键锚）,2026-09-09,Ontario Weekly Notes 的另一印刷形
+C.E.L.R.,celr,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 celr：162 行 / 85 份判决印此缩写（约束七的键锚）,2026-09-09,Canadian Environmental Law Reports
+N.S.J.,nsj,NS,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nsj：159 行 / 99 份判决印此缩写（约束七的键锚）,2026-09-09,Nova Scotia Judgments（电子汇编）
+O.A.R.,oar,ON,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 oar：157 行 / 99 份判决印此缩写（约束七的键锚）,2026-09-09,Ontario Appeal Reports 的另一印刷形
+C.A.R.,car,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 car：157 行 / 38 份判决印此缩写（约束七的键锚）,2026-09-09,Criminal Appeal Reports（英国）
+O'M. & H.,omh,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 omh：156 行 / 19 份判决印此缩写（约束七的键锚）,2026-09-09,O'Malley & Hardcastle（英国选举诉讼汇编）
+Hare,hare,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 hare：155 行 / 95 份判决印此缩写（约束七的键锚）,2026-09-09,Hare（英国 nominate reports）
+H.L.C.,hlc,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 hlc：150 行 / 86 份判决印此缩写（约束七的键锚）,2026-09-09,House of Lords Cases 的另一印刷形
+Can. Cr. Cas.,cancrcas,CA,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cancrcas：146 行 / 40 份判决印此缩写（约束七的键锚）,2026-09-09,Canadian Criminal Cases 的旧印刷形
+L.J.P.C.,ljpc,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ljpc：145 行 / 82 份判决印此缩写（约束七的键锚）,2026-09-09,"Law Journal Reports, Privy Council（英国）"
+DeG. M. & G.,degmg,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 degmg：144 行 / 99 份判决印此缩写（约束七的键锚）,2026-09-09,"De Gex, Macnaghten & Gordon（英国 nominate reports）"
+Grant,grant,ON,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 grant：144 行 / 63 份判决印此缩写（约束七的键锚）,2026-09-09,Grant's Chancery Reports（上加拿大）的另一印刷形
+Ex. D.,exd,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 exd：138 行 / 104 份判决印此缩写（约束七的键锚）,2026-09-09,Exchequer Division（英国 Law Reports 1875-1890）
+Burr.,burr,GB,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 burr：137 行 / 86 份判决印此缩写（约束七的键锚）,2026-09-09,Burrow（英国 nominate reports）
+N.J.,nj,NL,,,,,estimated,name_inference,临时推断（未核实）,本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nj：135 行 / 95 份判决印此缩写（约束七的键锚）,2026-09-09,Newfoundland Judgments（电子汇编，与 A.J./B.C.J./M.J./N.S.J./O.J./Q.J. 同族体例）。**存疑**：亦可能是美国 New Jersey Reports，须复核
