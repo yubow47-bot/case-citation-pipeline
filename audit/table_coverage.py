@@ -14,6 +14,8 @@
         本档就是该设计在本表上的**净收益与净实害**，不能与精确命中混在一起
   2. 漏网 token 按形态分类（厂商标识 / 抽取噪声 / **疑似真法院代码**）
      —— 第三类是静默假阴性，不报出来就会被当成「落 UNSUPPORTED 是正确行为」
+     —— v2（2026-09-09）：补「码+分庭词」（EWCA Civ）与「带点码」（E.W.C.A. Civ.）
+        两个识别分支，并单列新形态计数；旧口径（纯大写无空格）把这两类全埋进噪声
   3. 断言自检（--assert-only）：口径本身先被钉死，再报数字
 
 用法：
@@ -42,14 +44,31 @@ VENDOR = re.compile(r"^(?:Carswell|CanLII|CanLIIDocs|WL|DTC|LN[A-Z]*|BNA)", re.I
 COURTISH = re.compile(r"^[A-Z]{2,10}$")          # 全大写字母串：中立代码的印刷形
 NOISEWORDS = {"TO", "OR", "OJ", "VJ", "SCR", "APPENDIX", "ONTARIO", "OVERVIEW",
               "CRIMINAL", "SPA"}
+# v2（2026-09-09，PROBLEMS #35 口径订正的依据）：原判据只认「纯大写、无空格」，
+# 两类真代码被静默归进噪声——
+#   ① 分庭词被吸进 token：[2007] EWCA Civ 588 → "EWCA Civ"（住在 shape_bracket 的
+#      _ABBR 槽，neutral_bare 的 token 槽结构上装不下空格/小写）；
+#   ② 中立码被印成带点：[2013] E.W.C.A. Civ. 44 → "E.W.C.A. Civ."。
+# 分庭词表取英国 Practice Direction 载明的 EWHC/EWCA 分庭缩写闭集
+# （Civ/Crim 为 EWCA；Ch/QB/Fam/Comm/Admin/Pat/TCC 为 EWHC 的历史内联形，
+# 语料实证仅 Ch；Phase 2 溯源时对照 PD 原文复核）。Rep./Trans 是汇编/笔录
+# 系列词、非分庭词，维持噪声档。
+# 带点分支在形态层区分不了 E.W.C.A.（法院码）与 S.C.R.（汇编）——故意如此：
+# courtish 是提案桶不是判定，汇编同形串的剔除交给三判据分诊
+# （audit/neutral_triage.py：卷号率/印刷优势比），不在这层做。
+_DIVISION = r"(?:Civ|Crim|Ch|QB|Fam|Comm|Admin|Pat|TCC)"
+CODE_DIVISION = re.compile(r"^[A-Z][A-Za-z]{1,10}\s+" + _DIVISION + r"\.?$")
+DOTTED_CODE = re.compile(r"^(?:[A-Z]\.)+[A-Z]\.?(?:\s*" + _DIVISION + r"\.?)?$")
 
 
 def classify_miss(token):
     if VENDOR.match(token):
         return "vendor"
-    if token.upper() in NOISEWORDS or not COURTISH.match(token):
+    if token.upper() in NOISEWORDS:
         return "noise"
-    return "courtish"
+    if COURTISH.match(token) or CODE_DIVISION.match(token) or DOTTED_CODE.match(token):
+        return "courtish"
+    return "noise"
 
 
 ASSERTIONS = [
@@ -58,6 +77,17 @@ ASSERTIONS = [
     ("April", "noise"), ("Agreement", "noise"), ("TO", "noise"), ("OJ", "noise"),
     # 全大写但已知是抽取噪声的，必须落 noise 而不是 courtish
     ("APPENDIX", "noise"), ("ONTARIO", "noise"),
+    # v2 两个新识别分支（码+分庭词 / 带点码）；分庭词含 EWHC 历史内联形（Ch 等）
+    ("EWCA Civ", "courtish"), ("EWCA Civ.", "courtish"), ("EWCA Crim", "courtish"),
+    ("EWHC Ch", "courtish"), ("EWHC Ch.", "courtish"),
+    ("E.W.C.A.", "courtish"), ("E.W.C.A. Civ.", "courtish"), ("E.W.C.A. Crim.", "courtish"),
+    ("U.K.H.L.", "courtish"), ("L.J. Ch.", "courtish"),
+    # 汇编同形串也进提案桶（S.C.R. 是 Supreme Court Reports）——分诊层剔除，
+    # 形态层不查表、不做判定
+    ("S.C.R.", "courtish"), ("A.C.", "courtish"),
+    # 系列词/笔录词不是分庭词；编号词 No（无点）也不是：
+    # [2002] OJ No 463 的 "OJ No" 留在噪声，该吸入属抽取层缺陷（登记 PROBLEMS，不在此修）
+    ("OJ No", "noise"), ("No.", "noise"), ("OLRB Rep.", "noise"), ("HCA Trans", "noise"),
 ]
 
 
@@ -117,6 +147,11 @@ def report(codes, keys, by_shape):
         buckets = Counter()
         for n, t in misses:
             buckets[classify_miss(t)] += n
+        courtish = [(n, t) for n, t in misses if classify_miss(t) == "courtish"]
+        # v2：两个新识别分支的净新增（非纯大写形态），单列计数——
+        # 否则带点汇编（S.C.R. 类，~20 万行）会把纯大写境外码（UKHL 类，1,042 行）
+        # 在 top-N 显示里彻底淹没，#35 那个静默假阴性就会换个地方再发生一次
+        newform = [(n, t) for n, t in courtish if not COURTISH.match(t)]
         s = {
             "rows": total, "variants": len(dist),
             "exact_hit_rows": exact, "exact_hit_pct": round(100.0 * exact / total, 2),
@@ -124,7 +159,9 @@ def report(codes, keys, by_shape):
             "normalized_only_detail": [[n, t] for n, t in norm_detail[:30]],
             "miss_rows": total - exact - norm_only,
             "miss_by_kind": dict(buckets),
-            "miss_courtish": [[n, t] for n, t in misses if classify_miss(t) == "courtish"],
+            "miss_courtish": [[n, t] for n, t in courtish],
+            "miss_courtish_newform": {"kinds": len(newform),
+                                      "rows": sum(n for n, _ in newform)},
         }
         out["shapes"][shape] = s
         print("\n== %s ==  %d 行 / %d 变体" % (shape, total, len(dist)))
@@ -137,6 +174,12 @@ def report(codes, keys, by_shape):
         if s["miss_courtish"]:
             print("      疑似真码：" + ", ".join("%s(%d)" % (t, n)
                                               for n, t in s["miss_courtish"][:20]))
+        if newform:
+            print("      其中新形态（码+分庭词/带点码）%d 种 / %d 行"
+                  % (len(newform), sum(n for n, _ in newform))
+                  + "  <- 纯大写口径之外、v2 分类补回的部分"
+                  + "；头部：" + ", ".join("%s(%d)" % (t, n)
+                                           for n, t in sorted(newform, reverse=True)[:12]))
     return out
 
 

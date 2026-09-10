@@ -46,7 +46,7 @@
 | 文件 | 作用 |
 |---|---|
 | `gap_audit.py` | 抽取层缺口审计：宽骨架命中 减去 七形状命中 = 残差，按形态聚类 |
-| `table_coverage.py` | 决策表覆盖率审计：精确命中 / **仅归一命中** / 漏网三档分报，漏网按「厂商 / 噪声 / **疑似真法院码**」分类 |
+| `table_coverage.py` | 决策表覆盖率审计：精确命中 / **仅归一命中** / 漏网三档分报，漏网按「厂商 / 噪声 / **疑似真法院码**」分类（v2 增「码+分庭词」「带点码」两识别分支，新形态单列计数——旧纯大写口径把 `EWCA Civ`、`E.W.C.A. Civ.` 这类真码埋进噪声，PROBLEMS #35 口径订正的依据） |
 
 ### `gap_audit.py` 用法
 
@@ -71,7 +71,7 @@ python audit/gap_audit.py --out data/gap_audit.json
 ### `table_coverage.py` 用法
 
 ```
-python audit/table_coverage.py --assert-only          # 只跑断言（12 条形态分类 + 同口径断言）
+python audit/table_coverage.py --assert-only          # 只跑断言（23 条形态分类 + 同口径断言）
 python audit/table_coverage.py
 python audit/table_coverage.py --json data/table_coverage.json
 ```

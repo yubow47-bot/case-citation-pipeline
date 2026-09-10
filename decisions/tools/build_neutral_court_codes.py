@@ -243,6 +243,8 @@ def main():
     ap.add_argument("--offline", action="store_true")
     ap.add_argument("--allow-failures", action="store_true",
                     help="已知抓取失败时仍写表（默认拒绝）")
+    ap.add_argument("--allow-drop", action="store_true",
+                    help="现表中有本次产出不含的码时仍覆写（默认拒绝，防抹掉人工溯源写入的行）")
     ap.add_argument("--added-date", default=time.strftime("%Y-%m-%d"))
     a = ap.parse_args()
 
@@ -261,6 +263,29 @@ def main():
     assert len({r[0] for r in rows}) == len(rows), "court_code 重复"
     assert all(r[1] == nk(r[0]) for r in rows), "normalized_key 与 nk() 不一致"
     assert all(all(r) for r in rows), "有行字段为空（约束八）"
+
+    # 防覆写闸：本脚本 open(OUT,"w") 是**整表覆写**，只吐 CanLII 能供出的码。
+    # 表里还有人工逐条溯源写入的行（境外中立码 UKHL/HCA/ZACC… 之流，CanLII
+    # 结构上供不出，见 PROBLEMS #35 甲），重跑一次就会被静默抹掉——决策表是
+    # 本项目唯一不可再生的资产，静默丢人工判断是最贵的一种失败。
+    # 与上面的抓取失败闸同款：亮出来、拒绝写、要显式放行。
+    if os.path.exists(OUT):
+        new_codes = {r[0] for r in rows}
+        dropped = []
+        with open(OUT, encoding="utf-8", newline="") as f:
+            for old in csv.DictReader(f):
+                if old["court_code"] and old["court_code"] not in new_codes:
+                    dropped.append((old["court_code"], old["jurisdiction"],
+                                    old["source"]))
+        if dropped:
+            print("!!! 本次重跑会丢掉现表中的 %d 行，不写表 !!!" % len(dropped),
+                  file=sys.stderr)
+            for code, juris, src in dropped:
+                print("    %-12s %-3s  source=%s" % (code, juris, src),
+                      file=sys.stderr)
+            if not a.allow_drop:
+                sys.exit("这些码本次抓取没有产出。若确属应当删除，传 --allow-drop；"
+                         "若是人工溯源写入的行，先把它们并进本脚本的产出再跑。")
 
     with open(OUT, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
