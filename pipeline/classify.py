@@ -71,6 +71,19 @@ _ADMIT_IN_RE = re.compile(r"in\s+(?!re\s)", re.IGNORECASE)
 #   开头（3 Grand Trunk Ry. Co.）不收——那会把 3M Canada 剥成 M Canada。
 #   实测：命中 19,372 条，全部净改善，剥空 0 条，误伤 0 条（离线预演 + 全量复跑）
 _ADMIT_PARA_RE = re.compile(r"\d+\s*\]")
+# PROBLEMS #45：案名尾巴吞平行引证（Housen v. Nikolaisen, 2002 SCC 33）。
+#   后果在裁定层放大：§10.3 按 nk(案名) 判同案，尾巴不同就判不出同案，同一个
+#   案子裂成两组（实测 R. v. Lacasse 387dd 与 376dd 两组、Housen 546 与 480）。
+#   判据必须能分辨**两种年份**：引证里的年份 vs 公司名里的年份——加拿大公司常以
+#   成立年份命名（Voyageur (1969) Inc.、Rapatax (1987) Inc.）。分辨法：年份之后
+#   必须紧跟**引证形态**（卷号数字，或「大写代码 + 序号」的中立引用），跟着
+#   Inc./Ltd. 之类的不算。年份本身要求词边界，否则编号公司 1420041 里的 2004
+#   会被当成年份（首版就栽在这里，把 1420041 Ontario Inc. v. … 剥成了 14）。
+_YEARISH = (r"(?:\(\s*(?:18|19|20)\d{2}\s*\)|\[\s*(?:18|19|20)\d{2}\s*\]"
+            r"|(?<!\d)(?:18|19|20)\d{2}(?!\d))")
+_ADMIT_CITE_TAIL_RE = re.compile(
+    r"(?:[,;]\s*|\s+)" + _YEARISH +
+    r"(?:,?\s+\d|,?\s+[A-Z][A-Za-z.]{0,9}\.?\s+\d).*$")
 
 # 形状 → 主缩写取自哪个字段（规格 §7.3）
 TOKEN_SHAPES = {"shape_bracket", "shape_neutral_bare"}
@@ -131,6 +144,11 @@ def admit_candidate(cand):
             s = s[m.end():]
         if s == before:
             break
+    # PROBLEMS #45：剥尾部吞进来的平行引证。安全闸——剥完必须还剩下像名字的东西
+    # （>=6 字符且含 3 连字母），否则视为判据打偏，原样退回不剥。
+    _t = _ADMIT_CITE_TAIL_RE.sub("", s).strip().rstrip(",;").strip()
+    if len(_t) >= 6 and re.search(r"[A-Za-z]{3}", _t):
+        s = _t
     s = re.sub(r"[,;:.\s]+$", "", s)
 
     if len(s) > 120:

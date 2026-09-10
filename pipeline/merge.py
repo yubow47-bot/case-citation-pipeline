@@ -19,14 +19,28 @@
        bug），也不是相加（重复计数）
     3. 行数守恒：merged 各键的成员数之和 == 输入行数（约束五：不删行）
 
-一处规格未定义、由实现补的决定（须人复核）
-    归并键用 nk(abbreviation)，故 FC 与 F.C. 同键、会进同一组，但二者在分类层
-    可能得到不同的 citation_kind / jurisdiction（实测 SCC 12.6 万组中 3 组如此，
-    典型是 2002 SCC 79 判 CA、[2002] S.C.C. 79 按 PROBLEMS #36 撤回判 UNSUPPORTED）。
-    §9.5 的列清单要求每个键给出单值，但规格没说取谁。
-    **本实现：按计数行取众数；平票时取 canonical_string 所在行的值**（确定性、
-    只用组内数据、不新增列）。不一致的组数报进 manifest，不静默。
-    本层不做裁决——真正的处置属裁定层（§10）的职责。
+三处规格未定义、由实现补的决定（均须人复核）
+
+  一、组内单值字段取谁。归并键用 nk(abbreviation)，故 FC 与 F.C. 同键、会进
+    同一组，但二者在分类层可能得到不同的 citation_kind / jurisdiction（实测
+    SCC 3 组、ONCA 29 组如此，典型是 2002 SCC 79 判 CA、[2002] S.C.C. 79 按
+    PROBLEMS #36 撤回判 UNSUPPORTED）。§9.5 的列清单要求每个键给出单值，规格
+    没说取谁。**本实现：按计数行取众数；平票时取 canonical_string 所在行的值**
+    （确定性、只用组内数据、不新增列）。不一致组数报进 manifest，不静默。
+    本层不做裁决——真正的处置属裁定层（§10）职责。
+
+  二、案名投票两级化（PROBLEMS #44）。§9.3 原式直接对 raw 串计票，标点空格
+    差异参与计票。改为先按 nk() 折叠拼写变体、再在胜出组内取最常见印刷形。
+
+  三、**新增第三个输出 decision_ids.csv**（§9.5 只列了两个文件）。
+    原因：§10.3 的平行汇编合并在**院内**进行，而本层只输出
+    distinct_decisions_count 这个**数字**、不输出判决 id 集合，裁定层拿不到
+    算并集的原料，只能相加——实测虚高 62~90%（R. v. Lacasse 702 vs 真并集
+    370、Housen 690 vs 425、Sattva 601 vs 322、R. v. Grant 520 vs 282）。
+    §10.6 说「取双方并集（判决 id 带法院前缀，天然唯一）」只对**跨法院**成立，
+    院内平行汇编合并时同一份判决常同时引用两种写法。而 dd 正是选取层（§11.1）
+    唯一的门槛判据，错了最后一道门就是错的。
+    独立成文件而非内联成列，理由与 §9.5 给 folded_log 的完全相同。
 """
 import argparse
 import csv
@@ -48,6 +62,9 @@ MERGED_FIELDS = ["merge_key", "canonical_string", "abbreviation", "citation_kind
                  "candidates_admitted", "candidates_rejected"]
 
 FOLDED_FIELDS = ["merge_key", "raw_string", "count", "distinct_decisions_count"]
+
+# 第三个输出文件，规格 §9.5 未列，由本实现补（理由见文件头「规格未定义」一节）
+DECISION_FIELDS = ["merge_key", "source_decision_citation"]
 
 
 def build_merge_key(row):
@@ -111,7 +128,7 @@ def main():
                 row.get("jurisdiction_confidence") or "",
             ))
 
-    merged, folded = [], []
+    merged, folded, decision_ids = [], [], []
     member_total = 0
 
     for key in sorted(groups):
@@ -127,7 +144,11 @@ def main():
         counted = [m for m in members if not m[3]]
         occurrence = len(counted)
         # 并集基数 —— 不是各变体取最大值（旧管线 bug），也不是相加
-        dd = len({m[1] for m in counted})
+        decisions = {m[1] for m in counted}
+        dd = len(decisions)
+        # 判决 id 明细：裁定层做院内平行汇编合并时要靠它取真并集，不能相加
+        for did in sorted(decisions):
+            decision_ids.append({"merge_key": key, "source_decision_citation": did})
 
         # §9.3 案名众数投票：行级误报与切不出案名的行都排除
         valid = [m for m in counted if not m[4] and m[5]]
@@ -209,10 +230,16 @@ def main():
         "不变量3 破：成员数之和 %d != 输入行数 %d（约束五）" % (member_total, stats["input_rows"])
     assert all(m["distinct_decisions_count"] <= m["occurrence_count"] for m in merged), \
         "不变量2 破：dd 大于 occurrence，说明取了相加而非并集"
+    idcnt = Counter(d["merge_key"] for d in decision_ids)
+    bad = [m["merge_key"] for m in merged
+           if idcnt[m["merge_key"]] != m["distinct_decisions_count"]]
+    assert not bad, "不变量4 破：decision_ids 行数 != dd，键 %r" % bad[:5]
+    stats["decision_id_rows"] = len(decision_ids)
 
     os.makedirs(args.output, exist_ok=True)
     for name, fields, rows in (("merged.csv", MERGED_FIELDS, merged),
-                               ("folded_log.csv", FOLDED_FIELDS, folded)):
+                               ("folded_log.csv", FOLDED_FIELDS, folded),
+                               ("decision_ids.csv", DECISION_FIELDS, decision_ids)):
         path = os.path.join(args.output, name)
         tmp = path + ".tmp"
         with open(tmp, "w", encoding="utf-8", newline="") as f:
