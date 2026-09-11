@@ -44,6 +44,17 @@ import yaml
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
+def _relpath(p):
+    """manifest 里记输入路径。跨盘符时（测试临时目录在 C:、仓库在 D:）relpath 会抛
+    ValueError——而 manifest 写在数据文件之后，首版就这样留下有数据、无 manifest 的
+    半成品输出（迷你全链首跑抓到）。退回绝对路径。"""
+    try:
+        return os.path.relpath(p, ROOT).replace("\\", "/")
+    except ValueError:
+        return os.path.abspath(p).replace("\\", "/")
+
+
 # 阈值的校准状态。规格 §11.2 明说 5 是占位值；改为经校准的值时，同步改这里，
 # 不要让「未校准」这个事实在输出里消失（约束九）。
 THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_11_2"
@@ -117,7 +128,7 @@ def main():
     manifest = {
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
         "spec_section": "11",
-        "input": os.path.relpath(a.input, ROOT).replace("\\", "/"),
+        "input": _relpath(a.input),
         "profile": a.profile,
         "threshold_dd": threshold,
         "threshold_calibration": THRESHOLD_CALIBRATION,

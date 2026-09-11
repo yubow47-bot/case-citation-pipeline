@@ -1,0 +1,357 @@
+{
+ "classify_ONCA": {
+  "case_name_split": 122183,
+  "conflict_resolved_by_match_grade": 151,
+  "court_false_hit_blocked_by_vol_gate": 128,
+  "court_hit_via_normalized": 104,
+  "court_rows": 207535,
+  "input_rows": 582408,
+  "jurisdiction_resolved": 197658,
+  "jurisdiction_unsupported": 9877,
+  "kind_ambiguous": 100,
+  "kind_neutral": 91147,
+  "kind_reporter": 116288,
+  "name_rejected_has_bracketed_year": 469,
+  "name_rejected_multi_v": 184,
+  "name_rejected_no_separator_before_v": 64785,
+  "name_rejected_no_v_structure": 19914,
+  "neutral_withheld_fuzzy_only": 100,
+  "rejected_federal_statute": 280,
+  "rejected_party_initials": 32,
+  "rejected_unrecognized_series_prefix": 1070
+ },
+ "classify_SCC": {
+  "case_name_split": 166014,
+  "conflict_resolved_by_match_grade": 842,
+  "court_false_hit_blocked_by_vol_gate": 2254,
+  "court_hit_via_normalized": 168,
+  "court_rows": 374873,
+  "input_rows": 582408,
+  "jurisdiction_resolved": 321491,
+  "jurisdiction_unsupported": 53382,
+  "kind_ambiguous": 34,
+  "kind_neutral": 52055,
+  "kind_reporter": 322784,
+  "name_rejected_has_bracketed_year": 511,
+  "name_rejected_multi_v": 401,
+  "name_rejected_no_separator_before_v": 64010,
+  "name_rejected_no_v_structure": 143937,
+  "neutral_withheld_fuzzy_only": 34,
+  "rejected_federal_statute": 586,
+  "rejected_party_initials": 60,
+  "rejected_unrecognized_series_prefix": 9827
+ },
+ "decide_ONCA": {
+  "anchors_collapsed_as_variant": 59,
+  "chains_split_by_span": 332,
+  "clusters_split_by_decision": 2396,
+  "dd_added_by_assignment": 204,
+  "decision_id_rows": 183473,
+  "groups_merged_parallel": 3726,
+  "groups_out": 74399,
+  "groups_with_multiple_neutral_strings": 57,
+  "input_rows": 79603,
+  "output_rows": 79603,
+  "rows_unanchored": 275,
+  "unanchored_groups": 271,
+  "units_assigned_by_cocitation": 247,
+  "units_assigned_larger_than_target": 27,
+  "units_tie_broken_by_year": 19,
+  "units_unanchored_incompatible_only": 163,
+  "units_unanchored_tie": 9,
+  "units_unanchored_weak_cocitation": 103
+ },
+ "decide_SCC": {
+  "anchors_collapsed_as_variant": 5,
+  "chains_split_by_span": 116,
+  "clusters_split_by_decision": 356,
+  "dd_added_by_assignment": 1,
+  "decision_id_rows": 198104,
+  "groups_merged_parallel": 4186,
+  "groups_out": 121420,
+  "groups_with_multiple_neutral_strings": 5,
+  "input_rows": 126366,
+  "output_rows": 126366,
+  "rows_unanchored": 44,
+  "unanchored_groups": 37,
+  "units_assigned_by_cocitation": 201,
+  "units_assigned_larger_than_target": 1,
+  "units_tie_broken_by_year": 30,
+  "units_unanchored_incompatible_only": 26,
+  "units_unanchored_tie": 12,
+  "units_unanchored_weak_cocitation": 6
+ },
+ "decide_cross": {
+  "anchors_collapsed_as_variant": 69,
+  "chains_split_by_span": 508,
+  "clusters_split_by_decision": 2829,
+  "dd_added_by_assignment": 282,
+  "decision_id_rows": 381577,
+  "groups_merged_parallel": 8861,
+  "groups_out": 190938,
+  "groups_with_multiple_neutral_strings": 67,
+  "input_rows": 205969,
+  "output_rows": 205969,
+  "rows_unanchored": 375,
+  "unanchored_groups": 356,
+  "units_assigned_by_cocitation": 456,
+  "units_assigned_larger_than_target": 40,
+  "units_tie_broken_by_year": 48,
+  "units_unanchored_incompatible_only": 206,
+  "units_unanchored_tie": 21,
+  "units_unanchored_weak_cocitation": 142
+ },
+ "merge_ONCA": {
+  "decision_id_rows": 183473,
+  "folded_rows": 81381,
+  "groups_all_rejected": 898,
+  "groups_with_internal_disagreement": 29,
+  "input_rows": 207535,
+  "merge_keys": 79603,
+  "occurrence_total": 206186
+ },
+ "merge_SCC": {
+  "decision_id_rows": 198104,
+  "folded_rows": 141693,
+  "groups_all_rejected": 6162,
+  "groups_with_internal_disagreement": 3,
+  "input_rows": 374873,
+  "merge_keys": 126366,
+  "occurrence_total": 364485
+ },
+ "select": {
+  "dd_profile": [
+   {
+    "groups_kept": 183878,
+    "pct_of_groups": 96.302,
+    "threshold_dd": 1
+   },
+   {
+    "groups_kept": 38960,
+    "pct_of_groups": 20.405,
+    "threshold_dd": 2
+   },
+   {
+    "groups_kept": 19493,
+    "pct_of_groups": 10.209,
+    "threshold_dd": 3
+   },
+   {
+    "groups_kept": 9358,
+    "pct_of_groups": 4.901,
+    "threshold_dd": 5
+   },
+   {
+    "groups_kept": 3761,
+    "pct_of_groups": 1.97,
+    "threshold_dd": 10
+   },
+   {
+    "groups_kept": 1472,
+    "pct_of_groups": 0.771,
+    "threshold_dd": 20
+   },
+   {
+    "groups_kept": 344,
+    "pct_of_groups": 0.18,
+    "threshold_dd": 50
+   },
+   {
+    "groups_kept": 91,
+    "pct_of_groups": 0.048,
+    "threshold_dd": 100
+   }
+  ],
+  "stats": {
+   "dropped": 188072,
+   "groups_kept": 9358,
+   "groups_total": 190938,
+   "kept": 17897,
+   "rows_total": 205969
+  },
+  "threshold_dd": 5
+ },
+ "top25": [
+  [
+   691,
+   773,
+   "R. v. W.(D.)",
+   []
+  ],
+  [
+   600,
+   1430,
+   "Housen v. Nikolaisen",
+   [
+    "2002||scc||3",
+    "2002||scc||33",
+    "2002||scc||35"
+   ]
+  ],
+  [
+   398,
+   487,
+   "Palmer v. The Queen",
+   []
+  ],
+  [
+   397,
+   875,
+   "R. v. Lacasse",
+   [
+    "2015||scc||64"
+   ]
+  ],
+  [
+   349,
+   765,
+   "Sattva Capital Corp. v. Creston Moly Corp",
+   [
+    "2014||scc||53"
+   ]
+  ],
+  [
+   340,
+   917,
+   "R. v. Grant",
+   [
+    "2009||scc||32"
+   ]
+  ],
+  [
+   323,
+   937,
+   "R. v. Big M Drug Mart Ltd",
+   []
+  ],
+  [
+   291,
+   742,
+   "R. v. Oakes",
+   []
+  ],
+  [
+   281,
+   767,
+   "Bell ExpressVu Limited Partnership v. Rex",
+   [
+    "2002||scc||42"
+   ]
+  ],
+  [
+   280,
+   626,
+   "Hunter v. Southam Inc",
+   []
+  ],
+  [
+   273,
+   275,
+   "R. v. Kienapple",
+   []
+  ],
+  [
+   259,
+   544,
+   "R. v. Sheppard",
+   [
+    "2002||scc||26"
+   ]
+  ],
+  [
+   238,
+   488,
+   "R. v. Collins",
+   []
+  ],
+  [
+   234,
+   245,
+   "Re Rizzo v. Rizzo Shoes Ltd",
+   []
+  ],
+  [
+   228,
+   505,
+   "R. v. Biniaris",
+   [
+    "2000||scc||15"
+   ]
+  ],
+  [
+   223,
+   493,
+   "Hryniak v. Mauldin",
+   [
+    "2014||csc||7",
+    "2014||scc||7"
+   ]
+  ],
+  [
+   216,
+   461,
+   "R. v. R.E.M",
+   [
+    "2008||scc||51"
+   ]
+  ],
+  [
+   215,
+   258,
+   "R. v. Morrissey",
+   []
+  ],
+  [
+   209,
+   361,
+   "R. v. G.F",
+   [
+    "2021||scc||20"
+   ]
+  ],
+  [
+   206,
+   437,
+   "R. v. Villaroman",
+   [
+    "2016||scc||33"
+   ]
+  ],
+  [
+   200,
+   437,
+   "R. v. Friesen",
+   [
+    "2020||scc||9"
+   ]
+  ],
+  [
+   199,
+   338,
+   "R. v. O’Connor",
+   []
+  ],
+  [
+   196,
+   284,
+   "R. v. M. (C.A.)",
+   []
+  ],
+  [
+   196,
+   522,
+   "R. v. Jordan",
+   [
+    "2016||scc||27"
+   ]
+  ],
+  [
+   192,
+   690,
+   "Dunsmuir v. New Brunswick",
+   [
+    "2008||scc||9"
+   ]
+  ]
+ ]
+}

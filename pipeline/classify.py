@@ -46,6 +46,18 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk, normalize_code                      # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def _relpath(p):
+    """manifest 里记输入路径。跨盘符时（测试临时目录在 C:、仓库在 D:）relpath 会抛
+    ValueError——而 manifest 写在数据文件之后，首版就这样留下有数据、无 manifest 的
+    半成品输出（迷你全链首跑抓到）。退回绝对路径。"""
+    try:
+        return os.path.relpath(p, ROOT).replace("\\", "/")
+    except ValueError:
+        return os.path.abspath(p).replace("\\", "/")
+
+
 DECISIONS = os.path.join(ROOT, "decisions")
 
 NEW_COLUMNS = ["citation_kind", "abbreviation", "jurisdiction",
@@ -145,10 +157,12 @@ def admit_candidate(cand):
             s = s[m.end():]
         if s == before:
             break
-    # PROBLEMS #45：剥尾部吞进来的平行引证。安全闸——剥完必须还剩下像名字的东西
-    # （>=6 字符且含 3 连字母），否则视为判据打偏，原样退回不剥。
+    # PROBLEMS #45：剥尾部吞进来的平行引证。安全闸——剥完不得把定义案名的「v.」剥掉，
+    # 且须仍含字母（Unicode），否则视为判据打偏，原样退回。首版的闸是「>= 6 字符且含
+    # 3 个连续 ASCII 字母」，把缩写姓名（R. v. R.E.M.）、两字姓（R. v. Vu）、带重音的
+    # 姓（R. v. Côté）全挡在门外、尾巴原样留着——#50 审计实测它是异名碎片的最大来源
     _t = _ADMIT_CITE_TAIL_RE.sub("", s).strip().rstrip(",;").strip()
-    if len(_t) >= 6 and re.search(r"[A-Za-z]{3}", _t):
+    if re.search(r"[^\W\d_]", _t) and (V_RE.search(_t) or not V_RE.search(s)):
         s = _t
     s = re.sub(r"[,;:.\s]+$", "", s)
 
@@ -414,7 +428,7 @@ def main():
     manifest = {
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
         "court": args.court,
-        "input": os.path.relpath(args.input, ROOT).replace("\\", "/"),
+        "input": _relpath(args.input),
         "spec_section": "8",
         "decision_table_rows": {k: len(v) for k, v in tables.items()},
         "stats": dict(sorted(stats.items())),

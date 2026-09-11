@@ -56,6 +56,17 @@ from normalize import nk                                      # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
+def _relpath(p):
+    """manifest 里记输入路径。跨盘符时（测试临时目录在 C:、仓库在 D:）relpath 会抛
+    ValueError——而 manifest 写在数据文件之后，首版就这样留下有数据、无 manifest 的
+    半成品输出（迷你全链首跑抓到）。退回绝对路径。"""
+    try:
+        return os.path.relpath(p, ROOT).replace("\\", "/")
+    except ValueError:
+        return os.path.abspath(p).replace("\\", "/")
+
+
 MERGED_FIELDS = ["merge_key", "canonical_string", "abbreviation", "citation_kind",
                  "jurisdiction", "jurisdiction_confidence", "case_name_modal",
                  "occurrence_count", "distinct_decisions_count",
@@ -252,7 +263,7 @@ def main():
     manifest = {
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
         "court": args.court,
-        "input": os.path.relpath(args.input, ROOT).replace("\\", "/"),
+        "input": _relpath(args.input),
         "spec_section": "9",
         "stats": dict(sorted(stats.items())),
     }
