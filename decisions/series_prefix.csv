@@ -1,1 +1,5 @@
-canonical_prefix,normalized_key,source,source_locator,added_date
+canonical_prefix,normalized_key,jurisdiction,source,source_locator,added_date
+L.R.,LR,GB,语料结构证据（非权威源，待核实）,语料实测：L.R. 后随缩写族全为英国 Law Reports 各分辑（H.L. 695、Q.B. 682、C.P. 588、Eq. 439、Ex. 432、P.C. 366、Ch. App. 118、Ch. 76、P.D. 52），年份集中 1865–1875；仪器 audit/disambiguation_audit.py,2026-09-11
+Q.R.,QR,QC,语料结构证据（非权威源，待核实）,"语料实测：Q.R. 后随缩写族全为魁北克法院分辑（K.B. 1,036、S.C. 669、Q.B. 274），年份 1892–1941（Quebec Official Reports / Rapports judiciaires）；仪器同上",2026-09-11
+Q.O.R.,QOR,QC,语料结构证据（非权威源，待核实）,语料实测：Q.O.R. 后随 K.B. 28、S.C. 21、Q.B. 3，年份 1893–1928；仪器同上,2026-09-11
+M.L.R.,MLR,QC,语料结构证据（非权威源，待核实）,语料实测：M.L.R. 后随 Q.B. 174、S.C. 114，年份 1878–1890（Montreal Law Reports）；仪器同上,2026-09-11

@@ -85,10 +85,17 @@ def build_merge_key(row):
     卷号缺失时**留空位而不是省略字段**——1978||ac||728 与 1978|1|ac||728 仍是
     两个不同的键。二者是否应视为同一引证（卷号缺失时的宽松匹配）是未决设计问题
     （PROBLEMS #2），本版按严格匹配处理，不做猜测性合并。
+
+    认得的系列前缀并入缩写位（PROBLEMS #53）：`L.R. 6 Q.B. 1`（英国）与 `Q.R. 6 Q.B. 1`
+    （魁北克）是两本汇编里的两个判决，不能同键；无前缀的 `6 Q.B. 1` 另成一键——它两边
+    都可能是，并进任何一边都是替它猜。nk() 只留字母数字，故「.」作分隔不会撞。
     """
     year = row.get("year_start") or ""
     vol = row.get("vol") or ""
     abbr = nk(row.get("abbreviation") or "")
+    prefix = nk(row.get("series_prefix") or "")
+    if prefix:
+        abbr = prefix + "." + abbr
     series = (row.get("series") or "").lower()
     page = row.get("page") or ""
     return "%s|%s|%s|%s|%s" % (year, vol, abbr, series, page)

@@ -5,9 +5,13 @@
   "court_false_hit_blocked_by_vol_gate": 128,
   "court_hit_via_normalized": 104,
   "court_rows": 207535,
+  "disambiguated_by_novol_year": 59,
+  "disambiguated_by_series_prefix": 19,
+  "disambiguated_by_vol_only": 50,
+  "disambiguated_by_vol_year": 570,
   "input_rows": 582408,
-  "jurisdiction_resolved": 197658,
-  "jurisdiction_unsupported": 9877,
+  "jurisdiction_resolved": 198224,
+  "jurisdiction_unsupported": 9311,
   "kind_ambiguous": 100,
   "kind_neutral": 91147,
   "kind_reporter": 116288,
@@ -18,7 +22,7 @@
   "neutral_withheld_fuzzy_only": 100,
   "rejected_federal_statute": 280,
   "rejected_party_initials": 32,
-  "rejected_unrecognized_series_prefix": 1070
+  "rejected_unrecognized_series_prefix": 992
  },
  "classify_SCC": {
   "case_name_split": 166014,
@@ -26,9 +30,13 @@
   "court_false_hit_blocked_by_vol_gate": 2254,
   "court_hit_via_normalized": 168,
   "court_rows": 374873,
+  "disambiguated_by_novol_year": 527,
+  "disambiguated_by_series_prefix": 3577,
+  "disambiguated_by_vol_only": 510,
+  "disambiguated_by_vol_year": 5221,
   "input_rows": 582408,
-  "jurisdiction_resolved": 321491,
-  "jurisdiction_unsupported": 53382,
+  "jurisdiction_resolved": 331627,
+  "jurisdiction_unsupported": 43246,
   "kind_ambiguous": 34,
   "kind_neutral": 52055,
   "kind_reporter": 322784,
@@ -37,21 +45,22 @@
   "name_rejected_no_separator_before_v": 64010,
   "name_rejected_no_v_structure": 143937,
   "neutral_withheld_fuzzy_only": 34,
+  "prefix_contradicts_table": 5,
   "rejected_federal_statute": 586,
   "rejected_party_initials": 60,
-  "rejected_unrecognized_series_prefix": 9827
+  "rejected_unrecognized_series_prefix": 3649
  },
  "decide_ONCA": {
   "anchors_collapsed_as_variant": 59,
   "chains_split_by_span": 332,
   "clusters_split_by_decision": 2396,
   "dd_added_by_assignment": 204,
-  "decision_id_rows": 183473,
-  "groups_merged_parallel": 3726,
-  "groups_out": 74399,
+  "decision_id_rows": 183549,
+  "groups_merged_parallel": 3727,
+  "groups_out": 74400,
   "groups_with_multiple_neutral_strings": 57,
-  "input_rows": 79603,
-  "output_rows": 79603,
+  "input_rows": 79605,
+  "output_rows": 79605,
   "rows_unanchored": 275,
   "unanchored_groups": 271,
   "units_assigned_by_cocitation": 247,
@@ -66,12 +75,12 @@
   "chains_split_by_span": 116,
   "clusters_split_by_decision": 356,
   "dd_added_by_assignment": 1,
-  "decision_id_rows": 198104,
-  "groups_merged_parallel": 4186,
-  "groups_out": 121420,
+  "decision_id_rows": 202686,
+  "groups_merged_parallel": 4194,
+  "groups_out": 121654,
   "groups_with_multiple_neutral_strings": 5,
-  "input_rows": 126366,
-  "output_rows": 126366,
+  "input_rows": 126608,
+  "output_rows": 126608,
   "rows_unanchored": 44,
   "unanchored_groups": 37,
   "units_assigned_by_cocitation": 201,
@@ -86,12 +95,12 @@
   "chains_split_by_span": 508,
   "clusters_split_by_decision": 2829,
   "dd_added_by_assignment": 282,
-  "decision_id_rows": 381577,
-  "groups_merged_parallel": 8861,
-  "groups_out": 190938,
+  "decision_id_rows": 386235,
+  "groups_merged_parallel": 8871,
+  "groups_out": 191169,
   "groups_with_multiple_neutral_strings": 67,
-  "input_rows": 205969,
-  "output_rows": 205969,
+  "input_rows": 206213,
+  "output_rows": 206213,
   "rows_unanchored": 375,
   "unanchored_groups": 356,
   "units_assigned_by_cocitation": 456,
@@ -102,52 +111,52 @@
   "units_unanchored_weak_cocitation": 142
  },
  "merge_ONCA": {
-  "decision_id_rows": 183473,
+  "decision_id_rows": 183549,
   "folded_rows": 81381,
-  "groups_all_rejected": 898,
+  "groups_all_rejected": 847,
   "groups_with_internal_disagreement": 29,
   "input_rows": 207535,
-  "merge_keys": 79603,
-  "occurrence_total": 206186
+  "merge_keys": 79605,
+  "occurrence_total": 206264
  },
  "merge_SCC": {
-  "decision_id_rows": 198104,
+  "decision_id_rows": 202686,
   "folded_rows": 141693,
-  "groups_all_rejected": 6162,
-  "groups_with_internal_disagreement": 3,
+  "groups_all_rejected": 2972,
+  "groups_with_internal_disagreement": 4,
   "input_rows": 374873,
-  "merge_keys": 126366,
-  "occurrence_total": 364485
+  "merge_keys": 126608,
+  "occurrence_total": 370663
  },
  "select": {
   "dd_profile": [
    {
-    "groups_kept": 183878,
-    "pct_of_groups": 96.302,
+    "groups_kept": 187350,
+    "pct_of_groups": 98.002,
     "threshold_dd": 1
    },
    {
-    "groups_kept": 38960,
-    "pct_of_groups": 20.405,
+    "groups_kept": 39558,
+    "pct_of_groups": 20.693,
     "threshold_dd": 2
    },
    {
-    "groups_kept": 19493,
-    "pct_of_groups": 10.209,
+    "groups_kept": 19719,
+    "pct_of_groups": 10.315,
     "threshold_dd": 3
    },
    {
-    "groups_kept": 9358,
-    "pct_of_groups": 4.901,
+    "groups_kept": 9420,
+    "pct_of_groups": 4.928,
     "threshold_dd": 5
    },
    {
-    "groups_kept": 3761,
-    "pct_of_groups": 1.97,
+    "groups_kept": 3773,
+    "pct_of_groups": 1.974,
     "threshold_dd": 10
    },
    {
-    "groups_kept": 1472,
+    "groups_kept": 1474,
     "pct_of_groups": 0.771,
     "threshold_dd": 20
    },
@@ -163,11 +172,11 @@
    }
   ],
   "stats": {
-   "dropped": 188072,
-   "groups_kept": 9358,
-   "groups_total": 190938,
-   "kept": 17897,
-   "rows_total": 205969
+   "dropped": 188248,
+   "groups_kept": 9420,
+   "groups_total": 191169,
+   "kept": 17965,
+   "rows_total": 206213
   },
   "threshold_dd": 5
  },

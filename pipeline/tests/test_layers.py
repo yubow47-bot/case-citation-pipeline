@@ -130,6 +130,78 @@ def test_classifier():
           "#37 前文别处出现 R. v. A.B. 不误杀（宽口径会误杀 15,999 行）")
 
 
+def test_disambiguation():
+    court = [{"court_code": "SCC", "normalized_key": "SCC", "jurisdiction": "CA"}]
+
+    def rep(abbr, jur, v0="", v1="", y0="", y1=""):
+        return {"abbreviation": abbr, "normalized_key": nk(abbr), "jurisdiction": jur,
+                "confidence": "estimated", "vol_range_start": v0, "vol_range_end": v1,
+                "year_range_start": y0, "year_range_end": y1}
+    reporter = [rep("K.B.", "GB", "0", "4", "1901", "1952"), rep("K.B.", "QC", "5", "100", "1896", "1941"),
+                rep("K.B.", "QC", "0", "0", "1942", "1970"),
+                rep("Q.B.", "GB", "1", "18", "1841", "1852"), rep("Q.B.", "GB", "0", "3", "1952", "2030"),
+                rep("Q.B.", "QC", "3", "11", "1893", "1901"), rep("Q.B.", "QC", "0", "0", "1942", "1969"),
+                rep("Ex.", "GB"),
+                rep("C. & P.", "GB", "1", "9", "1823", "1841"),
+                rep("C.P.", "GB", "1", "10", "1865", "1876"), rep("C.P.", "QC", "0", "0", "1965", "1990")]
+    prefix = [{"canonical_prefix": "Q.R.", "normalized_key": "QR", "jurisdiction": "QC"},
+              {"canonical_prefix": "L.R.", "normalized_key": "LR", "jurisdiction": "GB"}]
+    c = classify.Classifier({"neutral_court_codes": court, "reporter_jurisdiction": reporter,
+                             "series_prefix": prefix}, Counter())
+    r = c.run_row(_row("shape_leading_abbr", "Q.R. 56 K.B. 520", leading_abbr="Q.R.", abbr="K.B.",
+                       vol="56", page="520"))
+    check((r["jurisdiction"], r["disambiguated_by"], r["rejected_reason"]) == ("QC", "series_prefix", ""),
+          "#52 前缀消歧：Q.R. + K.B. -> 魁北克，且前缀认得不再被拒")
+    r = c.run_row(_row("shape_leading_abbr", "L.R. 3 Q.B. 141", leading_abbr="L.R.", abbr="Q.B.",
+                       vol="3", page="141"))
+    check(r["jurisdiction"] == "GB", "#52 前缀消歧：L.R. + Q.B. -> 英国")
+    r = c.run_row(_row("shape_bracket", "[1920] 1 K.B. 257", token="K.B.", vol="1",
+                       year_start="1920", page="257"))
+    check((r["jurisdiction"], r["disambiguated_by"], r["jurisdiction_confidence"])
+          == ("GB", "vol_year", "estimated"),
+          "#52 卷号年份区间：[1920] 1 K.B. -> 英国；消歧不抬高表行成色")
+    r = c.run_row(_row("shape_year_vol_page", "(1928), 45 K.B. 129", abbr="K.B.", vol="45",
+                       year_start="1928", page="129"))
+    check(r["jurisdiction"] == "QC", "#52 卷号年份区间：(1928), 45 K.B. -> 魁北克")
+    r = c.run_row(_row("shape_bracket", "[1935] K.B. 5", token="K.B.", year_start="1935", page="5"))
+    check((r["jurisdiction"], r["vol_missing"], r["disambiguated_by"]) == ("GB", "true", "novol_year"),
+          "#52 不印卷号是印刷事实：1942 年前魁北克 K.B. 恒印卷号，[1935] K.B. 只能是英国")
+    r = c.run_row(_row("shape_bracket", "[1943] K.B. 607", token="K.B.", year_start="1943", page="607"))
+    check(r["jurisdiction"] == "UNSUPPORTED",
+          "#52 1942–1952 英国与魁北克都印 [年] K.B.，两边都落，不猜")
+    r = c.run_row(_row("shape_bracket", "[1975] Q.B. 326", token="Q.B.", year_start="1975", page="326"))
+    check(r["jurisdiction"] == "GB", "#52 同一法域多段区间：1975 年的 Q.B. 落英国后一段")
+    r = c.run_row(_row("shape_bracket", "[1962] Q.B. 277", token="Q.B.", year_start="1962", page="277"))
+    check(r["jurisdiction"] == "UNSUPPORTED", "#52 [1962] Q.B. 不印卷号：英国与魁北克年份系列重叠，不猜")
+    r = c.run_row(_row("shape_bracket", "[1962] 2 Q.B. 26", token="Q.B.", vol="2", year_start="1962", page="26"))
+    check(r["jurisdiction"] == "GB", "#52 [1962] 2 Q.B. 印了卷号，魁北克年份系列不印，只能是英国")
+    r = c.run_row(_row("shape_vol_abbr_page", "45 K.B. 198", abbr="K.B.", vol="45", page="198"))
+    check((r["jurisdiction"], r["disambiguated_by"]) == ("QC", "vol_only"),
+          "#52 无年份只凭卷号：英国 K.B. 每年至多 4 卷，45 卷只能是魁北克")
+    r = c.run_row(_row("shape_vol_abbr_page", "3 Q.B. 5", abbr="Q.B.", vol="3", page="5"))
+    check(r["jurisdiction"] == "UNSUPPORTED", "#52 无年份且卷号两边都落，不猜")
+    r = c.run_row(_row("shape_leading_abbr", "Q.R. 3 Ex. 1", leading_abbr="Q.R.", abbr="Ex.",
+                       vol="3", page="1"))
+    check(r["jurisdiction"] == "UNSUPPORTED", "#52 前缀与表冲突不下判定（Q.R. 前缀配英国 Ex.）")
+    r = c.run_row(_row("shape_bracket", "[1981] C.P. 292", token="C.P.", year_start="1981", page="292"))
+    check(r["jurisdiction"] == "QC",
+          "#52 [1981] C.P. 是魁北克省级法院——入表前经归一键误落 C. & P.（英国）")
+    r = c.run_row(_row("shape_vol_abbr_page", "5 C. & P. 190", abbr="C. & P.", vol="5",
+                       year_start="1831", page="190"))
+    check(r["jurisdiction"] == "GB", "#52 C. & P. 精确命中本行，不被 C.P. 的两行干扰")
+
+    import merge
+    keys = {merge.build_merge_key(c.run_row(_row("shape_leading_abbr", raw, leading_abbr=p, abbr="Q.B.",
+                                                  vol="6", page="1")))
+            for raw, p in (("L.R. 6 Q.B. 1", "L.R."), ("Q.R. 6 Q.B. 1", "Q.R."))}
+    keys.add(merge.build_merge_key(c.run_row(_row("shape_vol_abbr_page", "6 Q.B. 1", abbr="Q.B.",
+                                                  vol="6", page="1"))))
+    check(keys == {"|6|lr.qb||1", "|6|qr.qb||1", "|6|qb||1"},
+          "#53 归并键带系列前缀：L.R./Q.R./无前缀的 6 Q.B. 1 是三个键，英国与魁北克不同组")
+    check(merge.build_merge_key({"year_start": "1978", "vol": "1", "abbreviation": "A.C.", "page": "728"})
+          == "1978|1|ac||728", "#53 无前缀的行归并键逐字节不变")
+
+
 # ============================================================ 裁定层（单元）
 def _k(year, code, num):
     return "%s||%s||%s" % (year, code, num)
@@ -408,7 +480,8 @@ def main():
     a = ap.parse_args()
     if a.golden or a.golden_write:
         sys.exit(golden(a.golden_write))
-    for t in (test_admit_candidate, test_classifier, test_decide_units, test_mini_chain):
+    for t in (test_admit_candidate, test_classifier, test_disambiguation,
+              test_decide_units, test_mini_chain):
         t()
     print("全部通过：%d 条断言" % len(PASSED))
 

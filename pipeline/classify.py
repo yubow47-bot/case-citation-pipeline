@@ -32,6 +32,11 @@
      两表并查逻辑类推处理（两表都命中→table_conflict 交人裁），理由与 §8.2
      所述相同：中立码表可立即填满而 reporter 表长期为空，设优先级等于让
      填表进度决定判定结果。此处为**补充规格的实现决定**，须人复核。
+  4. §8.3 修订（PROBLEMS #52，经人批准「实际正确就消歧」）：认得的系列前缀若带
+     法域，参与同形异义消歧——Q.R. 56 K.B. 520 的 Q.R. 已印明是魁北克的系列。
+  5. §8.6 修订（#52）：无卷号的行按「不印卷号」这一印刷事实参与区间比对并标
+     vol_missing（原代码块一律不判，补充规则只凭年份——都丢了信息）；同一法域可有
+     多段区间（Q.B. 英国有四个互不相接的系列）。消歧结果的成色不高于表行本身。
 """
 import argparse
 import csv
@@ -63,7 +68,7 @@ DECISIONS = os.path.join(ROOT, "decisions")
 NEW_COLUMNS = ["citation_kind", "abbreviation", "jurisdiction",
                "jurisdiction_confidence", "lookup_mode", "vol_missing",
                "series_prefix", "candidate_case_name",
-               "rejected_reason", "name_rejected_reason"]
+               "rejected_reason", "name_rejected_reason", "disambiguated_by"]
 
 # ---------------------------------------------------------------- §8.4 Step 2
 FED_STATUTE = re.compile(r"(?:^|[\s(\[])(?:R\.S\.C\.|S\.C\.)\s*(?:18|19|20)\d{2}")
@@ -210,16 +215,26 @@ def split_case_name(row):
 # ---------------------------------------------------------------- §8.6 Step 4
 def disambiguate_by_structure(row, candidates):
     """只用本行自带的卷号与年份，与候选法域的取值区间比对（§8.6）。
-    零命中或多命中一律 UNSUPPORTED —— 多个候选吻合就不猜。"""
-    vol, year = row.get("vol"), row.get("year_start")
-    if not vol or not year:
+
+    - 同一法域可有多段区间（多行），命中的法域唯一才判定；多个法域吻合就不猜
+    - 无年份：无证据，UNSUPPORTED
+    - 无卷号：本行印的就是「[年] 缩写 页」，不印卷号本身是印刷事实（约束七）。
+      表里卷号区间含 0 的行表示「该系列可不印卷号」，区间留空表示卷号不参与；
+      区间从 1 起的系列恒印卷号，不接无卷号的行（PROBLEMS #52）。调用方标 vol_missing
+    - 无年份：年份维度不参与，只凭卷号——「45 K.B. 198」英国 K.B. 每年至多 4 卷，
+      45 只能是魁北克。卷号与年份都没有，才是无证据
+    """
+    vol_s = (row.get("vol") or "").strip()
+    year_s = (row.get("year_start") or "").strip()
+    if not vol_s and not year_s:
         return "UNSUPPORTED"
     try:
-        vol, year = int(vol), int(year)
+        year = int(year_s) if year_s else None
+        vol = int(vol_s) if vol_s else 0
     except ValueError:
         return "UNSUPPORTED"
 
-    matching = []
+    hit = set()
     for c in candidates:
         try:
             vs = int(c.get("vol_range_start") or 0)
@@ -228,10 +243,20 @@ def disambiguate_by_structure(row, candidates):
             ye = int(c.get("year_range_end") or 9999)
         except ValueError:
             continue
-        if vs <= vol <= ve and ys <= year <= ye:
-            matching.append(c)
+        if (year is None or ys <= year <= ye) and vs <= vol <= ve:
+            hit.add(c.get("jurisdiction") or "")
+    return hit.pop() if len(hit) == 1 and "" not in hit else "UNSUPPORTED"
 
-    return matching[0]["jurisdiction"] if len(matching) == 1 else "UNSUPPORTED"
+
+_CONF_RANK = {"confirmed": 3, "inferred": 2, "estimated": 1}
+
+
+def _weaker(rows, cap):
+    """取表行成色的最弱者，再与上限 cap 取弱。消歧不能让一个 estimated 的表行变成
+    inferred——把猜的说成推的，是约束四所禁的「给猜测发许可证」换了个方向。"""
+    vals = [(r.get("confidence") or "") for r in rows] + ([cap] if cap else [])
+    known = [v for v in vals if v in _CONF_RANK]
+    return min(known, key=_CONF_RANK.get) if known else (vals[0] if vals else "")
 
 
 # --------------------------------------------------------------------- 主流程
@@ -318,12 +343,15 @@ class Classifier(object):
     def step1(self, row):
         shape = row["shape_name"]
         if shape == "shape_leading_abbr":
-            # §8.3：前缀校验。leading_abbr 不参与法域判定，主缩写只取 abbr
+            # §8.3：前缀校验，主缩写只取 abbr。PROBLEMS #52 修订：认得的前缀若带法域，
+            # 交 Step 3 做同形异义消歧（原文「leading_abbr 不参与法域判定」）
             norm_prefix = normalize_code(row.get("leading_abbr") or "")
-            if not lookup_one(norm_prefix, self.prefix_norm):
+            hit = lookup_one(norm_prefix, self.prefix_norm)
+            if not hit:
                 append_reason(row, "rejected_reason", "unrecognized_series_prefix")
             else:
                 row["series_prefix"] = row.get("leading_abbr") or ""
+                row["_prefix_jur"] = (hit.get("jurisdiction") or "").strip()
             row["citation_kind"] = "reporter"
             row["abbreviation"] = row.get("abbr") or ""
             return False
@@ -351,21 +379,50 @@ class Classifier(object):
         if not candidates:
             candidates = lookup_all(nk(abbr), self.rep_norm)
             mode = "normalized" if candidates else "exact"
-
-        if len(candidates) == 1:
-            row["jurisdiction"] = candidates[0].get("jurisdiction") or "UNSUPPORTED"
-            row["jurisdiction_confidence"] = candidates[0].get("confidence") or ""
-            row["lookup_mode"] = mode
-        elif len(candidates) > 1:
-            row["jurisdiction"] = disambiguate_by_structure(row, candidates)
-            row["jurisdiction_confidence"] = "inferred"
-            row["lookup_mode"] = mode
-            # §8.6 补充规则：无卷号时消歧只能靠年份，误判风险显著更高，须留痕
-            if not (row.get("vol") or "").strip():
-                row["vol_missing"] = "true"
-        else:
+        if not candidates:
             row["jurisdiction"] = "UNSUPPORTED"
             row["jurisdiction_confidence"] = "unsupported"
+            return
+        row["lookup_mode"] = mode
+        juris = {c.get("jurisdiction") or "" for c in candidates}
+
+        pj = row.get("_prefix_jur") or ""
+        if pj:
+            # PROBLEMS #52：系列前缀是印在本行上的事实。前缀与表冲突时不下判定——
+            # 说明抽取或表有一处错，不拿任何一方硬压另一方
+            hit = [c for c in candidates if c.get("jurisdiction") == pj]
+            if not hit:
+                row["jurisdiction"] = "UNSUPPORTED"
+                row["jurisdiction_confidence"] = "unsupported"
+                self.stats["prefix_contradicts_table"] += 1
+                return
+            row["jurisdiction"] = pj
+            row["jurisdiction_confidence"] = _weaker(hit, "inferred" if len(juris) > 1 else None)
+            if len(juris) > 1:
+                row["disambiguated_by"] = "series_prefix"
+                self.stats["disambiguated_by_series_prefix"] += 1
+            return
+
+        if len(juris) == 1:
+            row["jurisdiction"] = next(iter(juris)) or "UNSUPPORTED"
+            row["jurisdiction_confidence"] = _weaker(candidates, None)
+            return
+
+        has_vol = bool((row.get("vol") or "").strip())
+        if not has_vol:
+            # §8.6 补充规则：无卷号时消歧只能靠年份，误判风险显著更高，须留痕
+            row["vol_missing"] = "true"
+        j = disambiguate_by_structure(row, candidates)
+        row["jurisdiction"] = j
+        if j == "UNSUPPORTED":
+            row["jurisdiction_confidence"] = "unsupported"
+        else:
+            row["jurisdiction_confidence"] = _weaker(
+                [c for c in candidates if c.get("jurisdiction") == j], "inferred")
+            has_year = bool((row.get("year_start") or "").strip())
+            row["disambiguated_by"] = ("novol_year" if not has_vol
+                                       else "vol_year" if has_year else "vol_only")
+            self.stats["disambiguated_by_" + row["disambiguated_by"]] += 1
 
     def run_row(self, row):
         for c in NEW_COLUMNS:
@@ -375,6 +432,7 @@ class Classifier(object):
         if not settled:
             self.step3(row)
         split_case_name(row)
+        row.pop("_prefix_jur", None)
 
         self.stats["kind_" + (row["citation_kind"] or "none")] += 1
         for r in (row.get("rejected_reason") or "").split("|"):
