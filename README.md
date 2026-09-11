@@ -28,6 +28,8 @@ D:\cases data analisis\
 │   ├── neutral_court_codes.csv
 │   ├── series_prefix.csv
 │   └── case_origin.csv
+├── audit\                         进 git，审计环：产出是提案不是数据（规则见 audit/README.md）
+│   └── findings\                  分诊移交、溯源提案、排除清单
 ├── pipeline\                      进 git
 │   ├── normalize.py
 │   ├── shapes.py
@@ -36,16 +38,30 @@ D:\cases data analisis\
 │   ├── merge.py
 │   ├── decide.py
 │   ├── select.py
-│   └── coverage_report.py
+│   ├── coverage_report.py         填表优先级报告（§12.1）
+│   └── tests\                      run_regression.py（抽取层）、test_layers.py（第 2–5 层）、golden_layers.json（全量金标）
 ├── data\                          gitignore，派生产物
 │   ├── extract_out/{SCC,ONCA}
 │   ├── classify_out/{SCC,ONCA}
 │   ├── merge_out/{SCC,ONCA}
 │   ├── decide_out/{SCC,ONCA,cross_court}
-│   └── select_out/
+│   ├── select_out/
+│   └── coverage_out/
 └── _legacy\                       旧管线产物，仅供人工对照
     └── README.md
 ```
+
+## 运行
+
+完整执行顺序与命令见技术规格 §12。改动任何一层之后：
+
+```bash
+python pipeline/tests/run_regression.py --selftest
+python pipeline/tests/test_layers.py
+python pipeline/tests/test_layers.py --golden
+```
+
+实现中对规格的补充与偏离都登记在 PROBLEMS.md，规格里以「实现注记（v1.6）」标出，待人复核。
 
 ## 约束
 
