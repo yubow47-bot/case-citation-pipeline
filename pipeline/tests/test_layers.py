@@ -209,6 +209,22 @@ def test_disambiguation():
                        source_decision_citation="SCC_2019scc5"))
     check(r["self_citation"] == "", "#54 引别的判决不打")
 
+    r = c.run_row(_row("shape_bracket", "[1985] 2 S.C.R. 486", token="S.C.R.", vol="2", year_start="1985",
+                       page="486", preceding_text="Hunter v. Southam Inc., [1984] 2 S.C.R. 145; R. v. Big M "
+                       "Drug Mart Ltd., [1985] 1 S.C.R. 295; Re B.C. Motor Vehicle Act, "))
+    check((r["candidate_case_name"], r["name_rejected_reason"]) == ("", "name_belongs_to_later_segment"),
+          "#57 Re B.C. Motor Vehicle Act 的引证不借前一个案子 Big M 的名字")
+    r = c.run_row(_row("shape_bracket", "[2002] 2 S.C.R. 235", token="S.C.R.", vol="2", year_start="2002",
+                       page="235", preceding_text="; Housen v. Nikolaisen, 2002 SCC 33; "))
+    check(r["candidate_case_name"] == "Housen v. Nikolaisen",
+          "#57 分号后紧接引证是平行引证，案名照切（#45 剥尾照旧）")
+    r = c.run_row(_row("shape_bracket", "[1991] 3 S.C.R. 387", token="S.C.R.", vol="3", year_start="1991",
+                       page="387", preceding_text="; R. v. Grover (1990), 56 C.C.C. (3d) 532 (Ont. C.A.); aff\'d "))
+    check(r["candidate_case_name"] == "R. v. Grover", "#57 分号后是本案上诉沿革（aff'd）：仍属分号前的案名")
+    check(not classify._HISTORY_RE.match("Revenue Canada") and not classify._HISTORY_RE.match("Varity Corp")
+          and not classify._HISTORY_RE.match("Re B.C. Motor Vehicle Act"),
+          "#57 沿革词表只认完整的沿革词，不吞 Revenue、Varity、Re 起头的案名")
+
 
 # ============================================================ 裁定层（单元）
 def _k(year, code, num):

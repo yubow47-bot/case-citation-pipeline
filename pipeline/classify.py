@@ -84,6 +84,14 @@ _ADMIT_VERB_RE = re.compile(
     r"(?:citing|see also|see|per|applied|considered|referred to|"
     r"following|approving|distinguished|overruled|cf)\s+", re.IGNORECASE)
 _ADMIT_IN_RE = re.compile(r"in\s+(?!re\s)", re.IGNORECASE)
+# PROBLEMS #57：分号后以这些词起头，是**同一案子**的上诉沿革（R. v. Grover (1990), 56 C.C.C.
+#   (3d) 532 (Ont. C.A.); aff'd [1991] 3 S.C.R. 387），本行引证仍属分号前的案名。词表取自
+#   全量实测：分号后以字母起头的 3,408 行里，表示本案沿革的只有 aff'd/affirmed（73）与
+#   leave to appeal（17）两类，rev'd/var'd 同属一类一并收；其余全是另一件案子（Re …、
+#   Reference re …、In re …、Ex parte …）。与 _ADMIT_VERB_RE 同是 §8.7 的案名清洗词表
+_HISTORY_RE = re.compile(
+    r"(?:aff(?:[’']?d|irmed|irming|[’']?g)|rev(?:[’']?d|ersed|ersing|[’']?g)"
+    r"|var(?:[’']?d|ied|ying)|leave\s+to\s+appeal)\b", re.IGNORECASE)
 # PROBLEMS #43：判决书段落体例是 [24] The trial judge…，切分起点落在编号中间时
 #   会留下 24] 的残尾。原清洗只剥前导的 [ ( 等字符、不剥数字，于是 24] R. v. Smith
 #   原样留下。**只收「数字 + 右方括号」这一形**：没有案名以此开头，零误伤；裸数字
@@ -195,6 +203,20 @@ def split_case_name(row):
         append_reason(row, "name_rejected_reason", "no_v_structure")
         row["candidate_case_name"] = ""
         return
+
+    # PROBLEMS #57：v. 之后若隔着分号又起了一段以字母开头的文字——`R. v. Big M Drug Mart
+    # Ltd., [1985] 1 S.C.R. 295; Re B.C. Motor Vehicle Act, [本行]`——本行引证属于那一段
+    # （Re B.C. Motor Vehicle Act），不属于 v. 所在的案名。那一段没有 v.，就是没有可切的
+    # 案名，不能借前一个案子的名字。#45 的剥尾以前会把「; Re B.C. Motor Vehicle Act」连同
+    # 前一个引证一起剥掉，让借来的名字通过。分号后紧接引证（`2002 SCC 33; [本行]`，以 [ ( 或
+    # 数字起头）是平行引证，不受影响。判据是结构（分号后那段以字母起头），不是词表
+    after = pre[last.end():]
+    if ";" in after:
+        seg = after[after.rfind(";") + 1:].lstrip(" \t\r\n\"'‘“«")
+        if seg[:1].isalpha() and not _HISTORY_RE.match(seg):
+            append_reason(row, "name_rejected_reason", "name_belongs_to_later_segment")
+            row["candidate_case_name"] = ""
+            return
 
     sep = max(pre.rfind(";", 0, last.start()),
               pre.rfind(":", 0, last.start()),

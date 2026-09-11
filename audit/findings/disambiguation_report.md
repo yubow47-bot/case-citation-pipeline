@@ -51,26 +51,25 @@
 | kb | novol_year | 0 | 0 | 10 |
 | kb | series_prefix | 1 | 0 | 692 |
 | kb | vol_only | 0 | 0 | 48 |
-| kb | vol_year | 25 | 2 | 1022 |
+| kb | vol_year | 25 | 1 | 1023 |
 | p | novol_year | 3 | 0 | 136 |
 | p | series_prefix | 0 | 0 | 2 |
 | p | vol_only | 0 | 0 | 159 |
 | p | vol_year | 0 | 0 | 153 |
 | qb | novol_year | 14 | 0 | 81 |
-| qb | series_prefix | 1 | 0 | 571 |
+| qb | series_prefix | 0 | 0 | 572 |
 | qb | vol_only | 0 | 0 | 96 |
-| qb | vol_year | 36 | 0 | 516 |
+| qb | vol_year | 35 | 0 | 517 |
 | sc | novol_year | 0 | 0 | 23 |
 | sc | series_prefix | 0 | 0 | 583 |
 | sc | vol_only | 0 | 0 | 22 |
 | sc | vol_year | 0 | 0 | 40 |
 | wlr | novol_year | 0 | 0 | 3 |
 | wlr | vol_only | 0 | 0 | 30 |
-| wlr | vol_year | 50 | 2 | 346 |
+| wlr | vol_year | 48 | 2 | 348 |
 
 旁证冲突的例：
 
 - `[1954] 1 W.L.R. 228` 判 GB，旁证 CA；组内：[1954] 1 W.L.R. 228 / (1955), 21 C.R. 263
 - `[1985] 1 WLR 816` 判 GB，旁证 CA；组内：[1984] 1 C.N.L.R. 122 / [1985] 1 WLR 816
-- `[1908] 1 K.B. 344` 判 GB，旁证 ON；组内：(1907), 15 O.L.R. 81 / [1908] 1 K.B. 344
 - `[1950] 1 K.B. 26` 判 GB，旁证 ON；组内：[1950] 1 K.B. 26 / [1951] O.R. 422
