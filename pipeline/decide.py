@@ -80,6 +80,31 @@
     已知残余：法域表把「最高法院专属汇编」（S.C.R.）与「全国性汇编」（D.L.R.、
     C.C.C.）都标 CA（PROBLEMS #40），全国性汇编刊登的省级判决可能被分给最高
     法院。预演实测此类暴露 61 条中 59 条是 S.C.R.（正确），C.C.C.、F.C.R. 各 1 条。
+
+  五、**判决自身印的引证：是身份锚，且不计入自己的 dd**（#54/#55）。归并层的
+    self_citation_of 记着「这个键是语料里哪件判决在自己头部印的引证」。
+      · 1999 年前的最高法院判决没有中立引用，它自己的 S.C.R. 引证就是锚：
+        [1957] S.C.R. 119 与 [1957] S.C.R. 531 同名同年，却是语料里两件判决，
+        首版因「无中立锚不拆」合成一组。汇编锚只与同键合并，不走
+        same_decision()——后者按中立引用解析、不看卷号
+      · 中立锚的笔误规则加一道闸：键若是语料某判决自己的引证，且那件判决头部
+        印的案名（self_case_name）就是这个键在本组里的名字，它就是同名的另一件
+        判决，不是笔误——2007 ONCA 196 与 496 两件都印着 R. v. Maciel。头部名字
+        对不上的照旧可当笔误：键 2008 ONCA 36 落在 R. v. Conway 组里，它自己的
+        头部印的却是 Mickle v. Mickle，组里那些 36 是 326 的笔误。全量实测被当
+        笔误并掉的语料判决 101 对：88 对头部名与组名一致，12 对不一致
+      · 语料法院在开始印中立引用之前的「中立引用」不是判决身份（#56）：最高
+        法院 2000 年才启用，1994 SCC 80 只能是噪声，它若当锚，会把 Mohan 的组
+        拆成「两件判决」、让 C.C.C. 平行引证无处可归。判据两头都要正证据，都取
+        语料里该院判决自己头部印的引证：该年早于它最早一次自印中立引用，**且**
+        它在该年或之后仍在自印非中立引用（最高法院 1999 年还印 [1999] S.C.R.）。
+        只凭前一条是缺证推断——语料缺了早年判决的头部就会误降真中立引用。只对
+        语料法院成立，别的法院语料里没有它自己的判决
+      · 剔自身只对组的**身份根**做：判决头部除了自身引证还印平行汇编、双语
+        代码，分类层单行认不出，成组后才知道都是它自己。被当笔误并进别组的
+        键不剔——那件判决若真引了本组，是真引用
+      · 判决自身参与共引：头部把平行引证挨着自身中立引用印，这是它自己印的
+        共引，故身份根的判决 id 集含它自身（只用于分派，dd 里剔除）
 """
 import argparse
 import csv
@@ -171,23 +196,70 @@ def same_decision(ka, ja, dda, kb, jb, ddb):
     return False
 
 
-def decisions_of(members, did_idx):
-    """把组内的中立引用归并成「判决」。返回 (root, anchor_ids, anchor_jur)。"""
+def _self_of(m):
+    return {x for x in (m.get("self_citation_of") or "").split("|") if x}
+
+
+def neutral_start(rows):
+    """各语料法院的中立引用起用界（#56），取自判决自己头部印的引证：
+    {法院码: (最早一次自印中立引用的年份, 最晚一次自印非中立引用的年份)}。"""
+    first, last = {}, {}
+    for r in rows:
+        p = r["merge_key"].split("|")
+        if not p[0].isdigit():
+            continue
+        for d in _self_of(r):
+            code = d.split("_", 1)[0].lower()
+            if r.get("citation_kind") == "neutral":
+                first[code] = min(first.get(code, 9999), int(p[0]))
+            else:
+                last[code] = max(last.get(code, 0), int(p[0]))
+    return {c: (first.get(c, 9999), last[c]) for c in last}
+
+
+def _before_start(k, start):
+    """该院那年还不出中立引用：早于它最早的自印中立引用，且它那年或之后仍自印非中立引用。"""
+    p = k.split("|")
+    if not start or not p[0].isdigit() or p[2] not in start:
+        return False
+    first, last = start[p[2]]
+    return int(p[0]) < first and int(p[0]) <= last
+
+
+def decisions_of(members, did_idx, start=None):
+    """把组内的身份锚归并成「判决」。返回 (root, anchor_ids, anchor_jur, own)。
+    锚 = 中立引用，或语料某判决在自己头部印的引证（self_citation_of，#55）。
+    own[k] 为锚 k 是哪件判决自己的引证；anchor_ids 不含它（dd 口径）。"""
+    own, neu = defaultdict(set), defaultdict(bool)
+    same_name = defaultdict(bool)      # 头部自印案名 == 本组里这个键的名字
+    for m in members:
+        k = m["merge_key"]
+        own[k] |= _self_of(m)
+        neu[k] = neu[k] or m.get("citation_kind") == "neutral"
+        sn = nk(m.get("self_case_name") or "")
+        same_name[k] = same_name[k] or bool(sn and sn == nk(m.get("case_name_modal") or ""))
+    for k in neu:
+        if neu[k] and not own[k] and _before_start(k, start):
+            neu[k] = False        # 该院那年还不出中立引用：不是身份锚，当普通单元（#56）
     anc, ajur = defaultdict(set), {}
     for m in members:
-        if m.get("citation_kind") == "neutral":
-            anc[m["merge_key"]] |= did_idx.get(row_key(m), set())
-            ajur[m["merge_key"]] = m.get("jurisdiction") or ""
+        k = m["merge_key"]
+        if neu[k] or own[k]:
+            anc[k] |= did_idx.get(row_key(m), set())
+            ajur[k] = m.get("jurisdiction") or ""
     order = sorted(anc, key=lambda k: (-len(anc[k]), k))
     root = {}
     for i, k in enumerate(order):
         root[k] = k
         for big in order[:i]:
-            if root[big] == big and same_decision(k, ajur[k], len(anc[k]),
-                                                  big, ajur[big], len(anc[big])):
+            if root[big] != big or not (neu[k] and neu[big]):
+                continue          # 汇编锚只与同键合并：same_decision 按中立引用解析、不看卷号
+            if own[k] and same_name[k]:
+                continue          # 同名的另一件语料判决，不是笔误（见文件头五）
+            if same_decision(k, ajur[k], len(anc[k]), big, ajur[big], len(anc[big])):
                 root[k] = big
                 break
-    return root, anc, ajur
+    return root, anc, ajur, own
 
 
 BAR = 0.8   # 「几乎总是一起印」。待定审计实测覆盖率双峰，取 0.5 或 0.8 只差 6 条
@@ -204,8 +276,8 @@ def _compatible(a, b):
     return not a or not b or a == b
 
 
-def split_by_decision(members, did_idx, stats):
-    root, anc, ajur = decisions_of(members, did_idx)
+def split_by_decision(members, did_idx, stats, start=None):
+    root, anc, ajur, own = decisions_of(members, did_idx, start)
     stats["anchors_collapsed_as_variant"] += sum(1 for k, r in root.items() if k != r)
     decisions = sorted({root[k] for k in root}, key=lambda k: (-len(anc[k]), k))
     if len(decisions) < 2:
@@ -215,10 +287,12 @@ def split_by_decision(members, did_idx, stats):
     dec_ids = defaultdict(set)
     for k, r in root.items():
         dec_ids[r] |= anc[k]
+    for r in decisions:
+        dec_ids[r] |= own[r]           # 身份根自己印的共引（头部平行引证），见文件头五
     buckets = {d: [] for d in decisions}
     units = defaultdict(list)          # 同一印刷串同进同出
     for m in members:
-        if m.get("citation_kind") == "neutral":
+        if m["merge_key"] in root:
             buckets[root[m["merge_key"]]].append(m)
         else:
             units[m["merge_key"]].append(m)
@@ -297,7 +371,7 @@ def split_by_decision(members, did_idx, stats):
 
 
 # ------------------------------------------------------------ §10.3 + §10.4
-def cluster_same_case(rows, did_idx, stats):
+def cluster_same_case(rows, did_idx, stats, start=None):
     """返回 [(members, split_reason, split_seq)]；split_reason 为空表示未拆。
     无案名或无年份的行不参与合并（没有判同的依据），各自独立成组。"""
     buckets, out = defaultdict(list), []
@@ -328,7 +402,7 @@ def cluster_same_case(rows, did_idx, stats):
                 parts = [([r for _, r in p], "span") for p in windows(ch)]
             seq = 0
             for rows_, r0 in parts:
-                for sub, r1 in split_by_decision(rows_, did_idx, stats):
+                for sub, r1 in split_by_decision(rows_, did_idx, stats, start):
                     reason = ";".join(x for x in (r0, r1) if x)
                     if reason:
                         out.append((sub, reason, seq))
@@ -379,7 +453,10 @@ def load_decision_ids(path, court=None):
 
 
 def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin):
-    clusters = cluster_same_case(rows, did_idx, stats)
+    start = neutral_start(rows)
+    stats["neutral_rows_before_court_start"] = sum(
+        1 for r in rows if r.get("citation_kind") == "neutral" and _before_start(r["merge_key"], start))
+    clusters = cluster_same_case(rows, did_idx, stats, start)
     clusters.sort(key=lambda c: min(row_key(m) for m in c[0]))
 
     out, out_ids = [], []
@@ -388,6 +465,14 @@ def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin
         ids = set()
         for m in members:
             ids |= did_idx.get(row_key(m), set())
+        # 剔自身（#54）：只剔身份根——被当笔误并进本组的键，其判决若引了本组是真引用
+        root, _, _, own = decisions_of(members, did_idx, start)
+        selfd = set()
+        for k, r in root.items():
+            if k == r:
+                selfd |= own[k]
+        stats["self_ids_removed"] += len(ids & selfd)
+        ids -= selfd
         occ = sum(key_occ(m) for m in members)
         primary = min(members, key=lambda m: (-key_occ(m), row_key(m)))
 
@@ -475,8 +560,9 @@ def main():
                 [year_of(m["merge_key"]) for m in ms
                  if m.get("case_name_modal") and year_of(m["merge_key"])]) > 1]
     assert not wide, "有组的年份跨度 > 1：%r" % wide[:5]
+    start = neutral_start(rows)
     multi = [g for g, ms in groups.items()
-             if len(set(decisions_of(ms, did_idx)[0].values())) > 1]
+             if len(set(decisions_of(ms, did_idx, start)[0].values())) > 1]
     assert not multi, "有组仍含多个不同判决：%r" % multi[:5]
 
     os.makedirs(a.output, exist_ok=True)

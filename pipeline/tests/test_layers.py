@@ -201,6 +201,14 @@ def test_disambiguation():
     check(merge.build_merge_key({"year_start": "1978", "vol": "1", "abbreviation": "A.C.", "page": "728"})
           == "1978|1|ac||728", "#53 无前缀的行归并键逐字节不变")
 
+    r = c.run_row(_row("shape_neutral_bare", "2019 SCC 5", token="SCC", year_start="2019", page="5",
+                       source_decision_citation="SCC_2019scc5"))
+    check((r["self_citation"], r["rejected_reason"]) == ("true", ""),
+          "#54 判决头部印的自身引证打 self_citation，且不进 rejected_reason（它是真引证）")
+    r = c.run_row(_row("shape_neutral_bare", "2019 SCC 6", token="SCC", year_start="2019", page="6",
+                       source_decision_citation="SCC_2019scc5"))
+    check(r["self_citation"] == "", "#54 引别的判决不打")
+
 
 # ============================================================ 裁定层（单元）
 def _k(year, code, num):
@@ -222,6 +230,46 @@ def test_decide_units():
           "#49 号码全不同是不同判决（Wewaykum 本案与回避申请）")
     check(not decide.same_decision(_k(2017, "scc", 17), "CA", 1, _k(2018, "nbqb", 17), "NB", 151),
           "#49 不同法院必是不同判决")
+    ms = [{"merge_key": "1957||scr||119", "citation_kind": "reporter", "court": "ONCA",
+           "jurisdiction": "CA", "self_citation_of": "SCC_1957scr119"},
+          {"merge_key": "1957||scr||531", "citation_kind": "reporter", "court": "ONCA",
+           "jurisdiction": "CA", "self_citation_of": "SCC_1957scr531"},
+          {"merge_key": "1957|1|scr||119", "citation_kind": "reporter", "court": "ONCA",
+           "jurisdiction": "CA", "self_citation_of": "SCC_19571scr119"}]
+    root = decide.decisions_of(ms, {})[0]
+    check(len(set(root.values())) == 3,
+          "#55 判决自身的汇编引证是锚，且汇编锚只与同键合并（卷号不同也不并）")
+
+    def neu(k, own, own_name, name):
+        return {"merge_key": k, "citation_kind": "neutral", "court": "ONCA", "jurisdiction": "CA",
+                "self_citation_of": own, "self_case_name": own_name, "case_name_modal": name}
+    did = {"ONCA|2007||onca||196": {"a", "b", "c", "d"}, "ONCA|2007||onca||496": {"e"},
+           "ONCA|2002||scc||33": {"h1", "h2", "h3", "h4"}, "ONCA|2002||scc||3": {"h5"}}
+    root = decide.decisions_of([neu("2007||onca||196", "ONCA_2007onca196", "R. v. Maciel", "R. v. Maciel"),
+                                neu("2007||onca||496", "ONCA_2007onca496", "R. v. Maciel", "R. v. Maciel")],
+                               did)[0]
+    check(len(set(root.values())) == 2,
+          "#55 两件同名语料判决（头部都印 R. v. Maciel）号码差一位也不当笔误")
+    root = decide.decisions_of([neu("2002||scc||33", "", "", "Housen v. Nikolaisen"),
+                                neu("2002||scc||3", "SCC_2002scc3", "R. v. X", "Housen v. Nikolaisen")],
+                               did)[0]
+    check(len(set(root.values())) == 1,
+          "#55 键是另一件判决的自引、但它头部印的名字对不上本组：组里的是笔误，照旧并入 Housen")
+
+    mohan = [{"merge_key": "1994|2|scr||9", "citation_kind": "reporter", "court": "SCC",
+              "jurisdiction": "CA", "self_citation_of": "SCC_19942scr9"},
+             {"merge_key": "1994||scc||80", "citation_kind": "neutral", "court": "ONCA",
+              "jurisdiction": "CA", "self_citation_of": ""},
+             {"merge_key": "2000||scc||1", "citation_kind": "neutral", "court": "SCC",
+              "jurisdiction": "CA", "self_citation_of": "SCC_2000scc1"}]
+    start = decide.neutral_start(mohan)
+    check(start == {"scc": (2000, 1994)},
+          "#56 起用界取语料判决自己头部印的引证：最早自印中立 2000、最晚自印非中立 1994")
+    check(not decide._before_start("2005||scc||75", {"scc": (2015, 1957)}),
+          "#56 缺证不降：语料只见 2015 年的自印中立引用，但 1957 年后再无自印非中立引用")
+    check(len(set(decide.decisions_of(mohan[:2], {})[0].values())) == 2
+          and len(set(decide.decisions_of(mohan[:2], {}, start)[0].values())) == 1,
+          "#56 最高法院 2000 年前的「中立引用」（1994 SCC 80）不当判决身份锚")
     parts = decide.windows([(2001, "a"), (2002, "b"), (2003, "c"), (2004, "d")])
     check([[x for _, x in p] for p in parts] == [["a", "b"], ["c", "d"]], "#48 ±1 年窗口切段")
 
@@ -230,11 +278,12 @@ def test_decide_units():
 MINI_FIELDS = ["raw_string", "source_decision_citation", "source_decision_year",
                "rejected_reason", "name_rejected_reason", "candidate_case_name",
                "abbreviation", "citation_kind", "jurisdiction", "jurisdiction_confidence",
-               "year_start", "vol", "series", "page"]
+               "year_start", "vol", "series", "page", "self_citation"]
 
 
-def _m(court, did, raw, kind, abbr, jur, year, page, vol="", name="", rej=""):
-    return {"raw_string": raw, "source_decision_citation": "%s_%s" % (court, did),
+def _m(court, did, raw, kind, abbr, jur, year, page, vol="", name="", rej="", own=False):
+    return {"self_citation": "true" if own else "",
+            "raw_string": raw, "source_decision_citation": "%s_%s" % (court, did),
             "source_decision_year": "2020", "rejected_reason": rej, "name_rejected_reason": "",
             "candidate_case_name": name, "abbreviation": abbr, "citation_kind": kind,
             "jurisdiction": jur, "jurisdiction_confidence": "confirmed" if kind == "neutral" else "estimated",
@@ -257,6 +306,17 @@ def _mini_rows():
         onca += [_neu("ONCA", "L%d" % i, 2015, "SCC", 64, "CA", nm),
                  _rep("ONCA", "L%d" % i, 2015, "3", "S.C.R.", 1089, "CA", nm)]
     scc.append(_neu("SCC", "L9", 2015, "SCC", 64, "CA", "R. v. Lacasse"))
+    # Lacasse 自己：头部印自身中立引用（分类层认得，打标记）与平行 S.C.R.（认不得）（#54）
+    own = _neu("SCC", "2015scc64", 2015, "SCC", 64, "CA", "R. v. Lacasse")
+    own["self_citation"] = "true"
+    scc += [own, _rep("SCC", "2015scc64", 2015, "3", "S.C.R.", 1089, "CA", "R. v. Lacasse")]
+    # Beaver：1957 年两件同名最高法院判决，都在语料里，无中立引用（#55）
+    for did, page, citers in (("1957scr119", 119, ("B1",)), ("1957scr531", 531, ("B2", "B3"))):
+        b = _rep("SCC", did, 1957, "", "S.C.R.", page, "CA", "Beaver v. The Queen")
+        b["self_citation"] = "true"
+        scc.append(b)
+        for x in citers:
+            onca.append(_rep("ONCA", x, 1957, "", "S.C.R.", page, "CA", "Beaver v. The Queen"))
     onca.append(_m("ONCA", "L1", "L.R. 3 H.L. 1", "reporter", "H.L.", "UNSUPPORTED", 1868, 1,
                    vol="3", rej="unrecognized_series_prefix"))
     # R. v. Smith：每年一件、链式串起来，跨度 > 1 必须切开（#48）
@@ -376,9 +436,14 @@ def test_mini_chain():
 
     g = groups[one("2015||scc||64")]
     check(any(r["merge_key"] == "2015|3|scr||1089" for r in g), "平行汇编与中立引用同组")
-    check((g[0]["distinct_decisions_count"], g[0]["occurrence_count"]) == ("5", "9"),
-          "#46 dd 取并集（5，不是相加的 9）；#47 跨院 occurrence 不重复累加（9）")
-    counted = sum(1 for r in scc + onca if not r["rejected_reason"])
+    check((g[0]["distinct_decisions_count"], g[0]["occurrence_count"]) == ("5", "10"),
+          "#46 dd 取并集（5，不是相加）；#54 Lacasse 自己头部的两处不进 dd——中立引用在归并层"
+          "按标记排除，平行 S.C.R. 在裁定层按身份根剔除（occurrence 仍含后者一次，10）")
+    smerged = {r["merge_key"]: r for r in _read(os.path.join(tmp, "merge", "SCC", "merged.csv"))}
+    check((smerged["2015||scc||64"]["occurrence_count"], smerged["2015||scc||64"]["self_citation_of"])
+          == ("1", "SCC_2015scc64"),
+          "#54 归并层：自引不计数，键上记着它是哪件判决自己的引证")
+    counted = sum(1 for r in scc + onca if not r["rejected_reason"] and r["self_citation"] != "true")
     check(sum(int(ms[0]["occurrence_count"]) for ms in groups.values()) == counted,
           "#47 守恒：各组 occurrence 之和 == 计数行总数")
     smith = [ms for ms in groups.values() if ms[0]["case_name_modal"] == "R. v. Smith"]
@@ -397,6 +462,9 @@ def test_mini_chain():
           "#49 Imoro：先按法域筛再比共引，S.C.R. 归最高法院判决")
     check(one("2003|2|scr||259") == one("2003||scc||45") != one("2002||scc||79"),
           "#49 Wewaykum：共引持平以印刷年份定归")
+    b1, b2 = groups[one("1957||scr||119")], groups[one("1957||scr||531")]
+    check(b1 is not b2 and (b1[0]["distinct_decisions_count"], b2[0]["distinct_decisions_count"])
+          == ("1", "2"), "#55 Beaver：两件同名同年的语料判决分开，各自不数自己")
     did = decide.load_decision_ids(os.path.join(tmp, "decide", "cross", "decision_ids.csv"))
     check(all(len(set(decide.decisions_of(ms, did)[0].values())) <= 1 for ms in groups.values()),
           "#49 硬不变量：任何一组不含两个不同判决（按裁定层同一判据复算）")

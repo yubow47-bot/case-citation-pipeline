@@ -71,7 +71,8 @@ MERGED_FIELDS = ["merge_key", "canonical_string", "abbreviation", "citation_kind
                  "jurisdiction", "jurisdiction_confidence", "case_name_modal",
                  "occurrence_count", "distinct_decisions_count",
                  "case_name_agreement", "variants_count",
-                 "candidates_admitted", "candidates_rejected"]
+                 "candidates_admitted", "candidates_rejected", "self_citation_of",
+                 "self_case_name"]
 
 FOLDED_FIELDS = ["merge_key", "raw_string", "count", "distinct_decisions_count"]
 
@@ -145,6 +146,7 @@ def main():
                 row.get("citation_kind") or "",
                 row.get("jurisdiction") or "",
                 row.get("jurisdiction_confidence") or "",
+                row.get("self_citation") == "true",
             ))
 
     merged, folded, decision_ids = [], [], []
@@ -159,8 +161,15 @@ def main():
         top = max(raw_cnt.values())
         canonical = sorted(r for r, c in raw_cnt.items() if c == top)[0]
 
-        # §9.2 计数：只排除行级误报，不排除仅仅切不出案名的行
-        counted = [m for m in members if not m[3]]
+        # §9.2 计数：只排除行级误报，不排除仅仅切不出案名的行。自引（PROBLEMS #54）
+        # 是真引证但不是「别的判决引用了它」，也不计——判决头部必印自身引证，计入则
+        # 语料里每件判决自带 dd+1，dd 恰是选取层唯一的门槛判据
+        counted = [m for m in members if not m[3] and not m[10]]
+        # 这个键是语料里哪件判决自己印的引证：裁定层据此认身份锚、剔自身（#54/#55）
+        own = sorted({m[1] for m in members if m[10]})
+        # 那件判决在自己头部印的案名：裁定层据此分辨「同名的另一件判决」与笔误（#55）
+        own_names = Counter(m[5] for m in members if m[10] and m[5] and not m[4])
+        own_name = min(own_names, key=lambda n: (-own_names[n], n)) if own_names else ""
         occurrence = len(counted)
         # 并集基数 —— 不是各变体取最大值（旧管线 bug），也不是相加
         decisions = {m[1] for m in counted}
@@ -170,7 +179,9 @@ def main():
             decision_ids.append({"merge_key": key, "source_decision_citation": did})
 
         # §9.3 案名众数投票：行级误报与切不出案名的行都排除
-        valid = [m for m in counted if not m[4] and m[5]]
+        # 自引行照样投案名票：判决头部印的正是它自己的案名，裁定层 §10.3 靠案名把
+        # 它与平行引证连起来；只从计数里排除，不从投票里排除
+        valid = [m for m in members if not m[3] and not m[4] and m[5]]
         if valid:
             # 两级投票（本实现对 §9.3 的补充，见文件头「规格未定义」一节）：
             # 先按 nk() 折叠拼写变体，再在胜出组内取最常见的印刷形输出。
@@ -218,6 +229,8 @@ def main():
             "variants_count": variants,
             "candidates_admitted": admitted,
             "candidates_rejected": rejected,
+            "self_citation_of": "|".join(own),
+            "self_case_name": own_name,
         })
 
         # 折叠日志：**全部**印刷变体都登记（含计数为 0 的），回答「这个键吞并了
@@ -226,14 +239,18 @@ def main():
         for m in members:
             per_raw[m[0]].append(m)
         for raw in sorted(per_raw):
-            c = [m for m in per_raw[raw] if not m[3]]
+            c = [m for m in per_raw[raw] if not m[3] and not m[10]]
             folded.append({"merge_key": key, "raw_string": raw,
                            "count": len(c),
                            "distinct_decisions_count": len({m[1] for m in c})})
 
         stats["occurrence_total"] += occurrence
+        stats["self_citation_rows"] += sum(1 for m in members if m[10])
         if occurrence == 0:
-            stats["groups_all_rejected"] += 1
+            if all(m[10] for m in members):
+                stats["keys_only_self_citation"] += 1
+            else:
+                stats["groups_all_rejected"] += 1
 
     stats["merge_keys"] = len(merged)
     stats["folded_rows"] = len(folded)

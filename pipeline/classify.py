@@ -68,7 +68,8 @@ DECISIONS = os.path.join(ROOT, "decisions")
 NEW_COLUMNS = ["citation_kind", "abbreviation", "jurisdiction",
                "jurisdiction_confidence", "lookup_mode", "vol_missing",
                "series_prefix", "candidate_case_name",
-               "rejected_reason", "name_rejected_reason", "disambiguated_by"]
+               "rejected_reason", "name_rejected_reason", "disambiguated_by",
+               "self_citation"]
 
 # ---------------------------------------------------------------- §8.4 Step 2
 FED_STATUTE = re.compile(r"(?:^|[\s(\[])(?:R\.S\.C\.|S\.C\.)\s*(?:18|19|20)\d{2}")
@@ -433,6 +434,14 @@ class Classifier(object):
             self.step3(row)
         split_case_name(row)
         row.pop("_prefix_jur", None)
+        # PROBLEMS #13/#54：判决头部必印自身引证，抽取层照单全收。本行抽出串 == 本判决
+        # 自身引证（source_decision_citation 即「法院_nk(citation_en)」）即自引。它是真
+        # 引证，故不进 rejected_reason（§8.3 要求「不是引证」与其他含义分开），只打标记；
+        # 计数时由归并层排除。平行汇编、双语代码等头部其他写法单行认不出，交裁定层
+        own = (row.get("source_decision_citation") or "").split("_", 1)[-1]
+        if own and nk(row.get("raw_string") or "") == own:
+            row["self_citation"] = "true"
+            self.stats["self_citation"] += 1
 
         self.stats["kind_" + (row["citation_kind"] or "none")] += 1
         for r in (row.get("rejected_reason") or "").split("|"):
