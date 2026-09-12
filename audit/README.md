@@ -55,6 +55,7 @@
 | `case_name_gap_audit.py` | 无 v. 案名的缺口测量（PROBLEMS #58）：无名行的 `name_rejected_reason` 分布、**引证所在段**的首词分档、各候选标记命中数与样本、`(Re)` 后缀形、魁北克匿名名同族探测 |
 | `preview_prose_trim.py` | 案名左侧散文污染的离线预演（PROBLEMS #61）：把拟采用的「左切」规则套在现成 `candidate_case_name` 上，秒级看出会改哪些名字、`--legit` 列出全部去重改动供人逐条判断是改善还是误伤 |
 | `near_year_peers_audit.py` | 同名、年份相差 ≤1 的组对测量与验收（PROBLEMS #62）：组级计数（一对组算一对，按行计数是另一个更大的数字），并逐对核对 `same_name_near_year_peers` 列有没有**两边都标出** |
+| `extraction_recall_audit.py` | 抽取层召回率与漏抽机制（PROBLEMS #63）：对语料上游 `cases_cited_en` 的裸中立引用真值量召回（kept 档 98.80%），把漏掉的按机制分档——**去重输给重叠的更长 span**（用偏移区间定位赢家，不看名字）/**并进更长的键**/**原文里没有这一串**（上游元数据）/真缺口。**与 `gap_audit.py` 的「包住率」是两回事，别混用** |
 | `one_vote_audit.py` | 「一票定名」的测量（PROBLEMS #60）：每个过门槛组的名字支持度分档、票数×支持度联合分布、支持度 < 0.10 的清单。只读不改 |
 | `gate_effect_audit.py` | 支持度闸的**逐组**效应（PROBLEMS #60）：闸把哪些组合拆开了、拆开后两边的名字/引证/年份各是什么——据此判断闸是挡住了错并、还是拆散了本该在一起的平行引证 |
 | `decide_no_gate.py` | 关掉支持度闸跑一遍裁定层，重建「不设闸」的对照产出。**只是审计仪器**：生产线永远按 `pipeline/decide.py` 里的常量跑 |
