@@ -440,6 +440,65 @@ def test_nominate_paren_note_not_keyed():
           "D4：nominate 括注不进键")
 
 
+# ================================================================ 阶段 3（D6 来源地）
+def _origin_row(merge_key):
+    return {"merge_key": merge_key, "case_name_modal": "", "canonical_string": "x"}
+
+
+def test_scope_origin_rules():
+    """D6：来源地两级证据。用真 scope 表 + 合成 origin_idx。"""
+    import decide
+    scope = decide.load_scope()
+    check(len(scope) >= 6, "scope 表载入（verified 规则 ≥6 条）")
+
+    def origin(**kw):
+        return dict(kw)
+    # 1. 英国上诉法院 → FOREIGN / GB（scope 规则）
+    r = _origin_row("2009||ewca|civ|1746")
+    decide.decide_case_origin(r, ["x"], {}, Counter(), scope)
+    check((r["case_origin"], r["foreign_status"], r["origin_country"],
+           r["origin_basis"]) == ("GB", "FOREIGN", "GB", "court_scope_rule"),
+          "D6：2009 EWCA Civ 1746 → FOREIGN/GB（court_scope_rule）")
+    # 2. ONCA → DOMESTIC_CA / Ontario
+    r = _origin_row("2011||onca||779")
+    decide.decide_case_origin(r, ["x"], {}, Counter(), scope)
+    check((r["case_origin"], r["foreign_status"], r["origin_subdivision"])
+          == ("CA", "DOMESTIC_CA", "Ontario"),
+          "D6：2011 ONCA 779 → DOMESTIC_CA/Ontario")
+    # 3. 年代闸：1868 UKHL 1 是 BAILII 回溯号 → UNDETERMINED（不冒充 GB）
+    r = _origin_row("1868||ukhl||1")
+    decide.decide_case_origin(r, ["x"], {}, Counter(), scope)
+    check((r["case_origin"], r["foreign_status"]) == ("UNDETERMINED", "UNDETERMINED"),
+          "D6：pre-2001 UKHL 回溯号被年代闸挡住 → UNDETERMINED")
+    # 4. 跨法域法院（UKPC/JCPC）不在规则表 → UNDETERMINED（绝不推断）
+    r = _origin_row("1925||ukpc||11")
+    decide.decide_case_origin(r, ["x"], {}, Counter(), scope)
+    check(r["case_origin"] == "UNDETERMINED",
+          "D6：UKPC 不入规则表 → UNDETERMINED（约束七）")
+    # 5. 带卷号的汇编结构不适用中立码规则
+    r = _origin_row("2009|1|scc||51")
+    decide.decide_case_origin(r, ["x"], {}, Counter(), scope)
+    check(r["case_origin"] == "UNDETERMINED",
+          "D6：有卷号的汇编键不适用中立码 scope 规则")
+    # 6. 案件级直接证据优先于 scope
+    oidx = {"donoghuevstevenson": [{"case_origin": "GB", "deciding_court": "HL",
+                                    "origin_subdivision": "", "normalized_key":
+                                    "donoghuevstevenson"}]}
+    r = _origin_row("2009||ewca|civ|1746")
+    decide.decide_case_origin(r, ["Donoghue v. Stevenson"], oidx, Counter(), scope)
+    check((r["case_origin"], r["origin_basis"]) == ("GB", "case_record"),
+          "D6：直接证据优先，basis=case_record（与 scope_rule 分档）")
+    # 7. 直接证据冲突 → CONFLICT
+    oidx2 = {"a": [{"case_origin": "GB", "deciding_court": "", "origin_subdivision": "",
+                    "normalized_key": "a"}],
+             "b": [{"case_origin": "CA", "deciding_court": "", "origin_subdivision": "",
+                    "normalized_key": "b"}]}
+    r = _origin_row("2009||ewca|civ|1746")
+    decide.decide_case_origin(r, ["A", "B"], oidx2, Counter(), scope)
+    check(r["case_origin"] == "CONFLICT" and r["foreign_status"] == "CONFLICT",
+          "D6：直接证据冲突 → CONFLICT（保留证据，不投票抹平）")
+
+
 def main():
     for t in (test_boundary_guard, test_kvello_2009_scc_51, test_bce_swallow,
               test_almrei_swallow, test_same_span_multi_shape_counted_once,
@@ -450,7 +509,7 @@ def main():
               test_grouping_by_row_not_by_decision_id,
               test_series_split_dlr_2d_3d, test_series_canonical_equivalence,
               test_roman_page_key, test_paren_note_distinct_series,
-              test_nominate_paren_note_not_keyed,
+              test_nominate_paren_note_not_keyed, test_scope_origin_rules,
               test_new_path_fixture_measurements):
         t()
     print("全部通过：%d 条断言" % len(PASSED))

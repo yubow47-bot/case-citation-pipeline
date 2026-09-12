@@ -44,7 +44,7 @@ decide 管身份与来源 → select 保持原 dd 门槛语义。
 | 0 | 隔离运行入口 + run manifest | **完成**（commit c66d51e） |
 | 1 | 候选全量枚举、逐候选分类、判决内重叠仲裁（D1/D2/D3） | **完成**（见「阶段 1」三节） |
 | 2 | 系列与页码身份字段（D4/D5），全量重跑 + 新旧差分 | **完成**（见「阶段 2」） |
-| 3 | 来源地最小闭环（D6） | 未开始 |
+| 3 | 来源地最小闭环（D6） | **完成**（见「阶段 3」） |
 | 4 | 外国边输出、追溯工具、演示样例、交接 | 未开始 |
 
 ## 续跑记录（2026-09-12，第二次会话）
@@ -96,8 +96,50 @@ FileNotFoundError 暴露）；修后全过。失败目录两次均已删除重�
 
 ### 当前
 
-- 下一步：阶段 3 —— 来源地最小闭环（D6）：court_or_reporter_scope 表（子代理已核
-  SCC/ONCA/UK 系）、decide 来源地推断逻辑、外国边输出。
+- 下一步：阶段 4 —— 外国边输出、追溯工具、演示样例、交接。
+
+## 阶段 3 记录（2026-09-12）
+
+### 实现内容
+
+- `decisions/court_or_reporter_scope.csv`（新表，7 条 verified 规则）：SCC、CSC、ONCA、
+  EWCA、EWHC、UKSC、UKHL。每行带 source/source_locator/verification_status=
+  verified_scope_rule/年代窗（valid_from/to）。法域核查由三个只读研究子代理完成：
+  - SCC/CSC：Supreme Court Act ss. 3/35/40/52（管辖限于加拿大法院体系），1875 年设；
+    「2014 CSC 7 = 2014 SCC 7」官方实例。1875–1949 outbound（可上诉英国枢密院）不影响
+    inbound 来源地。
+  - ONCA：ontariocourts.ca + Courts of Justice Act s.6(1)（上诉来源全为 Ontario 法院）；
+    年份 1867 为标准记载（官网未载，已在表内注明）。
+  - UK：UKSC 2009（CRA 2005 s.23/s.40）；EWCA/EWHC 1875（Judicature Acts；殖民地上诉
+    走 JCPC 不走 E&W 法院）；UKHL 中立引用 2001-01-11 才启用，此前年份的 UKHL 号是
+    BAILII 回溯产物（实测例：Rylands v Fletcher [1868] UKHL 1）——年代闸 valid_from=
+    2001 把回溯号与 1922 年前爱尔兰上诉例外全部挡在规则外。
+- `pipeline/decide.py`：decide_case_origin 两级证据——①案件级直接证据（basis=
+  case_record）；②法院排他来源地规则（basis=court_scope_rule，仅当无直接证据、键是
+  结构性中立引用〔有年份、无卷号〕、代码在表、年代在窗内；「已过仲裁」由上游结构
+  保证——merged 只聚 counted 候选）。成色分档、绝不混称。新增字段 foreign_status/
+  origin_country/origin_subdivision/origin_basis/origin_evidence_id；组内来源地证据
+  互斥 → 整组 CONFLICT（证据保留，不由主行/多数票抹平）。约束七：FOREIGN 只来自
+  正面排他规则；UKPC/JCPC 不入规则表 → UNDETERMINED。
+
+### 运行记录（decide/select 两层在 stage2 merge 产物上重跑，输出隔离目录）
+
+| 命令 | 结果 |
+|---|---|
+| `python pipeline/decide.py --court SCC --input …/stage2/merge_out/SCC/merged.csv … --output data/run_20260912_stage3/decide_out/SCC` | scope 2,666 / case_record 215 / UNDETERMINED 119,191 |
+| 同 ONCA | scope 8,217 / case_record 40 / UNDETERMINED 58,003 |
+| `--cross-court … --output data/run_20260912_stage3/decide_out/cross_court` | 172,916 组 |
+| `python pipeline/select.py --input …/cross_court/decided.csv …` | dd 分布与 stage2 完全一致（来源地不影响 kept，符合约束六） |
+
+跨院产出：DOMESTIC_CA 10,895 行（7,905 组）；FOREIGN 243 行（175 组，全部 GB/UKHL·UKSC·
+EWCA，basis=court_scope_rule）；CONFLICT 0；年代闸排除 10 条（pre-2001 UKHL 回溯号）。
+外国组榜首（真案、证据在 scope 表）：Thorner v. Major [2009] UKHL 18（dd 5/occ 20）、
+Jameel v. WSJE [2006] UKHL 44（dd 5）。
+
+### 测试记录
+
+`test_candidates.py` 增至 56 条（scope 7 条：GB 外国 / CA 国内 / 年代闸 / UKPC 不推断 /
+卷号结构不适用 / 直接证据优先 / 冲突 CONFLICT）；test_layers 120 条不动全过。
 
 ## 阶段 2 记录（2026-09-12）
 

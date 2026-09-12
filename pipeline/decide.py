@@ -151,6 +151,25 @@ def load_case_origin():
     return idx
 
 
+def load_scope():
+    """court_or_reporter_scope.csv：**source-verified、年代有界**的排他来源地规则
+    （§9.2）。只有 verification_status 以 verified 开头的行参与推断——估计/名称
+    推断行（旧 reporter_jurisdiction 196 行全档）一律不得升级为来源地事实。
+    键 = nk(printed_key)——印刷事实，非计算分组标识。"""
+    path = os.path.join(DECISIONS, "court_or_reporter_scope.csv")
+    if not os.path.exists(path):
+        return {}
+    idx = {}
+    with open(path, encoding="utf-8", newline="") as f:
+        for r in csv.DictReader(f):
+            if not (r.get("verification_status") or "").startswith("verified"):
+                continue
+            k = nk(r.get("printed_key") or "")
+            if k:
+                idx.setdefault(k, []).append(r)
+    return idx
+
+
 def year_of(merge_key):
     """归并键首字段即 year_start（§9.1）。merged.csv 没有独立年份列。"""
     head = merge_key.split("|", 1)[0]
@@ -439,10 +458,21 @@ def cluster_same_case(rows, did_idx, stats, start=None):
     return out
 
 
-def decide_case_origin(row, member_strings, origin_idx, stats):
+def decide_case_origin(row, member_strings, origin_idx, stats, scope_idx=None):
     """§10.2：**在成员串级别查表**，不在归并组级别查。
     未入表时标 UNDETERMINED，**不得默认取 jurisdiction 的值**——默认二者相等
-    正是旧管线把加拿大 JCPC 案系统性错标为英国案的同一个错误。"""
+    正是旧管线把加拿大 JCPC 案系统性错标为英国案的同一个错误。
+
+    来源地证据两级（D6）：
+      1. 案件级直接证据（case_origin.csv，键=印刷引证）——basis=case_record；
+      2. 法院排他来源地规则（court_or_reporter_scope.csv，§9.2）——仅当无直接
+         证据、且本行键是**结构性中立引用**（有年份、无卷号）、代码在表、年代
+         落在规则窗内时适用。归并表只由**通过仲裁的 counted 候选**聚成，故
+         「解析已过仲裁」由上游结构保证；basis=court_scope_rule 与 1 的成色
+         **分开标注**，绝不混称「verified case origin」。
+    约束七：FOREIGN 只来自正面的排他规则，**绝不**来自「不在加拿大例外表」。
+    UKPC/JCPC 等跨法域法院不在规则表里——它们的案子没有来源地证据就保持
+    UNDETERMINED（§9.3）。"""
     hits = []
     for s in member_strings:
         h = origin_idx.get(nk(s))
@@ -451,15 +481,62 @@ def decide_case_origin(row, member_strings, origin_idx, stats):
     if not hits:
         row["case_origin"] = "UNDETERMINED"
         row["deciding_court"] = ""
+        row["foreign_status"] = "UNDETERMINED"
+        row["origin_country"] = ""
+        row["origin_subdivision"] = ""
+        row["origin_basis"] = ""
+        row["origin_evidence_id"] = ""
+        if scope_idx:
+            _scope_origin(row, scope_idx, stats)
+        if row["case_origin"] == "UNDETERMINED":
+            stats["case_origin_undetermined"] += 1
     elif len({h["case_origin"] for h in hits}) == 1:
         row["case_origin"] = hits[0]["case_origin"]
         row["deciding_court"] = hits[0].get("deciding_court") or ""
+        row["origin_country"] = hits[0]["case_origin"]
+        row["origin_subdivision"] = hits[0].get("origin_subdivision") or ""
+        row["foreign_status"] = ("DOMESTIC_CA"
+                                 if hits[0]["case_origin"] == "CA" else "FOREIGN")
+        row["origin_basis"] = "case_record"
+        row["origin_evidence_id"] = "case_origin:" + (hits[0].get("normalized_key") or "")
         stats["case_origin_determined"] += 1
     else:
         # CONFLICT 是有用信号，不是异常：说明归并层把两个不同的案子合并了
         row["case_origin"] = "CONFLICT"
         row["deciding_court"] = ""
+        row["foreign_status"] = "CONFLICT"
+        row["origin_country"] = ""
+        row["origin_subdivision"] = ""
+        row["origin_basis"] = "conflicting_case_records"
+        row["origin_evidence_id"] = ""
         stats["case_origin_conflict"] += 1
+
+
+def _scope_origin(row, scope_idx, stats):
+    """法院排他来源地规则（§9.2 第 2 条）。结构性中立引用 = 键有年份、无卷号。"""
+    p = row["merge_key"].split("|")
+    if len(p) < 5 or not p[0].isdigit() or p[1]:
+        return
+    code = nk(p[2])
+    rows = scope_idx.get(code)
+    if not rows or len(rows) != 1:
+        return
+    r = rows[0]
+    y = int(p[0])
+    vf = int(r["valid_from"]) if (r.get("valid_from") or "").strip().isdigit() else 0
+    vt = int(r["valid_to"]) if (r.get("valid_to") or "").strip().isdigit() else 9999
+    if not (vf <= y <= vt):
+        stats["scope_era_excluded"] += 1
+        return
+    oc = r["origin_country_scope"]
+    row["case_origin"] = oc
+    row["deciding_court"] = r.get("deciding_court") or ""
+    row["origin_country"] = oc
+    row["origin_subdivision"] = r.get("origin_subdivision_scope") or ""
+    row["foreign_status"] = "DOMESTIC_CA" if oc == "CA" else "FOREIGN"
+    row["origin_basis"] = "court_scope_rule"
+    row["origin_evidence_id"] = "scope:" + (r.get("printed_key") or code)
+    stats["case_origin_by_scope"] += 1
 
 
 def read_csv(path):
@@ -477,7 +554,8 @@ def load_decision_ids(path, court=None):
     return idx
 
 
-def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin):
+def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin,
+               scope_idx=None):
     start = neutral_start(rows)
     stats["neutral_rows_before_court_start"] = sum(
         1 for r in rows if r.get("citation_kind") == "neutral" and _before_start(r["merge_key"], start))
@@ -506,13 +584,14 @@ def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin
                 if m.get("citation_kind") == "neutral"}) > 1:
             stats["groups_with_multiple_neutral_strings"] += 1
 
+        group_rows = []
         for m in members:
             r = dict(m)
             r["key_occurrence_count"] = key_occ(m)
             if redo_origin:
                 decide_case_origin(r, folded_idx.get(m["merge_key"],
                                                      [m["canonical_string"]]),
-                                   origin_idx, stats)
+                                   origin_idx, stats, scope_idx)
             # 跨法院轮不重判来源地：院内轮已在成员串级别查过表，此处只有
             # canonical_string 可用，重判等于用更弱的证据覆盖更强的结论
             r["merged_group_id"] = gid
@@ -528,8 +607,20 @@ def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin
             # 数据里没有可靠信号可分辨，故只标出来交人看（约束四）
             r["same_name_near_year_peers"] = ""
             out.append(r)
+            group_rows.append(r)
             for did in sorted(did_idx.get(row_key(m), ())):
                 out_ids.append({"row_key": row_key(m), "source_decision_citation": did})
+        if redo_origin and len(group_rows) > 1:
+            # §9.4：同一身份单元内来源地证据互相冲突 → 整组 CONFLICT，证据保留。
+            # 不由主行归属或多数票抹平冲突。
+            vals = {r["case_origin"] for r in group_rows
+                    if r.get("case_origin") not in ("", "UNDETERMINED")}
+            if len(vals) > 1:
+                for r in group_rows:
+                    r["case_origin"] = "CONFLICT"
+                    r["foreign_status"] = "CONFLICT"
+                    r["origin_basis"] = r.get("origin_basis") or ""
+                stats["origin_conflict_groups"] += 1
     stats["groups_out"] = len(clusters)
     return out, out_ids
 
@@ -582,6 +673,8 @@ def main():
 
     stats = Counter()
     origin_idx = load_case_origin()
+    scope_idx = load_scope()
+    stats["scope_rules_verified"] = sum(len(v) for v in scope_idx.values())
 
     if a.cross_court:
         rows, did_idx = [], defaultdict(set)
@@ -605,7 +698,7 @@ def main():
     stats["input_rows"] = len(rows)
     in_occ_total = sum(key_occ(r) for r in rows)
     out, out_ids = adjudicate(rows, did_idx, origin_idx, folded_idx,
-                              prefix, stats, redo)
+                              prefix, stats, redo, scope_idx)
     # PROBLEMS #62：同名、年份相差 ≤1 的同级组。只在跨法院轮算——跨院合并跑完才是
     # 最终分组；院内轮该列留空（它不是产品列，选取层读的是跨院产出）
     if a.cross_court:
