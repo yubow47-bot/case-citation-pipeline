@@ -11,7 +11,7 @@ from collections import Counter, defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OLD = os.path.join(ROOT, "data")
-NEW = os.path.join(OLD, "run_20260912_stage2")
+NEW = os.path.join(OLD, "run_20260912_final")
 OUT = os.path.join(ROOT, "implementation", "diff_report.md")
 
 

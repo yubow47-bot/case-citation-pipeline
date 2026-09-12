@@ -90,13 +90,138 @@ decide 管身份与来源 → select 保持原 dd 门槛语义。
 第一次试跑抓到一个自己的 bug：run_all 定义了 extract 命令却没调 run_step（classify 报
 FileNotFoundError 暴露）；修后全过。失败目录两次均已删除重建（规则 2 的重试用新目录）。
 
-## 阻塞与下一步
+## 阶段 4 记录（2026-09-12）
 
-（按阶段追加）
+### 实现内容
 
-### 当前
+- `pipeline/edges.py`：引证边输出——边 = (source_decision, resolved_cited_case=
+  merged_group_id)，同一判决对同一案件身份的全部提及折成一条；mention_detail_key
+  回连逐候选台账（提及级细节不丢）。输出 citation_edges.csv（国内/外国/未知/冲突
+  全保留）+ foreign_edges.csv（foreign_status=FOREIGN 的过滤视图，唯一差异就是筛选）
+  + manifest。不读 select、不设 kept（约束六）。
+- `pipeline/traceback.py`：最终结果 → 原文追溯。`--search` 粗搜台账；`--candidate-id`
+  深查：语料行号 + 未改动文本的绝对偏移 → 带 `<<…>>` 跨度标记的原文窗口 + 解析/
+  分类/仲裁状态/让位对象/D3 旗。
+- `pipeline/run_all.py` 末尾追加 edges 步（全链 10 步）。
+- `USAGE.md`：加 §6b（新路线读法）并给 98.80% 加口径警示（= 上游自动中立引证对覆盖率，
+  **不是**外国引证召回率）。
+- `implementation/demo_examples.md`（build_demo_examples.py 生成，真实数据）：外国案
+  Thorner v. Major [2009] UKHL 18（dd 5/occ 20，basis=court_scope_rule:UKHL，引用方
+  SCC_2017scc61 提及 8 次等）；国内案 R. v. Lacasse（dd 396）；显式未知案 R. v. W.(D.)
+  （dd 693，只有 S.C.R./C.C.C. 汇编引证，无证据 → UNDETERMINED 不猜）；Almrei 坏解析
+  完整轨迹（2013 ONCA 375 原文窗口 + 两条 candidate 的仲裁状态对照）。
 
-- 下一步：阶段 4 —— 外国边输出、追溯工具、演示样例、交接。
+## 最终交接（2026-09-12）
+
+### 1. 各阶段状态
+
+| 阶段 | 状态 |
+|---|---|
+| 0 隔离运行入口 + manifest | 完成（c66d51e） |
+| 1 候选全枚举 + 逐候选分类 + 判决内仲裁（D1/D2/D3） | 完成（8823274） |
+| 2 键 v2 系列/页码身份（D4/D5）+ 全量重跑 + 差分 | 完成（3978fa3） |
+| 3 来源地最小闭环（D6） | 完成（8cf6c60） |
+| 4 边输出 + 追溯 + 演示 + 交接 | 完成（见 git log 最后一笔） |
+
+### 2. 关键契约变更
+
+- extract 新增 candidates.csv（candidates-2.0，21 列含 candidate_id/行号/字段跨度/
+  parse_signature/D3 标注）；extracted.csv 降为诊断产物；classify 新增 parse_status/
+  year_vol_ambiguity；merge 双路线（表头分派，legacy 逐字保留）；decide 新增
+  foreign_status/origin_country/origin_subdivision/origin_basis/origin_evidence_id；
+  新增 court_or_reporter_scope.csv 决策表；run_all/edges/traceback 三个新入口。
+
+### 3. 测试（实际命令与退出码）
+
+| 命令 | 退出码 |
+|---|---|
+| `python pipeline/tests/test_layers.py` | 0（120 条，legacy 期望值未动） |
+| `python pipeline/tests/test_candidates.py` | 0（56 条，新路线） |
+| `python pipeline/extract.py --fixture-check` | 0（A18/B15/C27/D6/E0/F0 旧路线档） |
+| `python pipeline/tests/run_regression.py --selftest` | 0 |
+
+### 4. 完整运行命令与产物
+
+```
+python pipeline/run_all.py --out <新的空目录>
+```
+
+- data/run_20260912_final/ —— 10 步全链（extract→classify→merge→decide→select→edges）
+  的最终完整 run，run_manifest.json status=complete（含语料 SHA-256、代码指纹、依赖版本）。
+  实测：候选 1,013,819；counted 526,156；跨院组 172,916；kept 组 8,578（dd≥5）；
+  边 330,362（FOREIGN 227 / DOMESTIC_CA 35,659 / UNDETERMINED 294,476 / CONFLICT 0），
+  526,156 条 counted 提及全部入边、0 条无组（mentions_without_group=0）。
+- 早期分目录 run（保留供对照）：data/run_20260912_stage2/ + data/run_20260912_stage3/。
+- demo_examples.md 与 diff_report.md 均已改指 run_20260912_final，六项专案核查全 PASS。
+
+### 5. 新旧差分
+
+- implementation/diff_report.md（diff_old_new.py 生成）：层级计数对照、仲裁去向账、
+  键拆分账（旧键 1,160 个拆成多键）、六项专案核查全 PASS、dd 榜对照。
+- 金标 pipeline/tests/golden_layers.json **未改写**；`test_layers.py --golden` 的差分
+  即本轮预期 schema/口径变更。
+
+### 6. 提交历史（本轮）
+
+- c66d51e 阶段0：run_all + run manifest
+- 8823274 阶段1：candidates-2.0 全候选 + 仲裁
+- 3978fa3 阶段2：键 v2（D4/D5）+ 差分
+- 8cf6c60 阶段3：来源地闭环（D6）
+- （本笔）阶段4：edges + traceback + 演示 + 交接
+
+## Blocked（§5 账本）
+
+### B1 汇编式引证的来源地不可推断（不阻塞演示闭环，长期残项）
+
+- 层/位置：decide.py `_scope_origin`（decisions/court_or_reporter_scope.csv）
+- 触发输入：`1991|1|scr||742`（R. v. W.(D.) 的 S.C.R. 引证）——带卷号的汇编键，
+  中立码规则结构性不适用
+- 阻塞点：reporter_jurisdiction.csv 196 行 100% 是 estimated/name_inference，约束
+  明令不得升级为来源地事实；本项目没有已核实的「reporter → 排他法域」证据
+- 解锁条件：对 S.C.R./C.C.C./D.L.R. 等逐一做 source-verified、年代有界的排他性核查
+  （或用案件级人工表逐案核）
+- 现状：这些键 foreign_status=UNDETERMINED（10,895 行国内判定全部来自中立码规则与
+  案件表；绝不由「不在例外表 → 外国」倒推）。影响：国内案的汇编引证大量留未知——
+  这是约束下的诚实行为，不是错误
+
+### B2 D3 无配对者的极端相邻结构（不阻塞）
+
+- 层/位置：extract.py `annotate_cross_boundary` / merge.py 仲裁 A 步
+- 触发输入（构造性）：`[2009] 2 S.C.R. 2009 2009 SCC 51`（页码 token 与后随中立
+  引用年份直接相邻、无分隔符）——真引证 a 会被误作废
+- 阻塞点：D3 关系旗无第三证据可分辨「a 的页恰是 b 的年」与「a 吞了 b 的年」
+- 解锁条件：语料实测出现此类相邻结构（本轮测量未发现真实例）
+- 现状：全语料 D3 旗 1,233 条全部有配对者且按规则消解；未发现本例结构
+
+### B3 跨法域法院（UKPC/JCPC）来源地（不阻塞）
+
+- 层/位置：decisions/court_or_reporter_scope.csv（刻意不收 UKPC）
+- 触发输入：任何 `[1925] UKPC 11` / A.C. 枢密院案引证
+- 阻塞点：跨法域法院的案子必须案件级证据，规则层面无排他来源（§9.3）
+- 解锁条件：逐案人工核（case_origin.csv 已有 203 行加拿大 JCPC 案）
+- 现状：UNDETERMINED
+
+### B4 美国来源地本轮不可达（不阻塞）
+
+- 层/位置：同 B1
+- 触发输入：`389 U.S. 347 (1967)` 类美式引证（reporter 路线，且 U.S. 表行为估计档）
+- 阻塞点：US 最高法院历史上有菲律宾上诉期，排他规则须年代有界核实；本轮未做
+- 解锁条件：B1 同款核查（美卷）或案件种子人工表
+- 现状：UNDETERMINED
+
+### B5 同案传播（co-citation propagation）未实现（不阻塞）
+
+- 层/位置：decide.py（§9.4 第 4 条）
+- 触发输入：同组内已定源案件与未定源案件的同案身份链
+- 阻塞点：只允许在「已受支持的同一案件身份关系」上传播；本轮最小闭环未建该链
+- 解锁条件：身份关系图（decision_ids + 笔误/双语合并）上做受支持的传播并留痕
+- 现状：组内不同来源地证据 → 整组 CONFLICT（保守方向）
+
+### B6 D8/D9（任务书明确缓办）
+
+- D8 历史脚注案名关联未做；preceding_text 仍是 120 字符窗口，**不是**完整上下文。
+- D9 未做任何人工标注；98.80% 已在 USAGE.md 加口径警示（上游自动中立引证对覆盖率，
+  不是外国引证召回率）；本轮不主张任何总体精确率/召回率。
 
 ## 阶段 3 记录（2026-09-12）
 

@@ -197,6 +197,12 @@ def main():
                 "--config", os.path.join(ROOT, "select_config.yaml"),
                 "--profile", "default",
                 "--output", os.path.join(args.out, "select_out")])
+    r.run_step("edges",
+               [os.path.join("pipeline", "edges.py"),
+                "--decided", os.path.join(args.out, "decide_out", "cross_court",
+                                          "decided.csv"),
+                "--merge-out", os.path.join(args.out, "merge_out"),
+                "--output", os.path.join(args.out, "edges")])
 
     r.write_manifest("complete")
     print("[run_all] complete -> %s" % r.manifest_path)

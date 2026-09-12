@@ -107,9 +107,33 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
    案名的更长 span**（`Kvello Estate 2009 SCC 51` 顶掉 `2009 SCC 51`）。这些**不会变成
    错答案**：赢家串在分类层一律判 `UNSUPPORTED`（一部分带 `unrecognized_series_prefix`），
    是可见的诚实拒绝。效应量约「裸中立引用量的 1.2%」。
+   **口径警示（2026-09 demo 修复轮加注）**：98.80% 是**上游自动中立引证对（判决, 引用串）
+   的覆盖率**——它度量的是抽取+去重对语料自带元数据条目的覆盖，**不是**外国引证的
+   整体召回率，更不是任何语义正确率证明；本轮（candidates-2.0 重叠枚举 + 仲裁）之后
+   该数字对应的是旧去重路线的诊断口径，新路线的对照见 `implementation/diff_report.md`。
 5. **判决身份判定的已知残余**：跨汇编平行引证的合并依赖共引（重合系数 ≥0.8）；法域表把
    全国性汇编（`D.L.R.`、`C.C.C.`）标为 CA，其中刊登的省级判决可能被分到最高法院
    （PROBLEMS #40）。错在少算或错分，不在虚高。
+
+## 6b. 2026-09 修复轮：candidates-2.0 新路线（demo）
+
+本轮加了第二条管线（extract 全候选 → classify 逐候选 → merge 判决内仲裁 → decide
+→ select → edges），与上文 1–6 节的旧路线**并存**：
+
+- **一次跑完**：`python pipeline/run_all.py --out <新的空目录>`（目录必须不存在或为空；
+  失败目录保留，重试用新目录）。产物 `run_manifest.json`（status=complete 才算完整），
+  各层日志 `step_*.log`。
+- **最终表怎么读**：`decide_out/cross_court/decided.csv`（组级，含 foreign_status/
+  origin_country/origin_basis/origin_evidence_id）；`select_out/selected.csv` 的 `kept`
+  仍只按 dd≥5（语义未动）；`edges/citation_edges.csv` 一行 = 一条 (引用判决, 被引案件)
+  边，`edges/foreign_edges.csv` 是 foreign_status=FOREIGN 的过滤视图。
+- **逐候选台账**：`merge_out/{SCC,ONCA}/mentions_candidates.csv`——每个候选的仲裁状态
+  （counted / 让位 / 弃权 / 跨界作废…）与让位对象，是「为什么这个串不在结果里」的答案；
+  `key_mapping.csv` 给出旧键→新键（系列/罗马页拆分）的映射。
+- **回溯原文**：`python pipeline/traceback.py --run-dir <run目录> --search <案名>`，
+  再 `--candidate-id <id>` 取分类证据 + 仲裁状态 + 原文窗口（`<<…>>` 标出跨度）。
+- 真实样例走读见 `implementation/demo_examples.md`；新旧差分见
+  `implementation/diff_report.md`；修复工作记录见 `implementation/demo_repair_progress.md`。
 
 ## 7. 语料许可（原文照录）
 
