@@ -109,6 +109,8 @@
   "groups_merged_parallel": 9371,
   "groups_out": 190170,
   "groups_with_multiple_neutral_strings": 37,
+  "groups_with_near_year_peers": 8120,
+  "groups_with_near_year_peers_max": 21,
   "input_rows": 206213,
   "neutral_rows_before_court_start": 15,
   "output_rows": 206213,

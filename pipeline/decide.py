@@ -114,6 +114,13 @@
      PROBLEMS #60——闸只影响 32 组，全部是把同一案子的平行汇编拆开，还新增 8 处
      「同一印刷串落两组」。低支持度的成因是「该案主要被中立引用引、不印案名」，
      不是名字错。列照旧输出，供人复核与将来的别的判据使用
+
+  七、**同名、年份相差 ≤1 的同级组只标记、不合并**（PROBLEMS #62）。跨法院轮跑完后
+     给每个组填 `same_name_near_year_peers` = 同名的其他组号（分号连接）。这一档混着
+     两类东西：真不同的判决（R. v. John 每年一件）与同一判决的两种写法——后者在任何
+     一份判决里都不同时出现，数据里没有信号可连（PROBLEMS #55 的零共引残余）。
+     约束四：无证据不给判定，故只标给人看。`kept` 在选取层才定，故这一列对**所有**组
+     算，读者按自己的门槛筛
 """
 import argparse
 import csv
@@ -513,11 +520,51 @@ def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin
             r["split_reason"] = reason
             r["occurrence_count"] = occ
             r["distinct_decisions_count"] = len(ids)
+            # PROBLEMS #62：同名、年份相差 ≤1 的**另一个组**（跨法院轮填，见 main）。
+            # 不自动合并：同名近年的组混着两类东西——真不同的判决（R. v. John）与
+            # 同一判决两种写法但从不在同一份判决里共现（#55 的零共引残余），
+            # 数据里没有可靠信号可分辨，故只标出来交人看（约束四）
+            r["same_name_near_year_peers"] = ""
             out.append(r)
             for did in sorted(did_idx.get(row_key(m), ())):
                 out_ids.append({"row_key": row_key(m), "source_decision_citation": did})
     stats["groups_out"] = len(clusters)
     return out, out_ids
+
+
+def add_peer_column(out, stats):
+    """PROBLEMS #62：给每个组填 `same_name_near_year_peers`——同名（nk 后相等）、
+    主行年份相差 ≤ 1 的**其他组**的组号，分号连接。
+
+    只在跨法院轮调用（跨院合并跑完后才是最终分组；`kept` 在选取层才定，故这里对
+    **所有**组算，读者按自己的 kept/dd 门槛筛）。不合并、只标记：这两类东西在数据里
+    无法分辨——真不同的判决（R. v. John 每年一件）与同一判决的两种写法（从不在同一
+    份判决里共现，见 PROBLEMS #55 的零共引残余）。
+    """
+    name, year = {}, {}
+    for r in out:
+        if r["is_primary"] == "true":
+            gid = r["merged_group_id"]
+            name[gid] = nk(r.get("case_name_modal") or "")
+            year[gid] = year_of(r["merge_key"])
+    by_name = defaultdict(list)
+    for gid, nm in name.items():
+        if nm and year.get(gid) is not None:
+            by_name[nm].append(gid)
+    peers = defaultdict(set)
+    for nm, gids in by_name.items():
+        gids = sorted(gids)
+        for i, ga in enumerate(gids):
+            for gb in gids[i + 1:]:
+                if abs(year[ga] - year[gb]) <= 1:
+                    peers[ga].add(gb)
+                    peers[gb].add(ga)
+    for r in out:
+        p = peers.get(r["merged_group_id"])
+        if p:
+            r["same_name_near_year_peers"] = ";".join(sorted(p))
+    stats["groups_with_near_year_peers"] = sum(1 for g in peers if peers[g])
+    stats["groups_with_near_year_peers_max"] = max((len(v) for v in peers.values()), default=0)
 
 
 def main():
@@ -557,6 +604,10 @@ def main():
     in_occ_total = sum(key_occ(r) for r in rows)
     out, out_ids = adjudicate(rows, did_idx, origin_idx, folded_idx,
                               prefix, stats, redo)
+    # PROBLEMS #62：同名、年份相差 ≤1 的同级组。只在跨法院轮算——跨院合并跑完才是
+    # 最终分组；院内轮该列留空（它不是产品列，选取层读的是跨院产出）
+    if a.cross_court:
+        add_peer_column(out, stats)
     stats["output_rows"] = len(out)
     stats["decision_id_rows"] = len(out_ids)
 
