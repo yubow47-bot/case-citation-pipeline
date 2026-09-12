@@ -90,7 +90,7 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
 读到一个偏低的数字时，先对照这张表，不要直接下「这个案子很少被引」的结论。
 
 1. **同名、年份相差 ≤1 的两组没有被合并**（PROBLEMS #62）。实测（组级计数）：所有组里
-   同名、主行年份相差 ≤1 的组对 8,328 对，其中两边都过门槛的 **225 对**。它们混着两类：
+   同名、主行年份相差 ≤1 的组对 8,329 对，其中两边都过门槛的 **225 对**。它们混着两类：
    真不同的判决（`R. v. John` 每年一件）与**同一判决的两种写法**（例如 *R. v. O'Brien* 的
    `(1977), 35 C.C.C. (2d) 209` 与 `[1978] 1 S.C.R. 591`——两种写法在任何一份判决里都没
    同时出现过，数据里没有东西能连起来）。`same_name_near_year_peers` 列就是为这个加的，
@@ -141,5 +141,5 @@ python pipeline/tests/test_layers.py --golden      # 全量产出与金标逐项
 回归防线：`pipeline/tests/run_regression.py`（抽取层）、`pipeline/tests/test_layers.py`
 （第 2–5 层：单元断言、迷你全链、全量金标差分）。
 
-本文档里的数字对应的产出：`data/select_out/selected.csv` **206,213 行 / 190,170 组 /
+本文档里的数字对应的产出：`data/select_out/selected.csv` **206,213 行 / 190,154 组 /
 8,609 组过门槛**（2026-09-11）。
