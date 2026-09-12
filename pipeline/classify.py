@@ -256,6 +256,26 @@ def _marker_of(seg):
 _PROSE_CONNECTOR = frozenset("""
 of the and a an for de la le les du des et en aux d l
 """.split())
+# 大写开头时可以剥掉的词：**只收不可能出现在案名开头的介词/引导词**。
+# 冠词（The / La / Le / A）、缩写（St. / Saint / Inc. / Co.）、Re 一律不在内——
+# 它们都是真案名的合法开头（见 _trim_prose_left 里的实测例子）
+_CAP_STRIP = frozenset("""
+in at by on to with from of for and or per see also cf
+""".split())
+# 公司后缀：**没有任何案名以它开头**，切完落在这上面说明切点落进了真名内部。
+# 实测（本轮 260 条改动里 11 条）：`1196303 Inc. v. Glen Grove Suites Inc` 被切成
+# `Inc. v. Glen Grove Suites Inc`、`Hôpital général de la région de l'amiante Inc. v. Perron`
+# 被切成 `Inc. v. Perron`。注意**不收 corporation**：`Corporation of Quebec v. Howe`、
+# `Corporation de St-Joseph de Beauce v. Le ...` 是真的案名开头。
+_CORP_SUFFIX = frozenset("""
+inc ltd co corp ltee limited gmbh llc lp plc srl sa kft
+""".split())
+# 法语冠词/介词。**切点前紧邻的词若落在这里，就不切**：`Moulin de préparation de bois
+# en transit de St-Romuald v. …`、`Comité de citoyens et d'action municipale de St-Césaire
+# Inc. v. …` 的真名是靠这些词串起来的，切在它们后面就是把真名截断。本语料的散文是英文，
+# 英文散文的切点前紧邻词是 in/of/from/See/the，不会命中这一档（实测：253 条改动里恰好
+# 只有这 3 条命中，收掉它零代价）。
+_FR_CONNECTOR = frozenset("de du des d aux la le les".split())
 _PROSE_TAIL_STRIP_RE = re.compile(r"[\s,;:.!?&'’“”()\[\]]+")
 
 
@@ -288,6 +308,7 @@ def _trim_prose_left(s):
     if cut is None:
         return s, False
     rest = s[cut:]
+    last_skip = ""
     while True:
         m = _PROSE_TAIL_STRIP_RE.match(rest)
         if m and m.end():
@@ -298,12 +319,35 @@ def _trim_prose_left(s):
             rest = rest[m.end():]
             continue
         m = re.match(r"([^\W\d_]+)", rest, re.UNICODE)
-        if m and m.group(1).lower() in _CONNECTOR and m.group(1).lower() not in ("v", "vs"):
-            rest = rest[m.end():]
-            continue
+        if m:
+            tok = m.group(1)
+            low = tok.lower()
+            # 剥头的判据**分大小写**（PROBLEMS #61 同日订正）：
+            #   · 小写词：连接词一律可剥——案名不会以小写词开头，剥过头也会被末尾的
+            #     「须以大写开头」闸拦下、原样退回
+            #   · **大写词：只剥不可能出现在案名开头的介词/引导词**（In / At / By / See…）。
+            #     冠词与缩写一律不剥：`The King v. Sunfield`、`St. Lawrence Cement Inc. v.
+            #     Wakeham`、`La Française IC 2 v. Wires`、`A.E. LePage Ltd. v. Kamex` 都是
+            #     真案名开头。原先不分大小写地拿 _CONNECTOR 比对，把这些开头一起剥了
+            if low in ("v", "vs"):
+                pass
+            elif tok[:1].islower():
+                if low in _CONNECTOR:
+                    rest = rest[m.end():]
+                    last_skip = low
+                    continue
+            elif low in _CAP_STRIP:
+                rest = rest[m.end():]
+                last_skip = low
+                continue
         break
+    if last_skip in _FR_CONNECTOR:
+        return s, False                   # 切点前紧邻法语冠词/介词：多半在真法语机构名内部
     if not rest or not rest[:1].isupper():
         return s, False                   # 切不到像样的起点：原样退回，不判无名
+    _f = re.match(r"([^\W\d_]+)", rest, re.UNICODE)
+    if _f and _f.group(1).lower() in _CORP_SUFFIX:
+        return s, False                   # 起点是公司后缀：切点落进真名内部了，原样退回
     return rest, True
 
 
@@ -350,6 +394,19 @@ def admit_candidate(cand):
     return s, None
 
 
+def _cite_segment(pre):
+    """本行引证**所在的那一段**：它前面最近的 ; : 换行 起，剥掉前导字符。
+    PROBLEMS #58 的标记只在段首/段尾认；段内有 v. 时不走标记路。独立成函数是为了
+    测试能直接钉住「这段到底有没有 v.」——上一版那条测试的输入里其实没有 v.，
+    断言恒真、等于没测（同日订正）。"""
+    sep = max(pre.rfind(";"), pre.rfind(":"), pre.rfind("\n"))
+    s = pre[sep + 1:]
+    i = 0
+    while i < len(s) and (s[i].isspace() or s[i] in _ADMIT_LEAD_CHARS):
+        i += 1
+    return s[i:]
+
+
 def split_case_name(row):
     """§8.7：取**最后一个** v.；候选取到 preceding_text 末尾（不截到 v.）；
     找不到分隔符即放弃（不退化为从位置 0 取）。
@@ -360,12 +417,7 @@ def split_case_name(row):
     （否则「…in Rizzo v. Rizzo Shoes Ltd. (Re)」这类段会被整段当案名，实测 46 行）。"""
     pre = row.get("preceding_text") or ""
 
-    seg_sep = max(pre.rfind(";"), pre.rfind(":"), pre.rfind("\n"))
-    seg = pre[seg_sep + 1:]
-    _i = 0
-    while _i < len(seg) and (seg[_i].isspace() or seg[_i] in _ADMIT_LEAD_CHARS):
-        _i += 1
-    seg = seg[_i:]
+    seg = _cite_segment(pre)
     if not V_RE.search(seg):
         marker = _marker_of(seg)
         if marker:

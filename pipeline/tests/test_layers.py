@@ -285,10 +285,20 @@ def test_case_name_markers():
           == "Nortel Networks Corp. (Re)",
           "#58 X (Re) 从右往左收：段首是散文时只取案名那一段（未加此闸时 2,750 行里大半是整句）")
 
-    # 段内有 v. 时不走标记路（否则「…in Rizzo v. Rizzo Shoes Ltd. (Re)」会被整段吞下）
-    check(name("see Vavilov, 2019 SCC 65, at para. 117, citing Rizzo & Rizzo Shoes Ltd. (Re), ")
-          != "see Vavilov, 2019 SCC 65, at para. 117, citing Rizzo & Rizzo Shoes Ltd. (Re)",
-          "#58 段内有 v.：标记路不启用，交回 v. 路（实测 46 行会退化为整段散文）")
+    # 段内有 v. 时不走标记路（否则「…citing Rizzo & Rizzo Shoes Ltd. (Re)」这类段会被
+    # 整段吞下）。**输入必须真的含 v.**：上一版用的是 `see Vavilov, 2019 SCC 65, at
+    # para. 117, citing Rizzo & Rizzo Shoes Ltd. (Re)`——「Vavilov」不匹配 V_RE，段里
+    # 其实没有 v.，走的仍是标记路，而断言只写了「不等于整段」，恒真、等于没测。
+    # 这一版显式钉住「段内确有 v.、且标记确实认得这段」，再钉住生产线给出的是 v. 路
+    # 的结果而不是标记路的结果（两条路在这里给出的名字不同，故断言有区分力）。
+    pre_gate = ("; see Housen v. Nikolaisen, citing Rizzo & Rizzo Shoes Ltd. (Re), ")
+    seg_gate = classify._cite_segment(pre_gate)
+    check(bool(classify.V_RE.search(seg_gate)) and classify._marker_of(seg_gate) == "tail_re",
+          "#58 闸的测试输入确实「段内有 v. 且段尾是 (Re) 形」——段内没 v. 就没有区分力")
+    r = c.run_row(_row("shape_bracket", "[1998] 1 S.C.R. 27", token="S.C.R.", vol="1", year_start="1998",
+                       page="27", preceding_text=pre_gate))
+    check(r["candidate_case_name"] == "Housen v. Nikolaisen, citing Rizzo & Rizzo Shoes Ltd. (Re)",
+          "#58 段内有 v.：标记路不启用，交回 v. 路（若启用会切出 Rizzo & Rizzo Shoes Ltd. (Re)）")
     # 分号是段边界：前一段的 v. 不影响本段
     r = c.run_row(_row("shape_bracket", "[1998] 2 S.C.R. 217", token="S.C.R.", vol="2", year_start="1998",
                        page="217", preceding_text="1198; Air Canada v. British Columbia, [1989] 1 S.C.R. 1161."

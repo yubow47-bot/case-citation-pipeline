@@ -51,7 +51,7 @@
 | `case_origin_audit.py` | 来源地判定的**全量逐行前后差分**（PROBLEMS #59）：填 `decisions/case_origin.csv` 前先 `--snapshot`，重跑裁定层后 `--diff`，把 `UNDETERMINED → 某法域` 的行按分档数出来。键是 `court\|merge_key`。抽样在本项目漏过 145 行的回归，故一律全量 |
 | `classify_diff.py` | 分类层产出的**全量逐行差分**（PROBLEMS #58 用）：改动前 `--snapshot`，重跑 `classify.py` 后 `--before … ` 比。按行序号对齐，分档「无名→有名 / 有名→同名 / 有名→不同名 / 有名→无名 / 其他字段」。默认改名也算回归，已逐条复核过才加 `--allow-renames` |
 | `select_content_diff.py` | 选取层产出的**内容级**差分：只比计数会藏住「一件案子被另一件替换」。按（法院, 印刷引证串）集合对齐两组产出，比（案名 / canonical_string / dd / kept）。组的 `merged_group_id` 跨版本会变，不能当键 |
-| `preview_case_name.py` | 案名切分改动的**离线预演**：用现成 `classified.csv`（它带 `preceding_text`）把新规则先跑一遍，秒级看出「有名行会不会被改名」，比全量重跑省一个数量级。`preview_case_name_detail.py` 摊开改名行与两模式差异，`preview_gain_scan.py` 扫新得名字里的散文特征，`preview_vs_prod.py` 校验预演与生产线实现逐行等价（两份实现数字不同必须能解释） |
+| `preview_case_name.py` | 案名切分改动的**离线预演**：用现成 `classified.csv`（它带 `preceding_text`）把新规则先跑一遍，秒级看出「有名行会不会被改名」，比全量重跑省一个数量级。五个模式：默认（两模式分档对比）、`--renames`（逐条列改名行供眼验）、`--mode-diff`、`--scan`（扫新得名字里的散文特征）、`--vs-prod`（预演实现与生产线实现逐行等价，两份实现数字不同必须能解释） |
 | `case_name_gap_audit.py` | 无 v. 案名的缺口测量（PROBLEMS #58）：无名行的 `name_rejected_reason` 分布、**引证所在段**的首词分档、各候选标记命中数与样本、`(Re)` 后缀形、魁北克匿名名同族探测 |
 | `preview_prose_trim.py` | 案名左侧散文污染的离线预演（PROBLEMS #61）：把拟采用的「左切」规则套在现成 `candidate_case_name` 上，秒级看出会改哪些名字、`--legit` 列出全部去重改动供人逐条判断是改善还是误伤 |
 | `near_year_peers_audit.py` | 同名、年份相差 ≤1 的组对测量与验收（PROBLEMS #62）：组级计数（一对组算一对，按行计数是另一个更大的数字），并逐对核对 `same_name_near_year_peers` 列有没有**两边都标出** |

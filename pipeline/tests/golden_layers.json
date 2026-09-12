@@ -58,11 +58,11 @@
   "anchors_collapsed_as_variant": 34,
   "case_origin_determined": 40,
   "chains_split_by_span": 370,
-  "clusters_split_by_decision": 2624,
+  "clusters_split_by_decision": 2625,
   "dd_added_by_assignment": 236,
   "decision_id_rows": 165777,
-  "groups_merged_parallel": 3994,
-  "groups_out": 73852,
+  "groups_merged_parallel": 4001,
+  "groups_out": 73842,
   "groups_with_multiple_neutral_strings": 33,
   "input_rows": 79605,
   "neutral_rows_before_court_start": 6,
@@ -70,7 +70,7 @@
   "rows_unanchored": 307,
   "self_ids_removed": 11,
   "unanchored_groups": 302,
-  "units_assigned_by_cocitation": 286,
+  "units_assigned_by_cocitation": 287,
   "units_assigned_larger_than_target": 30,
   "units_tie_broken_by_year": 27,
   "units_unanchored_incompatible_only": 172,
@@ -84,8 +84,8 @@
   "clusters_split_by_decision": 459,
   "dd_added_by_assignment": 2,
   "decision_id_rows": 191843,
-  "groups_merged_parallel": 4155,
-  "groups_out": 121750,
+  "groups_merged_parallel": 4154,
+  "groups_out": 121749,
   "groups_with_multiple_neutral_strings": 4,
   "input_rows": 126608,
   "neutral_rows_before_court_start": 0,
@@ -103,13 +103,13 @@
  "decide_cross": {
   "anchors_collapsed_as_variant": 37,
   "chains_split_by_span": 547,
-  "clusters_split_by_decision": 3156,
+  "clusters_split_by_decision": 3157,
   "dd_added_by_assignment": 220,
   "decision_id_rows": 357620,
-  "groups_merged_parallel": 9371,
-  "groups_out": 190170,
+  "groups_merged_parallel": 9382,
+  "groups_out": 190154,
   "groups_with_multiple_neutral_strings": 37,
-  "groups_with_near_year_peers": 8120,
+  "groups_with_near_year_peers": 8122,
   "groups_with_near_year_peers_max": 21,
   "input_rows": 206213,
   "neutral_rows_before_court_start": 15,
@@ -117,7 +117,7 @@
   "rows_unanchored": 486,
   "self_ids_removed": 1657,
   "unanchored_groups": 457,
-  "units_assigned_by_cocitation": 492,
+  "units_assigned_by_cocitation": 493,
   "units_assigned_larger_than_target": 42,
   "units_tie_broken_by_year": 55,
   "units_unanchored_incompatible_only": 219,
@@ -149,18 +149,18 @@
  "select": {
   "dd_profile": [
    {
-    "groups_kept": 170726,
+    "groups_kept": 170710,
     "pct_of_groups": 89.775,
     "threshold_dd": 1
    },
    {
-    "groups_kept": 35286,
-    "pct_of_groups": 18.555,
+    "groups_kept": 35285,
+    "pct_of_groups": 18.556,
     "threshold_dd": 2
    },
    {
-    "groups_kept": 17672,
-    "pct_of_groups": 9.293,
+    "groups_kept": 17673,
+    "pct_of_groups": 9.294,
     "threshold_dd": 3
    },
    {
@@ -169,13 +169,13 @@
     "threshold_dd": 5
    },
    {
-    "groups_kept": 3563,
+    "groups_kept": 3564,
     "pct_of_groups": 1.874,
     "threshold_dd": 10
    },
    {
-    "groups_kept": 1410,
-    "pct_of_groups": 0.741,
+    "groups_kept": 1412,
+    "pct_of_groups": 0.743,
     "threshold_dd": 20
    },
    {
@@ -190,10 +190,10 @@
    }
   ],
   "stats": {
-   "dropped": 188900,
+   "dropped": 188896,
    "groups_kept": 8609,
-   "groups_total": 190170,
-   "kept": 17313,
+   "groups_total": 190154,
+   "kept": 17317,
    "rows_total": 206213
   },
   "threshold_dd": 5
@@ -278,8 +278,8 @@
    []
   ],
   [
-   259,
-   544,
+   262,
+   547,
    "R. v. Sheppard",
    [
     "2002||scc||26"
