@@ -80,7 +80,7 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
 | `is_primary` | 组内代表行；一个 `merged_group_id` 下只有一行 `true`。**统计时按组去重、取代表行** |
 | `case_name_modal` | 组内众数案名（先按归一折叠拼写变体，再取最常见的印刷形） |
 | `case_name_agreement` | 投票者之间的同意度。**分母是「投了票的行」**——切不出案名的行是空票、不入分母，所以 199 行里只有 1 行切出名字时它也是 `1.0`。别把它当「全体一致」 |
-| `case_name_support` | 赢家案名的票数 / 该键的计数行数。**这个才是「引用它的判决里有多少份站这个名字」**（PROBLEMS #60） |
+| `case_name_support` | 赢家案名的票数 / `max(该键的计数行数, 票数)`。**这个才是「引用它的判决里有多少份站这个名字」**（PROBLEMS #60）；分母取 max 是因为自引行照样投票但不算计数行 |
 | `case_origin` / `deciding_court` | 见 §4；未入表时是 `UNDETERMINED`，**不是**「等于 jurisdiction」 |
 | `split_reason` | 这一组是怎么被拆出来的：`span`（年份跨度）/ `decision`（按中立引用拆判决）/ `unanchored`（无中立锚，靠共引拼组） |
 | `same_name_near_year_peers` | 同名（归一后相等）、年份相差 ≤1 的**其他组**的组号。**只标记、不是合并建议**（PROBLEMS #62，见 §6） |
@@ -141,5 +141,5 @@ python pipeline/tests/test_layers.py --golden      # 全量产出与金标逐项
 回归防线：`pipeline/tests/run_regression.py`（抽取层）、`pipeline/tests/test_layers.py`
 （第 2–5 层：单元断言、迷你全链、全量金标差分）。
 
-本文档里的数字对应的产出：`data/select_out/selected.csv` **206,213 行 / 190,154 组 /
-8,609 组过门槛**（2026-09-11）。
+本文档里的数字对应的产出：`data/select_out/selected.csv` **206,213 行 / 190,153 组 /
+8,610 组过门槛**（2026-09-11）。

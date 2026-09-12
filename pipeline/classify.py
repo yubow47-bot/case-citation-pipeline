@@ -263,18 +263,25 @@ _CAP_STRIP = frozenset("""
 in at by on to with from of for and or per see also cf
 """.split())
 # 公司后缀：**没有任何案名以它开头**，切完落在这上面说明切点落进了真名内部。
-# 实测（本轮 260 条改动里 11 条）：`1196303 Inc. v. Glen Grove Suites Inc` 被切成
-# `Inc. v. Glen Grove Suites Inc`、`Hôpital général de la région de l'amiante Inc. v. Perron`
-# 被切成 `Inc. v. Perron`。注意**不收 corporation**：`Corporation of Quebec v. Howe`、
-# `Corporation de St-Joseph de Beauce v. Le ...` 是真的案名开头。
+# 实测净效应 11 行（隔离法：把表置空重跑一遍再全量差分）：`1196303 Inc. v. Glen Grove
+# Suites Inc` 被切成 `Inc. v. Glen Grove Suites Inc`、`Hôpital général de la région de
+# l'amiante Inc. v. Perron` 被切成 `Inc. v. Perron`、`Oppenheim forfait GMBH v. Lexus`
+# 被切成 `GMBH v. Lexus …`——11 行**全部是「不再截断」方向**（另有 1 行从垃圾名 `Co. v.
+# Herdman (` 变成无名）。
+# 三条边界，都是实测逼出来的：① **不收 corporation**（`Corporation of Quebec v. Howe`、
+# `Corporation de St-Joseph de Beauce v. …` 是真案名开头）；② **不比前缀、比整个词**——
+# 首版用 `\w+` 抓开头字母，`Co-operative Trust Co. of Canada v. Kirkby` 被误判成 `Co.`
+# 而白白放弃切分（同理 `SA Horeca …`），改成取整个首词去标点后再比；
+# ③ 只留高置信的英语/加拿大后缀，`lp/plc/srl/sa/kft` 不收。
 _CORP_SUFFIX = frozenset("""
-inc ltd co corp ltee limited gmbh llc lp plc srl sa kft
+inc ltd co corp ltee limited gmbh llc
 """.split())
 # 法语冠词/介词。**切点前紧邻的词若落在这里，就不切**：`Moulin de préparation de bois
 # en transit de St-Romuald v. …`、`Comité de citoyens et d'action municipale de St-Césaire
-# Inc. v. …` 的真名是靠这些词串起来的，切在它们后面就是把真名截断。本语料的散文是英文，
-# 英文散文的切点前紧邻词是 in/of/from/See/the，不会命中这一档（实测：253 条改动里恰好
-# 只有这 3 条命中，收掉它零代价）。
+# Inc. v. …` 的真名是靠这些词串起来的，切在它们后面就是把真名截断。实测净效应 **178 行**
+# （隔离法同 ①），**全部是「新名更长」**——即这道闸只阻止截断、从不截断；代价是其中少数
+# 几行留住了英文散文前缀（`My colleagues point to Conseil scolaire francophone de la
+# Colombie-Britannique v. …`），按「截掉真名比留着脏名更糟」取这个方向。
 _FR_CONNECTOR = frozenset("de du des d aux la le les".split())
 _PROSE_TAIL_STRIP_RE = re.compile(r"[\s,;:.!?&'’“”()\[\]]+")
 
@@ -345,8 +352,10 @@ def _trim_prose_left(s):
         return s, False                   # 切点前紧邻法语冠词/介词：多半在真法语机构名内部
     if not rest or not rest[:1].isupper():
         return s, False                   # 切不到像样的起点：原样退回，不判无名
-    _f = re.match(r"([^\W\d_]+)", rest, re.UNICODE)
-    if _f and _f.group(1).lower() in _CORP_SUFFIX:
+    # 首词整词比对（去标点），**不是比前缀**：`Co-operative Trust Co. …` 的整词是
+    # `Co-operative`，不比前缀才不会被误判成 `Co.`
+    _f = re.match(r"(\S+)", rest, re.UNICODE)
+    if _f and _f.group(1).strip("().,&;:'’“”[]").lower() in _CORP_SUFFIX:
         return s, False                   # 起点是公司后缀：切点落进真名内部了，原样退回
     return rest, True
 

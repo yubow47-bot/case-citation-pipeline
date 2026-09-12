@@ -174,7 +174,7 @@ def mode_renames(a):
     for court, r in _rows(a.dir):
         old = (r.get("candidate_case_name") or "").strip()
         new, _, mk = new_name(r.get("preceding_text") or "", a.mode)
-        if a.scan or (old and new and new != old):
+        if old and new and new != old:
             out.append((court, old, new, mk, r.get("raw_string"),
                         r.get("preceding_text") or "", r.get("source_decision_citation")))
     print("改名 %d 行" % len(out))
@@ -197,9 +197,7 @@ def mode_mode_diff(a):
         if n1 == n2:
             continue
         n += 1
-        if a.out:
-            pass
-        elif n <= a.samples:
+        if n <= a.samples:
             print("[%s] raw=%r  标记=%s\n    无v才认 %r\n    标记优先 %r"
                   % (court, r.get("raw_string"), m1, n1, n2))
     print("两种模式结果不同的行：%d" % n)

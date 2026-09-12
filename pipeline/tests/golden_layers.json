@@ -106,8 +106,8 @@
   "clusters_split_by_decision": 3157,
   "dd_added_by_assignment": 220,
   "decision_id_rows": 357620,
-  "groups_merged_parallel": 9382,
-  "groups_out": 190154,
+  "groups_merged_parallel": 9383,
+  "groups_out": 190153,
   "groups_with_multiple_neutral_strings": 37,
   "groups_with_near_year_peers": 8122,
   "groups_with_near_year_peers_max": 21,
@@ -149,23 +149,23 @@
  "select": {
   "dd_profile": [
    {
-    "groups_kept": 170710,
+    "groups_kept": 170709,
     "pct_of_groups": 89.775,
     "threshold_dd": 1
    },
    {
-    "groups_kept": 35285,
+    "groups_kept": 35284,
     "pct_of_groups": 18.556,
     "threshold_dd": 2
    },
    {
-    "groups_kept": 17673,
+    "groups_kept": 17672,
     "pct_of_groups": 9.294,
     "threshold_dd": 3
    },
    {
-    "groups_kept": 8609,
-    "pct_of_groups": 4.527,
+    "groups_kept": 8610,
+    "pct_of_groups": 4.528,
     "threshold_dd": 5
    },
    {
@@ -190,10 +190,10 @@
    }
   ],
   "stats": {
-   "dropped": 188896,
-   "groups_kept": 8609,
-   "groups_total": 190154,
-   "kept": 17317,
+   "dropped": 188894,
+   "groups_kept": 8610,
+   "groups_total": 190153,
+   "kept": 17319,
    "rows_total": 206213
   },
   "threshold_dd": 5
