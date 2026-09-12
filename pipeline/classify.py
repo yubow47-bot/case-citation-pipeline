@@ -42,6 +42,10 @@
      `LSJPA — N`）一律切不出。补一条**只在段首/段尾认闭集标记**的规则（见下方常量），
      且只在「本行引证所在那一段内没有 v.」时启用。标记是结构，不是词表枚举案名——
      约束二禁的是抽取层用固定缩写清单决定收不收，此处是清洗层的结构判据。须人复核。
+  7. §8.7 修订（PROBLEMS #61）：候选把左侧整句散文吞进来时切掉散文（`_trim_prose_left`，
+     见下方常量与注记）。**切不动就原样退回，不判无名**——这是对「切完不像案名就丢弃」
+     那一版的收紧，理由是实测丢弃档会丢掉真案名（`Union des employés de commerce,
+     local 503 v. Roy`）。须人复核。
 """
 import argparse
 import csv
@@ -233,6 +237,76 @@ def _marker_of(seg):
     return ""
 
 
+# ------------------------------------------------------- §8.7 左侧散文污染（#61）
+# 案名候选是从「引证前面最近的分隔符」切到引证；近旁没有 ; : 换行 时，候选会把整句
+# 散文吞进来——`strict liability (presumably on the basis of Rylands v. Fletcher`（dd 8）、
+# `negligence, nuisance, and the rule in Rylands v. Fletcher`（dd 23）。
+# 判据分两步，都被实测逼出来：
+#   ① **切点词表**只收「会合法出现在当事人名称内部」的词（of/the/and/de/la/…）。
+#      in/to/by/on/at 这些**是**切点：散文的边界恰好是 `…said in McIntosh v. Parent`、
+#      `…decision of the Supreme Court in Sattva Capital Corp. v. …`；把它们当连接词，
+#      切点会落在更早处、切出「Supreme Court in Sattva Capital Corp.」这种半句（实测）。
+#   ② 切点须满足**它到 v. 之间是一段非空的「像案名」词序列**，否则往前退到下一个切点，
+#      全不成立就不动。这道闸是关键：法语机构名 `Québec (Procureur général)`、
+#      `Union des employés de commerce` 的当事人一侧本身含小写词，没有它会切掉真名
+#      （实测首版 25,049 行被改，含大量误伤）。
+# 切完若剩下的不以大写开头，**原样退回**而不是判无名：`Union des employés de commerce,
+# local 503 v. Roy` 这类真名切点落在数字上，丢弃它比留着脏名字更糟（实测丢弃档会丢掉
+# 「Union des employés de commerce」等真案名；这是对 §8.7 补充规则的一处收紧）。
+_PROSE_CONNECTOR = frozenset("""
+of the and a an for de la le les du des et en aux d l
+""".split())
+_PROSE_TAIL_STRIP_RE = re.compile(r"[\s,;:.!?&'’“”()\[\]]+")
+
+
+def _between_is_name_like(text):
+    """切点右侧到 v. 之间是不是一段非空的「像案名」词序列。"""
+    toks = [m.group(0) for m in re.finditer(r"\S+", text)]
+    return bool(toks) and all(_name_like(t) for t in toks)
+
+
+def _trim_prose_left(s):
+    """左侧当事人一侧是散文时切掉散文，返回 (新串, 是否触发)。切不动就原样返回。"""
+    last = None
+    for m in V_RE.finditer(s):
+        last = m
+    if last is None:
+        return s, False
+    left = s[:last.start()]
+    cuts = []
+    for m in re.finditer(r"\S+", left):
+        w = m.group(0).strip("().,&;:'’“”[]")
+        if w and w.islower() and w not in _PROSE_CONNECTOR:
+            cuts.append(m.end())
+    if len(cuts) < 3:
+        return s, False                   # 触发闸：左侧至少 3 个小写散文词
+    cut = None
+    for c in reversed(cuts):
+        if _between_is_name_like(left[c:]):
+            cut = c
+            break
+    if cut is None:
+        return s, False
+    rest = s[cut:]
+    while True:
+        m = _PROSE_TAIL_STRIP_RE.match(rest)
+        if m and m.end():
+            rest = rest[m.end():]
+            continue
+        m = re.match(r"\[\s*\d+\s*\]|\d+\s*[).]|\d+", rest)      # 段落编号 / 页码残尾
+        if m and m.end():
+            rest = rest[m.end():]
+            continue
+        m = re.match(r"([^\W\d_]+)", rest, re.UNICODE)
+        if m and m.group(1).lower() in _CONNECTOR and m.group(1).lower() not in ("v", "vs"):
+            rest = rest[m.end():]
+            continue
+        break
+    if not rest or not rest[:1].isupper():
+        return s, False                   # 切不到像样的起点：原样退回，不判无名
+    return rest, True
+
+
 def admit_candidate(cand):
     s = cand
     while True:
@@ -260,6 +334,10 @@ def admit_candidate(cand):
     if re.search(r"[^\W\d_]", _t) and (V_RE.search(_t) or not V_RE.search(s)):
         s = _t
     s = re.sub(r"[,;:.\s]+$", "", s)
+
+    # PROBLEMS #61：左侧吞进来的整句散文（近旁没有 ; : 换行 时）。放在剥尾之后、
+    # 长度等闸之前——切短了可能正好把一条 too_long 救回来
+    s, _fired = _trim_prose_left(s)
 
     if len(s) > 120:
         return None, "too_long"

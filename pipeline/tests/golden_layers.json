@@ -1,6 +1,6 @@
 {
  "classify_ONCA": {
-  "case_name_split": 124146,
+  "case_name_split": 124304,
   "conflict_resolved_by_match_grade": 151,
   "court_false_hit_blocked_by_vol_gate": 128,
   "court_hit_via_normalized": 104,
@@ -15,8 +15,8 @@
   "kind_ambiguous": 100,
   "kind_neutral": 91147,
   "kind_reporter": 116288,
-  "name_rejected_has_bracketed_year": 462,
-  "name_rejected_multi_v": 183,
+  "name_rejected_has_bracketed_year": 421,
+  "name_rejected_multi_v": 66,
   "name_rejected_name_belongs_to_later_segment": 247,
   "name_rejected_no_separator_before_v": 64622,
   "name_rejected_no_v_structure": 17875,
@@ -27,7 +27,7 @@
   "self_citation": 35180
  },
  "classify_SCC": {
-  "case_name_split": 168401,
+  "case_name_split": 168550,
   "conflict_resolved_by_match_grade": 842,
   "court_false_hit_blocked_by_vol_gate": 2254,
   "court_hit_via_normalized": 168,
@@ -42,8 +42,8 @@
   "kind_ambiguous": 34,
   "kind_neutral": 52055,
   "kind_reporter": 322784,
-  "name_rejected_has_bracketed_year": 475,
-  "name_rejected_multi_v": 396,
+  "name_rejected_has_bracketed_year": 451,
+  "name_rejected_multi_v": 271,
   "name_rejected_name_belongs_to_later_segment": 1379,
   "name_rejected_no_separator_before_v": 62870,
   "name_rejected_no_v_structure": 141352,
@@ -55,72 +55,72 @@
   "self_citation": 23277
  },
  "decide_ONCA": {
-  "anchors_collapsed_as_variant": 28,
+  "anchors_collapsed_as_variant": 34,
   "case_origin_determined": 40,
-  "chains_split_by_span": 345,
-  "clusters_split_by_decision": 2508,
-  "dd_added_by_assignment": 200,
+  "chains_split_by_span": 370,
+  "clusters_split_by_decision": 2624,
+  "dd_added_by_assignment": 236,
   "decision_id_rows": 165777,
-  "groups_merged_parallel": 3753,
-  "groups_out": 74385,
-  "groups_with_multiple_neutral_strings": 27,
+  "groups_merged_parallel": 3994,
+  "groups_out": 73852,
+  "groups_with_multiple_neutral_strings": 33,
   "input_rows": 79605,
   "neutral_rows_before_court_start": 6,
   "output_rows": 79605,
-  "rows_unanchored": 276,
+  "rows_unanchored": 307,
   "self_ids_removed": 11,
-  "unanchored_groups": 271,
-  "units_assigned_by_cocitation": 246,
-  "units_assigned_larger_than_target": 27,
-  "units_tie_broken_by_year": 25,
-  "units_unanchored_incompatible_only": 164,
+  "unanchored_groups": 302,
+  "units_assigned_by_cocitation": 286,
+  "units_assigned_larger_than_target": 30,
+  "units_tie_broken_by_year": 27,
+  "units_unanchored_incompatible_only": 172,
   "units_unanchored_tie": 7,
-  "units_unanchored_weak_cocitation": 105
+  "units_unanchored_weak_cocitation": 128
  },
  "decide_SCC": {
   "anchors_collapsed_as_variant": 4,
   "case_origin_determined": 214,
-  "chains_split_by_span": 109,
-  "clusters_split_by_decision": 453,
+  "chains_split_by_span": 119,
+  "clusters_split_by_decision": 459,
   "dd_added_by_assignment": 2,
   "decision_id_rows": 191843,
-  "groups_merged_parallel": 4070,
-  "groups_out": 121866,
+  "groups_merged_parallel": 4155,
+  "groups_out": 121750,
   "groups_with_multiple_neutral_strings": 4,
   "input_rows": 126608,
   "neutral_rows_before_court_start": 0,
   "output_rows": 126608,
-  "rows_unanchored": 57,
-  "self_ids_removed": 1647,
-  "unanchored_groups": 49,
-  "units_assigned_by_cocitation": 198,
+  "rows_unanchored": 58,
+  "self_ids_removed": 1648,
+  "unanchored_groups": 50,
+  "units_assigned_by_cocitation": 199,
   "units_assigned_larger_than_target": 2,
   "units_tie_broken_by_year": 29,
-  "units_unanchored_incompatible_only": 28,
+  "units_unanchored_incompatible_only": 29,
   "units_unanchored_tie": 11,
   "units_unanchored_weak_cocitation": 18
  },
  "decide_cross": {
-  "anchors_collapsed_as_variant": 31,
-  "chains_split_by_span": 512,
-  "clusters_split_by_decision": 3043,
-  "dd_added_by_assignment": 184,
+  "anchors_collapsed_as_variant": 37,
+  "chains_split_by_span": 547,
+  "clusters_split_by_decision": 3156,
+  "dd_added_by_assignment": 220,
   "decision_id_rows": 357620,
-  "groups_merged_parallel": 8821,
-  "groups_out": 191346,
-  "groups_with_multiple_neutral_strings": 31,
+  "groups_merged_parallel": 9371,
+  "groups_out": 190170,
+  "groups_with_multiple_neutral_strings": 37,
   "input_rows": 206213,
   "neutral_rows_before_court_start": 15,
   "output_rows": 206213,
-  "rows_unanchored": 418,
+  "rows_unanchored": 486,
   "self_ids_removed": 1657,
-  "unanchored_groups": 395,
-  "units_assigned_by_cocitation": 459,
-  "units_assigned_larger_than_target": 39,
-  "units_tie_broken_by_year": 53,
-  "units_unanchored_incompatible_only": 209,
+  "unanchored_groups": 457,
+  "units_assigned_by_cocitation": 492,
+  "units_assigned_larger_than_target": 42,
+  "units_tie_broken_by_year": 55,
+  "units_unanchored_incompatible_only": 219,
   "units_unanchored_tie": 18,
-  "units_unanchored_weak_cocitation": 183
+  "units_unanchored_weak_cocitation": 236
  },
  "merge_ONCA": {
   "decision_id_rows": 165777,
@@ -147,38 +147,38 @@
  "select": {
   "dd_profile": [
    {
-    "groups_kept": 171872,
-    "pct_of_groups": 89.823,
+    "groups_kept": 170726,
+    "pct_of_groups": 89.775,
     "threshold_dd": 1
    },
    {
-    "groups_kept": 35406,
-    "pct_of_groups": 18.504,
+    "groups_kept": 35286,
+    "pct_of_groups": 18.555,
     "threshold_dd": 2
    },
    {
-    "groups_kept": 17620,
-    "pct_of_groups": 9.208,
+    "groups_kept": 17672,
+    "pct_of_groups": 9.293,
     "threshold_dd": 3
    },
    {
-    "groups_kept": 8551,
-    "pct_of_groups": 4.469,
+    "groups_kept": 8609,
+    "pct_of_groups": 4.527,
     "threshold_dd": 5
    },
    {
-    "groups_kept": 3537,
-    "pct_of_groups": 1.848,
+    "groups_kept": 3563,
+    "pct_of_groups": 1.874,
     "threshold_dd": 10
    },
    {
-    "groups_kept": 1391,
-    "pct_of_groups": 0.727,
+    "groups_kept": 1410,
+    "pct_of_groups": 0.741,
     "threshold_dd": 20
    },
    {
-    "groups_kept": 331,
-    "pct_of_groups": 0.173,
+    "groups_kept": 338,
+    "pct_of_groups": 0.178,
     "threshold_dd": 50
    },
    {
@@ -188,18 +188,18 @@
    }
   ],
   "stats": {
-   "dropped": 189606,
-   "groups_kept": 8551,
-   "groups_total": 191346,
-   "kept": 16607,
+   "dropped": 188900,
+   "groups_kept": 8609,
+   "groups_total": 190170,
+   "kept": 17313,
    "rows_total": 206213
   },
   "threshold_dd": 5
  },
  "top25": [
   [
-   690,
-   771,
+   696,
+   779,
    "R. v. W.(D.)",
    []
   ],
@@ -250,8 +250,14 @@
    ]
   ],
   [
-   290,
-   738,
+   292,
+   642,
+   "Hunter v. Southam Inc",
+   []
+  ],
+  [
+   291,
+   739,
    "R. v. Oakes",
    []
   ],
@@ -264,28 +270,22 @@
    ]
   ],
   [
-   279,
-   624,
-   "Hunter v. Southam Inc",
-   []
-  ],
-  [
-   273,
-   275,
+   274,
+   276,
    "R. v. Kienapple",
    []
   ],
   [
-   258,
-   541,
+   259,
+   544,
    "R. v. Sheppard",
    [
     "2002||scc||26"
    ]
   ],
   [
-   237,
-   486,
+   239,
+   488,
    "R. v. Collins",
    []
   ],
@@ -304,8 +304,8 @@
    ]
   ],
   [
-   222,
-   491,
+   224,
+   495,
    "Hryniak v. Mauldin",
    [
     "2014||csc||7",
@@ -313,8 +313,8 @@
    ]
   ],
   [
-   215,
-   258,
+   216,
+   259,
    "R. v. Morrissey",
    []
   ],
@@ -336,11 +336,18 @@
   ],
   [
    205,
-   434,
+   435,
    "R. v. Villaroman",
    [
-    "2016||scc||33"
+    "2016||scc||33",
+    "2016||scc||333"
    ]
+  ],
+  [
+   199,
+   337,
+   "R. v. O’Connor",
+   []
   ],
   [
    199,
@@ -349,12 +356,6 @@
    [
     "2020||scc||9"
    ]
-  ],
-  [
-   198,
-   336,
-   "R. v. O’Connor",
-   []
   ],
   [
    195,

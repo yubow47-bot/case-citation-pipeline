@@ -71,6 +71,33 @@ def test_admit_candidate():
           "#45 缩写姓名也剥尾巴（首版的闸要 3 个连续字母，把它挡在门外）")
     check(name("R. v. Vu, 2013 SCC 60") == "R. v. Vu", "#45 两字姓也剥尾巴")
     check(name("R. v. Côté, 2011 SCC 46") == "R. v. Côté", "#45 带重音的姓也剥尾巴")
+    # PROBLEMS #61：候选把左侧整句散文吞进来时切掉散文
+    check(name("strict liability (presumably on the basis of Rylands v. Fletcher") == "Rylands v. Fletcher",
+          "#61 左侧整句散文被切掉（Rylands 例一，实测 dd 8）")
+    check(name("negligence, nuisance, and the rule in Rylands v. Fletcher") == "Rylands v. Fletcher",
+          "#61 左侧整句散文被切掉（Rylands 例二，实测 dd 23）")
+    check(name("This is not a new proposition. Lord Wright said in the seminal case of Heyman v. Darwins, Ltd")
+          == "Heyman v. Darwins, Ltd", "#61 大写开头的散文同样切（不能只按小写判散文）")
+    check(name("Issue estoppel was more particularly defined by Middleton J.A. of the Ontario Court "
+               "of Appeal in McIntosh v. Parent") == "McIntosh v. Parent",
+          "#61 切点取 in，不取更早的散文词（in/to/by 不是名称连接词）")
+    check(name("Commission scolaire régionale de Chambly v. Bergevin")
+          == "Commission scolaire régionale de Chambly v. Bergevin",
+          "#61 法语机构名不动（左侧小写散文词不足 3 个，触发闸挡住）")
+    check(name("Union des employés de commerce, local 503 v. Roy")
+          == "Union des employés de commerce, local 503 v. Roy",
+          "#61 当事人一侧含小写词、切点落在数字上：原样退回，不判无名（丢弃档会丢掉这个真案名）")
+    check(name("Québec (Procureur général) v. Lambert") == "Québec (Procureur général) v. Lambert",
+          "#61 「切点右侧必须像案名」的闸：général 是当事人一侧的一部分，不是切点")
+    check(name("the subsequent case of Swiderski et al. v. Broy Engineering Ltd. et al")
+          == "Swiderski et al. v. Broy Engineering Ltd. et al",
+          "#61 不会把原告一侧切掉（et al. 是小写词，between 不像案名则往前退）")
+    check(name("Thomson Newspapers Ltd. v. Canada (Director of Investigation and Research, Restrictive "
+               "Trade Practices Commission)")
+          == "Thomson Newspapers Ltd. v. Canada (Director of Investigation and Research, Restrictive "
+             "Trade Practices Commission)",
+          "#61 长机构名不动（实测 dd 100）")
+    check(name("Voyageur (1969) Inc. v. Ally") == "Voyageur (1969) Inc. v. Ally", "#61 公司名年份不受影响")
 
 
 def _row(shape, raw, **kw):

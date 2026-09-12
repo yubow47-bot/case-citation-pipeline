@@ -53,6 +53,7 @@
 | `select_content_diff.py` | 选取层产出的**内容级**差分：只比计数会藏住「一件案子被另一件替换」。按（法院, 印刷引证串）集合对齐两组产出，比（案名 / canonical_string / dd / kept）。组的 `merged_group_id` 跨版本会变，不能当键 |
 | `preview_case_name.py` | 案名切分改动的**离线预演**：用现成 `classified.csv`（它带 `preceding_text`）把新规则先跑一遍，秒级看出「有名行会不会被改名」，比全量重跑省一个数量级。`preview_case_name_detail.py` 摊开改名行与两模式差异，`preview_gain_scan.py` 扫新得名字里的散文特征，`preview_vs_prod.py` 校验预演与生产线实现逐行等价（两份实现数字不同必须能解释） |
 | `case_name_gap_audit.py` | 无 v. 案名的缺口测量（PROBLEMS #58）：无名行的 `name_rejected_reason` 分布、**引证所在段**的首词分档、各候选标记命中数与样本、`(Re)` 后缀形、魁北克匿名名同族探测 |
+| `preview_prose_trim.py` | 案名左侧散文污染的离线预演（PROBLEMS #61）：把拟采用的「左切」规则套在现成 `candidate_case_name` 上，秒级看出会改哪些名字、`--legit` 列出全部去重改动供人逐条判断是改善还是误伤 |
 | `one_vote_audit.py` | 「一票定名」的测量（PROBLEMS #60）：每个过门槛组的名字支持度分档、票数×支持度联合分布、支持度 < 0.10 的清单。只读不改 |
 | `gate_effect_audit.py` | 支持度闸的**逐组**效应（PROBLEMS #60）：闸把哪些组合拆开了、拆开后两边的名字/引证/年份各是什么——据此判断闸是挡住了错并、还是拆散了本该在一起的平行引证 |
 | `decide_no_gate.py` | 关掉支持度闸跑一遍裁定层，重建「不设闸」的对照产出。**只是审计仪器**：生产线永远按 `pipeline/decide.py` 里的常量跑 |
