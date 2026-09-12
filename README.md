@@ -2,6 +2,9 @@
 
 从加拿大法院判决全文语料中，抽取被引用的外国判例引证，整理成带案名、法域、引用频次的结构化表格。
 
+**读数据之前先读 [`USAGE.md`](USAGE.md)**：它写清了「被引 N 次」到底量的是什么、`dd` 与
+`occurrence_count` 的区别、门槛值未校准、法域与来源地是两件事，以及一份完整的少算清单。
+
 ## 五层架构
 
 1. **抽取** — 结构匹配，全量输出，不筛不判
@@ -16,6 +19,7 @@
 D:\cases data analisis\
 ├── .gitignore
 ├── README.md
+├── USAGE.md                       使用与解读说明（读数据前先读）
 ├── PROBLEMS.md                    进 git，纯记录，不得被脚本读取
 ├── select_config.yaml
 ├── download_corpus.sh             语料快照下载脚本（HF 枚举、断点续传、SHA256 校验；bash/WSL）
