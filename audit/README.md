@@ -49,6 +49,10 @@
 | `table_coverage.py` | 决策表覆盖率审计：精确命中 / **仅归一命中** / 漏网三档分报，漏网按「厂商 / 噪声 / **疑似真法院码**」分类（v2 增「码+分庭词」「带点码」两识别分支，新形态单列计数——旧纯大写口径把 `EWCA Civ`、`E.W.C.A. Civ.` 这类真码埋进噪声，PROBLEMS #35 口径订正的依据） |
 | `disambiguation_audit.py` | 同形异义消歧的三道验证（PROBLEMS #52）：前缀后随缩写族（前缀法域的印刷证据）/ **留出法**（遮住前缀只用区间判，与前缀比）/ **同组旁证**（同一裁定组里单一法域的其他汇编）。读分类层与裁定层产出，报告写 `audit/findings/disambiguation_report.md` |
 | `case_origin_audit.py` | 来源地判定的**全量逐行前后差分**（PROBLEMS #59）：填 `decisions/case_origin.csv` 前先 `--snapshot`，重跑裁定层后 `--diff`，把 `UNDETERMINED → 某法域` 的行按分档数出来。键是 `court\|merge_key`。抽样在本项目漏过 145 行的回归，故一律全量 |
+| `classify_diff.py` | 分类层产出的**全量逐行差分**（PROBLEMS #58 用）：改动前 `--snapshot`，重跑 `classify.py` 后 `--before … ` 比。按行序号对齐，分档「无名→有名 / 有名→同名 / 有名→不同名 / 有名→无名 / 其他字段」。默认改名也算回归，已逐条复核过才加 `--allow-renames` |
+| `select_content_diff.py` | 选取层产出的**内容级**差分：只比计数会藏住「一件案子被另一件替换」。按（法院, 印刷引证串）集合对齐两组产出，比（案名 / canonical_string / dd / kept）。组的 `merged_group_id` 跨版本会变，不能当键 |
+| `preview_case_name.py` | 案名切分改动的**离线预演**：用现成 `classified.csv`（它带 `preceding_text`）把新规则先跑一遍，秒级看出「有名行会不会被改名」，比全量重跑省一个数量级。`preview_case_name_detail.py` 摊开改名行与两模式差异，`preview_gain_scan.py` 扫新得名字里的散文特征，`preview_vs_prod.py` 校验预演与生产线实现逐行等价（两份实现数字不同必须能解释） |
+| `case_name_gap_audit.py` | 无 v. 案名的缺口测量（PROBLEMS #58）：无名行的 `name_rejected_reason` 分布、**引证所在段**的首词分档、各候选标记命中数与样本、`(Re)` 后缀形、魁北克匿名名同族探测 |
 | `append_problems_entry.py` | 向 `PROBLEMS.md` 追加登记项。账本是 CRLF，只按 `"\r\n"` 切分拼回，写前断言无裸 LF——普通编辑器会把整份文件改写成 LF，diff 变成全文重写 |
 
 ### `gap_audit.py` 用法

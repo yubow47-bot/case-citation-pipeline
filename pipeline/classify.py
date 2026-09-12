@@ -37,6 +37,11 @@
   5. §8.6 修订（#52）：无卷号的行按「不印卷号」这一印刷事实参与区间比对并标
      vol_missing（原代码块一律不判，补充规则只凭年份——都丢了信息）；同一法域可有
      多段区间（Q.B. 英国有四个互不相接的系列）。消歧结果的成色不高于表行本身。
+  6. §8.7 修订（PROBLEMS #58）：原式只以 v. 为案名的唯一结构锚，`Re X`、`Reference
+     re X`、`In re X`、`Ex parte X`、`X (Re)`、魁北克匿名名（`Droit de la famille — N`、
+     `LSJPA — N`）一律切不出。补一条**只在段首/段尾认闭集标记**的规则（见下方常量），
+     且只在「本行引证所在那一段内没有 v.」时启用。标记是结构，不是词表枚举案名——
+     约束二禁的是抽取层用固定缩写清单决定收不收，此处是清洗层的结构判据。须人复核。
 """
 import argparse
 import csv
@@ -152,6 +157,82 @@ def append_reason(row, field, reason):
 
 
 # --------------------------------------------------------------- §8.7 案名清洗
+# PROBLEMS #58：没有 v. 的案名。只在**本行引证所在那一段的段首**认一个闭集标记：
+#   Reference re X / Re X / In re X / Ex parte X  —— 名称从标记起；
+#   X (Re)                                        —— 后缀形；
+#   魁北克匿名案名 Droit de la famille — NNNN / LSJPA — NNNN。
+#   标记后须紧跟大写词：「Re the question whether…」这类散文不成名。
+#   这是 §8.7 的**补充规则**（原文只以 v. 为唯一结构锚），须人复核。
+_MARKER_PREFIX_RE = re.compile(r"^(?:Reference\s+re|Re|In\s+re|Ex\s+parte)\s+(?=[A-Z])")
+_MARKER_TAIL_RE = re.compile(r"\(Re\)\s*[.,]?\s*$")
+_MARKER_ANON_RE = re.compile(r"^(?:Droit\s+de\s+la\s+famille|LSJPA)\s*[—–-]")
+# 走词用的连接词表。**它不决定「是不是案名」**，只决定「这个词能不能继续算案名的一部分」：
+#   表太小 ⇒ 提前切断，名字变短（安全方向）；表太大 ⇒ 把散文词吞进来（危险方向）。
+_CONNECTOR = frozenset("""
+of the and a an for in on at by to with from v vs re ex parte de la dit dite
+du des et en le les l ltee inc ltd co corp corporation company limited llc lp
+plc srl gmbh no nos st ste saint al supra
+""".split())
+
+
+def _is_boundary(tok):
+    """纯标点且含句读点（. ;）——那是句子边界，不是案名的一部分。"""
+    return (not any(c.isalnum() for c in tok)) and any(c in ".;" for c in tok)
+
+
+def _name_like(tok):
+    """像案名的一部分：含大写字母 / 不含字母（数字、&、[5]）/ 是连接词。"""
+    if any(c.isupper() for c in tok):
+        return True
+    if not any(c.isalpha() for c in tok):
+        return True
+    return tok.lower().strip("().,&;:'’“”[]") in _CONNECTOR
+
+
+def _walk_right(seg):
+    """标记在段首：从标记向右走，遇到句子边界或不像案名的词就切在那里。
+    防的是「Re X, which is referred to by…」这种标记后面接着散文的情形。"""
+    end = len(seg)
+    for m in re.finditer(r"\S+", seg):
+        if m.start() == 0:
+            continue                                  # 标记本身
+        t = m.group(0)
+        if _is_boundary(t) or not _name_like(t):
+            end = m.start()
+            break
+    return seg[:end].strip()
+
+
+def _re_span(seg):
+    """「X (Re)」形：从段尾 (Re) 向左走，返回案名起点下标；走不到像样的起点返回 -1。
+    段是「从上一个 ; : 换行 起」，句子跨过那个边界时整段散文都会被吞进来
+    （实测不加此闸时 2,750 行里大半是「…relying on several cases including Nortel
+    Networks Corp. (Re)」这类整句），故必须从右往左收。"""
+    toks = list(re.finditer(r"\S+", seg))
+    if not toks:
+        return -1
+    start = 0
+    for m in reversed(toks):
+        t = m.group(0)
+        if _name_like(t) and not _is_boundary(t):
+            start = m.start()
+            continue
+        break
+    name = seg[start:].strip()
+    c = name[:1]
+    return start if (c.isupper() or c == "(" or c.isdigit()) else -1
+
+
+def _marker_of(seg):
+    if _MARKER_PREFIX_RE.match(seg):
+        return "prefix"
+    if _MARKER_TAIL_RE.search(seg):
+        return "tail_re" if _re_span(seg) >= 0 else ""
+    if _MARKER_ANON_RE.match(seg):
+        return "anon"
+    return ""
+
+
 def admit_candidate(cand):
     s = cand
     while True:
@@ -193,8 +274,37 @@ def admit_candidate(cand):
 
 def split_case_name(row):
     """§8.7：取**最后一个** v.；候选取到 preceding_text 末尾（不截到 v.）；
-    找不到分隔符即放弃（不退化为从位置 0 取）。"""
+    找不到分隔符即放弃（不退化为从位置 0 取）。
+
+    PROBLEMS #58 补充：先看本行引证**所在的那一段**（它前面最近的 ; : 换行 起）。
+    段首是闭集标记、段尾是 (Re)、或是魁北克匿名名，那一段就是案名——不走「取最后一个
+    v.」那条路。**只在段内没有 v. 时才走这条**：段内有 v. 就有名字锚，旧路照旧处理
+    （否则「…in Rizzo v. Rizzo Shoes Ltd. (Re)」这类段会被整段当案名，实测 46 行）。"""
     pre = row.get("preceding_text") or ""
+
+    seg_sep = max(pre.rfind(";"), pre.rfind(":"), pre.rfind("\n"))
+    seg = pre[seg_sep + 1:]
+    _i = 0
+    while _i < len(seg) and (seg[_i].isspace() or seg[_i] in _ADMIT_LEAD_CHARS):
+        _i += 1
+    seg = seg[_i:]
+    if not V_RE.search(seg):
+        marker = _marker_of(seg)
+        if marker:
+            if marker == "prefix":
+                seg = _walk_right(seg)
+            elif marker == "tail_re":
+                _s = _re_span(seg)
+                if _s > 0:
+                    seg = seg[_s:]
+            cleaned, reject = admit_candidate(seg.strip().rstrip(",").strip())
+            if reject:
+                append_reason(row, "name_rejected_reason", reject)
+                row["candidate_case_name"] = ""
+            else:
+                row["candidate_case_name"] = cleaned
+            return
+
     last = None
     for m in V_RE.finditer(pre):
         last = m

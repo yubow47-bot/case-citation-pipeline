@@ -212,8 +212,8 @@ def test_disambiguation():
     r = c.run_row(_row("shape_bracket", "[1985] 2 S.C.R. 486", token="S.C.R.", vol="2", year_start="1985",
                        page="486", preceding_text="Hunter v. Southam Inc., [1984] 2 S.C.R. 145; R. v. Big M "
                        "Drug Mart Ltd., [1985] 1 S.C.R. 295; Re B.C. Motor Vehicle Act, "))
-    check((r["candidate_case_name"], r["name_rejected_reason"]) == ("", "name_belongs_to_later_segment"),
-          "#57 Re B.C. Motor Vehicle Act 的引证不借前一个案子 Big M 的名字")
+    check(r["candidate_case_name"] == "Re B.C. Motor Vehicle Act" and "Big M" not in r["candidate_case_name"],
+          "#57/#58 Re B.C. Motor Vehicle Act 的引证不借 Big M 的名字；#58 起改取它自己那一段的名字")
     r = c.run_row(_row("shape_bracket", "[2002] 2 S.C.R. 235", token="S.C.R.", vol="2", year_start="2002",
                        page="235", preceding_text="; Housen v. Nikolaisen, 2002 SCC 33; "))
     check(r["candidate_case_name"] == "Housen v. Nikolaisen",
@@ -224,6 +224,53 @@ def test_disambiguation():
     check(not classify._HISTORY_RE.match("Revenue Canada") and not classify._HISTORY_RE.match("Varity Corp")
           and not classify._HISTORY_RE.match("Re B.C. Motor Vehicle Act"),
           "#57 沿革词表只认完整的沿革词，不吞 Revenue、Varity、Re 起头的案名")
+
+
+def test_case_name_markers():
+    """PROBLEMS #58：没有 v. 的案名。标记只在**引证所在那一段**的段首/段尾认，
+    且只在段内没有 v. 时启用；标记后面接着散文要切断或拒收。"""
+    c = _classifier()
+
+    def name(pre, raw="[1985] 2 S.C.R. 486", tok="S.C.R.", vol="2", year="1985", page="486"):
+        return c.run_row(_row("shape_bracket", raw, token=tok, vol=vol, year_start=year,
+                              page=page, preceding_text=pre))["candidate_case_name"]
+
+    # 三种前缀标记 + 后缀 (Re) + 魁北克匿名名
+    check(name("Referred to: Reference re Secession of Quebec, ") == "Reference re Secession of Quebec",
+          "#58 Reference re X：取标记起的那一段（1896 那类跨句吞并同时被挡住）")
+    check(name("Considered: Re B.C. Motor Vehicle Act, ") == "Re B.C. Motor Vehicle Act", "#58 Re X")
+    check(name("In re Estate of Brown (deceased), ") == "In re Estate of Brown", "#58 In re X")
+    check(name("Ex parte Adamson, ") == "Ex parte Adamson", "#58 Ex parte X")
+    check(name("Rizzo & Rizzo Shoes Ltd. (Re), ") == "Rizzo & Rizzo Shoes Ltd. (Re)", "#58 X (Re) 后缀形")
+    check(name("Droit de la famille — 103038, 2010 QCCA 2074, ") == "Droit de la famille — 103038",
+          "#58 魁北克匿名名（法语 famille 是小写，不走「像案名」的走词判据）")
+    check(name("LSJPA — 1037, 2010 QCCA 1627, ") == "LSJPA — 1037", "#58 LSJPA 匿名名（破折号含 en dash）")
+    check(name("Re Residential Tenancies Act, 1979, ") == "Re Residential Tenancies Act, 1979",
+          "#58 段内是「, 1979」而非引证形态：不当尾巴剥掉")
+
+    # 散文必须挡住
+    check(name("Re the question whether the trial judge erred, ") == "",
+          "#58 标记后不是大写词：散文不成名（Re the question…）")
+    check(name("Re Schabas and Caput of the University of Toronto[22], which is referred to by Macdonald, J.A., in ")
+          == "Re Schabas and Caput of the University of Toronto[22]",
+          "#58 标记后接着散文（, which is referred to by…）：在句子边界切断")
+    check(name("relying on several cases including Nortel Networks Corp. (Re), ")
+          == "Nortel Networks Corp. (Re)",
+          "#58 X (Re) 从右往左收：段首是散文时只取案名那一段（未加此闸时 2,750 行里大半是整句）")
+
+    # 段内有 v. 时不走标记路（否则「…in Rizzo v. Rizzo Shoes Ltd. (Re)」会被整段吞下）
+    check(name("see Vavilov, 2019 SCC 65, at para. 117, citing Rizzo & Rizzo Shoes Ltd. (Re), ")
+          != "see Vavilov, 2019 SCC 65, at para. 117, citing Rizzo & Rizzo Shoes Ltd. (Re)",
+          "#58 段内有 v.：标记路不启用，交回 v. 路（实测 46 行会退化为整段散文）")
+    # 分号是段边界：前一段的 v. 不影响本段
+    r = c.run_row(_row("shape_bracket", "[1998] 2 S.C.R. 217", token="S.C.R.", vol="2", year_start="1998",
+                       page="217", preceding_text="1198; Air Canada v. British Columbia, [1989] 1 S.C.R. 1161."
+                       "\nBy Binnie J.\nReferred to: Reference re Secession of Quebec, "))
+    check(r["candidate_case_name"] == "Reference re Secession of Quebec",
+          "#58 Secession 验收例：不再借用 Air Canada v. British Columbia")
+    # 无标记仍是无 v. 结构
+    check(name("the manipulation of an end and not a means, ") == "",
+          "#58 段首无标记：照旧 no_v_structure，不给默认值")
 
 
 # ============================================================ 裁定层（单元）
@@ -565,7 +612,7 @@ def main():
     if a.golden or a.golden_write:
         sys.exit(golden(a.golden_write))
     for t in (test_admit_candidate, test_classifier, test_disambiguation,
-              test_decide_units, test_mini_chain):
+              test_case_name_markers, test_decide_units, test_mini_chain):
         t()
     print("全部通过：%d 条断言" % len(PASSED))
 

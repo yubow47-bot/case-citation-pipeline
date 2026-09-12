@@ -1,6 +1,6 @@
 {
  "classify_ONCA": {
-  "case_name_split": 121908,
+  "case_name_split": 124146,
   "conflict_resolved_by_match_grade": 151,
   "court_false_hit_blocked_by_vol_gate": 128,
   "court_hit_via_normalized": 104,
@@ -15,11 +15,11 @@
   "kind_ambiguous": 100,
   "kind_neutral": 91147,
   "kind_reporter": 116288,
-  "name_rejected_has_bracketed_year": 457,
+  "name_rejected_has_bracketed_year": 462,
   "name_rejected_multi_v": 183,
-  "name_rejected_name_belongs_to_later_segment": 447,
-  "name_rejected_no_separator_before_v": 64626,
-  "name_rejected_no_v_structure": 19914,
+  "name_rejected_name_belongs_to_later_segment": 247,
+  "name_rejected_no_separator_before_v": 64622,
+  "name_rejected_no_v_structure": 17875,
   "neutral_withheld_fuzzy_only": 100,
   "rejected_federal_statute": 280,
   "rejected_party_initials": 32,
@@ -27,7 +27,7 @@
   "self_citation": 35180
  },
  "classify_SCC": {
-  "case_name_split": 162979,
+  "case_name_split": 168401,
   "conflict_resolved_by_match_grade": 842,
   "court_false_hit_blocked_by_vol_gate": 2254,
   "court_hit_via_normalized": 168,
@@ -42,11 +42,11 @@
   "kind_ambiguous": 34,
   "kind_neutral": 52055,
   "kind_reporter": 322784,
-  "name_rejected_has_bracketed_year": 472,
+  "name_rejected_has_bracketed_year": 475,
   "name_rejected_multi_v": 396,
-  "name_rejected_name_belongs_to_later_segment": 4203,
-  "name_rejected_no_separator_before_v": 62886,
-  "name_rejected_no_v_structure": 143937,
+  "name_rejected_name_belongs_to_later_segment": 1379,
+  "name_rejected_no_separator_before_v": 62870,
+  "name_rejected_no_v_structure": 141352,
   "neutral_withheld_fuzzy_only": 34,
   "prefix_contradicts_table": 5,
   "rejected_federal_statute": 586,
@@ -57,70 +57,70 @@
  "decide_ONCA": {
   "anchors_collapsed_as_variant": 28,
   "case_origin_determined": 40,
-  "chains_split_by_span": 327,
-  "clusters_split_by_decision": 2394,
+  "chains_split_by_span": 345,
+  "clusters_split_by_decision": 2508,
   "dd_added_by_assignment": 200,
   "decision_id_rows": 165777,
-  "groups_merged_parallel": 3705,
-  "groups_out": 74447,
+  "groups_merged_parallel": 3753,
+  "groups_out": 74385,
   "groups_with_multiple_neutral_strings": 27,
   "input_rows": 79605,
   "neutral_rows_before_court_start": 6,
   "output_rows": 79605,
-  "rows_unanchored": 277,
-  "self_ids_removed": 8,
-  "unanchored_groups": 272,
-  "units_assigned_by_cocitation": 241,
+  "rows_unanchored": 276,
+  "self_ids_removed": 11,
+  "unanchored_groups": 271,
+  "units_assigned_by_cocitation": 246,
   "units_assigned_larger_than_target": 27,
-  "units_tie_broken_by_year": 20,
+  "units_tie_broken_by_year": 25,
   "units_unanchored_incompatible_only": 164,
   "units_unanchored_tie": 7,
-  "units_unanchored_weak_cocitation": 106
+  "units_unanchored_weak_cocitation": 105
  },
  "decide_SCC": {
   "anchors_collapsed_as_variant": 4,
   "case_origin_determined": 214,
-  "chains_split_by_span": 107,
-  "clusters_split_by_decision": 444,
+  "chains_split_by_span": 109,
+  "clusters_split_by_decision": 453,
   "dd_added_by_assignment": 2,
   "decision_id_rows": 191843,
-  "groups_merged_parallel": 3931,
-  "groups_out": 122021,
+  "groups_merged_parallel": 4070,
+  "groups_out": 121866,
   "groups_with_multiple_neutral_strings": 4,
   "input_rows": 126608,
   "neutral_rows_before_court_start": 0,
   "output_rows": 126608,
-  "rows_unanchored": 58,
-  "self_ids_removed": 1628,
-  "unanchored_groups": 50,
-  "units_assigned_by_cocitation": 197,
+  "rows_unanchored": 57,
+  "self_ids_removed": 1647,
+  "unanchored_groups": 49,
+  "units_assigned_by_cocitation": 198,
   "units_assigned_larger_than_target": 2,
-  "units_tie_broken_by_year": 28,
+  "units_tie_broken_by_year": 29,
   "units_unanchored_incompatible_only": 28,
   "units_unanchored_tie": 11,
-  "units_unanchored_weak_cocitation": 19
+  "units_unanchored_weak_cocitation": 18
  },
  "decide_cross": {
   "anchors_collapsed_as_variant": 31,
-  "chains_split_by_span": 492,
-  "clusters_split_by_decision": 2919,
+  "chains_split_by_span": 512,
+  "clusters_split_by_decision": 3043,
   "dd_added_by_assignment": 184,
   "decision_id_rows": 357620,
-  "groups_merged_parallel": 8603,
-  "groups_out": 191627,
+  "groups_merged_parallel": 8821,
+  "groups_out": 191346,
   "groups_with_multiple_neutral_strings": 31,
   "input_rows": 206213,
   "neutral_rows_before_court_start": 15,
   "output_rows": 206213,
-  "rows_unanchored": 420,
-  "self_ids_removed": 1635,
-  "unanchored_groups": 397,
-  "units_assigned_by_cocitation": 453,
+  "rows_unanchored": 418,
+  "self_ids_removed": 1657,
+  "unanchored_groups": 395,
+  "units_assigned_by_cocitation": 459,
   "units_assigned_larger_than_target": 39,
-  "units_tie_broken_by_year": 47,
+  "units_tie_broken_by_year": 53,
   "units_unanchored_incompatible_only": 209,
   "units_unanchored_tie": 18,
-  "units_unanchored_weak_cocitation": 185
+  "units_unanchored_weak_cocitation": 183
  },
  "merge_ONCA": {
   "decision_id_rows": 165777,
@@ -147,33 +147,33 @@
  "select": {
   "dd_profile": [
    {
-    "groups_kept": 172146,
-    "pct_of_groups": 89.834,
+    "groups_kept": 171872,
+    "pct_of_groups": 89.823,
     "threshold_dd": 1
    },
    {
-    "groups_kept": 35460,
-    "pct_of_groups": 18.505,
+    "groups_kept": 35406,
+    "pct_of_groups": 18.504,
     "threshold_dd": 2
    },
    {
-    "groups_kept": 17640,
-    "pct_of_groups": 9.205,
+    "groups_kept": 17620,
+    "pct_of_groups": 9.208,
     "threshold_dd": 3
    },
    {
-    "groups_kept": 8573,
-    "pct_of_groups": 4.474,
+    "groups_kept": 8551,
+    "pct_of_groups": 4.469,
     "threshold_dd": 5
    },
    {
-    "groups_kept": 3548,
-    "pct_of_groups": 1.852,
+    "groups_kept": 3537,
+    "pct_of_groups": 1.848,
     "threshold_dd": 10
    },
    {
-    "groups_kept": 1392,
-    "pct_of_groups": 0.726,
+    "groups_kept": 1391,
+    "pct_of_groups": 0.727,
     "threshold_dd": 20
    },
    {
@@ -182,16 +182,16 @@
     "threshold_dd": 50
    },
    {
-    "groups_kept": 90,
+    "groups_kept": 89,
     "pct_of_groups": 0.047,
     "threshold_dd": 100
    }
   ],
   "stats": {
-   "dropped": 189678,
-   "groups_kept": 8573,
-   "groups_total": 191627,
-   "kept": 16535,
+   "dropped": 189606,
+   "groups_kept": 8551,
+   "groups_total": 191346,
+   "kept": 16607,
    "rows_total": 206213
   },
   "threshold_dd": 5
@@ -212,6 +212,12 @@
     "2002||scc||33",
     "2002||scc||35"
    ]
+  ],
+  [
+   414,
+   663,
+   "Rizzo & Rizzo Shoes Ltd. (Re)",
+   []
   ],
   [
    397,
@@ -287,12 +293,6 @@
    234,
    567,
    "R. v. Big M Drug Mart Ltd",
-   []
-  ],
-  [
-   234,
-   245,
-   "Re Rizzo v. Rizzo Shoes Ltd",
    []
   ],
   [
