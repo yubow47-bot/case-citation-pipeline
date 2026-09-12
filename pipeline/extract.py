@@ -69,6 +69,173 @@ SCHEMA = [
 ]
 SCHEMA_SUPER = SCHEMA + ["superseded_by"]
 
+# ---------------------------------------------------------------- candidates
+# candidates-2.0：全候选路线（D1/D2/D3 修复）的正式下游输入。旧 kept/superseded
+# 仍是 §7.3 v1.4 封版口径，降为历史诊断产物——**不再决定 classify 看见什么**（约束十：
+# 本版不再声称沿用未改动的 v1.4 schema）。
+CAND_SCHEMA = [
+    "candidate_id", "corpus_row_index",
+    "source_decision_citation", "source_decision_year",
+    "raw_string", "shape_name",
+    "match_start_offset", "match_end_offset", "match_span",
+    # 解析字段（与 SCHEMA 同名同义；series_paren/paren_note 为 D4 新捕获组）
+    "token", "leading_abbr", "abbr", "serial_marker", "vol", "page",
+    "page_prefix", "page_roman", "page_suffix", "series",
+    "series_paren", "paren_note", "year_raw", "year_start",
+    # 仲裁所需的字段跨度（原文绝对偏移；组缺失为 -1）
+    "year_span", "page_span", "vol_span", "abbr_span",
+    # 同一段落两种读法的区分签名
+    "parse_signature",
+    "preceding_text",
+    # D3 跨界解析标注（extract 有判决内跨候选视野，classify 只读本行标注）
+    "structural_conflict", "conflict_with_candidate", "conflict_note",
+]
+
+_CAND_FIELD_GROUPS = ["token", "leading_abbr", "abbr", "serial_marker", "vol",
+                      "page", "page_prefix", "page_roman", "page_suffix",
+                      "series", "series_paren", "paren_note", "year"]
+_SPAN_GROUPS = {"year": "year_span", "page": "page_span", "vol": "vol_span",
+                "abbr": "abbr_span"}
+
+
+def scan_overlapping(rx, text):
+    """重叠枚举（D2）：下一个匹配从本次 match.start()+1 起重找，不再 match.end()。
+    边界闸：新匹配不得起在前一个字符是字母/数字的位置——防止重叠扫描切出
+    「23 A.C. 4」（从 123 A.C. 4 里截出）这类截断垃圾。该闸同样作用于首遍
+    命中：语料实测旧 finditer 偶有起于字母数字串中部的命中（如 R1500 里的
+    1500），本路线一律不收，损失量由全语料测量记录。
+    返回 (matches, blocked_count)。"""
+    out = []
+    blocked = 0
+    pos = 0
+    n = len(text)
+    while pos <= n:
+        m = rx.search(text, pos)
+        if not m:
+            break
+        s = m.start()
+        if s > 0 and text[s - 1].isalnum():
+            blocked += 1
+            pos = s + 1
+            continue
+        out.append(m)
+        pos = s + 1
+    return out, blocked
+
+
+def parse_signature(shape_name, groupdict):
+    """同跨度不同解析的区分签名：解析字段的「名=值」序列（仅非空字段，固定顺序）。
+    同形状同起点在 Python 正则下是确定性单匹配，签名差异只来自不同形状或
+    不同捕获组分工——这正是仲裁要的「同段异读」。"""
+    parts = ["shape=" + shape_name]
+    parts += ["%s=%s" % (f, (groupdict.get(f) or "").strip())
+              for f in _CAND_FIELD_GROUPS if (groupdict.get(f) or "").strip()]
+    return "|".join(parts)
+
+
+def extract_candidates(text, sdc, year, row_index, court):
+    """单份判决的全候选（candidates-2.0）。七个形状全部重叠扫描；字段值仍一律取
+    自原始 match 的捕获组（§7.3「不得对 raw_string 二次正则解析」不变）；
+    偏移量指向**未改动的**语料原文。
+    返回 (cands, blocked_by_guard)。"""
+    cands = []
+    blocked = 0
+    for name, rx in SHAPES:
+        matches, bl = scan_overlapping(rx, text)
+        blocked += bl
+        # 各形状的捕获组集合不同（bracket/neutral 用 token，无 abbr）；
+        # 缺组记 -1，不得向 regex 要不存在的组
+        span_cols = {col: (grp, grp in rx.groupindex)
+                     for grp, col in _SPAN_GROUPS.items()}
+        for m in matches:
+            g = m.groupdict()
+            start, end = m.start(), m.end()
+            spans = {}
+            for col, (grp, has) in span_cols.items():
+                gs, ge = m.span(grp) if has else (-1, -1)
+                spans[col] = "%d:%d" % (gs, ge) if gs >= 0 else "-1:-1"
+            cands.append({
+                "candidate_id": "%s:%d:%d:%d:%s" % (court, row_index, start, end, name),
+                "corpus_row_index": row_index,
+                "source_decision_citation": sdc,
+                "source_decision_year": year,
+                "raw_string": re.sub(r"\s+", " ", m.group(0)).strip(),
+                "shape_name": name,
+                "match_start_offset": start,
+                "match_end_offset": end,
+                "match_span": end - start,
+                "token": g.get("token") or "",
+                "leading_abbr": g.get("leading_abbr") or "",
+                "abbr": g.get("abbr") or "",
+                "serial_marker": g.get("serial_marker") or "",
+                "vol": g.get("vol") or "",
+                "page": g.get("page") or "",
+                "page_prefix": g.get("page_prefix") or "",
+                "page_roman": g.get("page_roman") or "",
+                "page_suffix": g.get("page_suffix") or "",
+                "series": g.get("series") or g.get("series_glued") or "",
+                "series_paren": g.get("series_paren") or "",
+                "paren_note": g.get("paren_note") or "",
+                "year_raw": g.get("year") or "",
+                "year_start": g.get("year") or "",
+                "year_span": spans["year_span"],
+                "page_span": spans["page_span"],
+                "vol_span": spans["vol_span"],
+                "abbr_span": spans["abbr_span"],
+                "parse_signature": parse_signature(name, g),
+                "preceding_text": text[max(0, start - 120):start],
+                "structural_conflict": "",
+                "conflict_with_candidate": "",
+                "conflict_note": "",
+            })
+    return cands, blocked
+
+
+_YEAR_RE = re.compile(r"^(?:1[6-9]|20)\d{2}$")
+
+
+def _span_of(cand, col):
+    s, e = (cand[col] or "-1:-1").split(":")
+    return int(s), int(e)
+
+
+def annotate_cross_boundary(cands, text):
+    """D3：跨界解析标注。关系判定需要**判决内多候选视野**，故在 extract 算好、
+    逐候选带出，classify 只读自己行的标注（不比候选）。
+
+    关系：候选 a 的 page 形如 4 位年份，且 a.page_span == b.year_span，b 是从
+    该年份起的**独立完整 neutral 候选**，a.start < b.start < a.end < b.end。
+    典型形「Y1 CODE1 [,] Y2 CODE2 SERIAL2」——a 把 Y2 误当自己的 serial/page，
+    b 从 Y2 起。这是「疑似跨界解析」旗，**不是**一刀切拒绝一切 4 位序号：旗是
+    「关系」本身，无 b 配对即无旗（真 4 位页码不受伤）；有旗而配对者无效/
+    缺席时，候选保留、交仲裁记 unresolved。"""
+    neutrals = [c for c in cands if c["shape_name"] == "shape_neutral_bare"]
+    if not neutrals:
+        return
+    for a in cands:
+        if not (a["page"] and _YEAR_RE.match(a["page"])):
+            continue
+        ps, pe = _span_of(a, "page_span")
+        if ps < 0:
+            continue
+        for b in neutrals:
+            bs, be = _span_of(b, "year_span")
+            if bs != ps or be != pe:
+                continue
+            if not (a["match_start_offset"] < b["match_start_offset"]
+                    < a["match_end_offset"] < b["match_end_offset"]):
+                continue
+            a["structural_conflict"] = "cross_boundary_year_page"
+            a["conflict_with_candidate"] = b["candidate_id"]
+            # code 与 serial 之间的非标准分隔符记录（标准为单空格；此处常见逗号）
+            sep = text[be:a["match_end_offset"]]
+            a["conflict_note"] = "page=%s read as year by %s; separator=%r" % (
+                a["page"], b["shape_name"], sep)
+            b["conflict_note"] = (b["conflict_note"] +
+                                  (";" if b["conflict_note"] else "") +
+                                  "partner of cross_boundary candidate %s" % a["candidate_id"])
+            break
+
 
 # ---------------------------------------------------------------- extraction
 def source_decision_citation(court, citation_en):
@@ -142,20 +309,30 @@ def _atomic_write_json(path, obj):
     os.replace(tmp, path)
 
 
-def write_batch(path, rows):
+def write_batch(path, rows, schema=None):
     """原子写批次文件：先 .tmp 再 rename（§7.7）。行含 superseded_by 键
-    （None=kept）。"""
+    （None=kept）。candidates 批次走 schema=CAND_SCHEMA。"""
+    schema = schema or SCHEMA_SUPER
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
-        w.writerow(SCHEMA_SUPER)
+        w.writerow(schema)
         for r in rows:
-            w.writerow(["" if r[k] is None else r[k] for k in SCHEMA_SUPER])
+            w.writerow(["" if r[k] is None else r[k] for k in schema])
     os.replace(tmp, path)
 
 
 def batch_path(run_dir, idx):
     return os.path.join(run_dir, "batch_%04d.csv" % idx)
+
+
+def cand_batch_path(run_dir, idx):
+    return os.path.join(run_dir, "cand_batch_%04d.csv" % idx)
+
+
+# 候选爆炸上限：单份判决候选数超过此值记为资源限制（显式记录，绝不静默截断——
+# 事件进 manifest 统计与 cand_limits.csv，被截的候选数一并入账）
+CAND_LIMIT = 20000
 
 
 def run_corpus(court, out_root, batch_size=500, year_from=None,
@@ -172,20 +349,30 @@ def run_corpus(court, out_root, batch_size=500, year_from=None,
 
     stats = {"court": court, "docs_total": 0, "docs_extracted": 0,
              "raw_rows": 0, "kept_rows": 0, "superseded_rows": 0,
+             "candidates": 0, "candidates_flagged_cross_boundary": 0,
+             "candidates_blocked_by_boundary_guard": 0,
+             "candidate_limit_hits": 0, "candidates_truncated": 0,
              "per_shape_kept": {}, "batches": 0}
     pf = pq.ParquetFile(os.path.join(ROOT, "corpus", court + ".parquet"))
     t0 = time.perf_counter()
     idx = -1
+    doc_index = -1
+    limits_path = os.path.join(run_dir, "cand_limits.csv")
+    limits_f = open(limits_path, "w", encoding="utf-8", newline="")
     for batch in pf.iter_batches(batch_size=batch_size, columns=COLUMNS):
         idx += 1
         if limit_batches is not None and idx >= limit_batches:
             break
         if idx <= last_done:
+            # 续跑时同步推进语料行号（候选的 corpus_row_index 是语料行号）
+            doc_index += len(batch)
             continue
         d = batch.to_pydict()
         rows_out = []
+        cands_out = []
         for cite, date, text in zip(d["citation_en"], d["document_date_en"],
                                     d["unofficial_text_en"]):
+            doc_index += 1
             stats["docs_total"] += 1
             if not text:
                 continue
@@ -203,31 +390,55 @@ def run_corpus(court, out_root, batch_size=500, year_from=None,
                     stats["per_shape_kept"].get(k["shape_name"], 0) + 1
             rows_out.extend(kept)
             rows_out.extend(superseded)
+            # 全候选路线（candidates-2.0）：重叠枚举 + D3 标注
+            sdc = source_decision_citation(court, cite)
+            cands, bl = extract_candidates(text, sdc, year, doc_index, court)
+            annotate_cross_boundary(cands, text)
+            stats["candidates_blocked_by_boundary_guard"] += bl
+            if len(cands) > CAND_LIMIT:
+                stats["candidate_limit_hits"] += 1
+                stats["candidates_truncated"] += len(cands) - CAND_LIMIT
+                if limits_f:
+                    limits_f.write("%s,%d,%d\n" % (sdc, doc_index, len(cands)))
+                cands = cands[:CAND_LIMIT]
+            stats["candidates"] += len(cands)
+            stats["candidates_flagged_cross_boundary"] += sum(
+                1 for c in cands if c["structural_conflict"])
+            cands_out.extend(cands)
         write_batch(batch_path(run_dir, idx), rows_out)
+        write_batch(cand_batch_path(run_dir, idx), cands_out, schema=CAND_SCHEMA)
         stats["batches"] = idx + 1
         _atomic_write_json(prog_path, {"last_batch": idx})   # 后写进度（§7.7）
+    if limits_f:
+        limits_f.close()
     stats["wall_s"] = round(time.perf_counter() - t0, 1)
     return stats
 
 
 # --------------------------------------------------------------------- merge
 def merge(out_root, courts=COURTS):
-    """全部批次 → extracted.csv（kept）+ extracted_superseded.csv（败者）。
-    流式逐批读写；按 superseded_by 列拆分。返回计数（供 manifest）。"""
-    counts = {"kept_rows": 0, "superseded_rows": 0,
+    """全部批次 → extracted.csv（kept）+ extracted_superseded.csv（败者）
+    + candidates.csv（candidates-2.0 全候选，两语料合流）。
+    流式逐批读写；kept/superseded 按 superseded_by 列拆分。返回计数（供 manifest）。"""
+    counts = {"kept_rows": 0, "superseded_rows": 0, "candidates": 0,
+              "candidates_flagged_cross_boundary": 0,
               "per_shape_kept": {}, "batches_merged": 0,
               # 按语料的权威计数：merge 逐个批次文件读过一遍，与本次是否续跑
               # 无关。run 段只记本次处理量（续跑时为 0），故行数以本段为准。
               "by_court": {}}
     kept_path = os.path.join(out_root, "extracted.csv")
     sup_path = os.path.join(out_root, "extracted_superseded.csv")
-    tmp_k, tmp_s = kept_path + ".tmp", sup_path + ".tmp"
+    cand_path = os.path.join(out_root, "candidates.csv")
+    tmp_k, tmp_s, tmp_c = kept_path + ".tmp", sup_path + ".tmp", cand_path + ".tmp"
     with open(tmp_k, "w", encoding="utf-8", newline="") as fk, \
-            open(tmp_s, "w", encoding="utf-8", newline="") as fs:
+            open(tmp_s, "w", encoding="utf-8", newline="") as fs, \
+            open(tmp_c, "w", encoding="utf-8", newline="") as fc:
         wk = csv.writer(fk)
         ws = csv.writer(fs)
+        wc = csv.writer(fc)
         wk.writerow(SCHEMA)
         ws.writerow(SCHEMA_SUPER)
+        wc.writerow(CAND_SCHEMA)
         for court in courts:
             run_dir = os.path.join(out_root, court)
             if not os.path.isdir(run_dir):
@@ -236,7 +447,7 @@ def merge(out_root, courts=COURTS):
                            if re.fullmatch(r"batch_\d{4}\.csv", n))
             bc = counts["by_court"].setdefault(
                 court, {"raw_rows": 0, "kept_rows": 0, "superseded_rows": 0,
-                        "batches": 0})
+                        "candidates": 0, "batches": 0})
             bc["batches"] = len(names)
             for n in names:
                 counts["batches_merged"] += 1
@@ -245,6 +456,15 @@ def merge(out_root, courts=COURTS):
                     r = csv.reader(f)
                     header = next(r)
                     col = {name: i for i, name in enumerate(header)}
+                    # 同批次的候选文件：cand_batch_%04d.csv 与 batch_%04d.csv 一一对应
+                    with open(cand_batch_path(run_dir, int(n[6:10])),
+                              encoding="utf-8", newline="") as fcand:
+                        rc = csv.reader(fcand)
+                        next(rc)
+                        for row in rc:
+                            wc.writerow(row)
+                            counts["candidates"] += 1
+                            bc["candidates"] += 1
                     for row in r:
                         if row[col["superseded_by"]]:
                             ws.writerow(row)
@@ -262,6 +482,7 @@ def merge(out_root, courts=COURTS):
                             bc["raw_rows"] += 1
     os.replace(tmp_k, kept_path)
     os.replace(tmp_s, sup_path)
+    os.replace(tmp_c, cand_path)
     return counts
 
 
@@ -286,7 +507,9 @@ def write_manifest(out_root, run_stats, merge_counts, args):
     manifest = {
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
         "git_head": git_head(),
-        "shapes_version": "v1.4 (frozen)",
+        "shapes_version": "v1.4 (frozen) + D4 capture groups (series_paren/paren_note)",
+        "candidates_schema": "candidates-2.0 (full candidates; legacy kept/superseded "
+                             "retained as diagnostic only)",
         "params": {"batch_size": args.batch_size,
                    "year_from": args.year_from,
                    "limit_batches": args.limit_batches,
@@ -297,9 +520,9 @@ def write_manifest(out_root, run_stats, merge_counts, args):
         # 属正常。权威行数见 merge.by_court（merge 逐批读过全部文件）。
         "run_this_invocation": run_stats,
         "merge": merge_counts,
-        "note": ("计数口径：kept 行只存在于 extracted.csv（§7.4）；"
-                 "raw_rows = kept + superseded。occurrence/decisions 统计"
-                 "只读 extracted.csv，不得读 extracted_superseded.csv"),
+        "note": ("计数口径：candidates.csv 是 classify 的正式输入（全候选）；"
+                 "extracted.csv/extracted_superseded.csv 是 v1.4 旧去重路线的"
+                 "历史诊断产物，不再决定下游可见集合"),
     }
     _atomic_write_json(os.path.join(out_root, "manifest.json"), manifest)
     return manifest

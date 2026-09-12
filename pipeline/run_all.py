@@ -159,13 +159,13 @@ def main():
         ex += ["--limit-batches", str(args.limit_batches)]
 
     r.run_step("extract", ex)
-    # 阶段 0：classify/merge 仍吃现行 extracted.csv；阶段 1 落地全候选路线后
-    # 改吃 candidates.csv（extract 的旧 kept/superseded 输出降为诊断产物）
-    ext_in = os.path.join(args.out, "extract_out", "extracted.csv")
+    # 阶段 1 起：classify/merge 吃 candidates.csv（candidates-2.0 全候选）；
+    # extracted.csv / extracted_superseded.csv 降为 v1.4 旧去重路线的诊断产物
+    cand_in = os.path.join(args.out, "extract_out", "candidates.csv")
     for court in COURTS:
         r.run_step("classify_" + court,
                    [os.path.join("pipeline", "classify.py"),
-                    "--court", court, "--input", ext_in,
+                    "--court", court, "--input", cand_in,
                     "--output", os.path.join(args.out, "classify_out", court)])
     for court in COURTS:
         r.run_step("merge_" + court,

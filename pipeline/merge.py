@@ -1,53 +1,53 @@
 # -*- coding: utf-8 -*-
-"""merge.py — 归并层（规格 §9）
+"""merge.py — 归并层（规格 §9；candidates-2.0 路线加判决内重叠仲裁）
 
-跨行统计。**只做计数和投票，不判断，不查任何表。**本层不加载 decisions/ 下的
+跨行统计。**不做跨判决的判断，不查任何法域表。**本层不加载 decisions/ 下的
 任何文件——这是与分类层的分界线。
+
+两条输入路线，按表头自动分派：
+  * **candidates 路线**（表头含 candidate_id，candidates-2.0）：先做**判决内**
+    重叠仲裁（同判决 = 同 (source_decision_citation, corpus_row_index)），再跨行
+    聚合。仲裁规则（规格 §7 Stage 1 C）：
+      - 同跨度同含义（同 merge_key）→ 只计一次；
+      - 同跨度异含义 → 表证据唯一支持者胜出；证据相持或全无 → 整组
+        span_alternative_undecided，全部不计（弃权，不硬猜）；
+      - 结构性无效候选（rejected / 跨界解析且配对者有效）不进有效计数；
+      - 表查不到不是结构错误——候选保留，进 undecided 或按他者让位；
+      - 严格包含且共享字段相容（「3 All E.R. 12」⊂「3 All E.R. 12 (1968)」）→
+        长者胜（containment-resolution 显式规则）；
+      - 长候选横跨两条真引证 → 两条短候选可同时保留（重叠组不要求唯一赢家）；
+        未打 D3 旗的部分重叠、字段不相容 → 双双 undecided，不硬选最长；
+      - undecided 候选不得各自单独贡献 occurrence/dd；
+      - 仲裁**绝不**回调 extract/classify。
+  * **legacy 路线**（test_layers 迷你全链等既有输入，无 candidate_id 列）：
+      与 v1.4 行为逐字一致（兼容钉住，约束五——既有测试期望值不动）。
 
 用法
     python pipeline/merge.py --court SCC  --input data/classify_out/SCC/classified.csv  --output data/merge_out/SCC
     python pipeline/merge.py --court ONCA --input data/classify_out/ONCA/classified.csv --output data/merge_out/ONCA
 
-输出
-    <output>/merged.csv      主表，列见 §9.5
-    <output>/folded_log.csv  折叠日志：每个归并键吞并了哪些原始写法（§9.5）
-    <output>/manifest.json   参数与各项计数（约束九：数字须可重放）
+candidates 路线输出
+    <output>/merged.csv                主表（列同 §9.5），计数只含 counted 候选
+    <output>/mentions_candidates.csv   逐候选仲裁台账：candidate_id → 仲裁状态/
+                                       让位对象/注记（追溯主干，裁定层可回读）
+    <output>/folded_log.csv            折叠日志（counted 行的印刷变体）
+    <output>/decision_ids.csv          键 → 引用判决 id 并集（counted 行）
+    <output>/manifest.json             参数与各项计数（约束九）
 
 四条不变量（写表前断言，不过就拒绝写）
-    1. 每个键的 folded_log 计数之和 == 该键的 occurrence_count
-    2. distinct_decisions_count 是**并集基数**，既不是各变体取最大值（旧管线的
-       bug），也不是相加（重复计数）
-    3. 行数守恒：merged 各键的成员数之和 == 输入行数（约束五：不删行）
-    4. 每个键的 decision_ids.csv 行数 == 该键的 distinct_decisions_count
+    1. 每个键 folded_log 计数之和 == 该键 occurrence_count
+    2. distinct_decisions_count 是**并集基数**
+    3. mentions_candidates.csv 行数 == 输入候选行数（约束五：不删候选）
+    4. 每个键 decision_ids.csv 行数 == 该键 distinct_decisions_count
 
-三处规格未定义、由实现补的决定（均须人复核）
+规格未定义、由实现补的决定（均须人复核）——legacy 路线的三条见 git 历史
+（组内单值字段取众数、案名两级投票、第三个输出 decision_ids.csv），candidates
+路线沿用同一批决定，另加：
 
-  一、组内单值字段取谁。归并键用 nk(abbreviation)，故 FC 与 F.C. 同键、会进
-    同一组，但二者在分类层可能得到不同的 citation_kind / jurisdiction（实测
-    SCC 3 组、ONCA 29 组如此，典型是 2002 SCC 79 判 CA、[2002] S.C.C. 79 按
-    PROBLEMS #36 撤回判 UNSUPPORTED）。§9.5 的列清单要求每个键给出单值，规格
-    没说取谁。**本实现：按计数行取众数；平票时取 canonical_string 所在行的值**
-    （确定性、只用组内数据、不新增列）。不一致组数报进 manifest，不静默。
-    本层不做裁决——真正的处置属裁定层（§10）职责。
-
-  二、案名投票两级化（PROBLEMS #44）。§9.3 原式直接对 raw 串计票，标点空格
-    差异参与计票。改为先按 nk() 折叠拼写变体、再在胜出组内取最常见印刷形。
-    另加 **`case_name_support`**（PROBLEMS #60）：赢家票数 / 计数行数。§9.3 的
-    `case_name_agreement` 分母是「投了票的行」，切不出案名的行是空票、不计入，
-    故 199 行里 1 行切出名字时 agreement 也是 1.0——这个数字看着像全体一致，
-    实际只是「有意见的那一行 100% 同意」。**这个数字只输出、不当闸用**：裁定层
-    曾按它设闸，实测为净负（把同一案子的平行汇编拆开、还造出 8 处「同一印刷串
-    落两组」），故撤掉。详见 PROBLEMS #60 与 decide.py 里的同一段说明。
-
-  三、**新增第三个输出 decision_ids.csv**（§9.5 只列了两个文件）。
-    原因：§10.3 的平行汇编合并在**院内**进行，而本层只输出
-    distinct_decisions_count 这个**数字**、不输出判决 id 集合，裁定层拿不到
-    算并集的原料，只能相加——实测虚高 62~90%（R. v. Lacasse 702 vs 真并集
-    370、Housen 690 vs 425、Sattva 601 vs 322、R. v. Grant 520 vs 282）。
-    §10.6 说「取双方并集（判决 id 带法院前缀，天然唯一）」只对**跨法院**成立，
-    院内平行汇编合并时同一份判决常同时引用两种写法。而 dd 正是选取层（§11.1）
-    唯一的门槛判据，错了最后一道门就是错的。
-    独立成文件而非内联成列，理由与 §9.5 给 folded_log 的完全相同。
+  四、**同跨度异含义的计数归属**。一条提及同时有两种结构读法（如 2009 SCC 51
+    的「年+代码+页」与「卷+缩写+页」）时，这条提及只该计一次。表证据恰好唯一
+    支持一种读法 → 归它；相持或全无支持 → 谁也不归（整组 undecided，不计数）。
+    把「弃权」落成 0 计数而非 0.5/重复计，是约束四（无证据不给判定）的计数版。
 """
 import argparse
 import csv
@@ -84,6 +84,20 @@ FOLDED_FIELDS = ["merge_key", "raw_string", "count", "distinct_decisions_count"]
 
 # 第三个输出文件，规格 §9.5 未列，由本实现补（理由见文件头「规格未定义」一节）
 DECISION_FIELDS = ["merge_key", "source_decision_citation"]
+
+# candidates 路线：逐候选仲裁台账（Stage 4 的追溯主干）
+MENTION_FIELDS = ["candidate_id", "corpus_row_index", "source_decision_citation",
+                  "raw_string", "shape_name", "match_start_offset",
+                  "match_end_offset", "merge_key", "arbitration_status",
+                  "superseded_by_candidate", "arbitration_note",
+                  "citation_kind", "jurisdiction", "jurisdiction_confidence",
+                  "parse_status", "structural_conflict", "rejected_reason",
+                  "self_citation", "candidate_case_name"]
+
+SHAPE_RANK = {name: i for i, name in enumerate([
+    "shape_bracket", "shape_vol_page_year", "shape_year_vol_page",
+    "shape_nominate", "shape_neutral_bare", "shape_vol_abbr_page",
+    "shape_leading_abbr"])}
 
 
 def build_merge_key(row):
@@ -128,14 +142,412 @@ class Group(object):
         self.rows = []
 
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--court", required=True)
-    ap.add_argument("--input", required=True)
-    ap.add_argument("--output", required=True)
-    args = ap.parse_args()
+def _unknown_jur(j):
+    return j in ("", "UNSUPPORTED")
 
-    stats = Counter()
+
+def _fields_compatible(a, b):
+    """两候选共享字段（双方都非空）nk 后是否相容。空对非空不算冲突——
+    短候选少印一个槽是常态（「3 All E.R. 12」没有年份槽）。"""
+    for f in ("vol", "page", "year_start"):
+        fa, fb = (a.get(f) or "").strip(), (b.get(f) or "").strip()
+        if fa and fb and fa != fb:
+            return False
+    ab_a = nk(a.get("abbr") or a.get("token") or "")
+    ab_b = nk(b.get("abbr") or b.get("token") or "")
+    if ab_a and ab_b and ab_a != ab_b:
+        return False
+    return True
+
+
+# ============================================================ candidates 路线
+def arbitrate_document(rows, stats):
+    """一个判决（同 sdc + corpus_row_index）内的重叠仲裁。
+    输入 rows：该判决全部已分类候选（任意顺序）；返回 {candidate_id: (status, note, superseded_by)}。
+
+    状态：counted / rejected_row / self_citation_row / cross_boundary_invalid /
+          alternative_same_key / alternative_unsupported_reading /
+          span_alternative_undecided / alternative_contained / overlap_undecided
+    """
+    out = {}
+    by_id = {r["candidate_id"]: r for r in rows}
+    order = sorted(rows, key=lambda r: (int(r["match_start_offset"]),
+                                        -int(r["match_end_offset"]),
+                                        SHAPE_RANK.get(r["shape_name"], 99),
+                                        r["candidate_id"]))
+    for r in rows:
+        if r.get("rejected_reason"):
+            out[r["candidate_id"]] = ("rejected_row", "", "")
+        elif r.get("self_citation") == "true":
+            out[r["candidate_id"]] = ("self_citation_row", "", "")
+
+    # ---- A. D3 跨界解析的配对消解（需多候选视野，在此做而非 classify）----
+    for r in rows:
+        if (r.get("structural_conflict") == "cross_boundary_year_page"
+                and r["candidate_id"] not in out):
+            partner = by_id.get(r.get("conflict_with_candidate"))
+            partner_status = out.get(partner["candidate_id"], ("", ""))[0] if partner else None
+            if partner is not None and partner is not r and partner_status != "rejected_row":
+                out[r["candidate_id"]] = (
+                    "cross_boundary_invalid",
+                    "page %s read as year by partner; %s" % (
+                        r.get("page"), r.get("conflict_note") or ""),
+                    partner["candidate_id"])
+                stats["cross_boundary_invalidated"] += 1
+            else:
+                # 配对者缺席或无效：冲突未消解。候选保留（可能进计数），但带旗、
+                # 永不据此拿到 unambiguous confirmed（classify 已降级其置信）
+                stats["cross_boundary_unresolved"] += 1
+
+    # ---- B. 同跨度组（同 start+end，跨形状）----
+    def live(r):
+        return r["candidate_id"] not in out
+
+    span_groups = defaultdict(list)
+    for r in order:
+        if live(r):
+            span_groups[(int(r["match_start_offset"]),
+                         int(r["match_end_offset"]))].append(r)
+    for span in sorted(span_groups):
+        members = sorted(span_groups[span],
+                         key=lambda r: (SHAPE_RANK.get(r["shape_name"], 99),
+                                        r["candidate_id"]))
+        if len(members) == 1:
+            out[members[0]["candidate_id"]] = ("counted", "", "")
+            continue
+        keys = {build_merge_key(m) for m in members}
+        if len(keys) == 1:
+            rep = members[0]
+            out[rep["candidate_id"]] = ("counted", "", "")
+            for m in members[1:]:
+                out[m["candidate_id"]] = ("alternative_same_key",
+                                          "same span, same meaning as %s" % rep["candidate_id"],
+                                          rep["candidate_id"])
+            stats["same_span_same_key_folded"] += len(members) - 1
+            continue
+        # 同跨度异含义：表证据唯一支持者胜出
+        supported = [m for m in members if not _unknown_jur(m.get("jurisdiction") or "")]
+        if len(supported) == 1:
+            rep = supported[0]
+            out[rep["candidate_id"]] = ("counted", "", "")
+            for m in members:
+                if m is rep:
+                    continue
+                out[m["candidate_id"]] = (
+                    "alternative_unsupported_reading",
+                    "span shared with %s; table supports only that reading" % rep["candidate_id"],
+                    rep["candidate_id"])
+            stats["same_span_resolved_by_table"] += 1
+        else:
+            for m in members:
+                out[m["candidate_id"]] = (
+                    "span_alternative_undecided",
+                    "same span, %d readings, %s" % (
+                        len(members),
+                        "conflicting support" if len(supported) > 1 else "no table support"),
+                    "")
+            stats["same_span_abstained"] += 1
+
+    # ---- C. 不同跨度间的重叠（包含 / 部分重叠）----
+    # B 的「counted」是暂定的：还要过不同跨度间的重叠检验。两两判一次，按
+    # 「undecided > 让位 > 计数」的优先级收敛（约束五：不删候选，只改状态）。
+    live_rows = [r for r in order
+                 if out.get(r["candidate_id"], ("",))[0] in ("", "counted")]
+    live_rows.sort(key=lambda r: (int(r["match_start_offset"]),
+                                  -int(r["match_end_offset"]),
+                                  r["candidate_id"]))
+    # 「长误匹配横跨多条真候选」检测：X 与 ≥2 条更短、互不重叠的候选重叠 →
+    # X 是那条横跨的长候选，让位；短候选之间互不重叠，不因 X 弃权。
+    shorter_overlappers = defaultdict(list)
+    for i, a in enumerate(live_rows):
+        as_, ae = int(a["match_start_offset"]), int(a["match_end_offset"])
+        for b in live_rows[i + 1:]:
+            bs = int(b["match_start_offset"])
+            if bs >= ae:
+                break
+            be = int(b["match_end_offset"])
+            if as_ >= be:
+                continue
+            shorter_overlappers[a["candidate_id"]].append(b)
+    # 横跨判定：X 与 ≥2 条更短、互不重叠的候选重叠
+    spanning = set()
+    len_of = {r["candidate_id"]: int(r["match_end_offset"]) - int(r["match_start_offset"])
+              for r in live_rows}
+    for cid, shorts in shorter_overlappers.items():
+        shorts = [s for s in shorts if len_of[s["candidate_id"]] < len_of[cid]]
+        if len(shorts) < 2:
+            continue
+        disjoint = True
+        for i in range(len(shorts)):
+            for j in range(i + 1, len(shorts)):
+                ai, ae_ = int(shorts[i]["match_start_offset"]), int(shorts[i]["match_end_offset"])
+                bi, be_ = int(shorts[j]["match_start_offset"]), int(shorts[j]["match_end_offset"])
+                if ai < be_ and bi < ae_:
+                    disjoint = False
+        if disjoint:
+            spanning.add(cid)
+            stats["spanning_mismatch_detected"] += 1
+    verdicts = defaultdict(list)          # cid -> [(kind, other_cid)]
+    for i, a in enumerate(live_rows):
+        as_, ae = int(a["match_start_offset"]), int(a["match_end_offset"])
+        for b in live_rows[i + 1:]:
+            bs = int(b["match_start_offset"])
+            if bs >= ae:
+                break                                      # 排序后此后的起点都在 a 之外
+            be = int(b["match_end_offset"])
+            if as_ >= be:
+                continue                                   # 不重叠
+            # 横跨长候选 vs 其内部短候选：长候选让位，短候选不受此对影响
+            if a["candidate_id"] in spanning and b["candidate_id"] not in spanning:
+                verdicts[a["candidate_id"]].append(("spanning", b["candidate_id"]))
+                continue
+            if b["candidate_id"] in spanning and a["candidate_id"] not in spanning:
+                verdicts[b["candidate_id"]].append(("spanning", a["candidate_id"]))
+                continue
+            ka, kb = build_merge_key(a), build_merge_key(b)
+            if ka == kb:
+                # 同含义不同跨度（印刷变体）：跨度长者做代表
+                if (ae - as_) >= (be - bs):
+                    verdicts[a["candidate_id"]].append(("rep", b["candidate_id"]))
+                    verdicts[b["candidate_id"]].append(("yield", a["candidate_id"]))
+                else:
+                    verdicts[b["candidate_id"]].append(("rep", a["candidate_id"]))
+                    verdicts[a["candidate_id"]].append(("yield", b["candidate_id"]))
+                continue
+            contained_a = as_ >= bs and ae <= be and (ae - as_) < (be - bs)
+            contained_b = bs >= as_ and be <= ae and (be - bs) < (ae - as_)
+            if contained_a or contained_b:
+                short, long_ = (a, b) if contained_a else (b, a)
+                if _fields_compatible(short, long_):
+                    # 显式包含消解规则：共享字段相容 → 长者胜
+                    verdicts[short["candidate_id"]].append(("contained", long_["candidate_id"]))
+                    verdicts[long_["candidate_id"]].append(("rep", short["candidate_id"]))
+                else:
+                    verdicts[a["candidate_id"]].append(("undecided", b["candidate_id"]))
+                    verdicts[b["candidate_id"]].append(("undecided", a["candidate_id"]))
+            else:
+                # 部分重叠、异含义、无 D3 旗：证据不足，弃权（不硬选最长）
+                verdicts[a["candidate_id"]].append(("undecided", b["candidate_id"]))
+                verdicts[b["candidate_id"]].append(("undecided", a["candidate_id"]))
+                stats["partial_overlap_abstained"] += 1
+
+    PRIORITY = {"undecided": 0, "contained": 1, "yield": 2, "spanning": 2, "rep": 3}
+    for r in live_rows:
+        cid = r["candidate_id"]
+        vs = verdicts.get(cid)
+        if not vs:
+            if cid not in out:
+                out[cid] = ("counted", "", "")
+            continue
+        kind = min((k for k, _ in vs), key=lambda k: PRIORITY[k])
+        other = next(o for k, o in vs if k == kind)
+        if kind == "undecided":
+            out[cid] = ("overlap_undecided",
+                        "conflicting overlap with %s; evidence insufficient" % other, "")
+            stats["overlap_undecided_rows"] += 1
+        elif kind == "contained":
+            out[cid] = ("alternative_contained",
+                        "strict subset of compatible %s" % other, other)
+            stats["contained_superseded"] += 1
+        elif kind == "yield":
+            out[cid] = ("alternative_same_key",
+                        "same meaning, shorter variant of %s" % other, other)
+        elif kind == "spanning":
+            out[cid] = ("alternative_spanning_mismatch",
+                        "spans multiple shorter candidates incl. %s; "
+                        "overlap group keeps the shorts" % other, other)
+        # kind == rep：维持 B 的 counted
+    return out
+
+
+def run_candidates(args, stats):
+    """candidates-2.0 主流程：判决内仲裁 → 跨行聚合。"""
+    docs = defaultdict(list)
+    with open(args.input, encoding="utf-8", newline="") as f:
+        for row in csv.DictReader(f):
+            stats["input_candidates"] += 1
+            docs[(row.get("source_decision_citation") or "",
+                  row.get("corpus_row_index") or "")].append(row)
+    stats["documents"] = len(docs)
+
+    # 判决内仲裁（绝不回调 extract/classify）
+    verdicts = {}
+    for dkey in sorted(docs):
+        verdicts.update(arbitrate_document(docs[dkey], stats))
+
+    # 台账（逐候选一行，约束五：不删候选）+ 跨行聚合（只数 counted）
+    mentions = []
+    per_key_counted = defaultdict(list)
+    per_key_members = defaultdict(list)
+    for dkey in sorted(docs):
+        rows = sorted(docs[dkey], key=lambda r: (int(r["match_start_offset"]),
+                                                 int(r["match_end_offset"]),
+                                                 SHAPE_RANK.get(r["shape_name"], 99),
+                                                 r["candidate_id"]))
+        for row in rows:
+            row = dict(row)
+            status, note, sup = verdicts[row["candidate_id"]]
+            row["arbitration_status"] = status
+            row["arbitration_note"] = note
+            row["superseded_by_candidate"] = sup
+            key = build_merge_key(row)
+            row["merge_key"] = key
+            mentions.append({k: row.get(k, "") for k in MENTION_FIELDS})
+            per_key_members[key].append(row)
+            if status == "counted":
+                per_key_counted[key].append(row)
+
+    _emit(args, stats, per_key_counted, per_key_members, mentions)
+
+
+def _emit(args, stats, per_key_counted, per_key_members, mentions):
+    """聚合并写四张表。计数只看 counted；案名投票与自引归属用全键成员。"""
+    merged, folded, decision_ids = [], [], []
+    member_total = len(mentions)
+
+    for key in sorted(per_key_counted):
+        counted = per_key_counted[key]
+        members = per_key_members[key]
+        raw_cnt = Counter(m["raw_string"] for m in counted)
+        top = max(raw_cnt.values())
+        canonical = sorted(r for r, c in raw_cnt.items() if c == top)[0]
+
+        occurrence = len(counted)
+        decisions = {m["source_decision_citation"] for m in counted}
+        dd = len(decisions)
+        for did in sorted(decisions):
+            decision_ids.append({"merge_key": key,
+                                 "source_decision_citation": did})
+
+        # 案名投票：非 rejected 且切出案名的候选（counted + 让位者 + 自引 + undecided）
+        # 皆可投票，与 legacy 路线「自引照样投票」同口径
+        valid = [m for m in members if not m.get("rejected_reason")
+                 and m.get("candidate_case_name")]
+        if valid:
+            by_nk = defaultdict(list)
+            for m in valid:
+                by_nk[nk(m["candidate_case_name"])].append(m)
+            recent = {k: max((int(m.get("source_decision_year") or 0)
+                              if str(m.get("source_decision_year") or "").isdigit() else 0)
+                             for m in v) for k, v in by_nk.items()}
+            top_nk = max(sorted(by_nk), key=lambda k: (len(by_nk[k]), recent[k]))
+            forms = Counter(m["candidate_case_name"] for m in by_nk[top_nk])
+            best = max(forms.values())
+            name_modal = sorted(f for f, c in forms.items() if c == best)[0]
+            agreement = round(len(by_nk[top_nk]) / len(valid), 2)
+            support = (round(len(by_nk[top_nk]) / max(occurrence, len(by_nk[top_nk])), 3)
+                       if by_nk[top_nk] else 0.0)
+            variants = len(by_nk)
+        else:
+            name_modal, agreement, support, variants = "", 0.0, 0.0, 0
+
+        # 自引归属：这个键是语料里哪件判决自己头部印的引证（裁定层身份锚）
+        own = sorted({m["source_decision_citation"] for m in members
+                      if m.get("self_citation") == "true"})
+        own_names = Counter(m["candidate_case_name"] for m in members
+                            if m.get("self_citation") == "true"
+                            and m.get("candidate_case_name")
+                            and not m.get("name_rejected_reason"))
+        own_name = min(own_names, key=lambda n: (-own_names[n], n)) if own_names else ""
+
+        def pick_modal(field, tiebreak):
+            return modal([m.get(field) or "" for m in counted], tiebreak)
+
+        canon_row = next(m for m in counted if m["raw_string"] == canonical)
+        if len({m.get("citation_kind") for m in counted}) > 1 or \
+                len({m.get("jurisdiction") for m in counted}) > 1:
+            stats["groups_with_internal_disagreement"] += 1
+        merged.append({
+            "merge_key": key,
+            "canonical_string": canonical,
+            "abbreviation": pick_modal("abbreviation", canon_row.get("abbreviation") or ""),
+            "citation_kind": pick_modal("citation_kind", canon_row.get("citation_kind") or ""),
+            "jurisdiction": pick_modal("jurisdiction", canon_row.get("jurisdiction") or ""),
+            "jurisdiction_confidence": pick_modal("jurisdiction_confidence",
+                                                  canon_row.get("jurisdiction_confidence") or ""),
+            "case_name_modal": name_modal,
+            "occurrence_count": occurrence,
+            "distinct_decisions_count": dd,
+            "case_name_agreement": agreement,
+            "case_name_support": support,
+            "variants_count": variants,
+            "candidates_admitted": sum(1 for m in counted
+                                       if m.get("candidate_case_name")),
+            "candidates_rejected": sum(1 for m in counted
+                                       if m.get("name_rejected_reason")),
+            "self_citation_of": "|".join(own),
+            "self_case_name": own_name,
+        })
+
+        per_raw = Counter(m["raw_string"] for m in counted)
+        for raw in sorted(per_raw):
+            folded.append({"merge_key": key, "raw_string": raw,
+                           "count": per_raw[raw],
+                           "distinct_decisions_count": len(
+                               {m["source_decision_citation"] for m in counted
+                                if m["raw_string"] == raw})})
+
+        stats["occurrence_total"] += occurrence
+        if occurrence == 0:
+            stats["keys_zero_counted"] += 1
+
+    stats["merge_keys"] = len(merged)
+    stats["folded_rows"] = len(folded)
+
+    # ---- 不变量 ----
+    by_key_occ = {m["merge_key"]: m["occurrence_count"] for m in merged}
+    fsum = Counter()
+    for r in folded:
+        fsum[r["merge_key"]] += r["count"]
+    bad = [k for k, v in by_key_occ.items() if fsum[k] != v]
+    assert not bad, "不变量1 破：folded 计数之和 != occurrence_count，键 %r" % bad[:5]
+    assert member_total == stats["input_candidates"], \
+        "不变量3 破：候选台账行数 %d != 输入 %d（约束五）" % (member_total, stats["input_candidates"])
+    assert all(m["distinct_decisions_count"] <= m["occurrence_count"] for m in merged), \
+        "不变量2 破：dd 大于 occurrence"
+    idcnt = Counter(d["merge_key"] for d in decision_ids)
+    bad = [m["merge_key"] for m in merged
+           if idcnt[m["merge_key"]] != m["distinct_decisions_count"]]
+    assert not bad, "不变量4 破：decision_ids 行数 != dd，键 %r" % bad[:5]
+    stats["decision_id_rows"] = len(decision_ids)
+    status_cnt = Counter(m["arbitration_status"] for m in mentions)
+    stats["arbitration_status_counts"] = dict(sorted(status_cnt.items()))
+
+    os.makedirs(args.output, exist_ok=True)
+    for name, fields, rows in (("merged.csv", MERGED_FIELDS, merged),
+                               ("mentions_candidates.csv", MENTION_FIELDS, mentions),
+                               ("folded_log.csv", FOLDED_FIELDS, folded),
+                               ("decision_ids.csv", DECISION_FIELDS, decision_ids)):
+        path = os.path.join(args.output, name)
+        tmp = path + ".tmp"
+        with open(tmp, "w", encoding="utf-8", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=fields)
+            w.writeheader()
+            w.writerows(rows)
+        os.replace(tmp, path)
+
+    manifest = {
+        "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
+        "court": args.court,
+        "input": _relpath(args.input),
+        "mode": "candidates",
+        "spec_section": "9 + in-source arbitration",
+        "stats": dict(sorted(stats.items())),
+    }
+    with open(os.path.join(args.output, "manifest.json"), "w",
+              encoding="utf-8", newline="\n") as f:
+        json.dump(manifest, f, ensure_ascii=False, indent=1)
+
+    print("court=%s  %d candidates -> %d merge keys -> %s"
+          % (args.court, stats["input_candidates"], len(merged), args.output))
+    for k, v in sorted(stats.items()):
+        print("   %-40s %s" % (k, v))
+
+
+# ================================================================ legacy 路线
+def run_legacy(args, stats):
+    """v1.4 行为逐字保留：test_layers 迷你全链等既有输入（无 candidate_id 列）。
+    唯一改动是本函数化（原 main 主体），逻辑与期望值不动（约束五）。"""
     groups = defaultdict(list)
 
     with open(args.input, encoding="utf-8", newline="") as f:
@@ -191,34 +603,19 @@ def main():
         if valid:
             # 两级投票（本实现对 §9.3 的补充，见文件头「规格未定义」一节）：
             # 先按 nk() 折叠拼写变体，再在胜出组内取最常见的印刷形输出。
-            # 规格原式直接对 raw 串投票，等于让标点空格差异参与计票——
-            # R. v. W.(D.) / R. v. W. (D.) / R. v. W.(D) / R v. W.(D.) 是同一个
-            # 案名，却被拆成四票。而 nk() 正是项目为此备的工具（§6.1：A.C. 与
-            # AC 与 A. C. 全部归一为 ac）。折叠后 agreement 才是「大家是否叫得
-            # 一致」，否则它量的是印刷噪声，与 §9.3 自述的「质量校验」用途相悖。
             by_nk = defaultdict(list)
             for m in valid:
                 by_nk[nk(m[5])].append(m)
             recent = {k: max((int(m[2]) if (m[2] or "").isdigit() else 0)
                              for m in v) for k, v in by_nk.items()}
-            # 排序键（出现次数，最近出现年份）：票数相同时取更近期的写法
             top_nk = max(sorted(by_nk), key=lambda k: (len(by_nk[k]), recent[k]))
             forms = Counter(m[5] for m in by_nk[top_nk])
             best = max(forms.values())
             name_modal = sorted(f for f, c in forms.items() if c == best)[0]
             agreement = round(len(by_nk[top_nk]) / len(valid), 2)
-            # PROBLEMS #60：**支持度**——赢家名字的票数 / 这个键的计数行数。
-            # agreement 的分母是「投了票的行」，切不出案名的行是空票、不计入，于是
-            # 199 行里只有 1 行切出名字时 agreement 也是 1.0，看着像全体一致。支持度
-            # 才是「引用它的判决里有多少份站这个名字」。
-            # **只输出、不当闸用**：裁定层曾按它设闸，实测为净负（只影响 32 组，全是把
-            # 同一案子的平行汇编拆开，还新增 8 处「同一印刷串落两组」），故撤掉。
-            # 分母取 max(计数行数, 票数)：自引行照样投票但不算计数行（#54），
-            # 只用计数行当分母会算出 >1 的比值；某键全是自引（计数 0）时也不至于
-            # 变成 0——那种键根本没有「未被支持的计数行」可言。
             support = (round(len(by_nk[top_nk]) / max(occurrence, len(by_nk[top_nk])), 3)
                        if by_nk[top_nk] else 0.0)
-            variants = len(by_nk)          # 折叠后的真实变体数，非印刷形种数
+            variants = len(by_nk)
         else:
             name_modal, agreement, support, variants = "", 0.0, 0.0, 0
 
@@ -251,8 +648,7 @@ def main():
             "self_case_name": own_name,
         })
 
-        # 折叠日志：**全部**印刷变体都登记（含计数为 0 的），回答「这个键吞并了
-        # 哪些写法」；count 只数计数行，故其组内之和恒等于 occurrence_count
+        # 折叠日志：**全部**印刷变体都登记（含计数为 0 的）
         per_raw = defaultdict(list)
         for m in members:
             per_raw[m[0]].append(m)
@@ -306,6 +702,7 @@ def main():
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
         "court": args.court,
         "input": _relpath(args.input),
+        "mode": "legacy",
         "spec_section": "9",
         "stats": dict(sorted(stats.items())),
     }
@@ -317,6 +714,23 @@ def main():
           % (args.court, stats["input_rows"], len(merged), args.output))
     for k, v in sorted(stats.items()):
         print("   %-34s %d" % (k, v))
+
+
+# ---------------------------------------------------------------------- main
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--court", required=True)
+    ap.add_argument("--input", required=True)
+    ap.add_argument("--output", required=True)
+    args = ap.parse_args()
+
+    stats = Counter()
+    with open(args.input, encoding="utf-8", newline="") as f:
+        header = next(csv.reader(f))
+    if "candidate_id" in header:
+        run_candidates(args, stats)
+    else:
+        run_legacy(args, stats)
 
 
 if __name__ == "__main__":

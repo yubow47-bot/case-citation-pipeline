@@ -41,8 +41,8 @@ decide 管身份与来源 → select 保持原 dd 门槛语义。
 
 | 阶段 | 内容 | 状态 |
 |---|---|---|
-| 0 | 隔离运行入口 + run manifest | **完成**（commit 见 git log） |
-| 1 | 候选全量枚举、逐候选分类、判决内重叠仲裁（D1/D2/D3） | 未开始 |
+| 0 | 隔离运行入口 + run manifest | **完成**（commit c66d51e） |
+| 1 | 候选全量枚举、逐候选分类、判决内重叠仲裁（D1/D2/D3） | **完成**（见「阶段 1」三节） |
 | 2 | 系列与页码身份字段（D4/D5），全量重跑 + 新旧差分 | 未开始 |
 | 3 | 来源地最小闭环（D6） | 未开始 |
 | 4 | 外国边输出、追溯工具、演示样例、交接 | 未开始 |
@@ -96,6 +96,74 @@ FileNotFoundError 暴露）；修后全过。失败目录两次均已删除重�
 
 ### 当前
 
-- 下一步：阶段 1 —— extract 全候选枚举（重叠扫描 + 边界闸）、D3 跨界解析标注、
-  classify 逐候选、merge 判决内仲裁；全语料同起点不同解析测量。
-- 无外部阻塞。
+- 下一步：阶段 2 —— merge 键 v2（系列正典化 D4 + 页码类型显式 D5）、旧键→新键映射、
+  全量五层重跑 + 新旧差分。
+
+## 阶段 1 记录（2026-09-12）
+
+### 实现内容
+
+- `pipeline/extract.py`：新增 candidates-2.0 路线——`scan_overlapping`（D2 重叠枚举，
+  下一匹配从 `match.start()+1` 重找）+ 边界闸（新匹配不得起于字母数字串中部，防
+  「23 A.C. 4」类截断垃圾）；`extract_candidates` 输出全候选（candidate_id、
+  corpus_row_index、字段跨度 year/page/vol/abbr_span、parse_signature）；D4 捕获组
+  series_paren/paren_note 入 schema；`annotate_cross_boundary`（D3，extract 有判决内
+  跨候选视野，在此算关系、逐候选带标注，classify 只读本行）；候选爆炸上限 20000
+  （超限记 cand_limits.csv + manifest 统计，绝不静默截断）。旧 kept/superseded 输出
+  与 `--fixture-check` 原样保留，降为诊断产物。
+- `pipeline/classify.py`：新增 parse_status（valid / structurally_conflicted /
+  ambiguous_year_vol）与 year_vol_ambiguity 两列——解析判定与查表结果分列；
+  D3 旗候选不得凭查表拿 unambiguous confirmed（confirmed → table_hit_conflicted）。
+- `pipeline/merge.py`：双路线按表头分派。legacy 路线（无 candidate_id 列）逐字保留，
+  迷你全链 120 条断言不动全过；candidates 路线先**判决内**仲裁（分组键 =
+  (source_decision_citation, corpus_row_index)，62 份共享 `{COURT}_` 的文档互不串），
+  再跨行聚合。仲裁状态机：counted / alternative_same_key / alternative_contained /
+  alternative_unsupported_reading / span_alternative_undecided / overlap_undecided /
+  alternative_spanning_mismatch / cross_boundary_invalid / rejected_row /
+  self_citation_row；逐候选台账 mentions_candidates.csv 是追溯主干。
+- `pipeline/run_all.py`：classify 输入改 candidates.csv。
+- `pipeline/tests/test_candidates.py`：新路线 36 条断言（Kvello / BCE / Almrei /
+  同跨度计一次 / 包含消解 / 合成横跨 / 弃权 / 顺序不变性 / 行分组 / 边界闸 /
+  夹具对照——正夹具 exact 不得低于旧路线、负夹具误报上限实测钉住）。
+
+### 决定记录（规格未定处，均须人复核）
+
+1. **同跨度异含义的计数归属**（§7.1C 规则的落地口径）：表证据唯一支持一读 → 归它；
+   双方都有支持且冲突、或全无支持 → 整组 span_alternative_undecided，0 计数（弃权，
+   不是默认）。依据约束四。
+2. **4 位数字年/卷之争**：代码在表中 → 表裁决（Kvello 类）；代码不在任何表 →
+   形状特异性**不**当结构证据，标 ambiguous_year_vol + unresolved，不默认年读法。
+   ——这是本规格未settled的判断点，**显式留给人复核**（§7.1C 要求记录）。
+3. **D3 旗是关系旗**：a.page 形似年份 ∧ a.page_span==b.year_span ∧ b 是完整 neutral
+   且 a.start<b.start<a.end<b.end 才打旗；无 b 不打旗（真 4 位页码不受伤）。
+   配对者有效 → a 仲裁为 cross_boundary_invalid；配对者缺席/无效 → unresolved，
+   候选保留计数但永不 confirmed（classification 已降级）。
+4. **横跨长候选规则**：X 与 ≥2 条更短、互不重叠的候选重叠 → X 让位（不硬选最长），
+   短候选保留——重叠组不要求唯一赢家。
+5. **边界闸同样作用于首遍命中**：旧 finditer 偶有起于字母数字串中部的命中
+   （如 "R1500 A.C. 400" 里的 1500），新路线一律不收（实测损失见下）。
+
+### 全语料测量（implementation/measure_alt_parses.json，34,782 份判决，176.5s）
+
+| 项 | 数 |
+|---|---|
+| 旧 finditer 原始命中 | 998,465 |
+| 新全候选（重叠+闸） | 1,013,819（+1.54%） |
+| 边界闸拦下 | 708,828（全为字母数字串中部起点的截断垃圾；样例核过） |
+| 同起点多候选组 | 154,260 |
+| **同形状同起点不同解析** | **0**（§7.1B 允许以测量代展开的依据） |
+| 同跨度异形状对 / 嵌套异形状对 | 149,641 / 4,651 |
+| D3 跨界旗样例 | "154995 Canada Inc., 2005"（公司名+年份被误读为卷名页）、"20 A. Federal Court, 2020"（标题结构） |
+
+注：任务书给的样本估计 +5.6% 未含边界闸；闸后净增 1.54%，闸拦下的 70.9 万条
+正是「重叠扫描会制造的垃圾」——两数并读才完整。
+
+### 测试与运行记录
+
+| 命令 | 退出码 | 结果 |
+|---|---|---|
+| `python pipeline/tests/test_layers.py` | 0 | 120 条断言（legacy 路线不变） |
+| `python pipeline/extract.py --fixture-check` | 0 | A18/B15/C27/D6/E0/F0（旧路线诊断档） |
+| `python pipeline/tests/run_regression.py --selftest` | 0 | normalize_equivalence identical |
+| `python pipeline/tests/test_candidates.py` | 0 | 36 条断言（新路线） |
+| `python pipeline/run_all.py --out data/stage1_smoke --limit-batches 1` | 0 | 新路线全链烟雾通过 |

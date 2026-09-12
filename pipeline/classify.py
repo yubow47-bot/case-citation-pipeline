@@ -78,7 +78,17 @@ NEW_COLUMNS = ["citation_kind", "abbreviation", "jurisdiction",
                "jurisdiction_confidence", "lookup_mode", "vol_missing",
                "series_prefix", "candidate_case_name",
                "rejected_reason", "name_rejected_reason", "disambiguated_by",
-               "self_citation"]
+               "self_citation",
+               # candidates-2.0 路线的新证据列（旧路线输入时恒空串）：
+               #   parse_status —— 本行解析的结构判定，独立于查表结果
+               #     （valid / structurally_conflicted / ambiguous_year_vol）。
+               #     查表命中 ≠ 整条引证为真，两件事分列（D3/D2 要求）。
+               #   year_vol_ambiguity —— 4 位数字既可读年又可读卷、且两表都
+               #     无法裁决时的显式 unresolved 标记（不默认任何一方）。
+               "parse_status", "year_vol_ambiguity"]
+
+# 年份形状（4 位数字），用于 year/vol 同形判定
+_YEAR_SHAPE_RE = re.compile(r"^(?:1[6-9]|20)\d{2}$")
 
 # ---------------------------------------------------------------- §8.4 Step 2
 FED_STATUTE = re.compile(r"(?:^|[\s(\[])(?:R\.S\.C\.|S\.C\.)\s*(?:18|19|20)\d{2}")
@@ -713,6 +723,27 @@ class Classifier(object):
         if own and nk(row.get("raw_string") or "") == own:
             row["self_citation"] = "true"
             self.stats["self_citation"] += 1
+
+        # ---- parse_status：结构判定，独立于查表结果（D2/D3）----
+        if row.get("structural_conflict") == "cross_boundary_year_page":
+            # D3 抽取层标注的疑似跨界解析。配对仲裁在归并层做（需要跨候选视野）；
+            # 本层能做的：不给它靠一次查表拿到 unambiguous confirmed。
+            row["parse_status"] = "structurally_conflicted"
+            if row.get("jurisdiction_confidence") == "confirmed":
+                row["jurisdiction_confidence"] = "table_hit_conflicted"
+                self.stats["conflicted_confidence_downgraded"] += 1
+        elif (row.get("shape_name") == "shape_vol_abbr_page"
+              and (row.get("vol") or "") and _YEAR_SHAPE_RE.match(row["vol"])
+              and row.get("jurisdiction") == "UNSUPPORTED"):
+            # 4 位数字在「卷」槽：可读年可读卷。**实现决定（规格未决，须人复核）**：
+            # 代码不在任何表里时，形状本身的特异性**不**足以当结构证据裁决年读法——
+            # 没有表证据就没有证据，标 unresolved，不默认任何一方（约束七）。
+            # 代码在表里时的裁决不在本层打标（仲裁用 identical-span 规则处理）。
+            row["parse_status"] = "ambiguous_year_vol"
+            row["year_vol_ambiguity"] = "unresolved_year_vs_vol"
+            self.stats["year_vol_ambiguity_unresolved"] += 1
+        else:
+            row["parse_status"] = "valid"
 
         self.stats["kind_" + (row["citation_kind"] or "none")] += 1
         for r in (row.get("rejected_reason") or "").split("|"):
