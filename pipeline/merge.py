@@ -125,6 +125,8 @@ def build_merge_key(row):
 
 # ------------------------------------------------ 键 v2（阶段 2：D4/D5）
 _ORD_TAIL_RE = re.compile(r"(st|nd|rd|th)$")
+# R2-5：nominate 括注的序数系列形（(2d) / (3rd) / (4th)）
+_ORD_NOTE_RE = re.compile(r"^\(?\s*\d+(?:st|nd|rd|th|d)\s*\)?$")
 
 
 def _canon_series(s):
@@ -138,14 +140,20 @@ def _series_component(row):
     """键的系列槽（D4）。优先级：序数括注 > 裸/粘连序数 > 非序数括注。
     非序数括注（(N.S.)）是「新系列」，与无括注的同名汇编不是一本书——
     以 n: 前缀进键（与任何序数或缺失都不同键）。shape_nominate 的宽口径
-    paren_note 是法院/法域标注（(Ont. C.A.) 类），不是系列身份，不进键
-    （旧键也从不收它，收了会把同一条引证按标注变体拆散）。"""
+    paren_note 是法院/法域标注（(Ont. C.A.) 类），不是系列身份，不进键；
+    **例外（R2-5）**：nominate 括注本身是序数系列形（165 A. (2d) 82 (1960)
+    的 (2d)）时按系列正典化进键——否则同一条引证的 nominate 读法与
+    vol_page_year 读法因键不同被判成两种含义而双双弃权。"""
     if row.get("series_paren"):
         return _canon_series(row["series_paren"])
     if row.get("series"):
         return _canon_series(row["series"])
     note = (row.get("paren_note") or "").strip()
-    if note and row.get("shape_name") != "shape_nominate":
+    if note:
+        if row.get("shape_name") == "shape_nominate":
+            if _ORD_NOTE_RE.match(note):
+                return _canon_series(note)
+            return ""
         return "n:" + nk(note)
     return ""
 
@@ -195,6 +203,20 @@ def _unknown_jur(j):
     return j in ("", "UNSUPPORTED")
 
 
+# R2-2：可用支持分级。被拒 / 结构冲突未消 / 年卷歧义未决 / 法域 UNSUPPORTED 一律 0
+# （这样的读法**没有可用支持**，lookup_mode 再 exact 也不许压过别的读法）；
+# 法域已解析时 exact=2、其余（含缺 lookup_mode 元数据）=1——缺元数据不制造正支持。
+def support_grade(row):
+    if row.get("rejected_reason"):
+        return 0
+    if (row.get("parse_status") or "valid") != "valid":
+        return 0
+    j = row.get("jurisdiction") or ""
+    if j in ("", "UNSUPPORTED"):
+        return 0
+    return 2 if (row.get("lookup_mode") or "") == "exact" else 1
+
+
 def _fields_compatible(a, b):
     """两候选共享字段（双方都非空）nk 后是否相容。空对非空不算冲突——
     短候选少印一个槽是常态（「3 All E.R. 12」没有年份槽）。"""
@@ -211,12 +233,24 @@ def _fields_compatible(a, b):
 
 # ============================================================ candidates 路线
 def arbitrate_document(rows, stats):
-    """一个判决（同 sdc + corpus_row_index）内的重叠仲裁。
+    """一个判决（同 sdc + corpus_row_index）内的重叠仲裁（Round 2 订正版）。
     输入 rows：该判决全部已分类候选（任意顺序）；返回 {candidate_id: (status, note, superseded_by)}。
 
     状态：counted / rejected_row / self_citation_row / cross_boundary_invalid /
-          alternative_same_key / alternative_unsupported_reading /
-          span_alternative_undecided / alternative_contained / overlap_undecided
+          alternative_same_key / alternative_weaker_support /
+          alternative_unsupported_reading / alternative_dominated_by_support /
+          alternative_contained / alternative_spanning_mismatch /
+          span_alternative_undecided / overlap_undecided
+
+    R2-2：支持分级 support_grade（exact=2 > 其余已解析=1 > 无可用支持=0）；
+    同跨度先按键合并（同义多解析不自相打平），再在**不同含义**间比较：
+    唯一最高档胜出，最高档打平 → 整组弃权。输家带支持 → weaker_alternative，
+    无支持 → unsupported_reading。
+    R2-3：不同跨度同规则——部分重叠/不相容包含中，严格更高支持档唯一起者胜，
+    输家 dominated_by_support；同档 → 弃权。包含相容 → 长者胜；横跨 ≥2 条互不
+    重叠短候选 → 长者让位。
+    R2 终集合不变量：重叠不传递——支配关系收敛到**最终被计数**的含义上
+    （链式重定向）；被消解/未决的候选不得再当唯一压制者（定点回收重算）。
     """
     out = {}
     by_id = {r["candidate_id"]: r for r in rows}
@@ -230,83 +264,96 @@ def arbitrate_document(rows, stats):
         elif r.get("self_citation") == "true":
             out[r["candidate_id"]] = ("self_citation_row", "", "")
 
-    # ---- A. D3 跨界解析的配对消解（需多候选视野，在此做而非 classify）----
+    # ---- A. D3 跨界解析的配对消解（R2：配对者须有**可用支持**才算有效替换；
+    #         仅「在场且非 rejected」不再证明无效性——歧义跨界保持未决）----
     for r in rows:
         if (r.get("structural_conflict") == "cross_boundary_year_page"
                 and r["candidate_id"] not in out):
             partner = by_id.get(r.get("conflict_with_candidate"))
             partner_status = out.get(partner["candidate_id"], ("", ""))[0] if partner else None
-            if partner is not None and partner is not r and partner_status != "rejected_row":
+            if (partner is not None and partner is not r
+                    and partner_status != "rejected_row"
+                    and support_grade(partner) >= 1):
                 out[r["candidate_id"]] = (
                     "cross_boundary_invalid",
-                    "page %s read as year by partner; %s" % (
+                    "page %s read as year by supported partner; %s" % (
                         r.get("page"), r.get("conflict_note") or ""),
                     partner["candidate_id"])
                 stats["cross_boundary_invalidated"] += 1
             else:
-                # 配对者缺席或无效：冲突未消解。候选保留（可能进计数），但带旗、
-                # 永不据此拿到 unambiguous confirmed（classify 已降级其置信）
+                # 配对者缺席/被拒/无可用支持：冲突未消解。候选保留（带旗、
+                # 支持级 0——不得压制他人），交 B/C 常规规则
                 stats["cross_boundary_unresolved"] += 1
 
-    # ---- B. 同跨度组（同 start+end，跨形状）----
-    def live(r):
-        return r["candidate_id"] not in out
-
+    # ---- B. 同跨度组：先按键合并（同义多解析不自打平），再比不同含义 ----
     span_groups = defaultdict(list)
     for r in order:
-        if live(r):
+        if r["candidate_id"] not in out:
             span_groups[(int(r["match_start_offset"]),
                          int(r["match_end_offset"]))].append(r)
     for span in sorted(span_groups):
         members = sorted(span_groups[span],
                          key=lambda r: (SHAPE_RANK.get(r["shape_name"], 99),
                                         r["candidate_id"]))
-        if len(members) == 1:
-            out[members[0]["candidate_id"]] = ("counted", "", "")
-            continue
-        keys = {build_merge_key_v2(m) for m in members}
-        if len(keys) == 1:
-            rep = members[0]
-            out[rep["candidate_id"]] = ("counted", "", "")
-            for m in members[1:]:
-                out[m["candidate_id"]] = ("alternative_same_key",
-                                          "same span, same meaning as %s" % rep["candidate_id"],
-                                          rep["candidate_id"])
-            stats["same_span_same_key_folded"] += len(members) - 1
-            continue
-        # 同跨度异含义：表证据唯一支持者胜出
-        supported = [m for m in members if not _unknown_jur(m.get("jurisdiction") or "")]
-        if len(supported) == 1:
-            rep = supported[0]
+        # 按键合并：每个键取其成员中的最高支持档与代表行（同档取形状序、id 定序）
+        bykey = {}
+        for m in members:
+            k = build_merge_key_v2(m)
+            g = support_grade(m)
+            cur = bykey.get(k)
+            if cur is None or (g, -SHAPE_RANK.get(m["shape_name"], 99), m["candidate_id"]) > \
+                    (cur[0], -SHAPE_RANK.get(cur[1]["shape_name"], 99), cur[1]["candidate_id"]):
+                bykey[k] = (g, m)
+        if len(bykey) == 1:
+            (g, rep), = bykey.values()
             out[rep["candidate_id"]] = ("counted", "", "")
             for m in members:
-                if m is rep:
+                if m["candidate_id"] != rep["candidate_id"]:
+                    out[m["candidate_id"]] = ("alternative_same_key",
+                                              "same span, same meaning as %s"
+                                              % rep["candidate_id"],
+                                              rep["candidate_id"])
+            stats["same_span_same_key_folded"] += len(members) - 1
+            continue
+        top = max(g for g, _ in bykey.values())
+        winners = [k for k, (g, _) in bykey.items() if g == top]
+        if len(winners) == 1 and top > 0:
+            wkey = winners[0]
+            rep = bykey[wkey][1]
+            out[rep["candidate_id"]] = ("counted", "", "")
+            for k, (g, m) in bykey.items():
+                if k == wkey:
                     continue
+                label = ("alternative_weaker_support" if g >= 1
+                         else "alternative_unsupported_reading")
                 out[m["candidate_id"]] = (
-                    "alternative_unsupported_reading",
-                    "span shared with %s; table supports only that reading" % rep["candidate_id"],
-                    rep["candidate_id"])
-            stats["same_span_resolved_by_table"] += 1
+                    label, "span shared with %s; strictly higher support grade"
+                    % rep["candidate_id"], rep["candidate_id"])
+            for m in members:
+                if (build_merge_key_v2(m) == wkey
+                        and m["candidate_id"] != rep["candidate_id"]):
+                    out[m["candidate_id"]] = ("alternative_same_key",
+                                              "same span, same meaning as %s"
+                                              % rep["candidate_id"],
+                                              rep["candidate_id"])
+            stats["same_span_resolved_by_support"] += 1
         else:
             for m in members:
                 out[m["candidate_id"]] = (
                     "span_alternative_undecided",
                     "same span, %d readings, %s" % (
-                        len(members),
-                        "conflicting support" if len(supported) > 1 else "no table support"),
+                        len(bykey),
+                        "top-grade tie" if top > 0 else "no usable support"),
                     "")
             stats["same_span_abstained"] += 1
 
-    # ---- C. 不同跨度间的重叠（包含 / 部分重叠）----
-    # B 的「counted」是暂定的：还要过不同跨度间的重叠检验。两两判一次，按
-    # 「undecided > 让位 > 计数」的优先级收敛（约束五：不删候选，只改状态）。
+    # ---- C. 不同跨度间的重叠：支持支配 + 终集合定点收敛 ----
     live_rows = [r for r in order
                  if out.get(r["candidate_id"], ("",))[0] in ("", "counted")]
     live_rows.sort(key=lambda r: (int(r["match_start_offset"]),
                                   -int(r["match_end_offset"]),
                                   r["candidate_id"]))
-    # 「长误匹配横跨多条真候选」检测：X 与 ≥2 条更短、互不重叠的候选重叠 →
-    # X 是那条横跨的长候选，让位；短候选之间互不重叠，不因 X 弃权。
+    # 横跨检测：X 与 ≥2 条更短、互不重叠的候选重叠 → X 让位，短候选不受此对影响
     shorter_overlappers = defaultdict(list)
     for i, a in enumerate(live_rows):
         as_, ae = int(a["match_start_offset"]), int(a["match_end_offset"])
@@ -318,7 +365,6 @@ def arbitrate_document(rows, stats):
             if as_ >= be:
                 continue
             shorter_overlappers[a["candidate_id"]].append(b)
-    # 横跨判定：X 与 ≥2 条更短、互不重叠的候选重叠
     spanning = set()
     len_of = {r["candidate_id"]: int(r["match_end_offset"]) - int(r["match_start_offset"])
               for r in live_rows}
@@ -336,17 +382,17 @@ def arbitrate_document(rows, stats):
         if disjoint:
             spanning.add(cid)
             stats["spanning_mismatch_detected"] += 1
+
     verdicts = defaultdict(list)          # cid -> [(kind, other_cid)]
     for i, a in enumerate(live_rows):
         as_, ae = int(a["match_start_offset"]), int(a["match_end_offset"])
         for b in live_rows[i + 1:]:
             bs = int(b["match_start_offset"])
             if bs >= ae:
-                break                                      # 排序后此后的起点都在 a 之外
+                break
             be = int(b["match_end_offset"])
             if as_ >= be:
-                continue                                   # 不重叠
-            # 横跨长候选 vs 其内部短候选：长候选让位，短候选不受此对影响
+                continue
             if a["candidate_id"] in spanning and b["candidate_id"] not in spanning:
                 verdicts[a["candidate_id"]].append(("spanning", b["candidate_id"]))
                 continue
@@ -355,7 +401,6 @@ def arbitrate_document(rows, stats):
                 continue
             ka, kb = build_merge_key_v2(a), build_merge_key_v2(b)
             if ka == kb:
-                # 同含义不同跨度（印刷变体）：跨度长者做代表
                 if (ae - as_) >= (be - bs):
                     verdicts[a["candidate_id"]].append(("rep", b["candidate_id"]))
                     verdicts[b["candidate_id"]].append(("yield", a["candidate_id"]))
@@ -365,48 +410,160 @@ def arbitrate_document(rows, stats):
                 continue
             contained_a = as_ >= bs and ae <= be and (ae - as_) < (be - bs)
             contained_b = bs >= as_ and be <= ae and (be - bs) < (ae - as_)
-            if contained_a or contained_b:
+            if (contained_a or contained_b) and _fields_compatible(
+                    a if contained_a else b, b if contained_a else a):
                 short, long_ = (a, b) if contained_a else (b, a)
-                if _fields_compatible(short, long_):
-                    # 显式包含消解规则：共享字段相容 → 长者胜
-                    verdicts[short["candidate_id"]].append(("contained", long_["candidate_id"]))
-                    verdicts[long_["candidate_id"]].append(("rep", short["candidate_id"]))
-                else:
-                    verdicts[a["candidate_id"]].append(("undecided", b["candidate_id"]))
-                    verdicts[b["candidate_id"]].append(("undecided", a["candidate_id"]))
+                verdicts[short["candidate_id"]].append(("contained", long_["candidate_id"]))
+                verdicts[long_["candidate_id"]].append(("rep", short["candidate_id"]))
+                continue
+            # 部分重叠或不相容包含（R2-3）：支持支配，严格更高档唯一起者胜
+            ga, gb = support_grade(a), support_grade(b)
+            if ga > gb and ga >= 1:
+                verdicts[a["candidate_id"]].append(("rep", b["candidate_id"]))
+                verdicts[b["candidate_id"]].append(("dominated", a["candidate_id"]))
+            elif gb > ga and gb >= 1:
+                verdicts[b["candidate_id"]].append(("rep", a["candidate_id"]))
+                verdicts[a["candidate_id"]].append(("dominated", b["candidate_id"]))
             else:
-                # 部分重叠、异含义、无 D3 旗：证据不足，弃权（不硬选最长）
                 verdicts[a["candidate_id"]].append(("undecided", b["candidate_id"]))
                 verdicts[b["candidate_id"]].append(("undecided", a["candidate_id"]))
                 stats["partial_overlap_abstained"] += 1
 
-    PRIORITY = {"undecided": 0, "contained": 1, "yield": 2, "spanning": 2, "rep": 3}
+    PRIORITY = {"undecided": 0, "contained": 1, "dominated": 2, "yield": 3,
+                "spanning": 4, "rep": 5}
+    DOMINATED_STATUS = {"contained": "alternative_contained",
+                        "dominated": "alternative_dominated_by_support",
+                        "yield": "alternative_same_key",
+                        "spanning": "alternative_spanning_mismatch"}
+
+    def pick(vs):
+        kind = min((k for k, _ in vs), key=lambda k: PRIORITY[k])
+        others = [o for k, o in vs if k == kind]
+        # 同类多个压制者时确定性选取：优先「最终被计数」者（定点收敛后重选），
+        # 否则跨度更长者，再按 id
+        return kind, others
+
+    def choose_other(cid, kind, others, counted_now):
+        counted = [o for o in others if counted_now.get(o) == "counted"]
+        pool = counted or others
+        return sorted(pool, key=lambda o: (-len_of[o], o))[0]
+
+    counted_now = {}
+    final = {}
+    # R2 终集合口径：支配类裁决（结构或支持）优先——被任何存活支配者压制的候选
+    # 不再因「垃圾对垃圾的同档弃权」而逃逸成 undecided；有 rep 裁决 → 计数；
+    # 只剩 undecided 对 → 才弃权（同档冲突的弃权是**残差**，不是最高优先级）。
     for r in live_rows:
         cid = r["candidate_id"]
         vs = verdicts.get(cid)
         if not vs:
-            if cid not in out:
-                out[cid] = ("counted", "", "")
+            final[cid] = ("counted", "", "")
+            counted_now[cid] = "counted"
             continue
-        kind = min((k for k, _ in vs), key=lambda k: PRIORITY[k])
-        other = next(o for k, o in vs if k == kind)
-        if kind == "undecided":
-            out[cid] = ("overlap_undecided",
-                        "conflicting overlap with %s; evidence insufficient" % other, "")
-            stats["overlap_undecided_rows"] += 1
-        elif kind == "contained":
-            out[cid] = ("alternative_contained",
-                        "strict subset of compatible %s" % other, other)
-            stats["contained_superseded"] += 1
-        elif kind == "yield":
-            out[cid] = ("alternative_same_key",
-                        "same meaning, shorter variant of %s" % other, other)
-        elif kind == "spanning":
-            out[cid] = ("alternative_spanning_mismatch",
-                        "spans multiple shorter candidates incl. %s; "
-                        "overlap group keeps the shorts" % other, other)
-        # kind == rep：维持 B 的 counted
+        sup = [(k, o) for k, o in vs if k in DOMINATED_STATUS]
+        reps = [o for k, o in vs if k == "rep"]
+        und = [o for k, o in vs if k == "undecided"]
+        if sup:
+            final[cid] = ("__dominated__", sup)
+            counted_now[cid] = "dominated"
+        elif reps:
+            final[cid] = ("counted", "", "")
+            counted_now[cid] = "counted"
+        elif und:
+            final[cid] = ("overlap_undecided",
+                          "conflicting overlap with %s; equal or no support" % und[0],
+                          "")
+            counted_now[cid] = "undecided"
+        else:
+            final[cid] = ("counted", "", "")
+            counted_now[cid] = "counted"
+
+    # 定点收敛：支配者必须最终被计数；被消解/未决者不得当唯一压制者
+    rounds = 0
+    changed = True
+    while changed and rounds <= len(live_rows) + 5:
+        changed = False
+        rounds += 1
+        for r in live_rows:
+            cid = r["candidate_id"]
+            v = final.get(cid)
+            if not v or v[0] != "__dominated__":
+                continue
+            pairs = v[1]                       # [(kind, other_cid)]
+            # 确定性选取压制者：优先「最终被计数」者，否则跨度更长者，再按 id
+            counted = [(k, o) for k, o in pairs if counted_now.get(o) == "counted"]
+            pool = counted or pairs
+            k_t, target = sorted(pool, key=lambda ko: (-len_of[ko[1]], ko[1]))[0]
+            tstat = counted_now.get(target)
+            if tstat == "counted":
+                final[cid] = (DOMINATED_STATUS[k_t],
+                              DOMINATED_NOTE[k_t] % target, target)
+                continue
+            if tstat == "dominated":
+                # 链式重定向：指向支配者的支配者（最终计数者）
+                t_final = final.get(target)
+                if t_final and t_final[0] == "__dominated__":
+                    tcounted = [o for k, o in t_final[1]
+                                if counted_now.get(o) == "counted"]
+                    if tcounted:
+                        t2 = sorted(tcounted, key=lambda o: (-len_of[o], o))[0]
+                        final[cid] = (DOMINATED_STATUS[k_t],
+                                      DOMINATED_NOTE[k_t] % t2, t2)
+                        changed = True
+                        continue
+                final[cid] = (DOMINATED_STATUS[k_t],
+                              DOMINATED_NOTE[k_t] % target, target)
+                continue
+            # tstat in (undecided,) 或支配者不在 live（被 D3/自引/拒绝排除）：
+            # 移除指向它的支配裁决，重算本候选（R2：被消解/未决者不得当唯一压制者）
+            remaining = [(k, o) for k, o in verdicts.get(cid, [])
+                         if o != target or k not in DOMINATED_STATUS]
+            verdicts[cid] = remaining
+            stats["dominator_recycled"] += 1
+            sup2 = [(k, o) for k, o in remaining if k in DOMINATED_STATUS]
+            reps2 = [o for k, o in remaining if k == "rep"]
+            und2 = [o for k, o in remaining if k == "undecided"]
+            if sup2:
+                final[cid] = ("__dominated__", sup2)
+            elif reps2:
+                final[cid] = ("counted", "", "")
+                counted_now[cid] = "counted"
+            elif und2:
+                final[cid] = ("overlap_undecided",
+                              "conflicting overlap with %s; equal or no support"
+                              % und2[0], "")
+                counted_now[cid] = "undecided"
+            else:
+                final[cid] = ("counted", "", "")
+                counted_now[cid] = "counted"
+            changed = True
+    if changed:
+        stats["arbitration_fixpoint_not_converged"] += 1
+
+    for r in live_rows:
+        cid = r["candidate_id"]
+        v = final.get(cid)
+        if v is None:
+            out[cid] = ("counted", "", "")
+        elif v[0] == "__dominated__":
+            out[cid] = (DOMINATED_STATUS[v[1]], DOMINATED_NOTE[v[1]] % v[2], v[2])
+            stats[{"contained": "contained_superseded",
+                   "dominated": "dominated_by_support",
+                   "yield": "same_key_folded_c",
+                   "spanning": "spanning_mismatch_superseded"}[v[1]]] += 1
+        else:
+            out[cid] = v
+            if v[0] == "overlap_undecided":
+                stats["overlap_undecided_rows"] += 1
     return out
+
+
+DOMINATED_NOTE = {
+    "contained": "strict subset of compatible %s",
+    "dominated": "overlapping reading with strictly weaker support than %s",
+    "yield": "same meaning, shorter variant of %s",
+    "spanning": "spans multiple shorter candidates incl. %s; overlap group keeps the shorts",
+}
 
 
 def run_candidates(args, stats):

@@ -53,16 +53,37 @@ def sha256_file(path):
     return h.hexdigest()
 
 
-def code_fingerprint():
-    """生产代码内容指纹：pipeline/*.py（不含 tests/）逐文件哈希后再总哈希。
-    未提交的修改一样进指纹——git HEAD 单独不足以代表正在跑的代码。"""
-    files = sorted(n for n in os.listdir(PIPE)
-                   if re.fullmatch(r"[a-z_0-9]+\.py", n))
-    per_file = {n: sha256_file(os.path.join(PIPE, n)) for n in files}
+# R2-10：输入身份 = 生产代码 + 全部被消费的决策表 + select 配置 + 语料 + 参数/环境。
+# 启动时算一次、**不可变**地写进 manifest（后续 manifest 更新绝不重算覆盖）；
+# 收尾时重算比对，不一致 → status=failed（不是 complete）。
+def input_identity(root=ROOT, courts=COURTS, params=None):
+    files = {}
+    pipe = os.path.join(root, "pipeline")
+    for n in sorted(os.listdir(pipe)):
+        if re.fullmatch(r"[a-z_0-9]+\.py", n):
+            files["pipeline/" + n] = sha256_file(os.path.join(pipe, n))
+    dec = os.path.join(root, "decisions")
+    if os.path.isdir(dec):
+        for n in sorted(os.listdir(dec)):
+            if n.endswith(".csv"):
+                files["decisions/" + n] = sha256_file(os.path.join(dec, n))
+    cfg = os.path.join(root, "select_config.yaml")
+    if os.path.exists(cfg):
+        files["select_config.yaml"] = sha256_file(cfg)
+    for c in courts:
+        p = os.path.join(root, "corpus", c + ".parquet")
+        if os.path.exists(p):
+            files["corpus/" + c + ".parquet"] = sha256_file(p)
     total = hashlib.sha256(
-        "".join("%s:%s\n" % (n, per_file[n]) for n in files)
-        .encode("utf-8")).hexdigest()
-    return {"fingerprint": total, "files": per_file}
+        ("".join("%s:%s\n" % (k, files[k]) for k in sorted(files))
+         + "params:" + json.dumps(params or {}, sort_keys=True, default=str)
+         + "\n").encode("utf-8")).hexdigest()
+    return {"fingerprint": total, "files": files, "params": params or {}}
+
+
+def verify_unchanged(start_identity, root=ROOT, courts=COURTS, params=None):
+    now = input_identity(root=root, courts=courts, params=params)
+    return now["fingerprint"] == start_identity["fingerprint"], now
 
 
 def dep_versions():
@@ -82,6 +103,15 @@ class Runner(object):
         self.args = args
         self.manifest_path = os.path.join(out_root, "run_manifest.json")
         self.manifest = None
+        # R2-10：启动身份，算一次即冻结；params 一起进指纹
+        self.params = {"batch_size": args.batch_size,
+                       "year_from": args.year_from,
+                       "limit_batches": args.limit_batches,
+                       "courts": list(COURTS),
+                       "select_config": "select_config.yaml (verbatim in select manifest)",
+                       "threshold_dd_semantics": "unchanged (constraint 6)"}
+        self.start_identity = input_identity(params=self.params)
+        self.identity_verified = None
 
     def write_manifest(self, status, failed_step=None):
         m = self.manifest or {}
@@ -90,19 +120,15 @@ class Runner(object):
             "status": status,
             "failed_step": failed_step or "",
             "schema_versions": SCHEMA_VERSIONS,
-            "params": {"batch_size": self.args.batch_size,
-                       "year_from": self.args.year_from,
-                       "limit_batches": self.args.limit_batches,
-                       "courts": list(COURTS),
-                       "select_config": "select_config.yaml (verbatim in select manifest)",
-                       "threshold_dd_semantics": "unchanged (constraint 6)"},
-            "corpus_sha256": {c: sha256_file(os.path.join(ROOT, "corpus", c + ".parquet"))
-                              for c in COURTS},
-            "code_fingerprint": code_fingerprint(),
+            "params": self.params,
+            # R2-10：启动身份只在这里算一次；后续更新原样携带，绝不重算覆盖
+            "input_identity": self.start_identity,
+            "input_identity_verified_unchanged": self.identity_verified,
             "dependency_versions": dep_versions(),
             "steps_done": m.get("steps_done", []),
             "note": ("complete 之外的 status（running/failed）对下游不是可消费的"
-                     "完整批次；失败目录保留，重试用新目录"),
+                     "完整批次；失败目录保留，重试用新目录。status=complete 要求"
+                     "收尾时输入身份与启动时逐字节一致（R2-10）"),
         })
         self.manifest = m
         tmp = self.manifest_path + ".tmp"
@@ -204,6 +230,13 @@ def main():
                 "--merge-out", os.path.join(args.out, "merge_out"),
                 "--output", os.path.join(args.out, "edges")])
 
+    # R2-10：收尾验证——被消费的代码/决策表/配置/语料在运行期间不得变更
+    self.identity_verified, _now = verify_unchanged(
+        self.start_identity, params=self.params)
+    if not self.identity_verified:
+        r.write_manifest("failed", failed_step="input_identity_changed")
+        raise SystemExit("输入身份在运行期间发生变化（R2-10）：run 标记 failed，"
+                         "不标 complete。重试用新目录。")
     r.write_manifest("complete")
     print("[run_all] complete -> %s" % r.manifest_path)
 

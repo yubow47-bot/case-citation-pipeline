@@ -40,7 +40,8 @@ def check(cond, label):
 def _clf():
     court = [{"court_code": "SCC", "normalized_key": "SCC", "jurisdiction": "CA"},
              {"court_code": "ONCA", "normalized_key": "ONCA", "jurisdiction": "CA"},
-             {"court_code": "UKHL", "normalized_key": "UKHL", "jurisdiction": "GB"}]
+             {"court_code": "UKHL", "normalized_key": "UKHL", "jurisdiction": "GB"},
+             {"court_code": "FC", "normalized_key": "FC", "jurisdiction": "CA"}]
 
     def rep(abbr, jur, y0="", y1=""):
         return {"abbreviation": abbr, "normalized_key": classify.nk(abbr),
@@ -48,10 +49,14 @@ def _clf():
                 "vol_range_start": "", "vol_range_end": "",
                 "year_range_start": y0, "year_range_end": y1}
     reporter = [rep("S.C.R.", "CA"), rep("K.B.", "GB"), rep("K.B.", "QC"),
-                rep("D.L.R.", "CA")]
+                rep("D.L.R.", "CA"), rep("F.C.", "CA")]
+    prefix = [{"canonical_prefix": "Q.R.", "normalized_key": "QR",
+               "jurisdiction": "QC"},
+              {"canonical_prefix": "L.R.", "normalized_key": "LR",
+               "jurisdiction": "GB"}]
     return classify.Classifier({"neutral_court_codes": court,
                                 "reporter_jurisdiction": reporter,
-                                "series_prefix": []}, Counter())
+                                "series_prefix": prefix}, Counter())
 
 
 def candidates_of(text, court="SCC", row=0):
@@ -499,6 +504,263 @@ def test_scope_origin_rules():
           "D6：直接证据冲突 → CONFLICT（保留证据，不投票抹平）")
 
 
+# ================================================================ Round 2
+def test_input_identity_guard():
+    """R2-10：输入身份指纹——可重放、对决策表内容敏感、params 参与、
+    verify_unchanged 能发现变更。"""
+    import run_all
+    import tempfile
+    tmp = tempfile.mkdtemp(prefix="test_r2_")
+    for sub in ("pipeline", "decisions", "corpus"):
+        os.makedirs(os.path.join(tmp, sub))
+    with open(os.path.join(tmp, "pipeline", "a.py"), "w") as f:
+        f.write("x=1")
+    tpath = os.path.join(tmp, "decisions", "t.csv")
+    with open(tpath, "w") as f:
+        f.write("k\n1")
+    with open(os.path.join(tmp, "corpus", "SCC.parquet"), "w") as f:
+        f.write("c")
+    a = run_all.input_identity(root=tmp)
+    b = run_all.input_identity(root=tmp)
+    check(a["fingerprint"] == b["fingerprint"], "R2-10：身份指纹可重放")
+    check("decisions/t.csv" in a["files"] and "pipeline/a.py" in a["files"]
+          and "corpus/SCC.parquet" in a["files"], "R2-10：代码+决策表+语料全入指纹")
+    with open(tpath, "w") as f:
+        f.write("k\n2")
+    c = run_all.input_identity(root=tmp)
+    check(c["fingerprint"] != a["fingerprint"], "R2-10：决策表内容变化 → 指纹变化")
+    d = run_all.input_identity(root=tmp, params={"x": 1})
+    check(d["fingerprint"] != c["fingerprint"], "R2-10：params 参与身份")
+    ok_changed, _ = run_all.verify_unchanged(a, root=tmp)
+    check(ok_changed is False, "R2-10：verify_unchanged 发现决策表变更")
+    ok_same, _ = run_all.verify_unchanged(c, root=tmp)
+    check(ok_same is True, "R2-10：verify_unchanged 对当前输入放行")
+
+
+def test_boundary_guard_run_level():
+    """R2-6：run 级边界闸——run 内首匹配放行（legacy 保留），同 run 同形状的
+    更晚起点照拒。"""
+    # 印刷相邻的真匹配（复审给出的两个例子）
+    legacy_cases = ("Court of Appeal[1997] R.J.Q. 2907", "1[1961] S.C.R. 614",
+                    "R1500 A.C. 400")
+    for text in legacy_cases:
+        cands, _ = extract.extract_candidates(text, "SCC_t0", "2020", 0, "SCC")
+        old = {(m.start(), m.end(), n) for n, rx in extract.SHAPES
+               for m in rx.finditer(text)}
+        new = {(c["match_start_offset"], c["match_end_offset"], c["shape_name"])
+               for c in cands}
+        check(old <= new, "R2-6：legacy finditer 匹配全保留：%r" % text)
+    # 截断垃圾照拒（同 run 同形状更早发射起点）
+    cands, blocked = extract.extract_candidates(
+        "Ref. 123 A.C. 4 end.", "SCC_t0", "2020", 0, "SCC")
+    check(blocked >= 1, "R2-6：同 run 的截断尝试仍被拒并计数")
+    check(not any(c["raw_string"].startswith(("23 A.C.", "3 A.C."))
+                  for c in cands),
+          "R2-6：不许从 123 A.C. 4 里截出 23/3 A.C. 4")
+
+
+def test_legacy_matches_preserved_on_fixtures():
+    """R2-6：夹具上旧 finditer 的每个 (start,end,shape) 都在新候选集里
+    （含 intentional 新捕获字段——raw 与起止不变）。"""
+    from fixtures import FIXTURES
+    for fx in FIXTURES:
+        cands, _ = extract.extract_candidates(fx["text"], "SCC_x", "2020",
+                                              fx["row"], "SCC")
+        new = {(c["match_start_offset"], c["match_end_offset"], c["shape_name"])
+               for c in cands}
+        old = [(m.start(), m.end(), n) for n, rx in extract.SHAPES
+               for m in rx.finditer(fx["text"])]
+        missing = [t for t in old if t not in new]
+        check(not missing, "R2-6 夹具 %s：legacy 匹配 0 缺失（缺 %r）"
+              % (fx["id"], missing[:3]))
+
+
+# ================================================================ Round 2（R2-2/3/5）
+def test_fc_neutral_exact_beats_normalized_reporter():
+    """R2-2：2004 FC 736——中立读法 exact 档胜过汇编读法的 normalized 档，
+    计一次；带支持的输家标 weaker_alternative（不再是 unsupported）。"""
+    rows = classified_of("Federal Court appeal in 2004 FC 736, decided.")
+    stats = Counter()
+    v = merge.arbitrate_document(rows, stats)
+    neutral = [r for r in rows if r["raw_string"] == "2004 FC 736"
+               and r["citation_kind"] == "neutral"]
+    check(neutral and v[neutral[0]["candidate_id"]][0] == "counted",
+          "R2-2：2004 FC 736 中立读法（exact）计数")
+    vol = [r for r in rows if r["raw_string"] == "2004 FC 736"
+           and r["shape_name"] == "shape_vol_abbr_page"]
+    check(vol and v[vol[0]["candidate_id"]][0] == "alternative_weaker_support",
+          "R2-2：汇编读法（normalized 命中）标 weaker_alternative")
+    counted = [merge.build_merge_key_v2(r) for r in rows
+               if v[r["candidate_id"]][0] == "counted"
+               and r["raw_string"] == "2004 FC 736"]
+    check(counted == ["2004||fc||736"],
+          "R2-2：2004 FC 736 恰好计一次、键 %r" % counted)
+
+
+def test_qr_partial_overlap_dominance():
+    """R2-3：[1937] Q.R. 64 K.B. 27——无支持的 bracket 读法被有支持的前缀读法
+    支配，恰好一条 counted（QC）。"""
+    rows = classified_of("[1937] Q.R. 64 K.B. 27, per curiam.")
+    stats = Counter()
+    v = merge.arbitrate_document(rows, stats)
+    counted = [r for r in rows if v[r["candidate_id"]][0] == "counted"]
+    check(len(counted) == 1 and counted[0]["jurisdiction"] == "QC"
+          and counted[0]["candidate_case_name"] is not None,
+          "R2-3：Q.R. 64 K.B. 27 恰好一条 counted（QC），bracket 读法不再弃权")
+    losers = [v[r["candidate_id"]][0] for r in rows
+              if r["raw_string"] == "[1937] Q.R. 64"]
+    check(losers == ["alternative_dominated_by_support"],
+          "R2-3：无支持的 bracket 读法标 dominated_by_support")
+
+
+def test_equal_grade_partial_overlap_still_abstains():
+    """R2-3：同档（都 exact）部分重叠仍弃权，不硬选。"""
+    def cand(cid, start, jur, year, vol):
+        return {"candidate_id": cid, "corpus_row_index": "0",
+                "source_decision_citation": "SCC_t0", "raw_string": "1930 K.B. 5",
+                "shape_name": "shape_vol_abbr_page",
+                "match_start_offset": start, "match_end_offset": start + 13,
+                "citation_kind": "reporter", "jurisdiction": jur,
+                "jurisdiction_confidence": "estimated", "lookup_mode": "exact",
+                "parse_status": "valid", "structural_conflict": "",
+                "rejected_reason": "", "self_citation": "",
+                "candidate_case_name": "", "source_decision_year": "2020",
+                "year_start": year, "vol": vol, "abbr": "K.B.", "page": "5"}
+    stats = Counter()
+    # 年读法 vs 卷读法（异键）、都 exact 档 → 部分重叠同档 → 弃权
+    v = merge.arbitrate_document(
+        [cand("x", 0, "GB", "1930", ""), cand("y", 7, "QC", "", "1930")], stats)
+    check(v["x"][0] == "overlap_undecided" and v["y"][0] == "overlap_undecided",
+          "R2-3：同档部分重叠弃权")
+
+
+def test_nominate_ordinal_paren_is_series():
+    """R2-5：165 A. (2d) 82 (1960)——nominate 括注是序数系列 → 进键正典化，
+    与 vol_page_year 读法同键同义，计一次。"""
+    rows = classified_of("Held in 165 A. (2d) 82 (1960) elsewhere.")
+    stats = Counter()
+    v = merge.arbitrate_document(rows, stats)
+    counted = [r for r in rows if r["raw_string"].startswith("165 A.")
+               and v[r["candidate_id"]][0] == "counted"]
+    check(len(counted) == 1, "R2-5：165 A. (2d) 82 (1960) 计一次")
+    check(counted and merge.build_merge_key_v2(counted[0]).split("|")[3] == "2d",
+          "R2-5：nominate 括注 (2d) 正典化进键")
+
+
+def test_bridge_between_disjoint_supported():
+    """R2 终集合：无支持的桥接候选被两侧支配，两条**不相交**的有支持引证
+    都存活（重叠组件允许多于一条存活）。"""
+    def cand(cid, s, e, jur, key_fields):
+        r = {"candidate_id": cid, "corpus_row_index": "0",
+             "source_decision_citation": "SCC_t0", "raw_string": cid,
+             "shape_name": "shape_vol_abbr_page",
+             "match_start_offset": s, "match_end_offset": e,
+             "citation_kind": "reporter", "jurisdiction": jur,
+             "jurisdiction_confidence": "estimated", "lookup_mode": "exact",
+             "parse_status": "valid", "structural_conflict": "",
+             "rejected_reason": "", "self_citation": "",
+             "candidate_case_name": "", "source_decision_year": "2020"}
+        r.update(key_fields)
+        return r
+    a = cand("a", 0, 10, "CA", {"year_start": "1968", "vol": "12",
+                                "abbr": "A.B.", "page": "34"})
+    b = cand("b", 5, 25, "UNSUPPORTED", {"year_start": "", "vol": "12",
+                                         "abbr": "A.B.", "page": "34"})
+    c = cand("c", 15, 30, "GB", {"year_start": "1969", "vol": "5",
+                                 "abbr": "C.D.", "page": "56"})
+    stats = Counter()
+    v = merge.arbitrate_document([a, b, c], stats)
+    check(v["a"][0] == "counted" and v["c"][0] == "counted",
+          "R2 终集合：两条不相交的有支持引证都存活")
+    check(v["b"][0] == "alternative_dominated_by_support",
+          "R2 终集合：无支持桥接候选被支配")
+
+
+def test_containment_chain_points_to_final_counter():
+    """R2 终集合：A⊂B⊂C 相容包含链 → A 的让位对象经链式重定向指向最终
+    被计数的 C。"""
+    def cand(cid, s, e):
+        return {"candidate_id": cid, "corpus_row_index": "0",
+                "source_decision_citation": "SCC_t0", "raw_string": cid,
+                "shape_name": "shape_vol_abbr_page",
+                "match_start_offset": s, "match_end_offset": e,
+                "citation_kind": "reporter", "jurisdiction": "CA",
+                "jurisdiction_confidence": "estimated", "lookup_mode": "exact",
+                "parse_status": "valid", "structural_conflict": "",
+                "rejected_reason": "", "self_citation": "",
+                "candidate_case_name": "", "source_decision_year": "2020",
+                "year_start": "1968", "vol": "12", "abbr": "A.B.", "page": "34"}
+    stats = Counter()
+    v = merge.arbitrate_document([cand("a", 4, 20), cand("b", 0, 26),
+                                  cand("c", 0, 34)], stats)
+    check(v["c"][0] == "counted", "R2 终集合：链末端 C 计数")
+    check(v["a"][0] == "alternative_same_key" and v["a"][2] == "c",
+          "R2 终集合：A 让位对象指向最终计数者 C（而非链中间的 B）")
+
+
+def test_unresolved_suppressor_recycles_dominated():
+    """R2 终集合：支配链终止于被计数者；同档冲突的弃权是残差——
+    有支持的 s 同时支配垃圾 a、又与 t 同档相持 → s 计数（支配裁决优先），
+    a 随 s，t 弃权（不被硬选、也不计数）。"""
+    def cand(cid, s, e, jur, extra=None):
+        r = {"candidate_id": cid, "corpus_row_index": "0",
+             "source_decision_citation": "SCC_t0", "raw_string": cid,
+             "shape_name": "shape_vol_abbr_page",
+             "match_start_offset": s, "match_end_offset": e,
+             "citation_kind": "reporter", "jurisdiction": jur,
+             "jurisdiction_confidence": "estimated", "lookup_mode": "exact",
+             "parse_status": "valid", "structural_conflict": "",
+             "rejected_reason": "", "self_citation": "",
+             "candidate_case_name": "", "source_decision_year": "2020",
+             "year_start": "1968", "vol": "12", "abbr": "A.B.", "page": "34"}
+        r.update(extra or {})
+        return r
+    a = cand("a", 0, 10, "UNSUPPORTED", {"lookup_mode": ""})
+    s = cand("s", 0, 20, "CA")
+    t = cand("t", 15, 40, "GB", {"year_start": "1969", "abbr": "C.D."})
+    stats = Counter()
+    v = merge.arbitrate_document([a, s, t], stats)
+    check(v["s"][0] == "counted" and v["t"][0] == "overlap_undecided",
+          "R2 终集合：有支持且支配垃圾者计数；同档相他方弃权")
+    check(v["a"][0] == "alternative_same_key" and v["a"][2] == "s",
+          "R2 终集合：垃圾 a 让位于被计数的 s（不因 s 卷入同档相持而复活）")
+    # 反向：t 若无同档相持则照常计数（弱证据双向不偏袒）
+    v2 = merge.arbitrate_document([a, s], Counter())
+    check(v2["s"][0] == "counted" and v2["a"][2] == "s",
+          "R2 终集合：去掉 t 后 s/a 结论不变")
+
+
+def test_d3_partner_without_support_keeps_conflict_open():
+    """R2：D3 配对者无可用支持 → 不再证明无效性，歧义跨界保持未决
+    （候选保留、支持级 0、不压制他人）。"""
+    def cand(cid, s, e, shape, jur, extra=None):
+        r = {"candidate_id": cid, "corpus_row_index": "0",
+             "source_decision_citation": "SCC_t0", "raw_string": cid,
+             "shape_name": shape,
+             "match_start_offset": s, "match_end_offset": e,
+             "citation_kind": "reporter", "jurisdiction": jur,
+             "jurisdiction_confidence": "estimated", "lookup_mode": "exact",
+             "parse_status": "valid", "structural_conflict": "",
+             "rejected_reason": "", "self_citation": "",
+             "candidate_case_name": "", "source_decision_year": "2020",
+             "year_start": "", "vol": "", "abbr": "", "page": ""}
+        r.update(extra or {})
+        return r
+    a = cand("a", 0, 15, "shape_neutral_bare", "CA", {
+        "structural_conflict": "cross_boundary_year_page",
+        "parse_status": "structurally_conflicted",
+        "conflict_with_candidate": "p", "page": "2011",
+        "page_span": "8:12", "year_start": "2011"})
+    p = cand("p", 8, 25, "shape_neutral_bare", "UNSUPPORTED", {
+        "year_start": "2011", "year_span": "8:12", "lookup_mode": ""})
+    stats = Counter()
+    v = merge.arbitrate_document([a, p], stats)
+    check(v["a"][0] != "cross_boundary_invalid",
+          "R2：无支持配对者不作无效性证明")
+    check(v["p"][0] in ("counted", "overlap_undecided", "span_alternative_undecided"),
+          "R2：配对者自身走常规规则")
+
+
 def main():
     for t in (test_boundary_guard, test_kvello_2009_scc_51, test_bce_swallow,
               test_almrei_swallow, test_same_span_multi_shape_counted_once,
@@ -510,6 +772,16 @@ def main():
               test_series_split_dlr_2d_3d, test_series_canonical_equivalence,
               test_roman_page_key, test_paren_note_distinct_series,
               test_nominate_paren_note_not_keyed, test_scope_origin_rules,
+              test_input_identity_guard, test_boundary_guard_run_level,
+              test_legacy_matches_preserved_on_fixtures,
+              test_fc_neutral_exact_beats_normalized_reporter,
+              test_qr_partial_overlap_dominance,
+              test_equal_grade_partial_overlap_still_abstains,
+              test_nominate_ordinal_paren_is_series,
+              test_bridge_between_disjoint_supported,
+              test_containment_chain_points_to_final_counter,
+              test_unresolved_suppressor_recycles_dominated,
+              test_d3_partner_without_support_keeps_conflict_open,
               test_new_path_fixture_measurements):
         t()
     print("全部通过：%d 条断言" % len(PASSED))

@@ -100,27 +100,36 @@ _SPAN_GROUPS = {"year": "year_span", "page": "page_span", "vol": "vol_span",
 
 def scan_overlapping(rx, text):
     """重叠枚举（D2）：下一个匹配从本次 match.start()+1 起重找，不再 match.end()。
-    边界闸：新匹配不得起在前一个字符是字母/数字的位置——防止重叠扫描切出
-    「23 A.C. 4」（从 123 A.C. 4 里截出）这类截断垃圾。该闸同样作用于首遍
-    命中：语料实测旧 finditer 偶有起于字母数字串中部的命中（如 R1500 里的
-    1500），本路线一律不收，损失量由全语料测量记录。
-    返回 (matches, blocked_count)。"""
+
+    边界闸（R2-6 订正为 **run 级**口径）：仅当新匹配的起点落在**同形状更早发射
+    起点**所在的同一连续字母数字 run 内时才拒绝——即 run 内的首个匹配位置照旧
+    放行（与旧 finditer 的 run 级行为一致：`R1500 A.C. 400` 里的 1500、
+    `Court of Appeal[1997] R.J.Q. 2907`、`1[1961] S.C.R. 614` 这类印刷相邻的真
+    匹配不再被吞），而同一 run 里同一形状的第二个及以后的起点（`123 A.C. 4` 里
+    截出的 `23 A.C. 4`、`3 A.C. 4`）照拒。
+    返回 (matches, rejected_count)。"""
     out = []
-    blocked = 0
+    rejected = 0
     pos = 0
     n = len(text)
+    emitted = []                       # 本形状已接受起点（升序）
     while pos <= n:
         m = rx.search(text, pos)
         if not m:
             break
         s = m.start()
         if s > 0 and text[s - 1].isalnum():
-            blocked += 1
-            pos = s + 1
-            continue
+            rs = s - 1                 # 含 s-1 的最长字母数字 run 的起点
+            while rs > 0 and text[rs - 1].isalnum():
+                rs -= 1
+            if emitted and emitted[-1] >= rs:   # 同形状更早起点已在同一 run 内
+                rejected += 1
+                pos = s + 1
+                continue
         out.append(m)
+        emitted.append(s)
         pos = s + 1
-    return out, blocked
+    return out, rejected
 
 
 def parse_signature(shape_name, groupdict):
@@ -330,8 +339,8 @@ def cand_batch_path(run_dir, idx):
     return os.path.join(run_dir, "cand_batch_%04d.csv" % idx)
 
 
-# 候选爆炸上限：单份判决候选数超过此值记为资源限制（显式记录，绝不静默截断——
-# 事件进 manifest 统计与 cand_limits.csv，被截的候选数一并入账）
+# 候选爆炸上限（R2 §7）：单份判决候选数超过此值 **fail closed**——运行直接失败，
+# 不截断、不降级；complete 与「发生过截断」不能并存。
 CAND_LIMIT = 20000
 
 
@@ -351,14 +360,11 @@ def run_corpus(court, out_root, batch_size=500, year_from=None,
              "raw_rows": 0, "kept_rows": 0, "superseded_rows": 0,
              "candidates": 0, "candidates_flagged_cross_boundary": 0,
              "candidates_blocked_by_boundary_guard": 0,
-             "candidate_limit_hits": 0, "candidates_truncated": 0,
              "per_shape_kept": {}, "batches": 0}
     pf = pq.ParquetFile(os.path.join(ROOT, "corpus", court + ".parquet"))
     t0 = time.perf_counter()
     idx = -1
     doc_index = -1
-    limits_path = os.path.join(run_dir, "cand_limits.csv")
-    limits_f = open(limits_path, "w", encoding="utf-8", newline="")
     for batch in pf.iter_batches(batch_size=batch_size, columns=COLUMNS):
         idx += 1
         if limit_batches is not None and idx >= limit_batches:
@@ -396,11 +402,12 @@ def run_corpus(court, out_root, batch_size=500, year_from=None,
             annotate_cross_boundary(cands, text)
             stats["candidates_blocked_by_boundary_guard"] += bl
             if len(cands) > CAND_LIMIT:
-                stats["candidate_limit_hits"] += 1
-                stats["candidates_truncated"] += len(cands) - CAND_LIMIT
-                if limits_f:
-                    limits_f.write("%s,%d,%d\n" % (sdc, doc_index, len(cands)))
-                cands = cands[:CAND_LIMIT]
+                # R2（§7）：候选爆炸**fail closed**——不再截断续跑，直接失败。
+                # 一个标着 complete 的 run 与「发生过截断」不能并存。
+                raise RuntimeError(
+                    "candidate explosion: %s row %d produced %d candidates "
+                    "(limit %d); run fails closed, no truncation is performed"
+                    % (sdc, doc_index, len(cands), CAND_LIMIT))
             stats["candidates"] += len(cands)
             stats["candidates_flagged_cross_boundary"] += sum(
                 1 for c in cands if c["structural_conflict"])
@@ -409,8 +416,6 @@ def run_corpus(court, out_root, batch_size=500, year_from=None,
         write_batch(cand_batch_path(run_dir, idx), cands_out, schema=CAND_SCHEMA)
         stats["batches"] = idx + 1
         _atomic_write_json(prog_path, {"last_batch": idx})   # 后写进度（§7.7）
-    if limits_f:
-        limits_f.close()
     stats["wall_s"] = round(time.perf_counter() - t0, 1)
     return stats
 
