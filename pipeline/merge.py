@@ -32,6 +32,11 @@
 
   二、案名投票两级化（PROBLEMS #44）。§9.3 原式直接对 raw 串计票，标点空格
     差异参与计票。改为先按 nk() 折叠拼写变体、再在胜出组内取最常见印刷形。
+    另加 **`case_name_support`**（PROBLEMS #58 之后的 Task 3）：赢家票数 / 计数
+    行数。§9.3 的 `case_name_agreement` 分母是「投了票的行」，切不出案名的行是
+    空票、不计入，故 199 行里 1 行切出名字时 agreement 也是 1.0——这个数字看着
+    像全体一致，实际只是「有意见的那一行 100% 同意」。裁定层 §10.3 按案名判同案，
+    低支持度的名字会把两件判决并到一起，故把支持度输出出去，由裁定层设闸。
 
   三、**新增第三个输出 decision_ids.csv**（§9.5 只列了两个文件）。
     原因：§10.3 的平行汇编合并在**院内**进行，而本层只输出
@@ -70,7 +75,7 @@ def _relpath(p):
 MERGED_FIELDS = ["merge_key", "canonical_string", "abbreviation", "citation_kind",
                  "jurisdiction", "jurisdiction_confidence", "case_name_modal",
                  "occurrence_count", "distinct_decisions_count",
-                 "case_name_agreement", "variants_count",
+                 "case_name_agreement", "case_name_support", "variants_count",
                  "candidates_admitted", "candidates_rejected", "self_citation_of",
                  "self_case_name"]
 
@@ -201,9 +206,20 @@ def main():
             best = max(forms.values())
             name_modal = sorted(f for f, c in forms.items() if c == best)[0]
             agreement = round(len(by_nk[top_nk]) / len(valid), 2)
+            # PROBLEMS #58 之后的 Task 3：**支持度**——赢家名字的票数 / 这个键的计数行数。
+            # agreement 的分母是「投了票的行」，切不出案名的行是空票、不计入，于是
+            # 199 行里只有 1 行切出名字时 agreement 也是 1.0，看着像全体一致。支持度
+            # 才是「引用它的判决里有多少份站这个名字」。裁定层 §10.3 按案名判同案，
+            # 一个借来的名字会把两件判决并到一起（#57），故这个数字必须输出、
+            # 供裁定层设闸（无支持度的名字不许驱动合并）。
+            # 分母取 max(计数行数, 票数)：自引行照样投票但不算计数行（#54），
+            # 只用计数行当分母会算出 >1 的比值；某键全是自引（计数 0）时也不至于
+            # 变成 0——那种键根本没有「未被支持的计数行」可言。
+            support = (round(len(by_nk[top_nk]) / max(occurrence, len(by_nk[top_nk])), 3)
+                       if by_nk[top_nk] else 0.0)
             variants = len(by_nk)          # 折叠后的真实变体数，非印刷形种数
         else:
-            name_modal, agreement, variants = "", 0.0, 0
+            name_modal, agreement, support, variants = "", 0.0, 0.0, 0
 
         # §9.4 质量列：只输出，本层不用它们筛任何行
         base = counted or members
@@ -226,6 +242,7 @@ def main():
             "occurrence_count": occurrence,
             "distinct_decisions_count": dd,
             "case_name_agreement": agreement,
+            "case_name_support": support,
             "variants_count": variants,
             "candidates_admitted": admitted,
             "candidates_rejected": rejected,
