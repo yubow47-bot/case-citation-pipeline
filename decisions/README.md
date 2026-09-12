@@ -7,7 +7,7 @@
 | `reporter_jurisdiction.csv` | 缩写到法域（分类层主要事实源） |
 | `neutral_court_codes.csv` | 中立引用法院代码（封闭穷举）——**已填，300 行**，源 CanLII API v1 caseBrowse，覆盖语料中立引用 96.5%，见规格 §5.2 |
 | `series_prefix.csv` | 系列汇编前缀（L.R. 家族） |
-| `case_origin.csv` | 案件真实来源地（主要针对 JCPC 案件） |
+| `case_origin.csv` | 案件真实来源地（主要针对 JCPC 案件）——**已填 203 行**：CanLII `ukpc` 库（枢密院对加拿大上诉）1888–1959 年内的对上者；库外一律 UNDETERMINED，见 PROBLEMS #59 |
 
 ## 规则
 
@@ -23,12 +23,18 @@
 | 脚本 | 产出 |
 |---|---|
 | `build_neutral_court_codes.py` | `neutral_court_codes.csv`（源：CanLII API v1 caseBrowse） |
+| `build_case_origin.py` | `case_origin.csv` 的枢密院部分（源：CanLII API v1 caseBrowse `ukpc`，枢密院对加拿大上诉）＋报告 `audit/findings/case_origin_review.md`（可重放） |
 
 ```
 set CANLII_API_KEY=...
 python decisions/tools/build_neutral_court_codes.py --cache-dir <缓存目录>
 python decisions/tools/build_neutral_court_codes.py --cache-dir <缓存目录> --offline   # 只重建表
+
+python decisions/tools/build_case_origin.py --key-file <key 文件>     # 抓 ukpc 全表并重建
+python decisions/tools/build_case_origin.py --offline                  # 只用缓存重建（缓存默认 data/canlii_cache）
 ```
 
 API key 走环境变量或 `--key-file`，**不进仓库、不写进任何输出**。抓取限速 1 秒/次。
 缓存是机器产物，不进 git——每一行的 `source_locator` 自带可重放的端点 URL，逐行可独立复核。
+`build_case_origin.py` 的缓存固定落在 `data/canlii_cache/ukpc_list.json`（仓库内、gitignore）：
+缓存留在会话临时目录会让 `--offline` 只在一台机器上可复现（PROBLEMS #59）。

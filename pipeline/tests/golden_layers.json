@@ -56,6 +56,7 @@
  },
  "decide_ONCA": {
   "anchors_collapsed_as_variant": 28,
+  "case_origin_determined": 40,
   "chains_split_by_span": 327,
   "clusters_split_by_decision": 2394,
   "dd_added_by_assignment": 200,
@@ -78,6 +79,7 @@
  },
  "decide_SCC": {
   "anchors_collapsed_as_variant": 4,
+  "case_origin_determined": 214,
   "chains_split_by_span": 107,
   "clusters_split_by_decision": 444,
   "dd_added_by_assignment": 2,

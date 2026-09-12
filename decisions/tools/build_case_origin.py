@@ -16,13 +16,26 @@
   · 案名：双方各自比词集（去掉 Ltd./Co./Attorney General/the 等泛词）；两方都要对上，
     允许原被告顺序颠倒（上诉时常对调）；一方去泛词后为空（如 Hodge v. The Queen 的右方），
     须两边都空才算对上
+  · **Dominion → Canada**（PROBLEMS #59）：这些标题里的「the Dominion」指加拿大自治领，
+    是历史上确定的读法。本管线印作「Attorney-General for Ontario v. Attorney-General for
+    the Dominion」，CanLII 印作「…for the Dominion of Canada v. …」。原实现把 dominion 当
+    泛词剥掉，等于把「加拿大」从一侧抹掉：本管线那侧右方成空集，CanLII 那侧右方仍是
+    {canada}，旗舰案 1896 号案因此永远对不上。改为在分词前归一，不再当泛词
   · 同一印刷串对上多条 CanLII 记录不算歧义——库里全是加拿大来源，来源地都是 CA
 不收：没有案名的组（无证据）、House of Lords 汇编（H.L. 不审加拿大上诉）、
       非加拿大来源的枢密院案（Makin v. A-G for New South Wales）——CanLII 库里本就没有，保持 UNDETERMINED
 
+**覆盖边界（不是缺陷，是来源本身的边界，须人复核）：** CanLII 的 ukpc 库只收 **1888–1959**
+年的加拿大枢密院上诉（实测 643 条，最早 1888 年 St. Catherine's Milling，最晚 1959 年）。
+1888 年前的加拿大上诉（Parsons 1881、Hodge 1883 这些教科书引证）**根本不在库里**，
+对不上是覆盖缺口，不是匹配失败；库里没有的年份一律留 UNDETERMINED——这是约束四的正确方向
+（少算），不是漏判。补 1888 年前的部分需要另一个来源，属未决问题，见 PROBLEMS #59 与
+audit/findings/case_origin_review.md。
+
 用法
-    python decisions/tools/build_case_origin.py --key-file "C:/api key/canlii.txt" --cache-dir <目录>
-    python decisions/tools/build_case_origin.py --cache-dir <目录> --offline      # 只用缓存重建
+    python decisions/tools/build_case_origin.py --key-file "C:/api key/canlii.txt"
+    python decisions/tools/build_case_origin.py --offline                          # 只用缓存重建
+    #   缓存默认 data/canlii_cache/ukpc_list.json（仓库内、gitignore），可用 --cache-dir 改
 输入：data/select_out/selected.csv（裁定层全部列 + kept）与两院 merge_out/*/folded_log.csv（取每个键的全部印刷写法）
 输出：decisions/case_origin.csv（表非空时拒绝覆盖，除非 --replace）、
       audit/findings/case_origin_review.md（逐条对照、疑似漏网、已知案例核对）
@@ -52,14 +65,27 @@ PC_REPORTER = re.compile(r"^(A\.? ?C\.?|App\.? ?Cas\.?|P\.? ?C\.?|L\.? ?R\.? ?P\
 STOP = {"the", "of", "for", "and", "et", "al", "ltd", "limited", "co", "company", "inc", "corp",
         "corporation", "cie", "in", "re", "a", "an", "de", "la", "le", "du", "des", "ex", "parte",
         "attorney", "general", "attorneygeneral", "his", "her", "majesty", "king", "queen", "rex",
-        "regina", "r", "dominion", "others", "another", "anor", "ors", "province", "city", "town"}
-KNOWN_CA = ["Parsons", "Hodge v. The Queen", "Union Colliery", "John Deere", "Snider",
+        "regina", "r", "others", "another", "anor", "ors", "province", "city", "town"}
+# PROBLEMS #59：dominion 已从泛词表移除。这些标题里的「the Dominion」就是加拿大自治领，
+#   当泛词剥掉等于把一侧的加拿大抹掉，旗舰案（1896 A.C. 348）因此对不上。改为分词前归一。
+_DOMINION_OF_CANADA_RE = re.compile(r"\bdominion\s+of\s+canada\b")
+_DOMINION_RE = re.compile(r"\bdominion\b")
+KNOWN_CA = ["Toronto Electric Commissioners v. Snider", "John Deere Plow Co. v. Wharton",
+            "St. Catharines Milling and Lumber Co. v. The Queen",
+            "St. Catherine’s Milling and Lumber Co. v. The Queen",
             "Attorney-General for Ontario v. Attorney-General for the Dominion"]
+# 预期对不上，且理由不是匹配器。**用全名比对**：光写 Parsons 会撞上另一件真在库里、
+#   也确实对上过的加拿大上诉案（Parsons v. Sovereign Bank of Canada, [1913] A.C. 160）
+KNOWN_ABSENT = [("Citizens Insurance Co. of Canada v. Parsons", "1881，早于 ukpc 库起点 1888"),
+                ("Hodge v. The Queen", "1883，早于 1888"),
+                ("Union Colliery Co. of British Columbia v. Bryden", "1899 在窗内，但这条上诉不在 ukpc 库里")]
 KNOWN_NOT = ["Donoghue", "Anns v. Merton", "Makin", "Hedley Byrne", "Salomon", "Woolmington"]
 
 
 def parties(name):
     s = name.lower().replace("&", " and ").replace("’", "'")
+    s = _DOMINION_OF_CANADA_RE.sub("canada", s)
+    s = _DOMINION_RE.sub("canada", s)
     s = re.sub(r"[^a-z0-9' ]+", " ", s)
     s = re.sub(r"'s\b", "", s)
     halves = re.split(r"\bv\b|\bvs\b", s, maxsplit=1)
@@ -104,7 +130,10 @@ def fetch_all(key, cache_dir, offline):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--key-file")
-    ap.add_argument("--cache-dir", required=True)
+    # 缓存默认落在仓库内（data/ 已 gitignore）：--offline 必须能从一个人人找得到的位置重放，
+    # 缓存留在临时目录里等于「只有上一台机器能复现」（PROBLEMS #59）
+    ap.add_argument("--cache-dir", default=os.path.join(ROOT, "data", "canlii_cache"),
+                    help="CanLII 响应缓存目录（默认仓库内 data/canlii_cache）")
     ap.add_argument("--offline", action="store_true")
     ap.add_argument("--replace", action="store_true")
     # 选取层产出 = 裁定层全部列 + kept；报告要分过没过门槛
@@ -187,21 +216,50 @@ def main():
     os.replace(out + ".tmp", out)
 
     # ---- 复核报告
+    def find(n):
+        # 撇号归一：管线里 St. Catherine’s 用的是弯撇号，直接子串比对会漏
+        k = n.lower().replace("’", "'")
+        return [x for x in matched if k in x[2].lower().replace("’", "'")]
+
     def check(names):
         res = []
         for n in names:
-            m = [x for x in matched if n.lower() in x[2].lower()]
+            m = find(n)
             res.append("- `%s`：%s" % (n, "对上（%s）" % "; ".join(h["title"] for h in m[0][4][:2]) if m else "未对上"))
         return res
+
+    def branch(name, rec):
+        """把对上的那一次摊开：两侧词集、两个分支各自的判定。
+        1896 年那件是**合并上诉**，标题里两处 v. 只按第一处切开，故只能走「交错、子集」分支
+        ——必须显式看到它走的是哪一支，不能因为验收清单说「应当对上」就假定它对上。"""
+        p, q = parties(name), rec["p"]
+        direct = side_ok(p[0], q[0]) and side_ok(p[1], q[1])
+        crossed = side_ok(p[0], q[1]) and side_ok(p[1], q[0])
+        return ("- `%s` × CanLII「%s」（%d）\n"
+                "  - 本管线 %s ／ CanLII %s\n"
+                "  - 顺序分支 %s；交错分支 %s → 走**%s**"
+                % (name, rec["title"], rec["year"],
+                   " | ".join(sorted(p[0]) or ["∅"]) + " ⇄ " + (" | ".join(sorted(p[1])) or "∅"),
+                   " | ".join(sorted(q[0]) or ["∅"]) + " ⇄ " + (" | ".join(sorted(q[1])) or "∅"),
+                   "过" if direct else "不过", "过" if crossed else "不过",
+                   "交错" if crossed and not direct else "顺序" if direct else "无"))
+
+    years_all = sorted(by_year)
     rep = ["# case_origin.csv 枢密院部分：逐条对照（PROBLEMS #59）", "",
            "仪器：`decisions/tools/build_case_origin.py`（可重放，`--offline` 只用缓存）。", "",
-           "- CanLII ukpc 记录：%d 条（可解析出双方者）" % len(recs),
+           "- CanLII ukpc 缓存覆盖：**%s–%s 年，%d 条**（可解析出双方者）——这是来源的边界，不是匹配器的边界"
+           % (years_all[0], years_all[-1], len(recs)),
            "- 本管线候选组（GB 法域、印在枢密院类汇编上）：%d" % cand_n,
            "- 对上：%d 组（其中过门槛 %d）→ 表 %d 行（每种印刷写法一行）" % (
                len(matched), sum(1 for x in matched if x[1] == "true"), len(rows)),
            "- 对上多条 CanLII 记录的组：%d（同名不同年的系列案；库里全是加拿大来源，来源地不受影响）"
            % sum(1 for x in matched if len(x[4]) > 1), "",
-           "## 已知案例核对", "", "应对上（加拿大上诉案）：", ""] + check(KNOWN_CA) + [
+           "## 已知案例核对", "", "应对上（在缓存覆盖内、且库里确有此上诉）：", ""] + check(KNOWN_CA) + [
+           "", "### 对上的匹配分支留痕（看的不是「过了没有」，是走的哪一支）", ""] + [
+           branch(find(n)[0][2], find(n)[0][4][0]) for n in KNOWN_CA if find(n)] + [
+           "", "不应对上——1888 年前 / 库里没有这条上诉（**这是覆盖缺口，不是匹配失败**）：", ""] + [
+           "- `%s`：%s（%s）" % (n, "对上" if find(n) else "未对上", why)
+           for n, why in KNOWN_ABSENT] + [
            "", "不应对上（英国本土 / 其他英联邦上诉）：", ""] + check(KNOWN_NOT) + [
            "", "## 对上的组（按 dd 降序，全列）", "", "| dd | 过门槛 | 本管线案名 | 年份 | CanLII 标题（年） | 印刷写法 |",
            "|---:|---|---|---|---|---|"]

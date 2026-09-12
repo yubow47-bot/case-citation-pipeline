@@ -48,6 +48,8 @@
 | `gap_audit.py` | 抽取层缺口审计：宽骨架命中 减去 七形状命中 = 残差，按形态聚类 |
 | `table_coverage.py` | 决策表覆盖率审计：精确命中 / **仅归一命中** / 漏网三档分报，漏网按「厂商 / 噪声 / **疑似真法院码**」分类（v2 增「码+分庭词」「带点码」两识别分支，新形态单列计数——旧纯大写口径把 `EWCA Civ`、`E.W.C.A. Civ.` 这类真码埋进噪声，PROBLEMS #35 口径订正的依据） |
 | `disambiguation_audit.py` | 同形异义消歧的三道验证（PROBLEMS #52）：前缀后随缩写族（前缀法域的印刷证据）/ **留出法**（遮住前缀只用区间判，与前缀比）/ **同组旁证**（同一裁定组里单一法域的其他汇编）。读分类层与裁定层产出，报告写 `audit/findings/disambiguation_report.md` |
+| `case_origin_audit.py` | 来源地判定的**全量逐行前后差分**（PROBLEMS #59）：填 `decisions/case_origin.csv` 前先 `--snapshot`，重跑裁定层后 `--diff`，把 `UNDETERMINED → 某法域` 的行按分档数出来。键是 `court\|merge_key`。抽样在本项目漏过 145 行的回归，故一律全量 |
+| `append_problems_entry.py` | 向 `PROBLEMS.md` 追加登记项。账本是 CRLF，只按 `"\r\n"` 切分拼回，写前断言无裸 LF——普通编辑器会把整份文件改写成 LF，diff 变成全文重写 |
 
 ### `gap_audit.py` 用法
 
