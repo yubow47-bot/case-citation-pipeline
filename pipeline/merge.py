@@ -54,6 +54,7 @@ import csv
 import datetime
 import json
 import os
+import re
 import sys
 from collections import Counter, defaultdict
 
@@ -120,6 +121,54 @@ def build_merge_key(row):
     series = (row.get("series") or "").lower()
     page = row.get("page") or ""
     return "%s|%s|%s|%s|%s" % (year, vol, abbr, series, page)
+
+
+# ------------------------------------------------ 键 v2（阶段 2：D4/D5）
+_ORD_TAIL_RE = re.compile(r"(st|nd|rd|th)$")
+
+
+def _canon_series(s):
+    """序数系列正典化：裸「4th」/ 粘连「4d」/ 括注「(4d)」→ 同一值「4d」；
+    2 与 3 不同；大小写与括号差异抹平。原写法保留在候选字段里。"""
+    s = (s or "").strip().strip("()").lower()
+    return _ORD_TAIL_RE.sub("d", s)
+
+
+def _series_component(row):
+    """键的系列槽（D4）。优先级：序数括注 > 裸/粘连序数 > 非序数括注。
+    非序数括注（(N.S.)）是「新系列」，与无括注的同名汇编不是一本书——
+    以 n: 前缀进键（与任何序数或缺失都不同键）。shape_nominate 的宽口径
+    paren_note 是法院/法域标注（(Ont. C.A.) 类），不是系列身份，不进键
+    （旧键也从不收它，收了会把同一条引证按标注变体拆散）。"""
+    if row.get("series_paren"):
+        return _canon_series(row["series_paren"])
+    if row.get("series"):
+        return _canon_series(row["series"])
+    note = (row.get("paren_note") or "").strip()
+    if note and row.get("shape_name") != "shape_nominate":
+        return "n:" + nk(note)
+    return ""
+
+
+def build_merge_key_v2(row):
+    """键 v2（candidates 路线专用；D4+D5）：
+      * 系列槽 = 正典化序数或 n:<非序数括注>（D4）——47 D.L.R. (2d) 400 与
+        47 D.L.R. (3d) 400 不再同键；缺失系列与显式系列不同键；
+      * 页码槽 = 阿拉伯页原样，罗马页加 ro: 前缀（D5）——罗马 x 不与缺失
+        同键、不与阿拉伯 10 同键；page_prefix/page_suffix 不进键、随候选
+        字段与 mentions 台账保留。
+    其余槽与 v1 同构（year|vol|abbr|series|page），decide 层的按槽解析不受影响。"""
+    year = row.get("year_start") or ""
+    vol = row.get("vol") or ""
+    abbr = nk(row.get("abbreviation") or "")
+    prefix = nk(row.get("series_prefix") or "")
+    if prefix:
+        abbr = prefix + "." + abbr
+    if row.get("page_roman"):
+        page = "ro:" + (row.get("page_roman") or "").strip().lower()
+    else:
+        page = row.get("page") or ""
+    return "%s|%s|%s|%s|%s" % (year, vol, abbr, _series_component(row), page)
 
 
 def modal(values, tiebreak):
@@ -215,7 +264,7 @@ def arbitrate_document(rows, stats):
         if len(members) == 1:
             out[members[0]["candidate_id"]] = ("counted", "", "")
             continue
-        keys = {build_merge_key(m) for m in members}
+        keys = {build_merge_key_v2(m) for m in members}
         if len(keys) == 1:
             rep = members[0]
             out[rep["candidate_id"]] = ("counted", "", "")
@@ -304,7 +353,7 @@ def arbitrate_document(rows, stats):
             if b["candidate_id"] in spanning and a["candidate_id"] not in spanning:
                 verdicts[b["candidate_id"]].append(("spanning", a["candidate_id"]))
                 continue
-            ka, kb = build_merge_key(a), build_merge_key(b)
+            ka, kb = build_merge_key_v2(a), build_merge_key_v2(b)
             if ka == kb:
                 # 同含义不同跨度（印刷变体）：跨度长者做代表
                 if (ae - as_) >= (be - bs):
@@ -377,6 +426,7 @@ def run_candidates(args, stats):
 
     # 台账（逐候选一行，约束五：不删候选）+ 跨行聚合（只数 counted）
     mentions = []
+    key_mapping = Counter()            # (old_key, new_key) -> 候选数
     per_key_counted = defaultdict(list)
     per_key_members = defaultdict(list)
     for dkey in sorted(docs):
@@ -390,18 +440,24 @@ def run_candidates(args, stats):
             row["arbitration_status"] = status
             row["arbitration_note"] = note
             row["superseded_by_candidate"] = sup
-            key = build_merge_key(row)
-            row["merge_key"] = key
+            # 旧键（v1：系列不捕获、罗马页落空）→ 新键（v2）映射；计数重建自
+            # 新成员，绝不把旧键的 dd 拷到拆分出的新键上
+            old_key = build_merge_key(row)
+            new_key = build_merge_key_v2(row)
+            row["merge_key"] = new_key
+            key_mapping[(old_key, new_key)] += 1
             mentions.append({k: row.get(k, "") for k in MENTION_FIELDS})
-            per_key_members[key].append(row)
+            per_key_members[new_key].append(row)
             if status == "counted":
-                per_key_counted[key].append(row)
+                per_key_counted[new_key].append(row)
 
-    _emit(args, stats, per_key_counted, per_key_members, mentions)
+    _emit(args, stats, per_key_counted, per_key_members, mentions,
+          key_mapping)
 
 
-def _emit(args, stats, per_key_counted, per_key_members, mentions):
-    """聚合并写四张表。计数只看 counted；案名投票与自引归属用全键成员。"""
+def _emit(args, stats, per_key_counted, per_key_members, mentions,
+          key_mapping=None):
+    """聚合并写五张表。计数只看 counted；案名投票与自引归属用全键成员。"""
     merged, folded, decision_ids = [], [], []
     member_total = len(mentions)
 
@@ -493,6 +549,19 @@ def _emit(args, stats, per_key_counted, per_key_members, mentions):
 
     stats["merge_keys"] = len(merged)
     stats["folded_rows"] = len(folded)
+    if key_mapping is not None:
+        # D4/D5 的键拆分账：一个旧键拆成几个新键、各带多少候选
+        split = defaultdict(set)
+        for (ok, nk_) in key_mapping:
+            split[ok].add(nk_)
+        stats["old_keys"] = len(split)
+        stats["old_keys_split_into_multiple"] = sum(
+            1 for v in split.values() if len(v) > 1)
+        mapping_rows = [{"old_merge_key": ok, "new_merge_key": nk_,
+                         "candidate_count": key_mapping[(ok, nk_)]}
+                        for ok, nk_ in sorted(key_mapping)]
+    else:
+        mapping_rows = None
 
     # ---- 不变量 ----
     by_key_occ = {m["merge_key"]: m["occurrence_count"] for m in merged}
@@ -518,12 +587,23 @@ def _emit(args, stats, per_key_counted, per_key_members, mentions):
                                ("mentions_candidates.csv", MENTION_FIELDS, mentions),
                                ("folded_log.csv", FOLDED_FIELDS, folded),
                                ("decision_ids.csv", DECISION_FIELDS, decision_ids)):
+        if rows is None:
+            continue
         path = os.path.join(args.output, name)
         tmp = path + ".tmp"
         with open(tmp, "w", encoding="utf-8", newline="") as f:
             w = csv.DictWriter(f, fieldnames=fields)
             w.writeheader()
             w.writerows(rows)
+        os.replace(tmp, path)
+    if mapping_rows is not None:
+        path = os.path.join(args.output, "key_mapping.csv")
+        tmp = path + ".tmp"
+        with open(tmp, "w", encoding="utf-8", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=["old_merge_key", "new_merge_key",
+                                              "candidate_count"])
+            w.writeheader()
+            w.writerows(mapping_rows)
         os.replace(tmp, path)
 
     manifest = {

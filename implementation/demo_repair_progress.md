@@ -43,7 +43,7 @@ decide 管身份与来源 → select 保持原 dd 门槛语义。
 |---|---|---|
 | 0 | 隔离运行入口 + run manifest | **完成**（commit c66d51e） |
 | 1 | 候选全量枚举、逐候选分类、判决内重叠仲裁（D1/D2/D3） | **完成**（见「阶段 1」三节） |
-| 2 | 系列与页码身份字段（D4/D5），全量重跑 + 新旧差分 | 未开始 |
+| 2 | 系列与页码身份字段（D4/D5），全量重跑 + 新旧差分 | **完成**（见「阶段 2」） |
 | 3 | 来源地最小闭环（D6） | 未开始 |
 | 4 | 外国边输出、追溯工具、演示样例、交接 | 未开始 |
 
@@ -96,8 +96,49 @@ FileNotFoundError 暴露）；修后全过。失败目录两次均已删除重�
 
 ### 当前
 
-- 下一步：阶段 2 —— merge 键 v2（系列正典化 D4 + 页码类型显式 D5）、旧键→新键映射、
-  全量五层重跑 + 新旧差分。
+- 下一步：阶段 3 —— 来源地最小闭环（D6）：court_or_reporter_scope 表（子代理已核
+  SCC/ONCA/UK 系）、decide 来源地推断逻辑、外国边输出。
+
+## 阶段 2 记录（2026-09-12）
+
+### 实现内容
+
+- `pipeline/merge.py`：`build_merge_key_v2`（candidates 路线专用；legacy 键与
+  mini-chain 测试期望逐字不动）——
+  - D4 系列槽：裸「4th」/粘连「4d」/括注「(4d)」正典化为同一值；2≠3；缺失系列
+    与显式系列不同键；非序数括注 (N.S.) 以 `n:ns` 独立进键、永不清成序数；
+    shape_nominate 的宽口径括注（法院标注）不进键。原写法保留在候选字段。
+  - D5 页码槽：罗马页加 `ro:` 前缀（xiii≠xiv、罗马不与缺失同键、不与阿拉伯同键）；
+    page_prefix/page_suffix 不进键、随候选字段与 mentions 台账保留。
+  - 仲裁的「同含义」判定同步改用 v2（83 F. 2d 212 与 83 F. (2d) 212 现在判同义）。
+  - `key_mapping.csv`：旧键→新键逐对映射 + 候选数；计数全部从新成员重建，绝不
+    把旧键 dd 拷到拆分出的新键（manifest 记 old_keys / old_keys_split_into_multiple）。
+- decide/select 未改（v2 键 5 槽同构，decide 的按槽解析不受影响）。
+
+### 全量五层重跑（隔离目录 data/run_20260912_stage2/，manifest status=complete）
+
+| 层 | 数字 |
+|---|---|
+| extract 候选 | 1,013,819（SCC 638,330 / ONCA 375,489 进 classify） |
+| 仲裁（两院合计） | counted 526,156；contained 让位 250,884；表裁决同跨度 101,848；弃权 8,819；D3 作废 1,233；自引 101,204；行级拒绝 17,657 |
+| merge 键 | SCC 122,072 / ONCA 66,260；旧键拆分 671+489 |
+| decide 跨院 | 172,916 组 |
+| select dd≥5 | 8,578 组 kept（门槛语义未动，仍标 uncalibrated_placeholder） |
+
+### 新旧差分（implementation/diff_report.md，工具 diff_old_new.py）
+
+六项专案核查全 PASS：Almrei 误解析键不在新表而 2011 ONCA 779 在（occ 4/dd 4）；
+Kvello 2009 SCC 51 单键（occ 21）；|2d| 7,997 组 / |3d| 7,445 组拆键生效；
+罗马页键 474 组；全表逐行核对「每键 counted 数 == occurrence_count」（无双计数）。
+金标未改写；`test_layers.py --golden` 的差分即本轮 schema/口径变更，属预期。
+
+### 测试记录
+
+| 命令 | 退出码 | 结果 |
+|---|---|---|
+| `python pipeline/tests/test_candidates.py` | 0 | 48 条断言（含 D4/D5 六条新断言） |
+| `python pipeline/tests/test_layers.py` | 0 | 120 条（legacy 不动） |
+| `python pipeline/run_all.py --out data/run_20260912_stage2` | 0 | 全链 complete |
 
 ## 阶段 1 记录（2026-09-12）
 

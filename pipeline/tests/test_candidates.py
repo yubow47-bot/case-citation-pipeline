@@ -368,6 +368,78 @@ def test_new_path_fixture_measurements():
                   "少了是仲裁吞错）" % (fid, exact, old_expect))
 
 
+# ================================================================ 阶段 2（D4/D5）
+def _key_of_text(text, clf=None, shape=None):
+    """真正则抽取+分类后，取（可选指定期望形状的）第一个候选的 v2 键。"""
+    clf = clf or _clf()
+    rows = classified_of(text, clf=clf)
+    if shape:
+        rows = [r for r in rows if r["shape_name"] == shape]
+    assert rows, "文本 %r 无候选" % text
+    return merge.build_merge_key_v2(rows[0])
+
+
+def test_series_split_dlr_2d_3d():
+    """D4 核心：47 D.L.R. (2d) 400 与 47 D.L.R. (3d) 400 必须不同键。"""
+    k2 = _key_of_text("Cited in 47 D.L.R. (2d) 400 here.")
+    k3 = _key_of_text("Cited in 47 D.L.R. (3d) 400 here.")
+    check(k2 != k3, "D4：D.L.R. (2d) 与 (3d) 不同键")
+    check(k2.split("|")[3] == "2d" and k3.split("|")[3] == "3d",
+          "D4：括注序数进键（正典形 %r / %r）" % (k2, k3))
+
+
+def test_series_canonical_equivalence():
+    """裸 / 粘连 / 括注序数 → 同一正典值；2 与 3 不同；缺失与显式不同。"""
+    check(merge._canon_series("4th") == merge._canon_series("(4d)") == "4d",
+          "D4：裸 4th / 括注 (4d) → 同一正典 4d")
+    check(merge._canon_series("2nd") == merge._canon_series("2d") == "2d",
+          "D4：2nd 与 2d 同系列")
+    check(merge._canon_series("2d") != merge._canon_series("3d"),
+          "D4：2 与 3 不同系列")
+    check(merge.build_merge_key_v2({"year_start": "1968", "vol": "1",
+                                    "abbreviation": "A.B.", "page": "2"})
+          != merge.build_merge_key_v2({"year_start": "1968", "vol": "1",
+                                       "abbreviation": "A.B.", "page": "2",
+                                       "series": "2d"}),
+          "D4：缺失系列与显式系列不同键")
+
+
+def test_roman_page_key():
+    """D5：罗马页独立成键；xiii≠xiv；罗马不与缺失同键、不与阿拉伯同键。"""
+    kxiii = _key_of_text("Leave granted: [1985] 2 S.C.R. xiii.", shape="shape_bracket")
+    kxiv = _key_of_text("Leave granted: [1985] 2 S.C.R. xiv.", shape="shape_bracket")
+    check(kxiii.endswith("ro:xiii") and kxiv.endswith("ro:xiv") and kxiii != kxiv,
+          "D5：罗马页带 ro: 前缀进键，xiii 与 xiv 不同")
+    check(merge.build_merge_key_v2({"year_start": "1985", "vol": "2",
+                                    "abbreviation": "S.C.R.", "page_roman": "x"})
+          != merge.build_merge_key_v2({"year_start": "1985", "vol": "2",
+                                       "abbreviation": "S.C.R.", "page": "10"}),
+          "D5：罗马 x 不与阿拉伯 10 同键")
+    check(merge.build_merge_key_v2({"year_start": "1985", "vol": "2",
+                                    "abbreviation": "S.C.R.", "page_roman": "x"})
+          != merge.build_merge_key_v2({"year_start": "1985", "vol": "2",
+                                       "abbreviation": "S.C.R."}),
+          "D5：罗马页不与缺失页同键")
+
+
+def test_paren_note_distinct_series():
+    """D4：非序数括注 (N.S.) 是独立系列字段——与无括注的不同键，永不清成序数。"""
+    kns = _key_of_text("Old case at 2 Q.B. (N.S.) 100 there.", shape="shape_vol_abbr_page")
+    kplain = _key_of_text("Old case at 2 Q.B. 100 there.", shape="shape_vol_abbr_page")
+    check(kns.split("|")[3] == "n:ns", "D4：(N.S.) 以 n:ns 进键（新系列）")
+    check(kns != kplain, "D4：(N.S.) 与无括注同页不同键")
+
+
+def test_nominate_paren_note_not_keyed():
+    """shape_nominate 的宽口径括注是法院标注（(Ont. C.A.) 类），不进键——
+    否则同一条引证按标注变体拆散。"""
+    base = {"year_start": "1968", "vol": "1", "abbreviation": "S.C.R.",
+            "page": "100", "shape_name": "shape_nominate"}
+    with_note = dict(base, paren_note="Ont. C.A.")
+    check(merge.build_merge_key_v2(base) == merge.build_merge_key_v2(with_note),
+          "D4：nominate 括注不进键")
+
+
 def main():
     for t in (test_boundary_guard, test_kvello_2009_scc_51, test_bce_swallow,
               test_almrei_swallow, test_same_span_multi_shape_counted_once,
@@ -376,6 +448,9 @@ def main():
               test_long_span_two_reals_both_kept,
               test_equal_strength_conflict_abstains, test_input_order_invariance,
               test_grouping_by_row_not_by_decision_id,
+              test_series_split_dlr_2d_3d, test_series_canonical_equivalence,
+              test_roman_page_key, test_paren_note_distinct_series,
+              test_nominate_paren_note_not_keyed,
               test_new_path_fixture_measurements):
         t()
     print("全部通过：%d 条断言" % len(PASSED))

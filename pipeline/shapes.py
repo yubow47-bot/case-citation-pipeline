@@ -50,13 +50,18 @@ _YEAR = r"(?:1[6-9]|20)\d{2}"
 _SEP_COMMA = r"\s*,?\s+"                              # 年份→卷；缩写→系列/括注/页
 _SEP_TIGHT = r"\s+"                                   # 前缀→卷；卷→缩写
 _ORD = r"\d+(?:st|nd|rd|th|d)"
-_SERP = rf"\(\s*{_ORD}\s*\)"
+# 2026-09 demo 修复 D4：括注序数系列必须捕获。此前 _SERP 匹配 (2d)/(3d) 却不捕获，
+#   47 D.L.R. (2d) 400 与 47 D.L.R. (3d) 400 得到同一个归并键。只加捕获组、不改匹配
+#   集合（加组不改变任何命中的起止与分支选择），但字段集合变了，属 schema 变更（candidates-2.0）。
+_SERP = rf"\(\s*(?P<series_paren>{_ORD})\s*\)"
 # v1.5 #11：非序数括注（(Mass.)/(N.S.)/(H.L.)/(U.S.)/(Q.B.) 等法院、法域、
 #   分辑标注）。**紧口径**：大写开头、不含数字、长度受限——与 §7.2（五）1
 #   否决的对象不是同一个东西：那条否的是把 shape_nominate 的 \([^)]+\)（任意
 #   非右括号内容）塞进通用插槽、从而丢掉它的尾随年份闸门；本式不含数字、有
 #   长度上限，与 _SERP 互斥，且实测零破坏。
-_NONORD = r"\(\s*[A-Z][A-Za-z. ]{0,8}\s*\)"
+#   D4 同批：非序数括注也捕获（paren_note）。(N.S.) 是「新系列」，与无括注的同名汇编
+#   不是一本书，不能当序数清掉，也不能丢。
+_NONORD = r"\(\s*(?P<paren_note>[A-Z][A-Za-z. ]{0,8})\s*\)"
 _SERP_SLOT = rf"(?:{_SEP_COMMA}(?:{_SERP}|{_NONORD}))?"   # 括注插槽（序数或非序数）
 # 裸序数系列（D.L.R. 4th 300）+ v1.4 粘连变体（F.2d：序数紧贴缩写句点，零空白）。
 # 粘连变体要求序数后缀（st/nd/rd/th/d），OCR 粘连页码（Q.B.D.43，无后缀）仍不收——
@@ -115,7 +120,7 @@ SHAPES = [
     ("shape_nominate",
      rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"
      rf"{_SERIAL_SLOT}"                                # 编号标记槽（共享）
-     rf"{_SEP_COMMA}\([^)]+\){_SEP_COMMA}{_PAGE}"
+     rf"{_SEP_COMMA}\((?P<paren_note>[^)]+)\){_SEP_COMMA}{_PAGE}"   # D4：括注捕获
      rf"\s*\(\s*(?P<year>{_YEAR})\s*\)"),
 
     ("shape_neutral_bare",
