@@ -14,6 +14,7 @@
     绝不作为真实数据结果出展示）。
 """
 import copy
+import csv
 import os
 import random
 import sys
@@ -446,62 +447,78 @@ def test_nominate_paren_note_not_keyed():
 
 
 # ================================================================ 阶段 3（D6 来源地）
-def _origin_row(merge_key):
-    return {"merge_key": merge_key, "case_name_modal": "", "canonical_string": "x"}
+def _origin_row(merge_key, kind="neutral"):
+    return {"merge_key": merge_key, "case_name_modal": "", "canonical_string": "x",
+            "citation_kind": kind}
 
 
 def test_scope_origin_rules():
-    """D6：来源地两级证据。用真 scope 表 + 合成 origin_idx。"""
+    """D6（R2-4 收紧后）：来源地两级证据。真 scope 表 + 合成 origin_idx。
+    scope 只适用于**已被接受的 neutral 解析**（citation_kind=neutral）；
+    年代闸用**标识符适用期**（SCC 2000 / ONCA 2007 / UK 系 2001）。"""
     import decide
     scope = decide.load_scope()
-    check(len(scope) >= 6, "scope 表载入（verified 规则 ≥6 条）")
+    check(len(scope) >= 9, "scope 表载入（verified 规则 ≥9 条，含分辑行）")
 
     def origin(**kw):
         return dict(kw)
-    # 1. 英国上诉法院 → FOREIGN / GB（scope 规则）
-    r = _origin_row("2009||ewca|civ|1746")
+    # 1. 英国上诉法院民事分辑（印刷形 EWCA Civ，语料实测键 ewcaciv）→ FOREIGN/GB
+    r = _origin_row("2002||ewcaciv||1096")
     decide.decide_case_origin(r, ["x"], {}, Counter(), scope)
-    check((r["case_origin"], r["foreign_status"], r["origin_country"],
-           r["origin_basis"]) == ("GB", "FOREIGN", "GB", "court_scope_rule"),
-          "D6：2009 EWCA Civ 1746 → FOREIGN/GB（court_scope_rule）")
+    check((r["member_origin_country"], r["member_origin_status"],
+           r["member_origin_basis"]) == ("GB", "DETERMINED", "court_scope_rule"),
+          "R2-4：EWCA Civ 分辑行 → FOREIGN/GB（court_scope_rule）")
+    # 1b. 非 neutral 解析（reporter/UNSUPPORTED）不适用 scope 规则
+    r = _origin_row("2009||ewca|civ|1746", kind="reporter")
+    decide.decide_case_origin(r, ["x"], {}, Counter(), scope)
+    check(r["member_origin_status"] == "UNDETERMINED",
+          "R2-4：未接受为 neutral 解析的键不适用 scope（年头+空卷不证明引证种类）")
     # 2. ONCA → DOMESTIC_CA / Ontario
     r = _origin_row("2011||onca||779")
     decide.decide_case_origin(r, ["x"], {}, Counter(), scope)
-    check((r["case_origin"], r["foreign_status"], r["origin_subdivision"])
-          == ("CA", "DOMESTIC_CA", "Ontario"),
+    check((r["member_origin_country"], r["member_origin_status"],
+           r["origin_subdivision"]) == ("CA", "DETERMINED", "Ontario"),
           "D6：2011 ONCA 779 → DOMESTIC_CA/Ontario")
+    # 2b. 标识符适用期：ONCA 中立引用 2007 年 1 月起 → 2005 年的键不适用
+    r = _origin_row("2005||onca||1")
+    decide.decide_case_origin(r, ["x"], {}, Counter(), scope)
+    check(r["member_origin_status"] == "UNDETERMINED",
+          "R2-4：pre-2007 的 ONCA 键被标识符年代闸挡住 → UNDETERMINED")
     # 3. 年代闸：1868 UKHL 1 是 BAILII 回溯号 → UNDETERMINED（不冒充 GB）
     r = _origin_row("1868||ukhl||1")
     decide.decide_case_origin(r, ["x"], {}, Counter(), scope)
-    check((r["case_origin"], r["foreign_status"]) == ("UNDETERMINED", "UNDETERMINED"),
+    check(r["member_origin_status"] == "UNDETERMINED",
           "D6：pre-2001 UKHL 回溯号被年代闸挡住 → UNDETERMINED")
     # 4. 跨法域法院（UKPC/JCPC）不在规则表 → UNDETERMINED（绝不推断）
     r = _origin_row("1925||ukpc||11")
     decide.decide_case_origin(r, ["x"], {}, Counter(), scope)
-    check(r["case_origin"] == "UNDETERMINED",
+    check(r["member_origin_status"] == "UNDETERMINED",
           "D6：UKPC 不入规则表 → UNDETERMINED（约束七）")
     # 5. 带卷号的汇编结构不适用中立码规则
     r = _origin_row("2009|1|scc||51")
     decide.decide_case_origin(r, ["x"], {}, Counter(), scope)
-    check(r["case_origin"] == "UNDETERMINED",
+    check(r["member_origin_status"] == "UNDETERMINED",
           "D6：有卷号的汇编键不适用中立码 scope 规则")
     # 6. 案件级直接证据优先于 scope
     oidx = {"donoghuevstevenson": [{"case_origin": "GB", "deciding_court": "HL",
                                     "origin_subdivision": "", "normalized_key":
                                     "donoghuevstevenson"}]}
-    r = _origin_row("2009||ewca|civ|1746")
+    r = _origin_row("2002||ewcaciv||1096")
     decide.decide_case_origin(r, ["Donoghue v. Stevenson"], oidx, Counter(), scope)
-    check((r["case_origin"], r["origin_basis"]) == ("GB", "case_record"),
+    check((r["member_origin_country"], r["member_origin_basis"]) ==
+          ("GB", "case_record"),
           "D6：直接证据优先，basis=case_record（与 scope_rule 分档）")
-    # 7. 直接证据冲突 → CONFLICT
+    # 7. 直接证据冲突 → 成员本地 CONFLICT（保留全部证据 id）
     oidx2 = {"a": [{"case_origin": "GB", "deciding_court": "", "origin_subdivision": "",
                     "normalized_key": "a"}],
              "b": [{"case_origin": "CA", "deciding_court": "", "origin_subdivision": "",
                     "normalized_key": "b"}]}
-    r = _origin_row("2009||ewca|civ|1746")
+    r = _origin_row("2002||ewcaciv||1096")
     decide.decide_case_origin(r, ["A", "B"], oidx2, Counter(), scope)
-    check(r["case_origin"] == "CONFLICT" and r["foreign_status"] == "CONFLICT",
-          "D6：直接证据冲突 → CONFLICT（保留证据，不投票抹平）")
+    check(r["member_origin_status"] == "CONFLICT"
+          and r["member_origin_conflict_detail"] == "CA;GB"
+          and r["member_origin_evidence_ids"] == "case_origin:a|case_origin:b",
+          "D6：直接证据冲突 → 成员本地 CONFLICT（全部证据 id 保留）")
 
 
 # ================================================================ Round 2
@@ -761,6 +778,186 @@ def test_d3_partner_without_support_keeps_conflict_open():
           "R2：配对者自身走常规规则")
 
 
+# ============================================================ R2-1/R2-9
+def _grow(rid, merge_key, basis, status="UNDETERMINED", country="", evid="",
+          mbasis="", gid="XC-T1"):
+    return {"row_key": rid, "merge_key": merge_key, "merged_group_id": gid,
+            "identity_basis": basis, "member_origin_status": status,
+            "member_origin_country": country, "member_origin_evidence_ids": evid,
+            "member_origin_basis": mbasis, "member_origin_conflict_detail": "",
+            "case_name_modal": "X v. Y", "distinct_decisions_count": "2",
+            "group_foreign_status": "", "group_origin_country": "",
+            "group_origin_status": "", "group_origin_basis": "",
+            "group_origin_evidence_ids": "", "noncore_origin_evidence": "",
+            "foreign_status": "", "origin_country": "", "case_origin": "",
+            "origin_basis": "", "origin_evidence_id": "", "deciding_court": "",
+            "court": "SCC"}
+
+
+def test_group_origin_aggregation():
+    """R2-1：组级来源地 = 合格成员聚合；启发式不传播；主行置换不变；
+    冲突全保留；成员本地冲突升组。"""
+    import decide
+    # ① 锚成员定国 + 弱成员带异国证据 → 组取锚；弱证据入审计列
+    a = _grow("SCC|2009||ukhl||18", "2009||ukhl||18", "anchor",
+              "DETERMINED", "GB", "scope:UKHL", "court_scope_rule")
+    b = _grow("SCC|2009|3|aller||945", "2009|3|aller||945", "name_year",
+              "DETERMINED", "CA", "case_origin:aller", "case_record")
+    a["is_primary"], b["is_primary"] = "true", "false"
+    decide.aggregate_group_origin([a, b], Counter())
+    check(a["group_origin_country"] == "GB" and a["group_foreign_status"] == "FOREIGN",
+          "R2-1：组取合格成员（锚）的国别")
+    check(b["group_origin_country"] == "GB" and b["foreign_status"] == "FOREIGN",
+          "R2-1：组级结果写到每一行")
+    check("name_year:CA:case_origin:aller" in b["noncore_origin_evidence"],
+          "R2-1：弱成员的异国证据进 noncore 审计列（不丢也不升组）")
+    # ② 主行置换不变
+    a2 = _grow("SCC|2009||ukhl||18", "2009||ukhl||18", "anchor",
+               "DETERMINED", "GB", "scope:UKHL", "court_scope_rule")
+    b2 = _grow("SCC|2009|3|aller||945", "2009|3|aller||945", "name_year",
+               "DETERMINED", "CA", "case_origin:aller", "case_record")
+    a2["is_primary"], b2["is_primary"] = "false", "true"
+    decide.aggregate_group_origin([b2, a2], Counter())
+    check(a2["group_origin_country"] == "GB" and a2["foreign_status"] == "FOREIGN",
+          "R2-1：主行置换不改组结论")
+    # ③ 只有弱成员有证据 → 组 UNDETERMINED，证据进审计列
+    c = _grow("SCC|1991|1|scr||742", "1991|1|scr||742", "name_year",
+              "DETERMINED", "CA", "case_origin:wd", "case_record")
+    d = _grow("SCC|1991|63|ccc|2d|399", "1991|63|ccc|2d|399", "cocitation")
+    decide.aggregate_group_origin([c, d], Counter())
+    check(c["group_origin_status"] == "UNDETERMINED"
+          and "name_year:CA:case_origin:wd" in c["noncore_origin_evidence"],
+          "R2-1：仅弱路径有证据 → 组 UNDETERMINED（不传播），证据留审计列")
+    # ④ 两个合格成员异国（含跨法院行）→ CONFLICT（证据全保留）
+    e = _grow("SCC|2009||ukhl||18", "2009||ukhl||18", "anchor",
+              "DETERMINED", "GB", "scope:UKHL", "court_scope_rule")
+    f = _grow("ONCA|2011||onca||779", "2011||onca||779", "anchor",
+              "DETERMINED", "CA", "scope:ONCA", "court_scope_rule")
+    decide.aggregate_group_origin([e, f], Counter())
+    check(e["group_origin_status"] == "CONFLICT" and f["foreign_status"] == "CONFLICT",
+          "R2-1：合格成员异国 → 整组 CONFLICT（跨法院同理）")
+    check("scope:UKHL" in e["group_origin_evidence_ids"]
+          and "scope:ONCA" in e["group_origin_evidence_ids"],
+          "R2-1：冲突组保留全部证据 id")
+    # ⑤ 启发式变体（typo）不授权传播
+    g = _grow("SCC|2005||scc||79", "2005||scc||79", "anchor")
+    h = _grow("SCC|2005||scc||75", "2005||scc||75", "anchor_variant_typo",
+              "DETERMINED", "GB", "scope:X", "court_scope_rule")
+    decide.aggregate_group_origin([g, h], Counter())
+    check(g["group_origin_status"] == "UNDETERMINED"
+          and "anchor_variant_typo:GB:scope:X" in g["noncore_origin_evidence"],
+          "R2-1：typo 变体是启发式——证据留审计列，不升组")
+    # ⑥ 双语变体（已核实的标识映射）合格：证据可传播
+    i1 = _grow("SCC|2014||scc||7", "2014||scc||7", "anchor")
+    j1 = _grow("SCC|2014||csc||7", "2014||csc||7", "anchor_variant_bilingual",
+               "DETERMINED", "CA", "scope:SCC", "court_scope_rule")
+    decide.aggregate_group_origin([i1, j1], Counter())
+    check(i1["group_foreign_status"] == "DOMESTIC_CA",
+          "R2-1：双语变体（bilingual）是显式身份等价——证据可传播")
+    # ⑦ 合格成员本地未决冲突 → 组 CONFLICT（不许被单国成员掩盖）
+    k1 = _grow("SCC|2009||ukhl||18", "2009||ukhl||18", "anchor",
+               "DETERMINED", "GB", "scope:UKHL", "court_scope_rule")
+    m1 = _grow("SCC|2009||uksc||23", "2009||uksc||23", "anchor", "CONFLICT",
+               "", "case_origin:p|case_origin:q", "case_record")
+    decide.aggregate_group_origin([k1, m1], Counter())
+    check(k1["group_origin_status"] == "CONFLICT",
+          "R2-1：合格成员本地冲突 → 组 CONFLICT（即使另一成员证据单国）")
+
+
+def test_effective_sources_and_edges():
+    """R2-9：有效来源关联与边成员资格——平行形自引不得重现；counted 来源
+    数 == dd；仅启发式路径的边不继承组 FOREIGN；自引边留审计文件。"""
+    import decide
+    import subprocess
+    import tempfile
+    anchor = _grow("SCC|2009||ukhl||18", "2009||ukhl||18", "anchor",
+                   "DETERMINED", "GB", "scope:UKHL", "court_scope_rule")
+    aller = _grow("SCC|2009|3|aller||945", "2009|3|aller||945", "name_year")
+    did_idx = {"SCC|2009||ukhl||18": {"A", "B"},
+               "SCC|2009|3|aller||945": {"A", "C"}}
+    # A 是组自身判决（身份根的自引）→ 剔除；B 经锚到达；C 只经 name_year 到达
+    eff = decide.build_effective_sources([anchor, aller], {"B", "C"}, {"A"},
+                                         did_idx, Counter())
+    by_src = {e["source_decision"]: e for e in eff}
+    check(by_src["A"]["status"] == "excluded_self"
+          and "self-citation" in by_src["A"]["exclusion_reason"],
+          "R2-9：组自身判决标 excluded_self（保留在关联里供审计）")
+    check(sum(1 for e in eff if e["status"] == "counted") == 2,
+          "R2-9：counted 来源数 == dd（2）")
+    check(by_src["B"]["identity_status"] == "anchor"
+          and by_src["C"]["identity_status"] == "name_year",
+          "R2-9：每条来源带其到达路径的最优 identity_basis")
+    # 组级结论 + 端到端边构建（临时目录 + 子进程跑 edges.py）
+    for r in (anchor, aller):
+        r.update({"group_origin_country": "GB", "group_origin_status": "DETERMINED",
+                  "group_foreign_status": "FOREIGN", "group_origin_basis":
+                  "court_scope_rule", "group_origin_evidence_ids": "scope:UKHL",
+                  "noncore_origin_evidence": ""})
+    tmp = tempfile.mkdtemp(prefix="test_edges_")
+    os.makedirs(os.path.join(tmp, "decide_out"))
+    os.makedirs(os.path.join(tmp, "merge_out", "SCC"))
+    with open(os.path.join(tmp, "decide_out", "decided.csv"), "w",
+              encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(anchor.keys()))
+        w.writeheader()
+        w.writerows([anchor, aller])
+    with open(os.path.join(tmp, "decide_out", "effective_sources.csv"), "w",
+              encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=["merged_group_id", "source_decision",
+                                          "status", "exclusion_reason",
+                                          "identity_status", "via_member_row_keys"])
+        w.writeheader()
+        w.writerows(eff)
+    mentions = [
+        {"candidate_id": "c1", "merge_key": "2009||ukhl||18",
+         "arbitration_status": "counted", "source_decision_citation": "B",
+         "raw_string": "2009 UKHL 18"},
+        {"candidate_id": "c2", "merge_key": "2009|3|aller||945",
+         "arbitration_status": "counted", "source_decision_citation": "C",
+         "raw_string": "[2009] 3 All E.R. 945"},
+        {"candidate_id": "c3", "merge_key": "2009|3|aller||945",
+         "arbitration_status": "counted", "source_decision_citation": "A",
+         "raw_string": "[2009] 3 All E.R. 945"},
+    ]
+    with open(os.path.join(tmp, "merge_out", "SCC", "mentions_candidates.csv"), "w",
+              encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(mentions[0].keys()))
+        w.writeheader()
+        w.writerows(mentions)
+    outdir = os.path.join(tmp, "edges")
+    p = subprocess.run([sys.executable, os.path.join(PIPE, "edges.py"),
+                        "--decided", os.path.join(tmp, "decide_out", "decided.csv"),
+                        "--effective", os.path.join(tmp, "decide_out",
+                                                    "effective_sources.csv"),
+                        "--merge-out", os.path.join(tmp, "merge_out"),
+                        "--output", outdir], capture_output=True, text=True,
+                       encoding="utf-8", errors="replace")
+    check(p.returncode == 0, "R2-9：edges.py 端到端跑通（%s）" % p.stderr[-300:])
+    edges = list(csv.DictReader(open(os.path.join(outdir, "citation_edges.csv"),
+                                     encoding="utf-8", newline="")))
+    by_src = {e["source_decision"]: e for e in edges}
+    check(by_src["B"]["foreign_status"] == "FOREIGN"
+          and by_src["B"]["edge_support"] == "supported",
+          "R2-1：经锚路径的边继承组 FOREIGN（supported）")
+    check(by_src["C"]["foreign_status"] == "UNDETERMINED"
+          and by_src["C"]["edge_support"] == "heuristic_only"
+          and by_src["C"]["identity_status"] == "name_year_candidate"
+          and by_src["C"]["group_origin_country"] == "GB",
+          "R2-1：仅启发式路径的边不继承组 FOREIGN（组结论留作上下文）")
+    fedges = list(csv.DictReader(open(os.path.join(outdir, "foreign_edges.csv"),
+                                      encoding="utf-8", newline="")))
+    check([e["source_decision"] for e in fedges] == ["B"],
+          "R2-1：foreign 视图只含 supported FOREIGN 边（C 不再混入）")
+    tent = list(csv.DictReader(open(os.path.join(outdir, "tentative_edges.csv"),
+                                    encoding="utf-8", newline="")))
+    check([e["source_decision"] for e in tent] == ["C"],
+          "R2-1：启发式候选关系进 tentative 台账")
+    selfx = list(csv.DictReader(open(os.path.join(outdir, "self_excluded_edges.csv"),
+                                     encoding="utf-8", newline="")))
+    check([e["source_decision"] for e in selfx] == ["A"],
+          "R2-9：被剔自引进审计文件，不作普通边重现")
+
+
 def main():
     for t in (test_boundary_guard, test_kvello_2009_scc_51, test_bce_swallow,
               test_almrei_swallow, test_same_span_multi_shape_counted_once,
@@ -782,6 +979,7 @@ def main():
               test_containment_chain_points_to_final_counter,
               test_unresolved_suppressor_recycles_dominated,
               test_d3_partner_without_support_keeps_conflict_open,
+              test_group_origin_aggregation, test_effective_sources_and_edges,
               test_new_path_fixture_measurements):
         t()
     print("全部通过：%d 条断言" % len(PASSED))

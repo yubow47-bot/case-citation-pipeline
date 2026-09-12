@@ -227,6 +227,8 @@ def main():
                [os.path.join("pipeline", "edges.py"),
                 "--decided", os.path.join(args.out, "decide_out", "cross_court",
                                           "decided.csv"),
+                "--effective", os.path.join(args.out, "decide_out", "cross_court",
+                                            "effective_sources.csv"),
                 "--merge-out", os.path.join(args.out, "merge_out"),
                 "--output", os.path.join(args.out, "edges")])
 
