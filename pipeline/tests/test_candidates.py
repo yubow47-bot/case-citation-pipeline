@@ -1141,6 +1141,93 @@ def test_d3_partner_self_citation_row():
 
 
 
+# ============================================================ B10（year_reread_as_vol）
+def test_b10_year_reread_as_vol():
+    """B10：容器「(2003), 2003 SCC 74」把真中立引证的年份读进卷槽
+    （year=2003, vol=2003, abbr=SCC, page=74），相容包含曾让长者胜——
+    真中立引证 2003||scc||74 被压成 contained、计数键畸形、中性锚丢失。
+
+    修复语义：extract 在 D3 同处计算结构关系 year_reread_as_vol（按字段
+    SPAN 偏移对齐：b.year_span == a.vol_span 且 b 包含于 a）；仲裁将容器
+    直接判为新状态 year_reread_as_vol_invalid（superseded_by=配对者）；
+    被包含的配对者与其同跨度卷读法走**既有**仲裁（支持分级、同跨度、
+    年卷孪生弃权），不加任何强制计数的特殊规则。"""
+
+    def statuses(text):
+        rows = classified_of(text)
+        stats = Counter()
+        v = merge.arbitrate_document([dict(r) for r in rows], stats)
+        return rows, v, stats
+
+    # ---- (a) 法院代码中立引证：真读法按既有规则胜出并计数 ----
+    rows, v, _ = statuses("(2003), 2003 SCC 74, at para. 5.")
+    cont = [r for r in rows if r["raw_string"] == "(2003), 2003 SCC 74"]
+    check(cont and all(v[r["candidate_id"]][0] == "year_reread_as_vol_invalid"
+                       for r in cont),
+          "B10(a)：容器标新状态 year_reread_as_vol_invalid")
+    check(cont and all(v[r["candidate_id"]][2] != "" for r in cont),
+          "B10(a)：容器 superseded_by = 中立配对者")
+    neu = [r for r in rows if r["raw_string"] == "2003 SCC 74"
+           and r["citation_kind"] == "neutral"]
+    check(len(neu) == 1 and v[neu[0]["candidate_id"]][0] == "counted",
+          "B10(a)：真中立读法 counted")
+    check(neu and merge.build_merge_key_v2(neu[0]) == "2003||scc||74",
+          "B10(a)：计数键 2003||scc||74（中性锚恢复）")
+    vol_twin = [r for r in rows if r["raw_string"] == "2003 SCC 74"
+                and r["shape_name"] == "shape_vol_abbr_page"]
+    check(vol_twin and v[vol_twin[0]["candidate_id"]][0]
+          == "alternative_unsupported_reading",
+          "B10(a)：同跨度卷读法按既有支持分级让位")
+
+    # ---- (b) vendor 形态（CanLII）：容器作废后，被包含对走既有规则——
+    #     两读法均无表支持 → 同跨度异键同档 → 双双 span_alternative_undecided
+    #     （B7 既有弃权语义，不加特殊规则）----
+    rows, v, _ = statuses("Discussed in (2001), 2001 CanLII 24079 (ON CA).")
+    cont = [r for r in rows if r["raw_string"] == "(2001), 2001 CanLII 24079"]
+    check(cont and all(v[r["candidate_id"]][0] == "year_reread_as_vol_invalid"
+                       for r in cont),
+          "B10(b)：CanLII 容器作废")
+    twins = [r for r in rows if r["raw_string"] == "2001 CanLII 24079"]
+    check(twins and all(v[r["candidate_id"]][0] == "span_alternative_undecided"
+                        for r in twins),
+          "B10(b)：被包含对（中性+卷读法）按既有规则双双弃权（B7 语义）")
+
+    # ---- (c) DTC 形态：容器作废；年/卷孪生按既有 B7 弃权 ----
+    rows, v, _ = statuses("See (1990), 1990 DTC 6123 (Tax Ct.).")
+    cont = [r for r in rows if r["raw_string"] == "(1990), 1990 DTC 6123"]
+    check(cont and all(v[r["candidate_id"]][0] == "year_reread_as_vol_invalid"
+                       for r in cont),
+          "B10(c)：DTC 容器作废")
+    twins = [r for r in rows if r["raw_string"] == "1990 DTC 6123"]
+    check(twins and all(v[r["candidate_id"]][0] == "span_alternative_undecided"
+                        for r in twins),
+          "B10(c)：DTC 年/卷孪生按既有规则弃权")
+
+    # ---- (d) 合法汇编卷号恰为年份、但 vol 跨度处无中立候选 → 不受影响 ----
+    rows, v, _ = statuses("Apply 2004 F.C. 300 instead.")
+    fc = [r for r in rows if r["raw_string"] == "2004 F.C. 300"]
+    counted = [r for r in fc if v[r["candidate_id"]][0] == "counted"]
+    check(len(counted) == 1 and counted[0]["shape_name"] == "shape_vol_abbr_page",
+          "B10(d)：无中立配对者时合法卷引照常计数（不误伤）")
+
+    # ---- (e) 输入顺序不变性 ----
+    import random
+    rows = classified_of("(2003), 2003 SCC 74, at para. 5.")
+    base = None
+    for seed in range(3):
+        rr = [dict(r) for r in rows]
+        random.Random(seed).shuffle(rr)
+        stats = Counter()
+        v = merge.arbitrate_document(rr, stats)
+        got = sorted((r["candidate_id"], v[r["candidate_id"]][0],
+                      v[r["candidate_id"]][2]) for r in rr)
+        if base is None:
+            base = got
+        else:
+            check(got == base, "B10(e)：打乱输入（seed=%d）结果不变" % seed)
+
+
+
 # ============================================================ R2-1/R2-9
 def _grow(rid, merge_key, basis, status="UNDETERMINED", country="", evid="",
           mbasis="", gid="XC-T1"):
@@ -1356,6 +1443,7 @@ def main():
               test_counterexample_g_input_order_invariance_complex,
               test_counterexample_h_same_key_duplication_invariance,
               test_d3_partner_self_citation_row,
+              test_b10_year_reread_as_vol,
               test_new_path_fixture_measurements):
         t()
     print("全部通过：%d 条断言" % len(PASSED))

@@ -424,10 +424,37 @@ def arbitrate_document(rows, stats):
             add_attack("cross_boundary", pcls, acls)
             stats["cross_boundary_invalidated"] += 1
 
+    # ---- B10：year_reread_as_vol（容器把真中立引证的年份读进卷槽）----
+    # 配对者 = 真实印刷中立引证（present、非 rejected，含自引）→ 证据直接，
+    # 容器整类直接 OUT（不经 grounded，与 D3 自引配对者同款），superseded_by
+    # = 配对者。被包含的配对者与其同跨度卷读法走既有仲裁，不加特殊规则。
+    yrv_direct = {}                    # cls -> (flagged_cid, partner_cid)
+    for r in sorted(live, key=lambda x: x["candidate_id"]):
+        if (r.get("structural_conflict") == "year_reread_as_vol"
+                and r.get("conflict_with_candidate")):
+            partner = by_id.get(r.get("conflict_with_candidate"))
+            if partner is None or partner is r:
+                stats["year_reread_unresolved"] += 1
+                continue
+            pstatus = out.get(partner["candidate_id"], ("", ""))[0]
+            if pstatus == "rejected_row":
+                stats["year_reread_unresolved"] += 1
+                continue
+            acls = cls_of_member.get(r["candidate_id"])
+            if acls is None:
+                stats["year_reread_unresolved"] += 1
+                continue
+            if acls not in yrv_direct:
+                yrv_direct[acls] = (r["candidate_id"],
+                                    partner["candidate_id"])
+                stats["year_reread_invalidated"] += 1
+
     # ---- 5.5 grounded 不动点 ----
     status = {ck: "UNDEC" for ck in classes}
     for ck in d3_self_direct:
         status[ck] = "OUT"             # 自引配对者的跨界证据：直接 OUT
+    for ck in yrv_direct:
+        status[ck] = "OUT"             # B10：年份复写容器的直接证据：OUT
     reason = {}
     changed = True
     while changed:
@@ -508,6 +535,16 @@ def arbitrate_document(rows, stats):
         rep = rep_of[ck]
         members = classes[ck]
         st = status[ck]
+        if ck in yrv_direct:
+            _fcid, _pcid = yrv_direct[ck]
+            for m in members:
+                out[m["candidate_id"]] = (
+                    "year_reread_as_vol_invalid",
+                    "vol %s rereads the year of neutral partner %s; "
+                    "container key is malformed" % (
+                        rep_of[ck].get("vol") or "", _pcid),
+                    _pcid)
+            continue
         if ck in d3_self_direct:
             _fcid, _pcid = d3_self_direct[ck]
             for m in members:
@@ -585,6 +622,17 @@ def arbitrate_document(rows, stats):
                     raise AssertionError(
                         "cross_boundary 替代对象既非 counted 也非自引配对者："
                         "%r -> %r" % (cid, sup))
+        elif st_name == "year_reread_as_vol_invalid":
+            # 例外（B10）：替代对象 = 结构关系记录的中立配对者——真实印刷
+            # 引证；其自身终态可能仍是 UNDEC（如 vendor 形态的同档孪生弃权），
+            # 证据是结构性的，不依赖 grounded 终态
+            cls = cls_of_member.get(cid)
+            ok = cls is not None and cls in yrv_direct \
+                and yrv_direct[cls][1] == sup
+            if not ok:
+                raise AssertionError(
+                    "year_reread 替代对象与记录的配对者不符：%r -> %r"
+                    % (cid, sup))
             cls = cls_of_member[cid]
             if st_name == "alternative_same_key" \
                     and sup == rep_of[cls]["candidate_id"]:
@@ -593,6 +641,10 @@ def arbitrate_document(rows, stats):
                     and cls in d3_self_direct \
                     and d3_self_direct[cls][1] == sup:
                 valid = True          # 自引配对者的跨界证据（R2 闭环回归修复）
+            elif st_name == "year_reread_as_vol_invalid" \
+                    and cls in yrv_direct \
+                    and yrv_direct[cls][1] == sup:
+                valid = True          # B10：年份复写容器的结构证据
             else:
                 valid = any(rep_of[t]["candidate_id"] == sup
                             for k, t in attacks.get(cls, []) if status[t] == "IN")

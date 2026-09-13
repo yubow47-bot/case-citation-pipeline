@@ -724,8 +724,9 @@ class Classifier(object):
             row["self_citation"] = "true"
             self.stats["self_citation"] += 1
 
-        # ---- parse_status：结构判定，独立于查表结果（D2/D3）----
-        if row.get("structural_conflict") == "cross_boundary_year_page":
+        # ---- parse_status：结构判定，独立于查表结果（D2/D3/B10）----
+        if row.get("structural_conflict") in ("cross_boundary_year_page",
+                                              "year_reread_as_vol"):
             # D3 抽取层标注的疑似跨界解析。配对仲裁在归并层做（需要跨候选视野）；
             # 本层能做的：不给它靠一次查表拿到 unambiguous confirmed。
             row["parse_status"] = "structurally_conflicted"

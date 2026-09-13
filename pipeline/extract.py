@@ -245,6 +245,37 @@ def annotate_cross_boundary(cands, text):
                                   "partner of cross_boundary candidate %s" % a["candidate_id"])
             break
 
+    # ---- B10：year_reread_as_vol（容器把真中立引证的年份读进卷槽）----
+    # 关系（全部按字段 SPAN 偏移对齐，不做纯值比较）：
+    #   a 有 year 与 vol 字段；a.vol 形如年份；存在 shape_neutral_bare 候选 b
+    #   使 b.year_span == a.vol_span（同一段印刷数字）且 b.end <= a.end（包含）。
+    # 仲裁消费：容器整类判 year_reread_as_vol_invalid，superseded_by=配对者；
+    # 被包含的配对者与其同跨度卷读法走既有仲裁，不加强制计数规则。
+    for a in cands:
+        if a.get("structural_conflict"):
+            continue                          # D3 关系优先，一候选一旗
+        vol = (a.get("vol") or "").strip()
+        if not (a.get("year_raw") or "").strip() or not _YEAR_RE.match(vol):
+            continue
+        vs, ve = _span_of(a, "vol_span")
+        if vs < 0:
+            continue
+        for b in neutrals:
+            bs, be = _span_of(b, "year_span")
+            if (bs, be) != (vs, ve):
+                continue
+            if b["match_end_offset"] > a["match_end_offset"]:
+                continue
+            a["structural_conflict"] = "year_reread_as_vol"
+            a["conflict_with_candidate"] = b["candidate_id"]
+            a["conflict_note"] = ("vol %s rereads the year of neutral %s; "
+                                  "container key is malformed" % (vol, b["raw_string"]))
+            b["conflict_note"] = (b["conflict_note"] +
+                                  (";" if b["conflict_note"] else "") +
+                                  "partner of year_reread_as_vol container %s"
+                                  % a["candidate_id"])
+            break
+
 
 # ---------------------------------------------------------------- extraction
 def source_decision_citation(court, citation_en):
