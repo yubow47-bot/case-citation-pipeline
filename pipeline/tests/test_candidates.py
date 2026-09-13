@@ -57,7 +57,10 @@ def _clf():
                "jurisdiction": "GB"}]
     return classify.Classifier({"neutral_court_codes": court,
                                 "reporter_jurisdiction": reporter,
-                                "series_prefix": prefix}, Counter())
+                                "series_prefix": prefix,
+                                "identifier_systems": {
+                                    r["printed_token"]: r
+                                    for r in _IDENT_ROWS}}, Counter())
 
 
 def candidates_of(text, court="SCC", row=0):
@@ -1188,9 +1191,13 @@ def test_b10_year_reread_as_vol():
                        for r in cont),
           "B10(b)：CanLII 容器作废")
     twins = [r for r in rows if r["raw_string"] == "2001 CanLII 24079"]
-    check(twins and all(v[r["candidate_id"]][0] == "span_alternative_undecided"
-                        for r in twins),
-          "B10(b)：被包含对（中性+卷读法）按既有规则双双弃权（B7 语义）")
+    # 【R2F 订正】identifier 表落地后，中性读法凭 exact 表支持（grade 2）
+    # 在既有支持分级下胜出——「双双弃权」的旧期望被任务书 R2F(b) 取代
+    # （「assert whatever those rules produce」）：中性 counted、卷读法让位。
+    check(twins and sorted(v[r["candidate_id"]][0] for r in twins) ==
+          ["alternative_unsupported_reading", "counted"],
+          "B10(b)【R2F 订正】：被包含对按既有规则 = 中性 counted + 卷读法让位"
+          "（%r）" % (sorted(v[r["candidate_id"]][0] for r in twins),))
 
     # ---- (c) DTC 形态：容器作废；年/卷孪生按既有 B7 弃权 ----
     rows, v, _ = statuses("See (1990), 1990 DTC 6123 (Tax Ct.).")
@@ -1199,9 +1206,12 @@ def test_b10_year_reread_as_vol():
                        for r in cont),
           "B10(c)：DTC 容器作废")
     twins = [r for r in rows if r["raw_string"] == "1990 DTC 6123"]
-    check(twins and all(v[r["candidate_id"]][0] == "span_alternative_undecided"
-                        for r in twins),
-          "B10(c)：DTC 年/卷孪生按既有规则弃权")
+    # 【R2F 订正】DTC 表行（year_volume_reporter, year_is_volume=yes）使年读法
+    # 凭 exact 支持胜出——同上，旧弃权期望被任务书 R2F(b) 取代。
+    check(twins and sorted(v[r["candidate_id"]][0] for r in twins) ==
+          ["alternative_unsupported_reading", "counted"],
+          "B10(c)【R2F 订正】：DTC 年/卷孪生 = 年读法 counted + 卷读法让位"
+          "（%r）" % (sorted(v[r["candidate_id"]][0] for r in twins),))
 
     # ---- (d) 合法汇编卷号恰为年份、但 vol 跨度处无中立候选 → 不受影响 ----
     rows, v, _ = statuses("Apply 2004 F.C. 300 instead.")
@@ -1225,6 +1235,201 @@ def test_b10_year_reread_as_vol():
             base = got
         else:
             check(got == base, "B10(e)：打乱输入（seed=%d）结果不变" % seed)
+
+
+
+# ============================================================ R2F（identifier 系统）
+_IDENT_ROWS = [
+    {"printed_token": "CanLII", "system_name": "CanLII", "issuer": "CanLII/Lexum",
+     "identifier_kind": "database_decision_id", "identifies": "single_decision",
+     "jurisdiction_scope": "CA", "bilingual_equivalent": "",
+     "year_is_volume": "", "valid_from": "2001", "valid_to": "",
+     "verification_status": "verified_official_source",
+     "source": "test", "source_locator": "test", "notes": "", "reviewer": "t",
+     "reviewed_at": "t"},
+    {"printed_token": "CarswellOnt", "system_name": "Carswell Ontario",
+     "issuer": "Thomson Reuters", "identifier_kind": "vendor_decision_id",
+     "identifies": "single_decision", "jurisdiction_scope": "ON",
+     "bilingual_equivalent": "", "year_is_volume": "", "valid_from": "",
+     "valid_to": "", "verification_status": "verified_official_source",
+     "source": "test", "source_locator": "test", "notes": "", "reviewer": "t",
+     "reviewed_at": "t"},
+    {"printed_token": "DTC", "system_name": "Dominion Tax Cases",
+     "issuer": "Carswell/Thomson", "identifier_kind": "year_volume_reporter",
+     "identifies": "reporter_volume_page", "jurisdiction_scope": "CA",
+     "bilingual_equivalent": "", "year_is_volume": "yes", "valid_from": "",
+     "valid_to": "", "verification_status": "verified_official_source",
+     "source": "test", "source_locator": "test", "notes": "", "reviewer": "t",
+     "reviewed_at": "t"},
+    {"printed_token": "CanLIIDocs", "system_name": "CanLII secondary commentary",
+     "issuer": "CanLII/Lexum", "identifier_kind": "secondary_source",
+     "identifies": "not_a_decision", "jurisdiction_scope": "CA",
+     "bilingual_equivalent": "", "year_is_volume": "", "valid_from": "",
+     "valid_to": "", "verification_status": "verified_official_source",
+     "source": "test", "source_locator": "test", "notes": "", "reviewer": "t",
+     "reviewed_at": "t"},
+]
+
+
+def test_r2f_identifier_classification():
+    """R2F a/b/e：identifier 表驱动分类——citation_kind=identifier、
+    尾括注细分（仅精确码匹配）、CanLIIDocs 行级拒绝。"""
+    import re
+    clf = _clf()
+    rows = classified_of("Cited in 2001 CanLII 24079 (ON CA) above.", clf=clf)
+    neu = [r for r in rows if r["raw_string"] == "2001 CanLII 24079"
+           and r["shape_name"] == "shape_neutral_bare"]
+    check(neu and neu[0]["citation_kind"] == "identifier"
+          and neu[0]["jurisdiction"] == "CA" and neu[0]["lookup_mode"] == "exact",
+          "R2F(a)：CanLII 读法 kind=identifier、jurisdiction=CA、exact")
+    check(neu and neu[0]["identifier_subdivision_code"] == "ONCA"
+          and neu[0]["jurisdiction_subdivision"] == "CA",
+          "R2F(a)：尾括注 (ON CA) 归一后精确命中 ONCA → 细分记录"
+          "（synthetic 表 ONCA 行的 jurisdiction 值；生产表为 ON）")
+    rows = classified_of("Cited in 2001 CanLII 24079 (Ont. C.A.) above.", clf=clf)
+    neu = [r for r in rows if r["raw_string"] == "2001 CanLII 24079"
+           and r["shape_name"] == "shape_neutral_bare"]
+    check(neu and neu[0]["identifier_subdivision_code"] == "",
+          "R2F(b)：(Ont. C.A.) 归一后无精确码 → 细分留空")
+    rows = classified_of("See 2001 CanLIIDocs 12 for commentary.", clf=clf)
+    docs = [r for r in rows if r["raw_string"] == "2001 CanLIIDocs 12"]
+    check(docs and docs[0]["rejected_reason"] == "not_a_decision",
+          "R2F(e)：CanLIIDocs 行级拒绝 not_a_decision（保留不计数）")
+
+
+def test_r2f_identifier_counted_and_b10():
+    """R2F a/d：identifier 读法凭表支持（exact）在既有支持分级下胜出计数；
+    B10 容器照旧作废。"""
+    rows, verdicts, stats = arbitrated(
+        "Cited in 2001 CanLII 24079 (ON CA) above.")
+    neu = [r for r in rows if r["raw_string"] == "2001 CanLII 24079"
+           and r["shape_name"] == "shape_neutral_bare"]
+    check(neu and verdicts[neu[0]["candidate_id"]][0] == "counted",
+          "R2F(a)：2001 CanLII 24079 counted（既有支持分级，无新规则）")
+    check(neu and merge.build_merge_key_v2(neu[0]) == "2001||canlii||24079",
+          "R2F(a)：计数键 2001||canlii||24079")
+    vol = [r for r in rows if r["raw_string"] == "2001 CanLII 24079"
+           and r["shape_name"] == "shape_vol_abbr_page"]
+    check(vol and verdicts[vol[0]["candidate_id"]][0]
+          in ("alternative_unsupported_reading", "alternative_weaker_support"),
+          "R2F(a)：卷读法按支持分级让位")
+    rows, verdicts, stats = arbitrated(
+        "Discussed in (2001), 2001 CanLII 24079 (ON CA).")
+    cont = [r for r in rows if r["raw_string"] == "(2001), 2001 CanLII 24079"]
+    check(cont and all(verdicts[r["candidate_id"]][0] == "year_reread_as_vol_invalid"
+                       for r in cont),
+          "R2F(d)：B10 容器按新状态作废（配对者=identifier 读法）")
+    neu = [r for r in rows if r["raw_string"] == "2001 CanLII 24079"
+           and r["shape_name"] == "shape_neutral_bare"]
+    check(neu and verdicts[neu[0]["candidate_id"]][0] == "counted",
+          "R2F(d)：配对者计数")
+    # CarswellOnt（若表行 verified）
+    rows, verdicts, stats = arbitrated("See 2010 CarswellOnt 5877 for it.")
+    cw = [r for r in rows if r["raw_string"] == "2010 CarswellOnt 5877"
+          and r["shape_name"] == "shape_neutral_bare"]
+    check(cw and cw[0]["citation_kind"] == "identifier"
+          and verdicts[cw[0]["candidate_id"]][0] == "counted",
+          "R2F(c)：CarswellOnt 读法 counted")
+
+
+def test_r2f_dtc_year_as_volume():
+    """R2F f：DTC 表语义 year_is_volume=yes → 年读法（year||dtc||page）凭
+    exact 表支持胜出；容器作废；全年仅一条 counted。"""
+    rows, verdicts, stats = arbitrated("Taxed in (2001), 2001 DTC 295 and later.")
+    cont = [r for r in rows if r["raw_string"] == "(2001), 2001 DTC 295"]
+    check(cont and all(verdicts[r["candidate_id"]][0] == "year_reread_as_vol_invalid"
+                       for r in cont),
+          "R2F(f)：B10 容器按新状态作废")
+    neu = [r for r in rows if r["raw_string"] == "2001 DTC 295"
+           and r["shape_name"] == "shape_neutral_bare"]
+    check(neu and verdicts[neu[0]["candidate_id"]][0] == "counted"
+          and merge.build_merge_key_v2(neu[0]) == "2001||dtc||295",
+          "R2F(f)：表语义（year_is_volume=yes）支持的年读法 counted once，键 2001||dtc||295")
+    vol = [r for r in rows if r["raw_string"] == "2001 DTC 295"
+           and r["shape_name"] == "shape_vol_abbr_page"]
+    check(vol and verdicts[vol[0]["candidate_id"]][0]
+          in ("alternative_unsupported_reading", "alternative_weaker_support"),
+          "R2F(f)：卷读法按支持分级让位（非形状规则）")
+
+
+def test_r2f_misspelling_stays_unsupported():
+    """R2F g：拼写变体不匹配（精确印刷 token 策略）→ 照旧弃权。"""
+    rows, verdicts, stats = arbitrated("See 2010 CarswellNlfd 12 there.")
+    tw = [r for r in rows if r["raw_string"] == "2010 CarswellNlfd 12"]
+    check(tw and all(verdicts[r["candidate_id"]][0] == "span_alternative_undecided"
+                     for r in tw),
+          "R2F(g)：拼写变体保持 unsupported 弃权（政策，非债）")
+
+
+def test_r2f_span_set_identical():
+    """R2F j：尾括注捕获为可选零宽前瞻——(doc,start,end,shape) 集合与
+    无捕获版本逐字节一致。"""
+    import extract
+    import shapes as sh
+    import re as _re
+    pat = sh.SHAPES[[n for n, _ in sh.SHAPES].index("shape_neutral_bare")][1]
+    construct = r"(?:(?=\s*\((?P<trailing_paren>[^)\n]{1,25})\)))?"
+    assert construct in pat, "probe should find the trailing-paren construct"
+    nb_with = _re.compile(pat)
+    nb_without = _re.compile(pat.replace(construct, ""))
+    probes = ["2001 CanLII 24079 (ON CA), 53 O.R. (3d) 417",
+              "2003 SCC 74; also 2010 CarswellOnt 5877 and 240791(2001) odd",
+              "[2003] 3 S.C.R. 571, 2004 SCC 79 (CanLII)",
+              "plain 2019 SCC 65 text", "page 240791(2001) edge"]
+    for t in probes:
+        with_set = {(m.start(), m.end()) for m in nb_with.finditer(t)}
+        without_set = {(m.start(), m.end()) for m in nb_without.finditer(t)}
+        check(with_set == without_set, "R2F(j)：跨度集合不变 %r" % t)
+    # 捕获检查：首个探针含 "(ON CA)" → 应捕获；无括注的探针应无捕获
+    caps0 = [m.group("trailing_paren") for m in nb_with.finditer(probes[0])]
+    check("ON CA" in caps0, "R2F(j)：探针 1 捕获 (ON CA)（%r）" % caps0)
+    caps3 = [m.group("trailing_paren") for m in nb_with.finditer(probes[3])]
+    check(not any(caps3), "R2F(j)：无括注探针不产生捕获")
+
+
+def test_r2f_identity_system_scoped():
+    """R2F h：同系统不同编号=不同文档（不并组）；跨系统（identifier 与
+    court 中立）无合并/拆分规则——无共引时两组、共引时经 cocitation 连接。"""
+    import decide
+    def irow(rid, mk, name="X v. Y", year=2011, kind="identifier"):
+        return {"row_key": rid, "court": "SCC", "merge_key": mk,
+                "case_name_modal": name, "year": year,
+                "citation_kind": kind, "jurisdiction": "CA",
+                "canonical_string": mk, "key_occurrence_count": 1,
+                "self_citation_of": "", "self_case_name": "",
+                "is_primary": "false", "split_reason": "", "merge_key_dup": ""}
+    # 同系统不同编号：两个 identifier 键 + 一个 court 锚（无共引）
+    members = [
+        irow("SCC|2011||canlii||111", "2011||canlii||111"),
+        irow("SCC|2011||canlii||222", "2011||canlii||222"),
+        irow("SCC|2011||scc||10", "2011||scc||10", kind="neutral"),
+    ]
+    did = {"SCC|2011||scc||10": {"d1", "d2", "d3"}}
+    stats = Counter()
+    parts = decide.split_by_decision(members, did, stats, None)
+    groups = [p[0] for p in parts]
+    keys_per_group = [sorted(m["merge_key"] for m in g) for g in groups]
+    canlii_groups = [k for k in keys_per_group
+                     if any("canlii" in x for x in k)]
+    check(len(canlii_groups) == 2,
+          "R2F(h)：同系统两个 CanLII 编号不共组（%r）" % (keys_per_group,))
+    check(all(not any("canlii" in x for x in k) or
+              all("scc" not in x for x in k) for k in keys_per_group),
+          "R2F(h)：无共引时 identifier 与 court 锚不连（两组各自独立）")
+    # 有共引（identifier 引证集与 court 锚 ≥0.8 重合）→ 经 cocitation 连接
+    did2 = {"SCC|2011||scc||10": {"d1", "d2", "d3"},
+            "SCC|2011||canlii||111": {"d1", "d2", "d3"}}
+    parts = decide.split_by_decision([dict(m) for m in members], did2, Counter(), None)
+    g111 = [p[0] for p in parts
+            if any(m["merge_key"] == "2011||canlii||111" for m in p[0])]
+    check(any(any(m["merge_key"] == "2011||scc||10" for m in g) and
+              any(m["merge_key"] == "2011||canlii||111" for m in g)
+              for g, _ in parts),
+          "R2F(h)：共引 ≥0.8 时 identifier 经 cocitation 连入 court 锚组")
+    if g111:
+        basis = decide.assign_identity_basis(g111[0], did2, None, "decision")
+        check(basis.get("SCC|2011||canlii||111") == "cocitation",
+              "R2F(h)：跨系统连接的 basis=cocitation（不参与来源传播）")
 
 
 
@@ -1444,6 +1649,12 @@ def main():
               test_counterexample_h_same_key_duplication_invariance,
               test_d3_partner_self_citation_row,
               test_b10_year_reread_as_vol,
+              test_r2f_identifier_classification,
+              test_r2f_identifier_counted_and_b10,
+              test_r2f_dtc_year_as_volume,
+              test_r2f_misspelling_stays_unsupported,
+              test_r2f_span_set_identical,
+              test_r2f_identity_system_scoped,
               test_new_path_fixture_measurements):
         t()
     print("全部通过：%d 条断言" % len(PASSED))

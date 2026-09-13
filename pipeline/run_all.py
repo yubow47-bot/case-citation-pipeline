@@ -37,7 +37,8 @@ COURTS = ("SCC", "ONCA")
 # 不再声称沿用 v1.4（约束十）。
 SCHEMA_VERSIONS = {
     "extract_legacy_kept_superseded": "v1.4 (frozen, diagnostic only)",
-    "extract_candidates": "candidates-2.0",
+    "extract_candidates": "candidates-2.1 (2.0 + neutral_bare trailing_paren "
+                          "zero-width lookahead capture)",
     "classify": "8 + parse/arbitration evidence columns",
     "merge": "9 + in-source arbitration, identity keys v2",
     "decide": "10",

@@ -84,6 +84,8 @@ CAND_SCHEMA = [
     "series_paren", "paren_note", "year_raw", "year_start",
     # 仲裁所需的字段跨度（原文绝对偏移；组缺失为 -1）
     "year_span", "page_span", "vol_span", "abbr_span",
+    # R2F：neutral_bare 尾括注（零宽前瞻捕获；identifier 细分用，可空）
+    "trailing_paren",
     # 同一段落两种读法的区分签名
     "parse_signature",
     "preceding_text",
@@ -143,7 +145,7 @@ def parse_signature(shape_name, groupdict):
 
 
 def extract_candidates(text, sdc, year, row_index, court):
-    """单份判决的全候选（candidates-2.0）。七个形状全部重叠扫描；字段值仍一律取
+    """单份判决的全候选（candidates-2.1：2.0 + 尾括注零宽捕获）。七个形状全部重叠扫描；字段值仍一律取
     自原始 match 的捕获组（§7.3「不得对 raw_string 二次正则解析」不变）；
     偏移量指向**未改动的**语料原文。
     返回 (cands, blocked_by_guard)。"""
@@ -191,6 +193,7 @@ def extract_candidates(text, sdc, year, row_index, court):
                 "page_span": spans["page_span"],
                 "vol_span": spans["vol_span"],
                 "abbr_span": spans["abbr_span"],
+                "trailing_paren": g.get("trailing_paren") or "",
                 "parse_signature": parse_signature(name, g),
                 "preceding_text": text[max(0, start - 120):start],
                 "structural_conflict": "",
@@ -544,8 +547,9 @@ def write_manifest(out_root, run_stats, merge_counts, args):
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
         "git_head": git_head(),
         "shapes_version": "v1.4 (frozen) + D4 capture groups (series_paren/paren_note)",
-        "candidates_schema": "candidates-2.0 (full candidates; legacy kept/superseded "
-                             "retained as diagnostic only)",
+        "candidates_schema": "candidates-2.1 (candidates-2.0 + neutral_bare "
+                             "trailing_paren zero-width lookahead capture; legacy "
+                             "kept/superseded retained as diagnostic only)",
         "params": {"batch_size": args.batch_size,
                    "year_from": args.year_from,
                    "limit_batches": args.limit_batches,

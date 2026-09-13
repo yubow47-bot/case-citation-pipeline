@@ -216,6 +216,48 @@ def _one_edit(a, b):
     return any(l[:i] + l[i + 1:] == s for i in range(len(l)))
 
 
+# R2F：identifier 系统（数据库/厂商决策 ID）。加载verified行，键=nk(printed_token)。
+ALLOWED_IDENTIFIER_STATUSES = {
+    "verified_official_source",
+    "verified_authoritative_manual",
+}
+_IDENTIFIER_CACHE = None
+
+
+def load_identifier_systems():
+    """identifier_systems.csv → {nk(token): system_name}，仅 database/vendor
+    决策 ID 类（year_volume_reporter 的 DTC 按普通 reporter 语义处理；
+    secondary_source 在分类层已拒绝）。缓存一次。"""
+    global _IDENTIFIER_CACHE
+    if _IDENTIFIER_CACHE is not None:
+        return _IDENTIFIER_CACHE
+    path = os.path.join(DECISIONS, "identifier_systems.csv")
+    out = {}
+    if os.path.exists(path):
+        with open(path, encoding="utf-8", newline="") as f:
+            for r in csv.DictReader(f):
+                if (r.get("verification_status") or "").strip() \
+                        not in ALLOWED_IDENTIFIER_STATUSES:
+                    continue
+                if (r.get("identifier_kind") or "").strip() not in (
+                        "database_decision_id", "vendor_decision_id"):
+                    continue
+                tok = nk(r.get("printed_token") or "")
+                sysname = (r.get("system_name") or "").strip()
+                if tok and sysname:
+                    out[tok] = sysname
+    _IDENTIFIER_CACHE = out
+    return out
+
+
+def identifier_system_of(merge_key):
+    """键的 identifier 系统名（无 → None）。键 v2 的 abbr 槽即印刷 token。"""
+    p = merge_key.split("|")
+    if len(p) < 3:
+        return None
+    return load_identifier_systems().get(nk(p[2]))
+
+
 ALLOWED_BILINGUAL_STATUSES = {
     "verified_explicit_equivalence",
 }
@@ -261,6 +303,10 @@ def same_decision_kind(ka, ja, dda, kb, jb, ddb):
         return None
     if (ca, sa) != (cb, sb) or 2 * dda > ddb:
         return None                      # 笔误必定比正确写法罕见
+    # R2F：数据库/厂商序列号的一位之差 = 不同文档——identifier 键不做
+    # one-edit / 年±1 塌缩（双语对已在上分支处理）
+    if ca in load_identifier_systems() or cb in load_identifier_systems():
+        return None
     if ya == yb and _one_edit(na, nb):
         return "typo_number"             # 号码错一位
     if na == nb and ya.isdigit() and yb.isdigit() and abs(int(ya) - int(yb)) == 1:
@@ -371,7 +417,39 @@ def split_by_decision(members, did_idx, stats, start=None):
     stats["anchors_collapsed_as_variant"] += sum(1 for k, r in root.items() if k != r)
     decisions = sorted({root[k] for k in root}, key=lambda k: (-len(anc[k]), k))
     if len(decisions) < 2:
-        return [(members, "")]
+        # R2F：identifier 单元不随单锚无条件同组——跨系统连接必须过既有
+        # 共引门槛（cov ≥ BAR），否则自成一组（无共引时两组、basis 如实记录）
+        dec0 = decisions[0] if decisions else None
+        dec_ids0 = (anc.get(dec0, set()) | own.get(dec0, set())) if dec0 else set()
+        ride, pend = [], []
+        bucket_keys = set()
+        for m in sorted(members, key=row_key):
+            if identifier_system_of(m["merge_key"]):
+                ids_m = did_idx.get(row_key(m), set())
+                if not ids_m or not dec_ids0:
+                    cov = 0.0
+                else:
+                    cov = (len(ids_m & dec_ids0) /
+                           min(len(ids_m), len(dec_ids0)))
+                if cov >= BAR \
+                        and not any(identifier_system_of(k) ==
+                                    identifier_system_of(m["merge_key"])
+                                    for k in bucket_keys):
+                    ride.append(m)
+                    bucket_keys.add(m["merge_key"])
+                    continue
+                pend.append([m])
+                continue
+            ride.append(m)
+            bucket_keys.add(m["merge_key"])
+        parts0 = []
+        if ride:
+            parts0.append((ride, ""))
+        for pm in pend:
+            parts0.append((pm, "identifier_uncoited"))
+        if len(parts0) > 1:
+            stats["clusters_identifier_split_uncoited"] += 1
+        return parts0 if parts0 else [(members, "")]
     stats["clusters_split_by_decision"] += 1
 
     dec_ids = defaultdict(set)
@@ -414,8 +492,16 @@ def split_by_decision(members, did_idx, stats, start=None):
                 target = same_year[0]
                 stats["units_tie_broken_by_year"] += 1
         if target is not None:
-            buckets[target].extend(us)
-            stats["units_assigned_by_cocitation"] += 1
+            # R2F：同系统 identifier 一组至多一个——目标桶已含同系统
+            # identifier 时本单元不指派（留 pending，自成一组）
+            usys = identifier_system_of(mk)
+            if usys and any(identifier_system_of(m["merge_key"]) == usys
+                            for m in buckets[target]):
+                pending.append((us, ids, uj))
+                stats["units_identifier_same_system_blocked"] += 1
+            else:
+                buckets[target].extend(us)
+                stats["units_assigned_by_cocitation"] += 1
             stats["dd_added_by_assignment"] += len(ids - dec_ids[target])
             if len(ids) > len(dec_ids[target]):
                 stats["units_assigned_larger_than_target"] += 1
@@ -443,6 +529,15 @@ def split_by_decision(members, did_idx, stats, start=None):
     for i in range(n):
         for j in range(i + 1, n):
             if not _compatible(pending[i][2], pending[j][2]):
+                continue
+            # R2F：同系统 identifier 两单元永不合并（不同编号=不同文档）
+            sys_i = {identifier_system_of(m["merge_key"])
+                     for m in pending[i][0]}
+            sys_j = {identifier_system_of(m["merge_key"])
+                     for m in pending[j][0]}
+            common_sys = (sys_i & sys_j) - {None}
+            if common_sys:
+                stats["pending_identifier_same_system_skipped"] += 1
                 continue
             a, b = pending[i][1], pending[j][1]
             small = min(len(a), len(b))
@@ -564,7 +659,7 @@ def _scope_origin(row, scope_idx, stats):
     适用条件（全部满足）：本行是被接受的 neutral 解析（citation_kind=neutral，
     即代码经法院代码表证实——「有年份+无卷号」本身**不是**引证种类的证明）；
     代码（键 v2 abbr 槽）在 scope 表且唯一；年代落在规则的标识符适用窗内。"""
-    if (row.get("citation_kind") or "") != "neutral":
+    if (row.get("citation_kind") or "") not in ("neutral", "identifier"):
         stats["scope_not_neutral_parse"] += 1
         return
     p = row["merge_key"].split("|")
@@ -903,6 +998,16 @@ def main():
 
     # ---- 不变量，不过就拒绝写表 ----
     assert len(out) == len(rows), "行数 %d != 输入 %d（约束五）" % (len(out), len(rows))
+    # R2F：任一组内同系统 identifier 至多一个键（不同编号=不同文档）
+    _ident_by_group = defaultdict(lambda: defaultdict(set))
+    for r in out:
+        if r.get("citation_kind") == "identifier":
+            sysname = identifier_system_of(r["merge_key"])
+            if sysname:
+                _ident_by_group[r["merged_group_id"]][sysname].add(r["merge_key"])
+    _bad = [(g, sy, ks) for g, per in _ident_by_group.items()
+            for sy, ks in per.items() if len(ks) > 1]
+    assert not _bad, "R2F 违约：组内含同系统多个 identifier 键 %r" % _bad[:3]
     groups = defaultdict(list)
     for r in out:
         groups[r["merged_group_id"]].append(r)

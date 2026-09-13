@@ -129,7 +129,11 @@ SHAPES = [
      # （CarswellOnt/Que）。不判断合法性（约束二），归 neutral_court_codes.csv
      rf"(?P<year>{_YEAR})\s+(?P<token>[A-Z][A-Za-z]{{1,11}})"
      rf"(?:{_SEP_COMMA}(?P<series>[A-Z][A-Za-z]*))?"  # token→分辑词：页向，COMMA
-     rf"{_SEP_COMMA}{_PAGE}"),
+     rf"{_SEP_COMMA}{_PAGE}"
+     # R2F：尾括注可选零宽前瞻捕获（identifier 引证常尾随法院/数据库括注，
+     # 如 "2001 CanLII 24079 (ON CA)"）。零宽 → (start,end,shape) 跨度集合
+     # 与旧版逐字节一致（测试 j 钉住）；捕获内容仅供 classify 细分用。
+     rf"(?:(?=\s*\((?P<trailing_paren>[^)\n]{{1,25}})\)))?"),
 
     ("shape_vol_abbr_page",
      rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"

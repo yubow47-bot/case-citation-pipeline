@@ -85,7 +85,8 @@ NEW_COLUMNS = ["citation_kind", "abbreviation", "jurisdiction",
                #     查表命中 ≠ 整条引证为真，两件事分列（D3/D2 要求）。
                #   year_vol_ambiguity —— 4 位数字既可读年又可读卷、且两表都
                #     无法裁决时的显式 unresolved 标记（不默认任何一方）。
-               "parse_status", "year_vol_ambiguity"]
+               "parse_status", "year_vol_ambiguity",
+               "identifier_subdivision_code", "jurisdiction_subdivision"]
 
 # 年份形状（4 位数字），用于 year/vol 同形判定
 _YEAR_SHAPE_RE = re.compile(r"^(?:1[6-9]|20)\d{2}$")
@@ -133,6 +134,33 @@ _ADMIT_CITE_TAIL_RE = re.compile(
 
 # 形状 → 主缩写取自哪个字段（规格 §7.3）
 TOKEN_SHAPES = {"shape_bracket", "shape_neutral_bare"}
+
+
+# --------------------------------------------------- identifier_systems（R2F）
+ALLOWED_IDENTIFIER_STATUSES = {
+    "verified_official_source",
+    "verified_authoritative_manual",
+}
+
+
+def load_identifier_systems():
+    """identifier_systems.csv：数据库/厂商标识符系统的决策表。键 = 印刷
+    token **逐字**（大小写敏感，无模糊匹配——拼写变体留空是政策不是债）。
+    只有 verification_status 精确属于 ALLOWED_IDENTIFIER_STATUSES 的行驱动
+    推断（与 court_or_reporter_scope 同规）。"""
+    path = os.path.join(DECISIONS, "identifier_systems.csv")
+    if not os.path.exists(path):
+        return {}
+    out = {}
+    with open(path, encoding="utf-8", newline="") as f:
+        for r in csv.DictReader(f):
+            if (r.get("verification_status") or "").strip() \
+                    not in ALLOWED_IDENTIFIER_STATUSES:
+                continue
+            tok = (r.get("printed_token") or "").strip()
+            if tok:
+                out[tok] = r
+    return out
 
 
 # ------------------------------------------------------------------- 决策表 IO
@@ -549,6 +577,8 @@ class Classifier(object):
         self.rep_exact = build_index(tables["reporter_jurisdiction"], "abbreviation")
         self.rep_norm = build_index(tables["reporter_jurisdiction"], "normalized_key")
         self.prefix_norm = build_index(tables["series_prefix"], "normalized_key")
+        # R2F：identifier 系统（印刷 token 逐字精确匹配；大小写敏感）
+        self.ident_exact = tables.get("identifier_systems") or {}
         self.stats = stats
 
     def _court_lookup(self, printed_token, has_vol):
@@ -638,6 +668,35 @@ class Classifier(object):
             row["abbreviation"] = row.get("abbr") or ""
             return False
         if shape in TOKEN_SHAPES:
+            tok = (row.get("token") or "").strip()
+            ident = self.ident_exact.get(tok)
+            if ident is not None:
+                # R2F：数据库/厂商标识符系统——键=印刷 token 逐字精确
+                row["citation_kind"] = "identifier"
+                row["abbreviation"] = tok          # 键的缩写位 = 印刷 token
+                row["jurisdiction"] = ident.get("jurisdiction_scope") or ""
+                row["jurisdiction_confidence"] = "confirmed"
+                row["lookup_mode"] = "exact"
+                row["identifier_subdivision_code"] = ""
+                row["jurisdiction_subdivision"] = ""
+                kind = ident.get("identifier_kind") or ""
+                if kind == "secondary_source":
+                    # 二手评论（CanLIIDocs 等）：行级拒绝，保留不计数
+                    append_reason(row, "rejected_reason", "not_a_decision")
+                    self.stats["identifier_secondary_rejected"] += 1
+                    return True
+                # 细分：仅当尾括注 normalize_code 后与 neutral_court_codes 的
+                # normalized_key **精确相等**；否则留空（不做其他解析）
+                tp = (row.get("trailing_paren") or "").strip()
+                if tp:
+                    hit = lookup_one(normalize_code(tp), self.court_norm)
+                    if hit is not None:
+                        row["identifier_subdivision_code"] = \
+                            (hit.get("court_code") or "").strip()
+                        row["jurisdiction_subdivision"] = \
+                            (hit.get("jurisdiction") or "").strip()
+                        self.stats["identifier_subdivision_matched"] += 1
+                return True
             return self._two_table(row, row.get("token") or "")
         row["citation_kind"] = "reporter"
         row["abbreviation"] = row.get("abbr") or ""
@@ -774,6 +833,7 @@ def main():
     tables = {n: load_table(n + ".csv") for n in
               ("neutral_court_codes", "reporter_jurisdiction",
                "series_prefix", "case_origin")}
+    tables["identifier_systems"] = load_identifier_systems()
     clf = Classifier(tables, stats)
 
     os.makedirs(args.output, exist_ok=True)
