@@ -1261,6 +1261,13 @@ _IDENT_ROWS = [
      "valid_to": "", "verification_status": "verified_official_source",
      "source": "test", "source_locator": "test", "notes": "", "reviewer": "t",
      "reviewed_at": "t"},
+    {"printed_token": "WL", "system_name": "Westlaw (Thomson West) database ID",
+     "issuer": "Thomson West (Westlaw)", "identifier_kind": "vendor_decision_id",
+     "identifies": "single_decision", "jurisdiction_scope": "",
+     "bilingual_equivalent": "", "year_is_volume": "", "valid_from": "",
+     "valid_to": "", "verification_status": "verified_authoritative_manual",
+     "source": "test", "source_locator": "test", "notes": "", "reviewer": "t",
+     "reviewed_at": "t"},
     {"printed_token": "CanLIIDocs", "system_name": "CanLII secondary commentary",
      "issuer": "CanLII/Lexum", "identifier_kind": "secondary_source",
      "identifies": "not_a_decision", "jurisdiction_scope": "CA",
@@ -1430,6 +1437,34 @@ def test_r2f_identity_system_scoped():
         basis = decide.assign_identity_basis(g111[0], did2, None, "decision")
         check(basis.get("SCC|2011||canlii||111") == "cocitation",
               "R2F(h)：跨系统连接的 basis=cocitation（不参与来源传播）")
+
+
+
+def test_wl_identifier_counted_despite_blank_scope():
+    """R2F 收尾（c）：WL 行 verified（single_decision）但 jurisdiction_scope
+    为空——表支持不依赖法域栏。期望：identifier 读法 counted（键 2005||wl||2709572）、
+    jurisdiction 留空、卷读法让位；来源地 UNDETERMINED（WL 无 scope 行，
+    FOREIGN/DOMESTIC 均不产生）。修复前：identifier 读法支持档 0，与卷读法
+    同档平票弃权。"""
+    rows = classified_of("Cited in 2005 WL 2709572 (W.D.N.Y.) above.")
+    neu = [r for r in rows if r["raw_string"] == "2005 WL 2709572"
+           and r["shape_name"] == "shape_neutral_bare"]
+    check(neu and neu[0]["citation_kind"] == "identifier"
+          and neu[0]["lookup_mode"] == "exact",
+          "WL：identifier 分支命中（kind/lookup_mode）")
+    check(neu and neu[0]["jurisdiction"] == "",
+          "WL：jurisdiction 留空（scope 行未给法域）")
+    stats = Counter()
+    v = merge.arbitrate_document([dict(r) for r in rows], stats)
+    check(neu and v[neu[0]["candidate_id"]][0] == "counted",
+          "WL：identifier 读法 counted（exact 表支持不因 jurisdiction 空而降档）")
+    check(neu and merge.build_merge_key_v2(neu[0]) == "2005||wl||2709572",
+          "WL：计数键 2005||wl||2709572")
+    vol = [r for r in rows if r["raw_string"] == "2005 WL 2709572"
+           and r["shape_name"] == "shape_vol_abbr_page"]
+    check(vol and v[vol[0]["candidate_id"]][0] in
+          ("alternative_unsupported_reading", "alternative_weaker_support"),
+          "WL：卷读法让位")
 
 
 
@@ -1649,6 +1684,7 @@ def main():
               test_counterexample_h_same_key_duplication_invariance,
               test_d3_partner_self_citation_row,
               test_b10_year_reread_as_vol,
+              test_wl_identifier_counted_despite_blank_scope,
               test_r2f_identifier_classification,
               test_r2f_identifier_counted_and_b10,
               test_r2f_dtc_year_as_volume,

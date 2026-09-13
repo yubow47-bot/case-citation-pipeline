@@ -211,6 +211,11 @@ def support_grade(row):
         return 0
     if (row.get("parse_status") or "valid") != "valid":
         return 0
+    # R2F 收尾（c）：identifier 表 exact 命中即为表支持——与法域栏无关
+    # （WL 等系统的 jurisdiction_scope 留空，来源地另行由 scope 表决定）
+    if (row.get("citation_kind") or "") == "identifier" \
+            and (row.get("lookup_mode") or "") == "exact":
+        return 2
     j = row.get("jurisdiction") or ""
     if j in ("", "UNSUPPORTED"):
         return 0
