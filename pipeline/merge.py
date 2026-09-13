@@ -463,13 +463,18 @@ def arbitrate_document(rows, stats):
                 status[ck] = "UNDEC_SUP"
 
     # ---- 5.6 终态映射 ----
+    # conflict_* 攻击者只有在同档环被第三方存活打破时才可能 IN——排在最后，
+    # 仅当无其他因果攻击者时才会被选中（数学上不应发生，防御性兜底）
     KIND_PRIORITY = {"cross_boundary": 0, "contained": 1, "dominated": 2,
-                     "support_span": 3, "same_key": 4, "spanning": 5}
+                     "support_span": 3, "same_key": 4, "spanning": 5,
+                     "conflict_span": 6, "conflict_overlap": 6}
     KIND_STATUS = {"same_key": "alternative_same_key",
                    "contained": "alternative_contained",
                    "dominated": "alternative_dominated_by_support",
                    "spanning": "alternative_spanning_mismatch",
-                   "cross_boundary": "cross_boundary_invalid"}
+                   "cross_boundary": "cross_boundary_invalid",
+                   "conflict_span": "alternative_dominated_by_support",
+                   "conflict_overlap": "alternative_dominated_by_support"}
 
     def pick_attacker(ck):
         atts = attacks.get(ck, [])
@@ -564,7 +569,7 @@ GROUND_STATUSES = {"IN": "counted", "OUT": "alternative_*",
                    "UNDEC": "span_alternative_undecided / overlap_undecided"}
 
 
-def run_candidates(args, stats):
+def run_candidates(args, stats, pool_mode=None):
     """candidates-2.0 主流程：判决内仲裁 → 跨行聚合。"""
     docs = defaultdict(list)
     with open(args.input, encoding="utf-8", newline="") as f:
@@ -607,11 +612,42 @@ def run_candidates(args, stats):
                 per_key_counted[new_key].append(row)
 
     _emit(args, stats, per_key_counted, per_key_members, mentions,
-          key_mapping)
+          key_mapping, pool_mode=pool_mode or getattr(args, 'name_vote_pool', 'current'))
+
+
+def name_vote_pool(members, pool_mode):
+    """§8 案名投票敏感性：三种口径的投票池。
+      current       现行生产口径：全部非 rejected 且切出案名的候选各一票
+      dedup_position 同一出现位置（sdc,row,start,end）只投一票；位置上存在多个
+                    nk 互异的候选案名 → 该位置**弃权**（确定、可审计、与输入
+                    顺序无关；代表行取 candidate_id 最小者，仅当 nk 全等）
+      counted_only  只有最终 counted 候选投票
+    默认 current——生产规则不被本参数改变，仅敏感性分析使用。"""
+    pool = [m for m in members if not m.get("rejected_reason")
+            and m.get("candidate_case_name")]
+    if pool_mode == "counted_only":
+        return [m for m in pool
+                if m.get("arbitration_status") == "counted"]
+    if pool_mode == "dedup_position":
+        by_pos = defaultdict(list)
+        for m in pool:
+            key = (m.get("source_decision_citation") or "",
+                   m.get("corpus_row_index") or "",
+                   m.get("match_start_offset") or "",
+                   m.get("match_end_offset") or "")
+            by_pos[key].append(m)
+        out = []
+        for key in sorted(by_pos):
+            ms = sorted(by_pos[key], key=lambda m: m["candidate_id"])
+            names = {nk(m["candidate_case_name"]) for m in ms}
+            if len(names) == 1:
+                out.append(ms[0])
+        return out
+    return pool
 
 
 def _emit(args, stats, per_key_counted, per_key_members, mentions,
-          key_mapping=None):
+          key_mapping=None, pool_mode="current"):
     """聚合并写五张表。计数只看 counted；案名投票与自引归属用全键成员。"""
     merged, folded, decision_ids = [], [], []
     member_total = len(mentions)
@@ -630,10 +666,8 @@ def _emit(args, stats, per_key_counted, per_key_members, mentions,
             decision_ids.append({"merge_key": key,
                                  "source_decision_citation": did})
 
-        # 案名投票：非 rejected 且切出案名的候选（counted + 让位者 + 自引 + undecided）
-        # 皆可投票，与 legacy 路线「自引照样投票」同口径
-        valid = [m for m in members if not m.get("rejected_reason")
-                 and m.get("candidate_case_name")]
+        # 案名投票：池口径由 --name-vote-pool 决定（默认 current = 生产口径）
+        valid = name_vote_pool(members, getattr(args, "name_vote_pool", "current"))
         if valid:
             by_nk = defaultdict(list)
             for m in valid:
@@ -765,6 +799,7 @@ def _emit(args, stats, per_key_counted, per_key_members, mentions,
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
         "court": args.court,
         "input": _relpath(args.input),
+        "name_vote_pool": getattr(args, "name_vote_pool", "current"),
         "mode": "candidates",
         "spec_section": "9 + in-source arbitration",
         "stats": dict(sorted(stats.items())),
@@ -957,6 +992,9 @@ def main():
     ap.add_argument("--court", required=True)
     ap.add_argument("--input", required=True)
     ap.add_argument("--output", required=True)
+    ap.add_argument("--name-vote-pool", default="current",
+                    choices=("current", "dedup_position", "counted_only"),
+                    help="§8 案名投票敏感性口径（默认 current=生产行为）")
     args = ap.parse_args()
 
     stats = Counter()

@@ -155,6 +155,127 @@ heuristic_only 16,687（tentative 台账 1,522 条）。
 | `python implementation/r2_lost_breakdown.py data/run_20260912_r2c` | 0 |
 | `python implementation/r2_case_checks.py data/run_20260912_r2c` | FAILS: none |
 
+## Round 2 闭环（2026-09-13，任务书三）
+
+### 起点（按任务书第二节记录）
+
+- 起始 commit：`e4eadf4`；r2c manifest：status=complete，input_identity_verified_unchanged=true，10 步。
+- 修改前基线实测：test_candidates **111**、test_layers **120**、selftest exit 0、
+  fixture A18/B15/C27/D6/E0/F0 pass——与任务书所报一致。
+
+### 任务一：身份授权（commit 3d3104f）
+
+- 新表 `decisions/bilingual_neutral_codes.csv`（40 对）由确定性离线脚本
+  `decisions/tools/build_bilingual_neutral_codes.py` 生成：从 neutral_court_codes 的
+  source_locator 解析 databaseId / caseBrowse en·fr 端点 / 佐证引证年代；再扫描本地
+  决策表说明文字找「同案双语对应」显式证据（同 年+编号 两代码成对）。状态：
+  **verified_explicit_equivalence 仅 SCC/CSC 一对**（本地证据：2014 CSC 7 = 2014 SCC 7，
+  Hryniak，源 decisions.scc-csc.ca 公报）；FCA/CAF、TCC/CCI、CMAC/CACM、CHRT/TCDP、
+  TATCE/TATCF = candidate_endpoint_pair（同库 en+fr，不授权）；FC/CF =
+  unverified_same_db_en_only；ABQB/ABKB、SKQB/SKKB、NFCA/NLCA 及 NBBR/NBQB 等
+  = rejected_renamed_code（同语言端点 + 佐证年代不相交）。加载用显式允许集合
+  ALLOWED_BILINGUAL_STATUSES，不用 startswith。
+- `decide.load_bilingual()`（无方向小写对集合，缓存）；`same_decision_kind` 的
+  bilingual 分支加第 5 条件：{code_a, code_b} ∈ 已核实对。FCA/CAF 同年同号自此
+  不再自动合并（诚实方向）。
+- `assign_identity_basis`：顺序改 singleton → anchor → anchor_variant_* →
+  same_citation（**仅全组单键**）→ unanchored/cocitation/name_year；typo 变体细分
+  anchor_variant_typo_number / typo_year。重复出现的弱键不再因 keycount>1 升级。
+- `edges.py` 改用 `from decide import ELIGIBLE_BASES`（decide 不依赖 edges，无环）；
+  测试钉住两模块同一集合。
+- 身份反例（假代码非 bilingual / SCC-CSC 仍 bilingual / ABQB-ABKB 非 bilingual /
+  弱键×2 不升 same_citation 且组不 FOREIGN / 单键组 same_citation 合格 /
+  typo×2 保持变体 / 顺序不变）全部先行失败后转绿。
+
+### 任务二：仲裁终态（commit 3d3104f + 冲突类补丁）
+
+`arbitrate_document` 重写为**等价类 + 攻击图 + grounded 终态**：
+- 5.2 同跨度同键先折叠成类（成员全保留；类档=成员最高档；代表按 档→形状序→id）；
+- 5.3 攻击边：support_span（同跨度异键严格高档）/ same_key（同键不同跨长者胜）/
+  contained（相容包含）/ dominated（部分重叠严格高档）/ conflict_span·conflict_overlap
+  （同档互指）/ cross_boundary（D3 配对者，须有可用支持）；
+- 5.4 spanning=联合前提：依据集=**严格包含于** L 的 ≥2 条互不重叠更短类（「覆盖」
+  语义修正——round-2 用的是部分重叠，会把他人碎片误当依据）；L→自家依据的攻击边
+  挂起（打破循环依赖）；L OUT 当且仅当 |依据∩IN| ≥ 2；依据含 UNDEC 且 IN 不足 →
+  L UNDEC；依据全失效 → L 按普通边评估（可回收）；
+- 5.5 grounded 不动点：IN=无有效攻击者或全 OUT；OUT=存在 IN 攻击者；UNDEC=二者
+  均不可证；纯互指环 UNDEC，不用输入/形状顺序破环；
+- 5.6 状态映射按攻击种类回填原词表（conflict 类被第三方打破时以因果攻击者优先）；
+- 5.7 返回前 fail-closed 断言（终态唯一、counted 间无存活攻击、替代对象均为最终
+  counted 且原始依据仍成立、无替代链）。
+- 反例 A–H 全部先行失败后转绿；test_unresolved_suppressor_recycles_dominated 为
+  **唯一预授权修改**（修改前断言：s 因另支配垃圾 a 仍 counted；修改后：s/t/a 全部
+  不得 counted、a=overlap_undecided 备注「压制者本身未决」；第二段「移除 t 后
+  s counted、a 指向 s」保留）。
+- 运行事故记录：第一次 r2d run 在 merge 步因 KIND_PRIORITY 缺 conflict_* 键崩溃
+  （同档环被第三方打破时 conflict 攻击者可合法 IN）——失败目录
+  `data/run_20260913_r2d/` 保留；修复后按规则换目录重跑。
+
+### 任务三：完整运行
+
+- `data/run_20260913_r2d/`：失败（merge_SCC KeyError），目录保留。
+- `data/run_20260913_r2d_b/`：**complete**，input_identity_verified_unchanged=true，
+  10 步全过，无候选爆炸（fail-closed 未触发）。本轮 demo 候选版 = 该目录。
+
+### 任务四：差异核对（r2closure_delta.py → <r2d>/audit/）
+
+**7.1 历史差异（Round 1 → r2c）**：Round 1 目录 =
+`data/run_20260912_final`（edges manifest 330,362，round-1 报告自引剔除 1,366）；
+r2c = `data/run_20260912_r2c`（329,836）。逐边身份键 (source_decision,
+mention_detail_key) 对照：**removed 1,475 + added 949**，可复算等式
+330,362 − 1,475 + 949 = 329,836 ✓。+840 净残差解释：round-1 交接把「−1,366 自引
+剔除」当成唯一变化，实际还有 842 条边因「新 counted 提及」加入（FC/Q.R./L.R. 恢复
+等仲裁修复的直接产物）+ 96 条重排组/换键 + 11 条未分类；removed 侧 1,389 条
+mentions-not-counted（含自引剔除）+ 81 条重排 + 5 条未分类。多类增删相互抵消，
+不存在「恰好 840 条某类恢复边」。
+
+**7.2 本轮差异（r2c → r2d_b）**：边 329,836 → 330,126（removed 79 / added 369）；
+FOREIGN 386 → **384**（−2）；DOMESTIC_CA 56,685 → **53,948**（−2,737）；
+UNDETERMINED 272,765 → **275,794**（+3,029）；same_citation 主行降级 **1,343 组**
+（弱连接不再传播来源地，诚实方向）；组级来源结论变化仅 3 组；仲裁状态变化 655
+（counted→overlap_undecided 92 = 反例 A/E 语义生效；cross_boundary_invalid→counted
+369 = D3 配对者最终未决/OUT 后按 grounded 回收；recycled_weak_to_counted 0）；
+tentative 4,119；supported 304,527 / heuristic_only 25,599。
+
+**7.3/7.4**：`audit/r2c_supported_lost_43.csv`（43 条固定，r2d 中 1 条 counted）、
+`audit/r2c_overlap_only_761.csv`（761 条固定，r2d 中 0 条 counted）——均为稳定字段
+（court/sdc/offsets/shape/raw）逐条去向。
+
+### §8 案名投票敏感性（只比较，不改生产规则）
+
+- A current（生产口径）：173,878 组 / kept 17,265 / 边 330,126 / FOREIGN 384。
+- B dedup_position（位置稳定键 = sdc+row+start+end；同位置 nk 互异案名弃权）：
+  **与 A 全同**（组、dd、门槛、来源、边全部零变化）。
+- C counted_only：组 173,969（+91 分裂差异）/ kept 17,232（−33）/ 边 330,099（−27）；
+  modal 名变 5,271（多为名字变空：counted 池无票）；**dd 变 0、门槛跨越 0、
+  组来源变 0、FOREIGN 边 384 不变**；稳定率 0.9981。
+- 结论（供人工拍板）：B 与生产等价；C 只动案名列与分组切分，不动计数与来源。
+  产物：sensitivity_{current,dedup_position,counted_only}/（完整五层重算）+
+  audit/case_name_sensitivity_summary.json、case_name_sensitivity_groups.csv。
+
+### 闭环测试与运行记录
+
+| 命令 | 退出码 |
+|---|---|
+| `python pipeline/tests/test_candidates.py` | 0（**156 条**：闭环前 111 + 新增 45 条反例/守卫断言） |
+| `python pipeline/tests/test_layers.py` | 0（120 条；test_unresolved_suppressor 按预授权修改外全部原样） |
+| `python pipeline/tests/run_regression.py --selftest` | 0 |
+| `python pipeline/extract.py --fixture-check` | 0（A18/B15/C27/D6/E0/F0） |
+| `python pipeline/tests/test_layers.py --golden` | 0（口径：只验证旧产物兼容性，对新代码无证明力） |
+| `python pipeline/run_all.py --out data/run_20260913_r2d` | 1（merge KeyError——失败目录保留） |
+| `python pipeline/run_all.py --out data/run_20260913_r2d_b` | 0（complete，指纹验证过） |
+| `python implementation/r2closure_delta.py data/run_20260913_r2d_b` | 0 |
+| `python implementation/r2closure_sensitivity.py data/run_20260913_r2d_b` | 0 |
+
+### 停止条件自查（任务书十一）
+
+- 新 run complete ✓；指纹启动/结束一致 ✓；全部新反例通过 ✓；未授权旧测试全过 ✓；
+  fixture 数字保持 ✓；替代对象均为最终 counted（fail-closed 断言在每次仲裁生效）✓；
+  counted 终态冲突断言 ✓；输入顺序不影响结果（反例 G）✓；同键重复不改变外部结果
+  （反例 H）✓；43/761 逐条去向 ✓；两份差异分开 ✓；+840 残差可复算解释 ✓；
+  三口径敏感性输出 ✓；能力表述与代码一致（本轮第 7 节订正）✓。
+- **标记：demo 候选版，待独立审计。**
+
 ## Round 2 Blocked 增补（§5 格式）
 
 ### B7 DTC 系同档平票弃权（不阻塞；诚实少算，方向已知）

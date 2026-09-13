@@ -1,0 +1,93 @@
+{
+ "historical": {
+  "round1_dir": "D:\\cases data analisis\\data\\run_20260912_final",
+  "round1_edges": 330362,
+  "r2c_dir": "D:\\cases data analisis\\data\\run_20260912_r2c",
+  "r2c_edges": 329836,
+  "removed": 1475,
+  "added": 949,
+  "equation": "330362 - 1475 + 949 = 329836 (实际 329836)",
+  "round1_manifest_edges": 330362,
+  "round1_reported_self_excluded": 1366,
+  "residual_note": "round-1 报告的 −1,366 是自引剔除的**净效果假设**；实际净变化 = removed+added 的合成，见分类统计",
+  "removed_by_category": {
+   "mentions_not_counted_in_r2c": 1389,
+   "unclassified": 5,
+   "regrouped_or_rekeyed_in_r2c": 81
+  },
+  "added_by_category": {
+   "new_counted_mentions_in_r2c": 842,
+   "regrouped_or_rekeyed_in_r2c": 96,
+   "unclassified": 11
+  }
+ },
+ "current_edges": {
+  "r2c_edges": 329836,
+  "r2d_edges": 330126,
+  "removed": 79,
+  "added": 369,
+  "foreign_status_r2c": {
+   "UNDETERMINED": 272765,
+   "DOMESTIC_CA": 56685,
+   "FOREIGN": 386
+  },
+  "foreign_status_r2d": {
+   "UNDETERMINED": 275794,
+   "DOMESTIC_CA": 53948,
+   "FOREIGN": 384
+  },
+  "removed_by_category": {
+   "mentions_not_counted_in_r2c": 76,
+   "unclassified": 2,
+   "regrouped_or_rekeyed_in_r2c": 1
+  },
+  "added_by_category": {
+   "new_counted_mentions_in_r2c": 279,
+   "unclassified": 88,
+   "regrouped_or_rekeyed_in_r2c": 2
+  }
+ },
+ "groups": {
+  "r2c_groups": 173615,
+  "r2d_groups": 173878,
+  "member_set_matched": 173542,
+  "same_citation_primary_downgrades": 1343,
+  "group_origin_changes": 3
+ },
+ "arbitration": {
+  "candidates_both_runs": 1013948,
+  "status_changes": 655,
+  "transitions": {
+   "cross_boundary_invalid -> counted": 369,
+   "span_alternative_undecided -> alternative_contained": 118,
+   "counted -> overlap_undecided": 92,
+   "alternative_contained -> overlap_undecided": 38,
+   "alternative_unsupported_reading -> alternative_contained": 27,
+   "cross_boundary_invalid -> overlap_undecided": 2,
+   "cross_boundary_invalid -> span_alternative_undecided": 2,
+   "alternative_contained -> counted": 2,
+   "alternative_unsupported_reading -> overlap_undecided": 2,
+   "alternative_dominated_by_support -> overlap_undecided": 1,
+   "alternative_spanning_mismatch -> alternative_dominated_by_support": 1,
+   "alternative_same_key -> overlap_undecided": 1
+  },
+  "recycled_weak_to_counted": 0
+ },
+ "foreign_edges": {
+  "r2c": 386,
+  "r2d": 384,
+  "changed_rows": 612
+ },
+ "spanning": {
+  "r2c_spanning_mismatch": 1,
+  "r2d_spanning_mismatch": 0,
+  "exits": 1,
+  "entries": 0
+ },
+ "tracked_sets": {
+  "supported_lost_frozen": 43,
+  "supported_lost_counted_in_r2d": 1,
+  "overlap_only_frozen": 761,
+  "overlap_only_counted_in_r2d": 0
+ }
+}

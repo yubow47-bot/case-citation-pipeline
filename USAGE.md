@@ -140,6 +140,11 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
 - **逐候选台账**：`merge_out/{SCC,ONCA}/mentions_candidates.csv`——每个候选的仲裁状态
   （counted / 让位 / 弃权 / 跨界作废…）与让位对象，是「为什么这个串不在结果里」的答案；
   `key_mapping.csv` 给出旧键→新键（系列/罗马页拆分）的映射。
+- **案名投票口径**（R2 闭环 §8 敏感性参数，默认=生产行为不变）：
+  `merge.py --name-vote-pool {current,dedup_position,counted_only}`。实测（run r2d_b）：
+  dedup_position 与生产口径 100% 同结果；counted_only 只改案名列与分组切分
+  （modal 变 5,271），dd/门槛/来源地/FOREIGN 边零变化。**case_name_modal 实际参与
+  decide 的案件聚类，不是纯展示列。**
 - **回溯原文**：`python pipeline/traceback.py --run-dir <run目录> --search <案名>`，
   再 `--candidate-id <id>` 取分类证据 + 仲裁状态 + 原文窗口（`<<…>>` 标出跨度）。
 - 真实样例走读见 `implementation/demo_examples.md`；新旧差分见

@@ -1,0 +1,4 @@
+member_keys,r2c_status,r2c_country,r2d_status,r2d_country,r2c_evidence,r2d_evidence
+ONCA|1896||ac||348;SCC|1896||ac||248;SCC|1896||ac||348,DETERMINED,CA,UNDETERMINED,,case_origin:1896ac348,
+ONCA|1925||ac||396;SCC|1925|2|dlr||5;SCC|1925||ac||396,DETERMINED,CA,UNDETERMINED,,case_origin:1925ac396,
+ONCA|1938|4|dlr||81;ONCA|1938||ac||708;SCC|1938||ac||708;SCC|1938||ac||780,DETERMINED,CA,UNDETERMINED,,case_origin:1938ac708,
