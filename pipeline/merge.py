@@ -390,6 +390,11 @@ def arbitrate_document(rows, stats):
                 stats["partial_overlap_abstained"] += 1
 
     # ---- D3 跨界攻击（配对者须有可用支持；终态有效性交给 grounded）----
+    # R2 闭环回归修复：判决头部自印中立引证（self_citation_row）不参与计数
+    # 竞争，但它**本身是真实印刷引证**——作为 D3 配对者时无条件有效（不经
+    # grounded：证据直接、无循环依赖），被标候选整类 OUT。rejected 配对者
+    # 与缺失配对者照旧 unresolved。
+    d3_self_direct = {}                # cls -> (flagged_cid, partner_cid)
     for r in live:
         if (r.get("structural_conflict") == "cross_boundary_year_page"
                 and r.get("conflict_with_candidate")):
@@ -400,7 +405,17 @@ def arbitrate_document(rows, stats):
             pcls = cls_of_member.get(partner["candidate_id"])
             acls = cls_of_member[r["candidate_id"]]
             if pcls is None or acls is None or pcls == acls:
-                stats["cross_boundary_unresolved"] += 1
+                pstatus = out.get(partner["candidate_id"], ("", ""))[0]
+                if (pcls is None and acls is not None
+                        and pstatus == "self_citation_row"
+                        and support_grade(partner) >= 1):
+                    # 自引配对者：类外但真实——直接判 OUT（不进攻击图）
+                    if acls not in d3_self_direct:
+                        d3_self_direct[acls] = (r["candidate_id"],
+                                                partner["candidate_id"])
+                        stats["cross_boundary_invalidated"] += 1
+                else:
+                    stats["cross_boundary_unresolved"] += 1
                 continue
             if support_grade(partner) < 1:
                 # 配对者无可用支持：不构成跨界攻击（R2 订正保留）
@@ -411,6 +426,8 @@ def arbitrate_document(rows, stats):
 
     # ---- 5.5 grounded 不动点 ----
     status = {ck: "UNDEC" for ck in classes}
+    for ck in d3_self_direct:
+        status[ck] = "OUT"             # 自引配对者的跨界证据：直接 OUT
     reason = {}
     changed = True
     while changed:
@@ -491,6 +508,15 @@ def arbitrate_document(rows, stats):
         rep = rep_of[ck]
         members = classes[ck]
         st = status[ck]
+        if ck in d3_self_direct:
+            _fcid, _pcid = d3_self_direct[ck]
+            for m in members:
+                out[m["candidate_id"]] = (
+                    "cross_boundary_invalid",
+                    "page read as year by the judgment's own printed "
+                    "citation (self) %s" % _pcid,
+                    _pcid)
+            continue
         if st == "IN":
             out[rep["candidate_id"]] = ("counted", "", "")
             for m in members:
@@ -544,14 +570,29 @@ def arbitrate_document(rows, stats):
         if st_name in ("alternative_same_key", "alternative_weaker_support",
                        "alternative_unsupported_reading", "alternative_contained",
                        "alternative_dominated_by_support",
-                       "alternative_spanning_mismatch", "cross_boundary_invalid"):
+                       "alternative_spanning_mismatch"):
             if sup not in counted_ids:
                 raise AssertionError("替代对象不是最终 counted：%r -> %r (%s)"
                                      % (cid, sup, st_name))
+        elif st_name == "cross_boundary_invalid":
+            # 例外（R2 闭环回归修复）：D3 配对者可以是判决头部自印中立引证——
+            # 真实印刷引证、按政策不参与计数，但作为跨界证据无条件有效
+            if sup not in counted_ids:
+                cls = cls_of_member.get(cid)
+                ok = cls is not None and cls in d3_self_direct \
+                    and d3_self_direct[cls][1] == sup
+                if not ok:
+                    raise AssertionError(
+                        "cross_boundary 替代对象既非 counted 也非自引配对者："
+                        "%r -> %r" % (cid, sup))
             cls = cls_of_member[cid]
             if st_name == "alternative_same_key" \
                     and sup == rep_of[cls]["candidate_id"]:
                 valid = True          # 同类成员指向本类代表（5.2 类内映射）
+            elif st_name == "cross_boundary_invalid" \
+                    and cls in d3_self_direct \
+                    and d3_self_direct[cls][1] == sup:
+                valid = True          # 自引配对者的跨界证据（R2 闭环回归修复）
             else:
                 valid = any(rep_of[t]["candidate_id"] == sup
                             for k, t in attacks.get(cls, []) if status[t] == "IN")

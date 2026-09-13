@@ -1101,6 +1101,46 @@ def test_counterexample_h_same_key_duplication_invariance():
 
 
 
+def test_d3_partner_self_citation_row():
+    """R2 闭环回归（评审定位）：D3 配对者是判决头部自印中立引证
+    （self_citation_row）时，仍须作为跨界证据——自引不参与计数竞争，
+    但它是真实印刷引证，足以证明「页码被误读成年份」的碎片不是引证。
+
+    失败现象（修复前）：建类前剔除了自引行，cls_of_member 查不到配对者，
+    D3 记 unresolved，碎片候选 counted，366 条垃圾边进入 citation_edges。"""
+    def cand(cid, s, e, raw, jur, extra=None):
+        r = {"candidate_id": cid, "corpus_row_index": "0",
+             "source_decision_citation": "SCC_t0", "raw_string": raw,
+             "shape_name": "shape_vol_abbr_page",
+             "match_start_offset": s, "match_end_offset": e,
+             "citation_kind": "reporter", "jurisdiction": jur,
+             "jurisdiction_confidence": "estimated", "lookup_mode": "exact",
+             "parse_status": "valid", "structural_conflict": "",
+             "rejected_reason": "", "self_citation": "",
+             "candidate_case_name": "", "source_decision_year": "2020",
+             "year_start": "", "vol": "", "abbr": "", "page": "",
+             "year_span": "-1:-1", "page_span": "-1:-1"}
+        r.update(extra or {})
+        return r
+    frag = cand("frag", 0, 25, "8377278 Canada Inc., 2019", "UNSUPPORTED", {
+        "lookup_mode": "",
+        "structural_conflict": "cross_boundary_year_page",
+        "conflict_with_candidate": "P",
+        "page": "2019", "page_span": "22:26"})
+    P = cand("P", 22, 34, "2019 SCC 70", "CA", {
+        "shape_name": "shape_neutral_bare",
+        "self_citation": "true",
+        "year_start": "2019", "year_span": "22:26"})
+    stats = Counter()
+    v = merge.arbitrate_document([frag, P], stats)
+    check(v["P"][0] == "self_citation_row",
+          "闭环回归：自引行保持 self_citation_row（不参与计数竞争）")
+    check(v["frag"][0] == "cross_boundary_invalid" and v["frag"][2] == "P",
+          "闭环回归：自引配对者仍是有效跨界证据，碎片 invalidated（%r %r）"
+          % (v["frag"][0], v["frag"][2]))
+
+
+
 # ============================================================ R2-1/R2-9
 def _grow(rid, merge_key, basis, status="UNDETERMINED", country="", evid="",
           mbasis="", gid="XC-T1"):
@@ -1315,6 +1355,7 @@ def main():
               test_counterexample_e_same_span_undecided_still_competes,
               test_counterexample_g_input_order_invariance_complex,
               test_counterexample_h_same_key_duplication_invariance,
+              test_d3_partner_self_citation_row,
               test_new_path_fixture_measurements):
         t()
     print("全部通过：%d 条断言" % len(PASSED))
