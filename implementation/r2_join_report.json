@@ -1,7 +1,7 @@
 {
- "run_dir": "data\\run_20260913_r2e",
+ "run_dir": "data\\run_20260913_r2g",
  "new_candidates": 1013948,
- "new_counted": 527565,
+ "new_counted": 532072,
  "legacy_preservation": {
   "joined_ok": 998465,
   "missing": 0,
@@ -12,14 +12,14 @@
  },
  "old_counted_fate": {
   "total_old_counted": 518480,
-  "1_still_counted": 512044,
-  "3_overlapping_counted_span_only": 780,
-  "4_counted_nowhere": 5656,
+  "1_still_counted": 516442,
+  "3_overlapping_counted_span_only": 872,
+  "4_counted_nowhere": 1166,
   "note": "2=身份等价替换（新旧 v2 键相同，语义替换有据）；3=仅空间重叠、语义等价未核实（跨距错配可能假覆盖）；4=新路线任何地方都没计；5=未枚举或文档连接未决"
  },
  "lost_supported_note": "丢失行按新仲裁状态与旧支持法域的分解见 r2_join_report.json 的 old_counted_fate；FC/Q.R./L.R. 类丢失应已被 R2-2/3 消除",
  "group_consistency": {
-  "groups": 173512,
+  "groups": 177111,
   "rows_disagreeing_on_group_foreign_status": 0,
   "multi_country_not_conflict": 0,
   "case_record_members_in_undetermined_groups": 31,
@@ -32,7 +32,7 @@
     "noncore_or_heuristic": true
    },
    {
-    "gid": "XC-G000627",
+    "gid": "XC-G000628",
     "case_record_evidence": [
      "case_origin:1896ac248",
      "case_origin:1896ac348"
@@ -40,42 +40,42 @@
     "noncore_or_heuristic": true
    },
    {
-    "gid": "XC-G001108",
+    "gid": "XC-G001115",
     "case_record_evidence": [
      "case_origin:1920ac636"
     ],
     "noncore_or_heuristic": true
    },
    {
-    "gid": "XC-G001192",
+    "gid": "XC-G001199",
     "case_record_evidence": [
      "case_origin:19222ac128"
     ],
     "noncore_or_heuristic": true
    },
    {
-    "gid": "XC-G001308",
+    "gid": "XC-G001315",
     "case_record_evidence": [
      "case_origin:1925ac396"
     ],
     "noncore_or_heuristic": true
    },
    {
-    "gid": "XC-G001428",
+    "gid": "XC-G001438",
     "case_record_evidence": [
      "case_origin:1930ac79"
     ],
     "noncore_or_heuristic": true
    },
    {
-    "gid": "XC-G001641",
+    "gid": "XC-G001653",
     "case_record_evidence": [
      "case_origin:1936ac635"
     ],
     "noncore_or_heuristic": true
    },
    {
-    "gid": "XC-G001683",
+    "gid": "XC-G001695",
     "case_record_evidence": [
      "case_origin:1938ac708",
      "case_origin:1938ac780"
@@ -83,7 +83,7 @@
     "noncore_or_heuristic": true
    },
    {
-    "gid": "XC-G064944",
+    "gid": "XC-G066155",
     "case_record_evidence": [
      "case_origin:188814ac46",
      "case_origin:188814appcas46"
@@ -91,7 +91,7 @@
     "noncore_or_heuristic": true
    },
    {
-    "gid": "XC-G069774",
+    "gid": "XC-G070985",
     "case_record_evidence": [
      "case_origin:1914ac258"
     ],
@@ -109,19 +109,19 @@
   },
   "round2": {
    "edges_foreign": 384,
-   "edges_domestic_ca": 53963,
-   "edges_undetermined": 275359,
+   "edges_domestic_ca": 55237,
+   "edges_undetermined": 277841,
    "edges_conflict": 0,
-   "edges_supported": 304247,
-   "edges_heuristic_only": 25459,
-   "tentative_edges": 4111,
-   "self_excluded_sources": 1366,
-   "edges_total": 329706
+   "edges_supported": 308001,
+   "edges_heuristic_only": 25461,
+   "tentative_edges": 4110,
+   "self_excluded_sources": 1367,
+   "edges_total": 333462
   }
  },
  "name_vote_limitation": {
   "votes_total": 466862,
-  "votes_from_non_counted": 204107,
-  "votes_from_counted": 262755
+  "votes_from_non_counted": 202616,
+  "votes_from_counted": 264246
  }
 }

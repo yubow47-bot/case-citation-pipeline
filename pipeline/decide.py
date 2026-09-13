@@ -449,6 +449,48 @@ def split_by_decision(members, did_idx, stats, start=None):
             parts0.append((pm, "identifier_uncoited"))
         if len(parts0) > 1:
             stats["clusters_identifier_split_uncoited"] += 1
+            # identifier 单元之间、以及 identifier 单元与非锚成员之间的跨系统
+            # 连接，走既有共引合并（overlap ≥ 0.8×较小集）；同系统 identifier
+            # 对被守卫跳过（不同编号=不同文档）
+            n_p = len(parts0)
+            parent = list(range(n_p))
+
+            def find(x):
+                while parent[x] != x:
+                    parent[x] = parent[parent[x]]
+                    x = parent[x]
+                return x
+
+            for i in range(n_p):
+                for j in range(i + 1, n_p):
+                    ids_i = set()
+                    for m in parts0[i][0]:
+                        ids_i |= did_idx.get(row_key(m), set())
+                    ids_j = set()
+                    for m in parts0[j][0]:
+                        ids_j |= did_idx.get(row_key(m), set())
+                    small = min(len(ids_i), len(ids_j))
+                    if not small or len(ids_i & ids_j) < BAR * small:
+                        continue
+                    sys_i = {identifier_system_of(m["merge_key"])
+                             for m in parts0[i][0]}
+                    sys_j = {identifier_system_of(m["merge_key"])
+                             for m in parts0[j][0]}
+                    if (sys_i & sys_j) - {None}:
+                        continue      # 同系统 identifier 永不合并
+                    parent[find(i)] = find(j)
+            comps = defaultdict(list)
+            for i in range(n_p):
+                comps[find(i)].append(i)
+            merged = []
+            for comp in sorted(comps.values(),
+                               key=lambda c: min(row_key(parts0[i][0][0])
+                                                 for i in c)):
+                g_rows = [m for i in comp for m in parts0[i][0]]
+                reasons = sorted({parts0[i][1] for i in comp if parts0[i][1]})
+                merged.append((g_rows, ";".join(reasons)))
+            if len(merged) > 1:
+                return merged
         return parts0 if parts0 else [(members, "")]
     stats["clusters_split_by_decision"] += 1
 
@@ -726,6 +768,10 @@ def assign_identity_basis(members, did_idx, start, reason):
             b = "same_citation"
         elif "unanchored" in (reason or ""):
             b = "unanchored"
+        elif "identifier_uncoited" in (reason or ""):
+            # R2F：identifier 单元经既有共引合并连入身份——basis=cocitation
+            # （不参与来源传播，与跨系统连接规则一致）
+            b = "cocitation"
         elif "decision" in (reason or ""):
             b = "cocitation"
         else:

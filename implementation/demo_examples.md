@@ -1,10 +1,10 @@
-# 演示样例（真实运行产物，data/run_20260913_r2e）
+# 演示样例（真实运行产物，data/run_20260913_r2g）
 
 全部来自本轮全量运行的真实语料数据；测试用合成数据只在 pipeline/tests/ 并明确标注。
 
 ## 1. 外国来源案件 + 引用它的判决
 
-**Thorner v. Major** [2009] UKHL 18（英国上议院）——组 `XC-G026547`
+**Thorner v. Major** [2009] UKHL 18（英国上议院）——组 `XC-G027461`
 - foreign_status=FOREIGN，origin_country=GB，basis=`court_scope_rule`，evidence=`scope:UKHL`（decisions/court_or_reporter_scope.csv：UKHL 中立引用 2001 年起由法院签发；本例 2009 在窗内）
 - 同组平行汇编（身份由裁定层合并）：`2009|1|wlr||776`, `2009|3|aller||945`, `2009||aller||945`, `2009||ukhl||18`
 - dd=5，occurrence=20；引用它的判决（按提及次数前 3）：
@@ -14,14 +14,14 @@
 
 ## 2. 国内来源案件（DOMESTIC_CA）
 
-**Reference re Senate Reform**（组 `XC-G032199`）：foreign_status=DOMESTIC_CA，origin_country=CA，basis=`court_scope_rule`，evidence=`scope:SCC`；dd=11
-- 来源地证据：组内中立引用键 `2014||scc||32` 落 SCC 排他规则（加拿大最高法院只审理源自加拿大法院体系的案件）
-  - 引用方 `SCC_2018scc32`：提及 8 次
-  - 引用方 `SCC_2021scc27`：提及 8 次
+**Thorburn v. British Columbia**（组 `XC-G032199`）：foreign_status=DOMESTIC_CA，origin_country=CA，basis=``，evidence=``；dd=2
+- 来源地证据：组内中立引用键 `` 落 SCC 排他规则（加拿大最高法院只审理源自加拿大法院体系的案件）
+  - 引用方 `ONCA_2021onca353`：提及 1 次
+  - 引用方 `ONCA_2025onca376`：提及 1 次
 
 ## 3. 显式未知（UNKNOWN ≠ 错误，也 ≠ 外国）
 
-**R. v. Evans**（组 `XC-G009597`，dd=38）：foreign_status=**UNDETERMINED**。该案 1991 年判决，引用它的判决只有 S.C.R./C.C.C. 汇编式引证（无中立代码），不在 case_origin 表、也不适用任何 scope 规则——按约束四不填默认值，显式留未知。
+**R. v. H. (M.)**（组 `XC-G009597`，dd=1）：foreign_status=**UNDETERMINED**。该案 1991 年判决，引用它的判决只有 S.C.R./C.C.C. 汇编式引证（无中立代码），不在 case_origin 表、也不适用任何 scope 规则——按约束四不填默认值，显式留未知。
 
 ## 4. 已知坏解析的完整修正轨迹（D1/D2/D3）
 
@@ -29,15 +29,15 @@
   - `ONCA:19881:8555:8570:shape_neutral_bare`：raw='2011 ONCA, 2011' shape=shape_neutral_bare → **cross_boundary_invalid**（D3 旗 cross_boundary_year_page；让位于 ONCA:19881:8566:8579:shape_neutral_bare）
   - `ONCA:19881:8555:8570:shape_vol_abbr_page`：raw='2011 ONCA, 2011' shape=shape_vol_abbr_page → **cross_boundary_invalid**（D3 旗 cross_boundary_year_page；让位于 ONCA:19881:8566:8579:shape_neutral_bare）
   - `ONCA:19881:8566:8579:shape_neutral_bare`：raw='2011 ONCA 779' shape=shape_neutral_bare → **counted**（真引证，键 `2011||onca||779`进最终表；同跨度的卷读法 alternative_unsupported_reading）
-  - 复现命令：`python pipeline/traceback.py --run-dir data/run_20260913_r2e --candidate-id ONCA:19881:8566:8579:shape_neutral_bare`
+  - 复现命令：`python pipeline/traceback.py --run-dir data/run_20260913_r2g --candidate-id ONCA:19881:8566:8579:shape_neutral_bare`
 
 ## 5. 从最终结果回到原文与判断依据
 
 ```
 # 粗搜（按案名/原文串找 candidate_id）
-python pipeline/traceback.py --run-dir data/run_20260913_r2e --search Thorner
+python pipeline/traceback.py --run-dir data/run_20260913_r2g --search Thorner
 # 深查：回显分类证据 + 仲裁状态 + 原文窗口（<<…>> 标出候选跨度）
-python pipeline/traceback.py --run-dir data/run_20260913_r2e \
+python pipeline/traceback.py --run-dir data/run_20260913_r2g \
     --candidate-id <台账里的 candidate_id>
 # 台账：merge_out/{SCC,ONCA}/mentions_candidates.csv（逐候选仲裁状态）
 # 边：edges/citation_edges.csv；mention_detail_key 回连上表

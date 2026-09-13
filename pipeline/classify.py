@@ -711,6 +711,16 @@ class Classifier(object):
             append_reason(row, "rejected_reason", "federal_statute")
         if PARTY_TAIL.search(pre) and PARTY_HEAD.match(raw):
             append_reason(row, "rejected_reason", "party_initials")
+        # R2F：secondary_source（CanLIIDocs 等）的拒绝传播到同引证的其他形状
+        # 读法（卷读法孪生）——表驱动（identifier_systems），非字符串特例
+        ab = (row.get("abbreviation") or "").strip()
+        if ab:
+            ident = self.ident_exact.get(ab)
+            if ident is not None \
+                    and (ident.get("identifier_kind") or "") == "secondary_source" \
+                    and "not_a_decision" not in (row.get("rejected_reason") or ""):
+                append_reason(row, "rejected_reason", "not_a_decision")
+                self.stats["identifier_secondary_rejected"] += 1
 
     def step3(self, row):
         """§8.5：法域查表。精确优先、归一键作退路，lookup_mode 必须留痕。"""

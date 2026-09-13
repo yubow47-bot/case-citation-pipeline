@@ -1,0 +1,256 @@
+{
+ "span_set_identity": {
+  "r2e_spans": 2027876,
+  "r2f_spans": 2027876,
+  "differences": 0,
+  "target": 0,
+  "note": "键 = (court, corpus_row_index, start, end, shape)"
+ },
+ "per_token_r2f": {
+  "canlii": {
+   "r2e_span_alternative_undecided": 3542,
+   "counted": 1768,
+   "alternative_unsupported_reading": 1762,
+   "year_reread_as_vol_invalid": 56,
+   "r2e_year_reread_as_vol_invalid": 56,
+   "rejected_row": 19,
+   "r2e_rejected_row": 19,
+   "span_alternative_undecided": 18,
+   "r2e_counted": 6
+  },
+  "carswellont": {
+   "r2e_span_alternative_undecided": 1891,
+   "counted": 976,
+   "alternative_unsupported_reading": 948,
+   "r2e_counted": 33,
+   "rejected_row": 14,
+   "r2e_rejected_row": 14,
+   "year_reread_as_vol_invalid": 2,
+   "r2e_year_reread_as_vol_invalid": 2
+  },
+  "carswellque": {
+   "r2e_span_alternative_undecided": 968,
+   "counted": 485,
+   "alternative_unsupported_reading": 484,
+   "rejected_row": 2,
+   "r2e_rejected_row": 2,
+   "r2e_counted": 1
+  },
+  "carswellbc": {
+   "r2e_span_alternative_undecided": 787,
+   "counted": 397,
+   "alternative_unsupported_reading": 395,
+   "r2e_counted": 5
+  },
+  "carswellnat": {
+   "r2e_span_alternative_undecided": 636,
+   "counted": 318,
+   "alternative_unsupported_reading": 318
+  },
+  "carswellalta": {
+   "r2e_span_alternative_undecided": 532,
+   "counted": 266,
+   "alternative_unsupported_reading": 266
+  },
+  "carswellsask": {
+   "r2e_span_alternative_undecided": 144,
+   "counted": 74,
+   "alternative_unsupported_reading": 72,
+   "r2e_counted": 2
+  },
+  "carswellns": {
+   "r2e_span_alternative_undecided": 122,
+   "counted": 61,
+   "alternative_unsupported_reading": 61
+  },
+  "carswellnfld": {
+   "r2e_span_alternative_undecided": 90,
+   "counted": 46,
+   "alternative_unsupported_reading": 45,
+   "r2e_counted": 1
+  },
+  "carswellman": {
+   "r2e_span_alternative_undecided": 88,
+   "counted": 44,
+   "alternative_unsupported_reading": 44
+  },
+  "wl": {
+   "span_alternative_undecided": 78,
+   "r2e_span_alternative_undecided": 78,
+   "counted": 6,
+   "r2e_counted": 6
+  },
+  "carswellnb": {
+   "r2e_span_alternative_undecided": 70,
+   "counted": 35,
+   "alternative_unsupported_reading": 35
+  },
+  "carswell": {
+   "counted": 13,
+   "r2e_span_alternative_undecided": 13,
+   "alternative_unsupported_reading": 2,
+   "r2e_counted": 2
+  }
+ },
+ "blast_radius": {
+  "total_changes": 9040,
+  "class_i_identifier_related": 8868,
+  "class_ii_other": 172,
+  "transitions": {
+   "i_identifier: span_alternative_undecided -> counted": 4434,
+   "i_identifier: span_alternative_undecided -> alternative_unsupported_reading": 4432,
+   "ii_other: span_alternative_undecided -> counted": 72,
+   "ii_other: span_alternative_undecided -> alternative_weaker_support": 33,
+   "ii_other: span_alternative_undecided -> alternative_unsupported_reading": 32,
+   "ii_other: overlap_undecided -> cross_boundary_invalid": 25,
+   "ii_other: span_alternative_undecided -> rejected_row": 9,
+   "i_identifier: year_reread_as_vol_invalid -> counted": 1,
+   "i_identifier: span_alternative_undecided -> rejected_row": 1,
+   "ii_other: span_alternative_undecided -> alternative_contained": 1
+  }
+ },
+ "old_counted_fate": {
+  "total": 518480,
+  "fate": {
+   "1_still_counted": 516442,
+   "3_overlapping_counted_span_only": 872,
+   "4_counted_nowhere": 1166
+  },
+  "lost_by_token_top": {
+   "ontarioinc": 210,
+   "ontariolimited": 104,
+   "ontarioltd": 51,
+   "canadainc": 45,
+   "wl": 39,
+   "april": 19,
+   "february": 18,
+   "march": 16,
+   "january": 15,
+   "december": 15,
+   "may": 15,
+   "albertaltd": 15
+  },
+  "lost_supported_total": 27,
+  "r2d_c_reference": {
+   "still": 512044,
+   "overlap": 780,
+   "lost": 5656,
+   "not_enumerated": 0,
+   "lost_supported": 61
+  }
+ },
+ "groups": {
+  "r2e_groups": 173512,
+  "r2f_groups": 177111,
+  "matched": 173395,
+  "gained_DOMESTIC_CA_matched_only": 4,
+  "origin_changed_total": 4,
+  "identifier_groups_r2f": 3706,
+  "identifier_groups_DOMESTIC_CA": 1192,
+  "identifier_dom_samples": [
+   {
+    "gid": "XC-G000578",
+    "evidence": "scope:CanLII",
+    "basis": "court_scope_rule",
+    "keys": "1893||canlii||65"
+   },
+   {
+    "gid": "XC-G000893",
+    "evidence": "scope:CanLII",
+    "basis": "court_scope_rule",
+    "keys": "1911||canlii||74"
+   },
+   {
+    "gid": "XC-G001013",
+    "evidence": "scope:CanLII",
+    "basis": "court_scope_rule",
+    "keys": "1915||canlii||347"
+   },
+   {
+    "gid": "XC-G001394",
+    "evidence": "scope:CanLII",
+    "basis": "court_scope_rule",
+    "keys": "1928||canlii||448"
+   },
+   {
+    "gid": "XC-G001429",
+    "evidence": "scope:CanLII",
+    "basis": "court_scope_rule",
+    "keys": "1929||canlii||513"
+   },
+   {
+    "gid": "XC-G001590",
+    "evidence": "scope:CanLII",
+    "basis": "court_scope_rule",
+    "keys": "1934||canlii||16"
+   },
+   {
+    "gid": "XC-G001702",
+    "evidence": "scope:CanLII",
+    "basis": "court_scope_rule",
+    "keys": "1938||canlii||29"
+   },
+   {
+    "gid": "XC-G001987",
+    "evidence": "scope:CanLII",
+    "basis": "court_scope_rule",
+    "keys": "1947||canlii||32"
+   },
+   {
+    "gid": "XC-G001988",
+    "evidence": "scope:CanLII",
+    "basis": "court_scope_rule",
+    "keys": "1947||canlii||347"
+   },
+   {
+    "gid": "XC-G002239",
+    "evidence": "scope:CanLII",
+    "basis": "court_scope_rule",
+    "keys": "1952||canlii||8"
+   }
+  ],
+  "gained_dom_samples": [
+   {
+    "keys": "ONCA|1996||canlii||623",
+    "evidence": "XC-G013889"
+   },
+   {
+    "keys": "ONCA|2006||canlii||33765",
+    "evidence": "XC-G024783"
+   },
+   {
+    "keys": "ONCA|1997||carswell||2998",
+    "evidence": "XC-G014871"
+   },
+   {
+    "keys": "ONCA|1992||carswell||620",
+    "evidence": "XC-G010792"
+   }
+  ]
+ },
+ "same_system_assertion": {
+  "groups_violating": 0,
+  "target": 0
+ },
+ "consistency": {
+  "legacy_missing": 0,
+  "rows_inconsistent_origin": 0,
+  "multi_country_not_conflict": 0
+ },
+ "kept": {
+  "r2f_kept_groups": 8586,
+  "r2d_c_kept_groups": 8582
+ },
+ "edges": {
+  "r2e": {
+   "UNDETERMINED": 275359,
+   "DOMESTIC_CA": 53963,
+   "FOREIGN": 384
+  },
+  "r2f": {
+   "UNDETERMINED": 277841,
+   "DOMESTIC_CA": 55237,
+   "FOREIGN": 384
+  }
+ }
+}

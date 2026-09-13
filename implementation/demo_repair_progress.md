@@ -781,3 +781,71 @@ Kvello 2009 SCC 51 单键（occ 21）；|2d| 7,997 组 / |3d| 7,445 组拆键生
 | `python pipeline/tests/run_regression.py --selftest` | 0 | normalize_equivalence identical |
 | `python pipeline/tests/test_candidates.py` | 0 | 36 条断言（新路线） |
 | `python pipeline/run_all.py --out data/stage1_smoke --limit-batches 1` | 0 | 新路线全链烟雾通过 |
+
+
+## R2F：identifier 系统闭环（2026-09-13，任务书单轮）
+
+**问题**：数据库/厂商标识符引证（YYYY CanLII N / CarswellJur N / DTC / WL 等）全年
+弃权（span_alternative_undecided）——两读法均无表支持。r2e 实测：CanLII 1,771、
+CarswellOnt 944、CarswellQue 484… 全部弃权；构成旧计数丢失桶的主体。
+
+**决策表**：`decisions/identifier_systems.csv`（16 行，程序化生成
+decisions/tools/build_identifier_systems_csv.py）：CanLII/IIJCan（verified_official：
+API 文档、官方 FAQ 存档、官方博客 coverage 含 ukjcpc JCPC-加拿大上诉库说明）；
+13 个 Carswell token（verified_authoritative_manual：McGill 9e §3.8+Appendix E、
+Queen's McGill-10th 指南、2016 SCC 8 使用佐证）；DTC（verified_authoritative_manual：
+Bluebook T2.6 + IBFD 馆藏目录实证 year_is_volume=yes；出版方更正为 CCH/Wolters
+Kluwer）；WL（verified_authoritative_manual：Bluebook 10.8.1(a)；scope 非加拿大
+专属→jurisdiction_scope 留空，不做来源推断）；CanLIIDocs（verified_official：
+官方博客——二手评论，非判决）。键=印刷 token 逐字精确，拼写变体留空是政策。
+**QCTAQ**：经研究核实为 Tribunal administratif du Québec（TAQ）的 CanLII 代码
+（CanLII QC 列表页 + Wayback QCTAQ 库页 + taq.gouv.qc.ca）→ 加入
+neutral_court_codes.csv（法院代码，不入 identifier 表）。
+
+**代码**：extract neutral_bare 尾括注零宽前瞻捕获（trailing_paren，
+candidates-2.0→candidates-2.1，全语料跨度集合差 0）；classify identifier 分支
+（kind=identifier/jurisdiction=scope/细分仅限尾括注归一后精确命中法院代码、
+CanLIIDocs 行级拒绝 not_a_decision 并传播到同引证卷读法）；decide 身份规则
+（identifier 键不做 typo 塌缩、同系统不共组（单元指派守卫+pending 守卫）、
+跨系统仅经既有共引连接 basis=cocitation、main 断言同系统 identifier 每组至多
+一键）；scope 表加 CanLII/Carswell（key_type=identifier_system，origin=CA，
+basis=court_scope_rule）。
+
+**测试**：R2F a-j 先行失败后转绿；test_candidates 170→**195**；120/120、selftest、
+fixture、--golden 全保持。
+
+**运行**：`data/run_20260913_r2g/`（complete，指纹一致，10 步）。
+
+**验证数字（对照 r2e，仪器 r2f_verify.py + r2_regression_join.py）**：
+1. 每 token：CanLII 1,771 → counted 1,768 + rejected 19 + 弃权余 18；
+   CarswellOnt 944 → counted 976（含孪生）+ unsupported 948；… DTC 33 → 年读法
+   counted；CanLIIDocs 10 → rejected；QCTAQ 31 → counted（新法院代码）。
+2. 爆半径：9,040 条状态变化 = identifier 相关 **8,952**（CanLII/Carswell/DTC/
+   QCTAQ 候选及其孪生、B10/D3 容器）+ (ii) 其他 **88**（31=QCTAQ 经新增法院代码
+   计数〔有案可查〕；25=碎片经 identifier 配对者获得支持的 D3 作废；32=同跨度
+   卷孪生让位）——逐行见 audit/r2f_status_changes.csv。
+3. 跨度集合恒等：r2e=r2f=2,027,876，差 **0**。
+4. 旧 counted 行：518,480 → 仍计 **516,442** / 重叠 872 / 丢失 1,166 / 未枚举 0
+   ——丢失桶中 identifier 份额清零（余为公司碎片/月份词/WL 39）；
+   old-supported lost = **27**（≤61 红线，较 r2e 的 61 下降）。
+5. 组：173,512 → 177,111（identifier 键成为独立身份组）；同系统断言违规 **0**。
+6. 来源：组/边 DOMESTIC_CA 53,963 → **55,237**（identifier 组获 scope:CanLII
+   证据 1,192 组 DOMESTIC_CA，basis=court_scope_rule）；FOREIGN **384 不变**；
+   UNDETERMINED → 277,835（细分与弃权的诚实位移）。
+7. kept 组（dd≥5）：8,582 → **8,586**（+4：identifier 组越过门槛）。
+8. 一致性：legacy 缺失 0 / 行来源不一致 0 / 多国别非 CONFLICT 0。
+9. 追溯：`ONCA:10076:8322:8339:shape_neutral_bare`（2001 CanLII 24079，counted，
+   细分 ONCA）等已验证。
+
+**账本状态（identifier token 收口）**：≥5 提名的 token 全部落 (1) verified 行
+端到端处理；拼写变体（CarswellNlfd 等）= 政策性不匹配（表键精确）；月份词/普通
+名词垃圾照旧弃权（非 identifier，正确弃权）。无 (3) 类「源不可达」条目。
+
+
+### R2F 补充：61 条 old-supported lost 的账目订正（评审要求）
+
+r2e 的 61 条 old-supported lost 中：**60 条原样带入**（其构成：重叠未决 21 +
+同跨度孪生 39，与 B10/D3 修复无关），**仅 1 条是 r2e 新增**——
+`(2001), 2001 DTC 295`（B10 容器作废后其 DTC 孪生按 B7 弃权；R2F 落地后该
+DTC 引证已按年读法 counted，r2g lost_by_token 中 dtc 已消失）。r2g 的
+old-supported lost = **27**（较红线 61 大幅下降）。

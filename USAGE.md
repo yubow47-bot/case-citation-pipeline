@@ -89,6 +89,13 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
 
 读到一个偏低的数字时，先对照这张表，不要直接下「这个案子很少被引」的结论。
 
+0. **数据库/厂商标识符引证**（R2F 轮修复）。`YYYY CanLII N`、`YYYY CarswellJur N`、
+   `YYYY DTC N`、`YYYY QCTAQ N` 等 identifier 引证曾在「年读法 vs 卷读法」同档
+   弃权下 0 计数。R2F 以 identifier_systems.csv 决策表（16 行，官方/权威手册来源）
+   + classify identifier 分支 + 既有支持分级解决：r2g 实测 CanLII counted 1,768、
+   CarswellOnt 976、DTC 年读法 counted、QCTAQ 经新增法院代码 counted；CanLIIDocs
+   为二手评论行级拒绝。拼写变体（CarswellNlfd 类）按精确匹配政策留空。
+
 1. **同名、年份相差 ≤1 的两组没有被合并**（PROBLEMS #62）。实测（组级计数）：所有组里
    同名、主行年份相差 ≤1 的组对 8,329 对，其中两边都过门槛的 **225 对**。它们混着两类：
    真不同的判决（`R. v. John` 每年一件）与**同一判决的两种写法**（例如 *R. v. O'Brien* 的
@@ -102,7 +109,12 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
 3. **自引的残留**（PROBLEMS #54）。判决书头部会印自己的引证；归并层已不计入 dd，但
    `occurrence_count` 仍含「平行写法的自引提及」——即同一件判决用另一种汇编写法提到自己
    时，那一次提及仍在 occurrence 里，只有 dd 被剔干净。
-4. **抽取层的 1.2% 少算**（PROBLEMS #63）。对语料自带的上游真值（74,750 条裸中立引用），
+3b. **数据库/厂商标识符引证**（R2F 轮修复）。`YYYY CanLII N`、`YYYY CarswellJur N`、
+   `YYYY DTC N`、`YYYY QCTAQ N` 等 identifier 引证曾在「年读法 vs 卷读法」同档
+   弃权下 0 计数。R2F 以 identifier_systems.csv 决策表（16 行，官方/权威手册来源）
+   + classify identifier 分支 + 既有支持分级解决：r2g 实测 CanLII counted 1,768、
+   CarswellOnt 976、DTC 年读法 counted、QCTAQ 经新增法院代码 counted；CanLIIDocs
+   为二手评论行级拒绝。拼写变体（CarswellNlfd 类）按精确匹配政策留空。对语料自带的上游真值（74,750 条裸中立引用），
    只算最终保留的 span 召回 **98.80%**。漏掉的 **872 条不是没抽到，而是去重时输给了粘连
    案名的更长 span**（`Kvello Estate 2009 SCC 51` 顶掉 `2009 SCC 51`）。这些**不会变成
    错答案**：赢家串在分类层一律判 `UNSUPPORTED`（一部分带 `unrecognized_series_prefix`），
