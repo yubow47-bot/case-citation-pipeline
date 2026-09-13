@@ -89,13 +89,6 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
 
 读到一个偏低的数字时，先对照这张表，不要直接下「这个案子很少被引」的结论。
 
-0. **数据库/厂商标识符引证**（R2F 轮修复）。`YYYY CanLII N`、`YYYY CarswellJur N`、
-   `YYYY DTC N`、`YYYY QCTAQ N` 等 identifier 引证曾在「年读法 vs 卷读法」同档
-   弃权下 0 计数。R2F 以 identifier_systems.csv 决策表（16 行，官方/权威手册来源）
-   + classify identifier 分支 + 既有支持分级解决：r2g 实测 CanLII counted 1,768、
-   CarswellOnt 976、DTC 年读法 counted、QCTAQ 经新增法院代码 counted；CanLIIDocs
-   为二手评论行级拒绝。拼写变体（CarswellNlfd 类）按精确匹配政策留空。
-
 1. **同名、年份相差 ≤1 的两组没有被合并**（PROBLEMS #62）。实测（组级计数）：所有组里
    同名、主行年份相差 ≤1 的组对 8,329 对，其中两边都过门槛的 **225 对**。它们混着两类：
    真不同的判决（`R. v. John` 每年一件）与**同一判决的两种写法**（例如 *R. v. O'Brien* 的
@@ -109,12 +102,7 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
 3. **自引的残留**（PROBLEMS #54）。判决书头部会印自己的引证；归并层已不计入 dd，但
    `occurrence_count` 仍含「平行写法的自引提及」——即同一件判决用另一种汇编写法提到自己
    时，那一次提及仍在 occurrence 里，只有 dd 被剔干净。
-3b. **数据库/厂商标识符引证**（R2F 轮修复）。`YYYY CanLII N`、`YYYY CarswellJur N`、
-   `YYYY DTC N`、`YYYY QCTAQ N` 等 identifier 引证曾在「年读法 vs 卷读法」同档
-   弃权下 0 计数。R2F 以 identifier_systems.csv 决策表（16 行，官方/权威手册来源）
-   + classify identifier 分支 + 既有支持分级解决：r2g 实测 CanLII counted 1,768、
-   CarswellOnt 976、DTC 年读法 counted、QCTAQ 经新增法院代码 counted；CanLIIDocs
-   为二手评论行级拒绝。拼写变体（CarswellNlfd 类）按精确匹配政策留空。对语料自带的上游真值（74,750 条裸中立引用），
+4. **抽取层的 1.2% 少算**（PROBLEMS #63）。对语料自带的上游真值（74,750 条裸中立引用），
    只算最终保留的 span 召回 **98.80%**。漏掉的 **872 条不是没抽到，而是去重时输给了粘连
    案名的更长 span**（`Kvello Estate 2009 SCC 51` 顶掉 `2009 SCC 51`）。这些**不会变成
    错答案**：赢家串在分类层一律判 `UNSUPPORTED`（一部分带 `unrecognized_series_prefix`），
@@ -126,6 +114,49 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
 5. **判决身份判定的已知残余**：跨汇编平行引证的合并依赖共引（重合系数 ≥0.8）；法域表把
    全国性汇编（`D.L.R.`、`C.C.C.`）标为 CA，其中刊登的省级判决可能被分到最高法院
    （PROBLEMS #40）。错在少算或错分，不在虚高。
+6. **数据库/厂商标识符引证**（R2F 轮修复；此前整类同档弃权 0 计数）。`YYYY CanLII N`、
+   `YYYY CarswellJur N`、`YYYY DTC N`、`YYYY QCTAQ N` 等 identifier 引证曾在「年读法 vs
+   卷读法」同档弃权下 0 计数。R2F 以 identifier_systems.csv 决策表（16 行，官方/权威手
+   册来源）+ classify identifier 分支 + 既有支持分级解决。r2g 实测（shape_neutral_bare
+   口径）：CanLII 1,763 → counted 1,760 + rejected 3；CarswellOnt 944 → counted 943 +
+   rejected 1；DTC 年读法 counted（表语义 year_is_volume=yes）；QCTAQ 经新增法院代码
+   counted；CanLIIDocs 为二手评论行级拒绝。拼写变体（CarswellNlfd 类）按精确匹配政策
+   留空——是政策，不是债。
+
+## 6b. 2026-09 修复轮：candidates-2.0 新路线（demo）
+
+本轮加了第二条管线（extract 全候选 → classify 逐候选 → merge 判决内仲裁 → decide
+→ select → edges），与上文 1–6 节的旧路线**并存**：
+
+- **一次跑完**：`python pipeline/run_all.py --out <新的空目录>`（目录必须不存在或为空；
+  失败目录保留，重试用新目录）。产物 `run_manifest.json`（status=complete 才算完整；
+  complete 要求收尾时「输入身份指纹」——生产代码+全部决策表+select 配置+语料+参数——
+  与启动时逐字节一致，R2-10），各层日志 `step_*.log`。
+- **最终表怎么读**：`decide_out/cross_court/decided.csv`（组级结论写在**每一行**的
+  group_foreign_status / group_origin_country / group_origin_status /
+  group_origin_evidence_ids；成员级观察在 member_origin_* 与 identity_basis 列——
+  组结论只由合格身份基础（anchor/同印刷串/双语变体/单例）聚合，启发式连接
+  （name_year/cocitation/typo 变体）的证据留在 noncore_origin_evidence 审计列）；
+  `select_out/selected.csv` 的 `kept` 仍只按 dd≥5（语义未动）；
+  `decide_out/cross_court/effective_sources.csv` 是**唯一权威**的「来源判决→案件身份」
+  关联（含被剔自引的 exclusion_reason）。
+- **边**：`edges/citation_edges.csv` 一行 = 一条 (引用判决, 被引案件) 边；
+  `edges/foreign_edges.csv` 只含 **supported 路径**的 FOREIGN 边（只经启发式路径
+  到达的边标 edge_support=heuristic_only、foreign_status=UNDETERMINED，进
+  `edges/tentative_edges.csv`——不冒充确证外国边）；`edges/self_excluded_edges.csv`
+  留被剔自引供审计。
+- **逐候选台账**：`merge_out/{SCC,ONCA}/mentions_candidates.csv`——每个候选的仲裁状态
+  （counted / 让位 / 弃权 / 跨界作废…）与让位对象，是「为什么这个串不在结果里」的答案；
+  `key_mapping.csv` 给出旧键→新键（系列/罗马页拆分）的映射。
+- **案名投票口径**（R2 闭环 §8 敏感性参数，默认=生产行为不变）：
+  `merge.py --name-vote-pool {current,dedup_position,counted_only}`。实测（run r2d_b）：
+  dedup_position 与生产口径 100% 同结果；counted_only 只改案名列与分组切分
+  （modal 变 5,271），dd/门槛/来源地/FOREIGN 边零变化。**case_name_modal 实际参与
+  decide 的案件聚类，不是纯展示列。**
+- **回溯原文**：`python pipeline/traceback.py --run-dir <run目录> --search <案名>`，
+  再 `--candidate-id <id>` 取分类证据 + 仲裁状态 + 原文窗口（`<<…>>` 标出跨度）。
+- 真实样例走读见 `implementation/demo_examples.md`；新旧差分见
+  `implementation/diff_report.md`；修复工作记录见 `implementation/demo_repair_progress.md`。
 
 ## 6b. 2026-09 修复轮：candidates-2.0 新路线（demo）
 

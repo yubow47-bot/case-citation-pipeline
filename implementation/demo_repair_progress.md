@@ -849,3 +849,56 @@ r2e 的 61 条 old-supported lost 中：**60 条原样带入**（其构成：重
 `(2001), 2001 DTC 295`（B10 容器作废后其 DTC 孪生按 B7 弃权；R2F 落地后该
 DTC 引证已按年读法 counted，r2g lost_by_token 中 dtc 已消失）。r2g 的
 old-supported lost = **27**（较红线 61 大幅下降）。
+
+
+## R2F 收尾（2026-09-13，评审四项发现全修，commit 6c69ff6 + r2i）
+
+### 评审发现与实测确认
+
+1. **(a) r2g 用了 8a8e324 的 classify.py**：实测确认——r2g manifest 的 classify sha =
+   977fee06（= 8a8e324 版本），HEAD 的 b9f53b33（含 CanLIIDocs 拒绝传播到卷孪生）
+   **未进入 r2g**。后果：r2g 里 10 条 CanLIIDocs 卷/年读法孪生仍被 counted
+   （vol_abbr_page 9 + year_vol_page 1）。原报告「指纹一致 / r2g 已验证孪生传播」
+   对 HEAD 而言不成立——**已收回**。
+2. **(b) USAGE.md 少算清单损坏**：identifier 段出现两次（item 0 与 3b），3b 的第二份
+   覆盖了 item 4 的标题「抽取层的 1.2% 少算（PROBLEMS #63）」→ 98.80% 段落成了无头段。
+   **已修**：96b3665 的 items 1–5 逐字节恢复、identifier 只保留一条（item 6，附评审
+   订正数字）、98.80% 口径警示段完整保留。
+3. **(c) WL 弃权根因**：identifier_systems 表行 verified 但 jurisdiction_scope 为空
+   → classify 写 jurisdiction="" → merge.support_grade 把空法域当「无表支持」降为
+   0 档 → 与卷读法同档平票弃权。**已修**：support_grade 对 citation_kind=identifier
+   且 lookup_mode=exact 直接给档 2（表支持与法域栏解耦）。
+4. **(d) 报告数字错误**：跨度集合正确值 = **1,013,948**（verify 脚本此前双循环重复
+   计数报 2,027,876——脚本 bug 已修）；per-token 数字已按 shape_neutral_bare 口径
+   订正（CanLII 1,763 → counted 1,760 + rejected 3；CarswellOnt 944 → counted 943 +
+   rejected 1）。
+
+### WL 修复（先测后修）
+
+- 失败测试 `test_wl_identifier_counted_despite_blank_scope`：修复前 WL identifier
+  读法弃权（AssertionError: counted 失败）；修复后 counted（键 2005||wl||2709572）、
+  jurisdiction 留空、卷读法让位、origin UNDETERMINED（WL 无 scope 行）。
+
+### 重跑与差异（r2g → r2i）
+
+- `data/run_20260913_r2i/`（complete；**独立指纹核验**：_w10.py 对 HEAD 逐文件哈希
+  21 个文件 0 不匹配——不依赖 run 自述）。目录名用 r2i 而非任务书的 r2h：
+  data/run_20260913_r2h 已被上一轮的中间 run 占用（非空），按「新空目录」规则顺延。
+- 爆半径（vs r2g）：**89 条变化，全部 (i)，(ii) 其他 = 0**——
+  39 WL span_alt→counted（修复生效）、39 WL span_alt→unsupported（卷孪生让位）、
+  10 CanLIIDocs counted→rejected（孪生拒绝生效）、1 CanLIIDocs contained→rejected。
+- 旧 counted 行（vs r2g）：518,480 → 仍计 516,480 / 重叠 863 / 丢失 1,137 / 未枚举 0；
+  old-supported lost = **27**（≤27 红线持平——CanLIIDocs 孪生与 WL 均不计入，因
+  它们的旧状态是弃权而非 supported counted）。
+- 组 177,136（+25：WL 组分出）；kept 组 8,586（不变）；边 333,287（UNDETERMINED
+  277,866 / DOMESTIC_CA 55,237 / FOREIGN 384 不变）。
+- 一致性：0/0/0。
+
+### B10(b)/(c) 断言替换的来源记录
+
+commit 8a8e324 替换了 test_b10_year_reread_as_vol 中 (b)(c) 两段断言（从
+span_alternative_undecided 弃权改为中性 counted + 卷读法让位）。这不是隐蔽改动：
+R2F 任务书明确要求 identifier 表落地后「the contained pair then follows existing
+rules; assert whatever those rules produce」——identifier 表使中性读法获得 exact
+表支持，既有支持分级下胜出是规则输出，弃权旧期望与之矛盾。docstring 内有完整
+的前后对照与理由。
