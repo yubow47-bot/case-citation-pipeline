@@ -276,7 +276,79 @@ tentative 4,119；supported 304,527 / heuristic_only 25,599。
   三口径敏感性输出 ✓；能力表述与代码一致（本轮第 7 节订正）✓。
 - **标记：demo 候选版，待独立审计。**
 
-## Round 2 Blocked 增补（§5 格式）
+### 评审收尾（2026-09-13 晚，commit 97ce123 + 本笔）
+
+**回归修复（评审定位，先测后修）**：r2d_b 里 369 条候选从 cross_boundary_invalid
+变成 counted——全是「8377278 Canada Inc., 2019」类数字公司名碎片，其 D3 配对者全部
+是判决头部自印中立引证（self_citation_row）。旧仲裁只排除 rejected 配对者；重写版
+建类前剔除了自引行，配对者查不到 → D3 记 unresolved → 碎片 counted。修复：自引
+配对者不参与计数竞争，但**本身是真实印刷引证**——作为跨界证据无条件有效，被标
+碎片整类直接 OUT（不经 grounded）；fail-closed 断言为该例外放行（替代对象 =
+counted 或自引配对者）。先写失败测试（156→158 断言）再修。
+**连带排查**：全函数审计确认无其他依赖「旧代码会用、新代码剔掉的行」的点
+（by_id 只用于 D3 配对者查找；spanning/攻击边/代表全部只作用于 live 类）。
+
+**重跑与回退**：`data/run_20260913_r2d_c/`（complete，指纹一致，10 步）。
+- vs r2d_b：边 330,126 → 329,760（**removed 366 / added 0**）；369+2 条候选
+  counted/undecided → cross_boundary_invalid（逐条见 audit/vs_r2d_b/）。
+- vs r2c（最终对照）：边 329,836 → 329,760（−76）；FOREIGN 386→384；
+  DOMESTIC_CA 56,685→53,948；UNDETERMINED 272,765→275,428；状态变化 284
+  （counted→overlap_undecided 92 = 反例 A/E 语义；跨运行口径
+  recycled_weak_to_counted = 1）。
+
+**审计订正（评审指出）**：
+1. sensitivity 的 `kept_groups` 之前实际数的是 kept=true 的**行**——已改为取
+   select manifest 的 groups_kept。真实数字：A 8,585 组 → C 8,573 组（−12）、
+   边 330,126 → 330,099（−27）。**「C 不影响计数」的说法作废**。
+2. 所有「只比较成员集合相同的组」的结论（same_citation 降级 1,343 组、dd/门槛/
+   来源变化 0 等）已加覆盖注记（matched 173,542 / r2c 173,615 / r2d 173,544）；
+   未匹配组的单侧 dd 合计单列（C 口径 909/882）。
+3. recycled_weak_to_counted 改跨运行口径：上轮非 counted、本轮 counted、支持档 0。
+4. 历史差异里 **11 条新增、5 条删除为 unclassified**，如实保留在
+   historical_edge_delta CSV 与 summary 中。
+
+**抽查（任务四，20 条分层 + 原文窗口，audit/arbitration_spotcheck_20.csv，21 行）**：
+- **P1（新系统问题，未修，只报告）**：相容包含规则放过「(2001), 2001 CanLII 24079」
+  型长误析——其 vol 槽复写了真中立引证的年份，把真引证压成 contained
+  （CanLII/ONCA 系约 118+27 条转换落此模式）。修复方向（vol==年份复写视为不相容）
+  待人工批准，本轮不动。→ 账本 B10。
+- P2 改善：公司名碎片不再计数（3 条样例）。
+- P3 诚实漏计：真引证因压制者未决而弃权（2 F.C. 472、15 D.L.R. (4th) 515、
+  8 D.L.R. (3d) 1、[1897] Q.R. 12、2010 BCCA, 257、134 F.Supp. 710 等）——
+  规则正确下的真实召回损失。
+- P4 正确回收：2011 ONCA 445、1989 U.S. Briefs 478（后者属边缘：brief 编号）。
+- P5/P6：OCR 混排碎片让位无害；表决表碎片的状态词从 invalidated 改弃权更准确。
+
+**措辞订正（评审要求）**：KIND_PRIORITY KeyError 证明的是「未处理分支会使运行
+失败」，**不是**正确性断言抓到错误结果；counted 集合无内部攻击是 grounded 解的
+必要条件而非充分证明——这两句已在演示措辞约束里写死（demo_candidate_cases.md）。
+
+**演示准备**：`implementation/demo_candidate_cases.md`（3 成功 + 1 弃权 + 2 局限，
+每条带 traceback 复现命令）；demo_examples.md 已按 r2d_c 重新生成。
+
+## Round 2 Blocked 增补（续）
+
+### B10 相容包含放过「年份复写」长误析（抽查新发现；未修，待人工裁表）
+
+- 层/位置：merge.py `arbitrate_document`（contained 攻击的 `_fields_compatible`）
+- 触发输入：`R. v. Rose (2001), 2001 CanLII 24079 (ON CA)`——真中立引证
+  `2001 CanLII 24079` 与长误析 `(2001), 2001 CanLII 24079`（year_vol_page，
+  vol 槽=年份 2001）共享 abbr/page 且短侧 vol 为空 → 判「相容」→ 长者胜，
+  计入的是误析键 `2001|2001|canlii||24079`。grounded + 包含规则使其较 r2c
+  （双弃权）恶化；全量约 118+27 条转换落此模式（CanLII/ONCA 前括注年份体例）。
+- 阻塞点：相容判定未排除「长侧 vol == 短侧 year」的复写关系
+- 解锁条件：人工确认「vol 槽复写年份 → 不相容」规则后修（需过反例回归）
+- 现状：真引证键被压成 alternative_contained（未消失，台账可查）；计数键是误析
+- 是否阻塞 demo：不阻塞（FOREIGN/DOMESTIC 结论不受此模式影响——抽查未在任何
+  外国/国内来源判定中发现该模式），但影响键的整洁度
+
+### B11 案名敏感性 C 口径的换名样例（人工待决）
+
+- 触发输入：组 `ONCA|2022||onca||765`——A 口径 modal `R. v. S.M`，
+  C 口径（仅 counted 投票）变 `R. v. Hertrich`（另一个案子）
+- 阻塞点：counted 池票数不足时众数漂移到弱信号名字
+- 现状：生产保持 A 口径；C 仅敏感性记录
+- 解锁条件：回到原文判断哪个名字正确
 
 ### B7 DTC 系同档平票弃权（不阻塞；诚实少算，方向已知）
 

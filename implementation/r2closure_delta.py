@@ -17,6 +17,8 @@ import sys
 from collections import Counter, defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, "pipeline"))
+import merge as _merge_mod          # noqa: E402  (support_grade)
 R1 = os.path.join(ROOT, "data", "run_20260912_final")
 R2C = os.path.join(ROOT, "data", "run_20260912_r2c")
 COURTS = ("SCC", "ONCA")
@@ -82,9 +84,10 @@ def edge_categories(removed, added, new_edges, old_edges, r2c_mentions, r1_menti
     return cat
 
 
-def main(r2d):
+def main(r2d, baseline=None):
     outdir = os.path.join(r2d, "audit")
     os.makedirs(outdir, exist_ok=True)
+    BASE = baseline or R2C
     report = {}
 
     r1_edges = load_edges(R1)
@@ -124,10 +127,11 @@ def main(r2d):
             cat_h[("added", s, m)] for s, m in added_h)),
     }
 
-    # ---------- 7.2 本轮：r2c → r2d ----------
-    removed_c = r2c_keys - set(r2d_edges)
-    added_c = set(r2d_edges) - r2c_keys
-    cat_c = edge_categories(removed_c, added_c, r2d_edges, r2c_edges, None, None)
+    # ---------- 7.2 本轮：BASE → r2d（BASE 默认 r2c，可传其他 run）----------
+    base_edges = load_edges(BASE) if BASE != R2C else r2c_edges
+    removed_c = set(base_edges) - set(r2d_edges)
+    added_c = set(r2d_edges) - set(base_edges)
+    cat_c = edge_categories(removed_c, added_c, r2d_edges, base_edges, None, None)
     with open(os.path.join(outdir, "current_edge_delta_r2c_to_r2d.csv"),
               "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
@@ -136,8 +140,8 @@ def main(r2d):
                     "r2c_edge_support", "r2d_edge_support"])
         for (src, mk) in sorted(removed_c):
             w.writerow(["removed", src, mk, cat_c[("removed", src, mk)],
-                        r2c_edges[(src, mk)]["foreign_status"], "",
-                        r2c_edges[(src, mk)].get("edge_support", ""), ""])
+                        base_edges[(src, mk)]["foreign_status"], "",
+                        base_edges[(src, mk)].get("edge_support", ""), ""])
         for (src, mk) in sorted(added_c):
             w.writerow(["added", src, mk, cat_c[("added", src, mk)], "",
                         r2d_edges[(src, mk)]["foreign_status"], "",
@@ -145,9 +149,10 @@ def main(r2d):
     fsc = lambda run: Counter(
         e["foreign_status"] for e in load_edges(run).values())
     report["current_edges"] = {
-        "r2c_edges": len(r2c_keys), "r2d_edges": len(r2d_edges),
+        "baseline_dir": BASE,
+        "baseline_edges": len(base_edges), "r2d_edges": len(r2d_edges),
         "removed": len(removed_c), "added": len(added_c),
-        "foreign_status_r2c": dict(fsc(R2C)),
+        "foreign_status_baseline": dict(fsc(BASE)),
         "foreign_status_r2d": dict(fsc(r2d)),
         "removed_by_category": dict(Counter(
             cat_c[("removed", s, m)] for s, m in removed_c)),
@@ -156,7 +161,7 @@ def main(r2d):
     }
 
     # ---------- 组级：身份降级 / 组来源变化 ----------
-    _, g2c = groups_of(R2C)
+    _, g2c = groups_of(BASE)
     _, g2d = groups_of(r2d)
     down_rows = []
     origin_changes = []
@@ -200,15 +205,18 @@ def main(r2d):
         w.writeheader()
         w.writerows(origin_changes)
     report["groups"] = {
-        "r2c_groups": len(g2c), "r2d_groups": len(g2d),
+        "baseline_groups": len(g2c), "r2d_groups": len(g2d),
         "member_set_matched": matched,
+        "coverage_note": ("降级数与来源变化数只覆盖成员集合完全一致的组"
+                          "（matched/(两侧组数) 即覆盖率）；未匹配组因拆分/"
+                          "合并无法逐组对应"),
         "same_citation_primary_downgrades": len(down_rows),
         "group_origin_changes": len(origin_changes)}
 
     # ---------- 仲裁状态变化（逐 candidate_id）----------
     m2c, m2d = {}, {}
     for court in COURTS:
-        for m in rows(os.path.join(R2C, "merge_out", court,
+        for m in rows(os.path.join(BASE, "merge_out", court,
                                    "mentions_candidates.csv")):
             m2c[m["candidate_id"]] = m
         for m in rows(os.path.join(r2d, "merge_out", court,
@@ -225,9 +233,12 @@ def main(r2d):
                 "r2c_status": a, "r2d_status": b,
                 "r2d_superseded_by": m2d[cid].get("superseded_by_candidate", ""),
                 "jurisdiction": m2c[cid].get("jurisdiction", ""),
-                "shape": m2c[cid].get("shape_name", "")})
-            if a in ("span_alternative_undecided", "overlap_undecided",
-                     "alternative_spanning_mismatch") and b == "counted":
+                "shape": m2c[cid].get("shape_name", ""),
+                "support_grade": _merge_mod.support_grade(m2d[cid])})
+            # 跨运行口径（评审订正）：上轮不是 counted、本轮 counted、
+            # 且支持档为 0 ——「压制者失效后弱读法重新计数」
+            if a != "counted" and b == "counted" \
+                    and _merge_mod.support_grade(m2d[cid]) == 0:
                 recycled.append(arb_changes[-1])
     with open(os.path.join(outdir, "arbitration_status_changes.csv"), "w",
               encoding="utf-8", newline="") as f:
@@ -243,6 +254,8 @@ def main(r2d):
         w.writerows(recycled)
     cc = Counter((c["r2c_status"], c["r2d_status"]) for c in arb_changes)
     report["arbitration"] = {
+        "recycled_definition": ("上轮非 counted、本轮 counted、支持档=0 的候选数"
+                                "（跨运行口径，评审订正）"),
         "candidates_both_runs": len(set(m2c) & set(m2d)),
         "status_changes": len(arb_changes),
         "transitions": {("%s -> %s" % k): v for k, v in cc.most_common()},
@@ -250,7 +263,7 @@ def main(r2d):
 
     # ---------- 外国边变化 ----------
     fe_c = {(e["source_decision"], e["resolved_cited_case"]): e
-            for e in rows(os.path.join(R2C, "edges", "foreign_edges.csv"))}
+            for e in rows(os.path.join(BASE, "edges", "foreign_edges.csv"))}
     fe_d = {(e["source_decision"], e["resolved_cited_case"]): e
             for e in rows(os.path.join(r2d, "edges", "foreign_edges.csv"))}
     fe_rows = []
@@ -386,4 +399,4 @@ def main(r2d):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)

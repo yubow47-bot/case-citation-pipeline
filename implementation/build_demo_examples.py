@@ -12,7 +12,7 @@ from collections import defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-RUN = os.path.join(ROOT, "data", "run_20260912_r2c")
+RUN = os.path.join(ROOT, "data", "run_20260913_r2d_c")
 OUT = os.path.join(HERE, "demo_examples.md")
 
 
@@ -44,7 +44,7 @@ def main():
     L = []
     w = L.append
 
-    w("# 演示样例（真实运行产物，data/run_20260912_r2c）\n")
+    w("# 演示样例（真实运行产物，data/run_20260913_r2d_c）\n")
     w("全部来自本轮全量运行的真实语料数据；测试用合成数据只在 pipeline/tests/ 并明确标注。\n")
 
     # ---- 1 外国案 ----
@@ -118,7 +118,7 @@ def main():
                   "进最终表；同跨度的卷读法 alternative_unsupported_reading）"
                   % (m["candidate_id"], m["raw_string"], m["shape_name"]))
                 w("  - 复现命令：`python pipeline/traceback.py --run-dir "
-                  "data/run_20260912_r2c --candidate-id %s`" % m["candidate_id"])
+                  "data/run_20260913_r2d_c --candidate-id %s`" % m["candidate_id"])
     else:
         w("（未在台账找到 Almrei 坏解析样例——检查 run 产物）")
     w("")
@@ -127,9 +127,9 @@ def main():
     w("## 5. 从最终结果回到原文与判断依据\n")
     w("```")
     w("# 粗搜（按案名/原文串找 candidate_id）")
-    w("python pipeline/traceback.py --run-dir data/run_20260912_r2c --search Thorner")
+    w("python pipeline/traceback.py --run-dir data/run_20260913_r2d_c --search Thorner")
     w("# 深查：回显分类证据 + 仲裁状态 + 原文窗口（<<…>> 标出候选跨度）")
-    w("python pipeline/traceback.py --run-dir data/run_20260912_r2c \\")
+    w("python pipeline/traceback.py --run-dir data/run_20260913_r2d_c \\")
     w("    --candidate-id <台账里的 candidate_id>")
     w("# 台账：merge_out/{SCC,ONCA}/mentions_candidates.csv（逐候选仲裁状态）")
     w("# 边：edges/citation_edges.csv；mention_detail_key 回连上表")

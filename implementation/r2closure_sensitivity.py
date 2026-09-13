@@ -95,20 +95,27 @@ def edges_of(path):
             for e in rows(os.path.join(path, "edges", "citation_edges.csv"))}
 
 
-def main(r2d):
+def main(r2d, reuse=False):
     outdir = os.path.join(r2d, "audit")
     os.makedirs(outdir, exist_ok=True)
     results = {}
     for regime in REGIMES:
-        base = pipeline_for(r2d, regime)
+        base = os.path.join(r2d, "sensitivity_%s" % regime)
+        if not (reuse and os.path.isdir(base)):
+            base = pipeline_for(r2d, regime)
         g = groups_of(base)
-        sel = Counter(r["kept"] for r in rows(os.path.join(
-            base, "select_out", "selected.csv")))
+        sel_rows = rows(os.path.join(base, "select_out", "selected.csv"))
+        sel = Counter(r["kept"] for r in sel_rows)
+        # R2 闭环订正（评审指出）：kept 行数 ≠ kept 组数——组数取自 select
+        # manifest 的 groups_kept（按组聚合后的 dd≥5 组数），行数单列
+        sel_manifest = json.load(open(os.path.join(
+            base, "select_out", "manifest.json"), encoding="utf-8"))["stats"]
         ed = edges_of(base)
         fc = Counter(e["foreign_status"] for e in ed.values())
         results[regime] = {
             "base": base, "groups": g, "n_groups": len(g),
-            "kept_groups": sel["true"] if "true" in sel else 0,
+            "kept_rows": sel["true"] if "true" in sel else 0,
+            "kept_groups": sel_manifest["groups_kept"],
             "edges": len(ed), "foreign": fc.get("FOREIGN", 0),
             "domestic": fc.get("DOMESTIC_CA", 0),
             "undetermined": fc.get("UNDETERMINED", 0)}
@@ -118,14 +125,22 @@ def main(r2d):
     for other in ("dedup_position", "counted_only"):
         a, b = results["current"]["groups"], results[other]["groups"]
         common = set(a) & set(b)
+        only_a, only_b = set(a) - set(b), set(b) - set(a)
         modal_changed = [k for k in common if a[k]["modal"] != b[k]["modal"]]
         dd_changed = [k for k in common if a[k]["dd"] != b[k]["dd"]]
         origin_changed = [k for k in common if a[k]["origin"] != b[k]["origin"]]
         crossed = [k for k in common if (a[k]["dd"] >= 5) != (b[k]["dd"] >= 5)]
+        # 未匹配组（拆分/合并）的单侧 dd 合计——它们不在逐组比较覆盖内
+        unmatched_dd = {
+            "A_only_dd_sum": sum(a[k]["dd"] for k in only_a),
+            "B_only_dd_sum": sum(b[k]["dd"] for k in only_b)}
         comparison[other] = {
+            "coverage_note": ("dd/门槛/来源比较只覆盖成员集合完全一致的组；"
+                              "未匹配组因拆分/合并无法逐组对应，单列 dd 合计"),
             "groups_common": len(common),
-            "groups_only_in_A": len(set(a) - set(b)),
-            "groups_only_in_B": len(set(b) - set(a)),
+            "groups_only_in_A": len(only_a),
+            "groups_only_in_B": len(only_b),
+            "unmatched_dd_sums": unmatched_dd,
             "modal_name_changed": len(modal_changed),
             "dd_changed": len(dd_changed),
             "threshold_dd5_crossed": len(crossed),
@@ -193,4 +208,4 @@ def main(r2d):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], reuse="--reuse" in sys.argv)
