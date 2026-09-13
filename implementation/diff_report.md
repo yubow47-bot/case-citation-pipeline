@@ -86,36 +86,36 @@
 
 | 去向 | Round 1 | Round 2 |
 |---|---|---|
-| 1 仍被计数 | 510,717 | 512188 |
+| 1 仍被计数 | 510,717 | 512044 |
 | 2 身份等价替换（v2 键相同） | 0* | 0 |
-| 3 仅重叠 counted 跨度（语义未核实） | 713 | 761 |
-| 4 任何地方都没计 | 6,954 | 5531 |
+| 3 仅重叠 counted 跨度（语义未核实） | 713 | 780 |
+| 4 任何地方都没计 | 6,954 | 5656 |
 | 5 未枚举/连接未决 | 96 | 0 |
 | 合计 | 518,480 | 518480 |
 
-「没计」桶（5531 行）的分解：旧 UNSUPPORTED 5488 / 旧已解析法域 43；新仲裁状态 {"span_alternative_undecided": 4980, "cross_boundary_invalid": 340, "overlap_undecided": 210, "alternative_contained": 1}。
+「没计」桶（5656 行）的分解：旧 UNSUPPORTED 5595 / 旧已解析法域 61；新仲裁状态 {"span_alternative_undecided": 4983, "cross_boundary_invalid": 340, "overlap_undecided": 273, "year_reread_as_vol_invalid": 60}。
 大头是同跨度两读法在两张表里**同档**命中的平票弃权（如 DTC 系：代码在法院代码表与汇编表都精确命中，R2-2 规则规定最高档打平即弃权）——旧管线此时按形状顺序硬选一边计入，属未证实的猜测；新路线按规则弃权并留下台账。340 条 cross_boundary_invalid 是 D3 跨界修正按规则作废的旧赢家。
 
 ### 6.3 组级一致性（3.2c）
 
 | 核查 | 数 | 目标/口径 |
 |---|---|---|
-| 组数 | 173615 | |
+| 组数 | 173512 | |
 | 组内行 group_foreign_status 不一致 | 0 | 0（R2-1 组结论写每行）|
 | 多国别却非 CONFLICT 的组 | 0 | 0 |
-| case_record 成员落在 UNDETERMINED 组 | 28 | 订正后合法：身份连接是启发式，证据保留不传播（样例含 St. Catharines XC-G000455）|
+| case_record 成员落在 UNDETERMINED 组 | 31 | 订正后合法：身份连接是启发式，证据保留不传播（样例含 St. Catharines XC-G000455）|
 
 ### 6.4 边计数对照（3.2c 末项）
 
 | foreign_status | Round 1 | Round 2 |
 |---|---|---|
-| FOREIGN | 227 | 386 |
-| DOMESTIC_CA | 35659 | 56685 |
-| UNDETERMINED | 294476 | 272765 |
+| FOREIGN | 227 | 384 |
+| DOMESTIC_CA | 35659 | 53963 |
+| UNDETERMINED | 294476 | 275359 |
 | CONFLICT | 0 | 0 |
 
 增减解释：FOREIGN +159（EWCA Civ/Crim 分辑行生效、R2-2 修好的 FC 等使更多组有锚）；DOMESTIC_CA +21,026（FC/Q.R./L.R. 恢复 + 合格成员聚合不再依赖主行）；UNDETERMINED −21,711 为同一枚举的另一面。增量都有正证据；无「不在表→外国」推断。
 
 ### 6.5 案名投票限制测量（R2 §7）
 
-投票行 466862，其中来自非 counted 候选 204048（43.7%）——modal 案名**不是**已核实的身份证据，只作展示列。已测量、已记录；本轮不做名字抽取重构。
+投票行 466862，其中来自非 counted 候选 204107（43.7%）——modal 案名**不是**已核实的身份证据，只作展示列。已测量、已记录；本轮不做名字抽取重构。

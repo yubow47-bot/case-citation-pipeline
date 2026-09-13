@@ -328,7 +328,7 @@ counted 或自引配对者）。先写失败测试（156→158 断言）再修�
 
 ## Round 2 Blocked 增补（续）
 
-### B10 相容包含放过「年份复写」长误析（抽查新发现；未修，待人工裁表）
+### B10 相容包含放过「年份复写」长误析 —— **已修复**（2026-09-13，commit 75c519f + r2e）
 
 - 层/位置：merge.py `arbitrate_document`（contained 攻击的 `_fields_compatible`）
 - 触发输入：`R. v. Rose (2001), 2001 CanLII 24079 (ON CA)`——真中立引证
@@ -336,11 +336,45 @@ counted 或自引配对者）。先写失败测试（156→158 断言）再修�
   vol 槽=年份 2001）共享 abbr/page 且短侧 vol 为空 → 判「相容」→ 长者胜，
   计入的是误析键 `2001|2001|canlii||24079`。grounded + 包含规则使其较 r2c
   （双弃权）恶化；全量约 118+27 条转换落此模式（CanLII/ONCA 前括注年份体例）。
-- 阻塞点：相容判定未排除「长侧 vol == 短侧 year」的复写关系
-- 解锁条件：人工确认「vol 槽复写年份 → 不相容」规则后修（需过反例回归）
-- 现状：真引证键被压成 alternative_contained（未消失，台账可查）；计数键是误析
-- 是否阻塞 demo：不阻塞（FOREIGN/DOMESTIC 结论不受此模式影响——抽查未在任何
-  外国/国内来源判定中发现该模式），但影响键的整洁度
+- 修复（任务书单缺陷轮）：按 D3 同款设计——extract 在 D3 同处计算结构关系
+  `year_reread_as_vol`（**按字段 SPAN 偏移对齐**：容器有 year+vol、vol 形似年份、
+  shape_neutral_bare 候选 b 满足 b.year_span == a.vol_span 且 b.end <= a.end；
+  不做纯值比较）；仲裁将容器整类判新状态 `year_reread_as_vol_invalid`
+  （superseded_by=配对者，证据直接不经 grounded）；被包含配对者与其同跨度卷读法
+  走**既有**仲裁（支持分级/同跨度/年卷孪生弃权），不加强制计数规则；
+  classify 镜像 D3（被标行不得凭查表拿 confirmed）。
+- schema 核对：vol_span 字段 candidates-2.0 **已具备**（round-1 即有
+  year/page/vol/abbr 四跨度），无需 bump——已核对并记录。
+- 反例 a-e 先行失败（B10(a) AssertionError 已存档于日志）后转绿；
+  test_candidates 158 → **170** 断言；test_layers 120、selftest、fixture、
+  --golden 全部保持。
+- 重跑：`data/run_20260913_r2e/`（complete，指纹一致，10 步）。
+- 验证数字（对照 r2d_c）：
+  1. B10：容器标记 92、作废 92、unresolved 0；配对者去向 = 弃权 60
+     （vendor 形态 B7 语义）/ counted 32（court-code 中立锚恢复）；
+     按表结果分列：court_code_resolved 33 / vendor_or_unresolved 59。
+  2. 爆半径：候选状态变化 264 条，**全部 (i) B10 容器/配对者/同跨度孪生，
+     (ii) 其他 = 0**。构成：86+5+1 容器 → invalid；27 中立配对者解放 → counted；
+     27 卷孪生 → alternative_contained（被真引证包含，合法）；
+     118 vendor 孪生 → span_alternative_undecided（P1 压制解除，回 B7 弃权）。
+  3. 旧 counted 行去向（同一仪器）：518,480 → 仍计 512,044 / 重叠 780 /
+     丢失 5,656 / 未枚举 0（r2d_c 为 512,188/761/5,531/0——差值即 92 容器的
+     畸形旧键退出，真引证按中性键另计）。
+  4. 组与边：kept 组 8,573 → **8,582**（+9：中立锚恢复使被拆分的平行汇编
+     重新合组）；边 329,760 → **329,706**（−54：畸形键边退出 + vendor 弃权）；
+     FOREIGN 384 不变；DOMESTIC_CA 53,948 → 53,963；UNDETERMINED → 275,359。
+  5. 一致性：legacy 缺失 **0**；组内行来源不一致 **0**；多国别非 CONFLICT **0**。
+  6. 追溯：`SCC:3359:5048:5059:shape_neutral_bare`（2003 SCC 74 counted，
+     confirmed CA）与 `ONCA:10076:8322:8339:shape_neutral_bare`（CanLII 弃权），
+     均已用 traceback 验证原文窗口。
+- **红线披露**：old-supported lost = **61**（任务书 cap 60，超出 1 条）。构成：
+  60 条 = year_reread 容器本身（修复目标，畸形键退出；其中 court-code 33 条的
+  真引证已按中性键计数）+ 1 条 = `(2001), 2001 DTC 295` 容器作废后其 DTC 孪生
+  按 B7 弃权（真引证本轮 0 计数——弃权合规但仍属召回损失）。另注：评审的
+  r2d_c 基线（5,597 lost）与本仪器（5,531）存在窗口口径差，已如实披露。
+- 演示与报告：demo_candidate_cases.md 增成功案例 4 并改写局限案例；
+  diff_report.md / demo_examples.md 按 r2e 重新生成；
+  audit/b10_blast_radius.csv、b10_blast_summary.json 落盘。
 
 ### B11 案名敏感性 C 口径的换名样例（人工待决）
 

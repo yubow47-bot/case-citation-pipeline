@@ -1,21 +1,56 @@
 {
- "total_lost_nowhere": 5531,
+ "total_lost_nowhere": 5656,
  "by_old_jurisdiction": {
-  "unsupported": 5488,
-  "supported": 43
+  "unsupported": 5595,
+  "supported": 61
  },
  "by_old_shape": {
-  "shape_neutral_bare": 4989,
-  "shape_vol_abbr_page": 541,
-  "shape_bracket": 1
+  "shape_neutral_bare": 4990,
+  "shape_vol_abbr_page": 571,
+  "shape_year_vol_page": 71,
+  "shape_leading_abbr": 17,
+  "shape_bracket": 5,
+  "shape_vol_page_year": 2
  },
  "by_new_arbitration_status": {
-  "span_alternative_undecided": 4980,
+  "span_alternative_undecided": 4983,
   "cross_boundary_invalid": 340,
-  "overlap_undecided": 210,
-  "alternative_contained": 1
+  "overlap_undecided": 273,
+  "year_reread_as_vol_invalid": 60
  },
  "supported_samples": [
+  {
+   "sdc": "SCC_19931scr416",
+   "raw": "[1991] 1 C.T.C. 125",
+   "shape": "shape_bracket",
+   "old_jur": "CA",
+   "new_status": "overlap_undecided",
+   "sdc_row_hint": "SCC_19931scr416"
+  },
+  {
+   "sdc": "SCC_19931scr416",
+   "raw": "(1990), 91 D.T.C. 5055",
+   "shape": "shape_year_vol_page",
+   "old_jur": "CA",
+   "new_status": "overlap_undecided",
+   "sdc_row_hint": "SCC_19931scr416"
+  },
+  {
+   "sdc": "SCC_19931scr416",
+   "raw": "[1990] 1 C.T.C. 84",
+   "shape": "shape_bracket",
+   "old_jur": "CA",
+   "new_status": "overlap_undecided",
+   "sdc_row_hint": "SCC_19931scr416"
+  },
+  {
+   "sdc": "SCC_19931scr416",
+   "raw": "(1989), 30 F.T.R. 188",
+   "shape": "shape_year_vol_page",
+   "old_jur": "CA",
+   "new_status": "overlap_undecided",
+   "sdc_row_hint": "SCC_19931scr416"
+  },
   {
    "sdc": "SCC_1972scr889",
    "raw": "3 C.C.C. 152",
@@ -23,6 +58,14 @@
    "old_jur": "CA",
    "new_status": "overlap_undecided",
    "sdc_row_hint": "SCC_1972scr889"
+  },
+  {
+   "sdc": "SCC_18839scr46",
+   "raw": "5 H.L. Cas. 208 (1871)",
+   "shape": "shape_vol_page_year",
+   "old_jur": "GB",
+   "new_status": "overlap_undecided",
+   "sdc_row_hint": "SCC_18839scr46"
   },
   {
    "sdc": "SCC_2024scc24",
@@ -71,46 +114,6 @@
    "old_jur": "CA",
    "new_status": "span_alternative_undecided",
    "sdc_row_hint": "SCC_2024scc24"
-  },
-  {
-   "sdc": "SCC_2024scc23",
-   "raw": "2017 DTC 5074",
-   "shape": "shape_neutral_bare",
-   "old_jur": "CA",
-   "new_status": "span_alternative_undecided",
-   "sdc_row_hint": "SCC_2024scc23"
-  },
-  {
-   "sdc": "SCC_2024scc23",
-   "raw": "2017 DTC 5135",
-   "shape": "shape_neutral_bare",
-   "old_jur": "CA",
-   "new_status": "span_alternative_undecided",
-   "sdc_row_hint": "SCC_2024scc23"
-  },
-  {
-   "sdc": "SCC_2024scc23",
-   "raw": "2002 DTC 7397",
-   "shape": "shape_neutral_bare",
-   "old_jur": "CA",
-   "new_status": "span_alternative_undecided",
-   "sdc_row_hint": "SCC_2024scc23"
-  },
-  {
-   "sdc": "SCC_2024scc23",
-   "raw": "2022 DTC 5050",
-   "shape": "shape_neutral_bare",
-   "old_jur": "CA",
-   "new_status": "span_alternative_undecided",
-   "sdc_row_hint": "SCC_2024scc23"
-  },
-  {
-   "sdc": "SCC_2024scc23",
-   "raw": "2021 DTC 1001",
-   "shape": "shape_neutral_bare",
-   "old_jur": "CA",
-   "new_status": "span_alternative_undecided",
-   "sdc_row_hint": "SCC_2024scc23"
   },
   {
    "sdc": "SCC_2024scc23",

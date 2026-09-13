@@ -1,0 +1,265 @@
+candidate_id,raw_string,shape,r2dc_status,r2e_status,b10_class,role
+ONCA:10064:20477:20498:shape_year_vol_page,"(2007), 2007 ONCA 492",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:10064:20485:20498:shape_neutral_bare,2007 ONCA 492,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:10064:20485:20498:shape_vol_abbr_page,2007 ONCA 492,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:10076:8314:8339:shape_year_vol_page,"(2001), 2001 CanLII 24079",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:10076:8322:8339:shape_neutral_bare,2001 CanLII 24079,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:10076:8322:8339:shape_vol_abbr_page,2001 CanLII 24079,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:10125:12081:12104:shape_year_vol_page,"(1989), 1989 CanLII 245",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:10125:12089:12104:shape_neutral_bare,1989 CanLII 245,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:10125:12089:12104:shape_vol_abbr_page,1989 CanLII 245,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:10125:12465:12489:shape_year_vol_page,"(1977), 1977 CanLII 1151",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:10125:12473:12489:shape_neutral_bare,1977 CanLII 1151,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:10125:12473:12489:shape_vol_abbr_page,1977 CanLII 1151,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:10125:20719:20741:shape_year_vol_page,"(1911), 1911 CanLII 74",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:10125:20727:20741:shape_neutral_bare,1911 CanLII 74,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:10125:20727:20741:shape_vol_abbr_page,1911 CanLII 74,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:10224:43152:43176:shape_year_vol_page,"(2006), 2006 CanLII 9039",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:10224:43160:43176:shape_neutral_bare,2006 CanLII 9039,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:10224:43160:43176:shape_vol_abbr_page,2006 CanLII 9039,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:10474:21835:21859:shape_year_vol_page,"(1980), 1980 CanLII 2978",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:10474:21843:21859:shape_neutral_bare,1980 CanLII 2978,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:10474:21843:21859:shape_vol_abbr_page,1980 CanLII 2978,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:10774:3350:3371:shape_year_vol_page,"(2007), 2007 ONCA 230",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:10774:3358:3371:shape_neutral_bare,2007 ONCA 230,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:10774:3358:3371:shape_vol_abbr_page,2007 ONCA 230,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:1096:13688:13709:shape_year_vol_page,"(2015), 2015 ONCA 537",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:1096:13696:13709:shape_neutral_bare,2015 ONCA 537,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:1096:13696:13709:shape_vol_abbr_page,2015 ONCA 537,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:1121:19985:20014:shape_year_vol_page,"(2006), 2006 CarswellOnt 5539",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:1121:19993:20014:shape_neutral_bare,2006 CarswellOnt 5539,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:1121:19993:20014:shape_vol_abbr_page,2006 CarswellOnt 5539,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:12186:15810:15834:shape_year_vol_page,"(1992), 1992 CanLII 2834",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:12186:15818:15834:shape_neutral_bare,1992 CanLII 2834,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:12186:15818:15834:shape_vol_abbr_page,1992 CanLII 2834,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:12254:15805:15830:shape_year_vol_page,"(2006), 2006 CanLII 42636",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:12254:15813:15830:shape_neutral_bare,2006 CanLII 42636,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:12254:15813:15830:shape_vol_abbr_page,2006 CanLII 42636,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:12344:25441:25464:shape_year_vol_page,"(1966), 1966 CanLII 437",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:12344:25449:25464:shape_neutral_bare,1966 CanLII 437,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:12344:25449:25464:shape_vol_abbr_page,1966 CanLII 437,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:1255:50832:50854:shape_year_vol_page,"(2013), 2013 ONSC 1310",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:1255:50840:50854:shape_neutral_bare,2013 ONSC 1310,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:1255:50840:50854:shape_vol_abbr_page,2013 ONSC 1310,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:12727:10741:10765:shape_year_vol_page,"(1996), 1996 CanLII 7979",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:12727:10749:10765:shape_neutral_bare,1996 CanLII 7979,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:12727:10749:10765:shape_vol_abbr_page,1996 CanLII 7979,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:12785:32857:32876:shape_year_vol_page,"(2005), 2005 SCC 40",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:12785:32865:32876:shape_neutral_bare,2005 SCC 40,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:12785:32865:32876:shape_vol_abbr_page,2005 SCC 40,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:12785:32961:32982:shape_year_vol_page,"(2013), 2013 ONCA 157",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:12785:32969:32982:shape_neutral_bare,2013 ONCA 157,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:12785:32969:32982:shape_vol_abbr_page,2013 ONCA 157,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:13065:18113:18134:shape_year_vol_page,"(1980), 1980 ABCA 214",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:13065:18121:18134:shape_neutral_bare,1980 ABCA 214,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:13065:18121:18134:shape_vol_abbr_page,1980 ABCA 214,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:13078:5240:5268:shape_year_vol_page,"(2025), 2022 CanLIIDocs 4489",shape_year_vol_page,overlap_undecided,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:13302:3175:3199:shape_year_vol_page,"(1993), 1993 CanLII 8613",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:13302:3183:3199:shape_neutral_bare,1993 CanLII 8613,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:13302:3183:3199:shape_vol_abbr_page,1993 CanLII 8613,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:13310:31488:31509:shape_year_vol_page,"(1980), 1980 ABCA 276",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:13310:31496:31509:shape_neutral_bare,1980 ABCA 276,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:13310:31496:31509:shape_vol_abbr_page,1980 ABCA 276,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:13468:1004:1026:shape_year_vol_page,"(1893), 1893 CanLII 65",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:13468:1012:1026:shape_neutral_bare,1893 CanLII 65,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:13468:1012:1026:shape_vol_abbr_page,1893 CanLII 65,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:13822:15082:15106:shape_year_vol_page,"(1995), 1995 CanLII 3498",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:13822:15090:15106:shape_neutral_bare,1995 CanLII 3498,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:13822:15090:15106:shape_vol_abbr_page,1995 CanLII 3498,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:13825:10528:10551:shape_year_vol_page,"(1996), 1996 CanLII 413",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:13825:10536:10551:shape_neutral_bare,1996 CanLII 413,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:13825:10536:10551:shape_vol_abbr_page,1996 CanLII 413,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:13825:10649:10673:shape_year_vol_page,"(2001), 2001 CanLII 5681",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:13825:10657:10673:shape_neutral_bare,2001 CanLII 5681,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:13825:10657:10673:shape_vol_abbr_page,2001 CanLII 5681,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:13922:12882:12905:shape_year_vol_page,"(1915), 1915 CanLII 347",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:13922:12890:12905:shape_neutral_bare,1915 CanLII 347,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:13922:12890:12905:shape_vol_abbr_page,1915 CanLII 347,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:13922:13491:13515:shape_year_vol_page,"(1996), 1996 CanLII 1201",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:13922:13499:13515:shape_neutral_bare,1996 CanLII 1201,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:13922:13499:13515:shape_vol_abbr_page,1996 CanLII 1201,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:14008:19313:19338:shape_year_vol_page,"(2006), 2006 CanLII 35815",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:14008:19321:19338:shape_neutral_bare,2006 CanLII 35815,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:14008:19321:19338:shape_vol_abbr_page,2006 CanLII 35815,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:14008:19812:19837:shape_year_vol_page,"(2001), 2001 CanLII 28048",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:14008:19820:19837:shape_neutral_bare,2001 CanLII 28048,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:14008:19820:19837:shape_vol_abbr_page,2001 CanLII 28048,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:14063:11875:11899:shape_year_vol_page,"(1995), 1995 CanLII 3498",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:14063:11883:11899:shape_neutral_bare,1995 CanLII 3498,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:14063:11883:11899:shape_vol_abbr_page,1995 CanLII 3498,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:14097:12466:12491:shape_year_vol_page,"(2004), 2004 CanLII 33468",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:14097:12474:12491:shape_neutral_bare,2004 CanLII 33468,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:14097:12474:12491:shape_vol_abbr_page,2004 CanLII 33468,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:14318:74903:74922:shape_year_vol_page,"(2002), 2002 SCC 56",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:14318:74911:74922:shape_neutral_bare,2002 SCC 56,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:14318:74911:74922:shape_vol_abbr_page,2002 SCC 56,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:14379:30009:30033:shape_year_vol_page,"(1991), 1991 CanLII 2727",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:14379:30017:30033:shape_neutral_bare,1991 CanLII 2727,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:14379:30017:30033:shape_vol_abbr_page,1991 CanLII 2727,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:14379:30839:30864:shape_year_vol_page,"(2009), 2009 CanLII 37930",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:14379:30847:30864:shape_neutral_bare,2009 CanLII 37930,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:14379:30847:30864:shape_vol_abbr_page,2009 CanLII 37930,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:14830:5496:5520:shape_year_vol_page,"(1986), 1986 CanLII 4633",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:14830:5504:5520:shape_neutral_bare,1986 CanLII 4633,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:14830:5504:5520:shape_vol_abbr_page,1986 CanLII 4633,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:14849:3694:3719:shape_year_vol_page,"(2006), 2006 CanLII 42636",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:14849:3702:3719:shape_neutral_bare,2006 CanLII 42636,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:14849:3702:3719:shape_vol_abbr_page,2006 CanLII 42636,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:14988:9076:9099:shape_year_vol_page,"(1985), 1985 CanLII 584",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:14988:9084:9099:shape_neutral_bare,1985 CanLII 584,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:14988:9084:9099:shape_vol_abbr_page,1985 CanLII 584,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:15765:36251:36271:shape_year_vol_page,"(2001), 2001 DTC 295",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:15765:36259:36271:shape_neutral_bare,2001 DTC 295,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:15765:36259:36271:shape_vol_abbr_page,2001 DTC 295,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:1624:28602:28625:shape_year_vol_page,"(1971), 1971 CanLII 394",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:1624:28610:28625:shape_neutral_bare,1971 CanLII 394,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:1624:28610:28625:shape_vol_abbr_page,1971 CanLII 394,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:1710:20569:20593:shape_year_vol_page,"(1992), 1992 CanLII 7556",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:1710:20577:20593:shape_neutral_bare,1992 CanLII 7556,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:1710:20577:20593:shape_vol_abbr_page,1992 CanLII 7556,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:173:128436:128460:shape_year_vol_page,"(1994), 1994 CanLII 2108",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:173:128444:128460:shape_neutral_bare,1994 CanLII 2108,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:173:128444:128460:shape_vol_abbr_page,1994 CanLII 2108,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:173:128513:128537:shape_year_vol_page,"(1995), 1995 CanLII 1268",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:173:128521:128537:shape_neutral_bare,1995 CanLII 1268,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:173:128521:128537:shape_vol_abbr_page,1995 CanLII 1268,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:173:128724:128748:shape_year_vol_page,"(2000), 2000 CanLII 5625",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:173:128732:128748:shape_neutral_bare,2000 CanLII 5625,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:173:128732:128748:shape_vol_abbr_page,2000 CanLII 5625,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:173:129022:129047:shape_year_vol_page,"(2006), 2006 CanLII 21041",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:173:129030:129047:shape_neutral_bare,2006 CanLII 21041,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:173:129030:129047:shape_vol_abbr_page,2006 CanLII 21041,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:173:139314:139338:shape_year_vol_page,"(1992), 1992 CanLII 2781",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:173:139322:139338:shape_neutral_bare,1992 CanLII 2781,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:173:139322:139338:shape_vol_abbr_page,1992 CanLII 2781,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:173:156037:156061:shape_year_vol_page,"(1993), 1993 CanLII 3379",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:173:156045:156061:shape_neutral_bare,1993 CanLII 3379,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:173:156045:156061:shape_vol_abbr_page,1993 CanLII 3379,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:18120:14724:14743:shape_year_vol_page,"(2003), 2003 SCC 74",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:18120:14732:14743:shape_neutral_bare,2003 SCC 74,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:18120:14732:14743:shape_vol_abbr_page,2003 SCC 74,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:18188:12815:12836:shape_year_vol_page,"(2011), 2011 ONCA 405",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:18188:12823:12836:shape_neutral_bare,2011 ONCA 405,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:18188:12823:12836:shape_vol_abbr_page,2011 ONCA 405,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:18289:25103:25124:shape_year_vol_page,"(2007), 2007 ONCA 654",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:18289:25111:25124:shape_neutral_bare,2007 ONCA 654,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:18289:25111:25124:shape_vol_abbr_page,2007 ONCA 654,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:18997:2285:2306:shape_year_vol_page,"(2000), 2007 ONCA 743",shape_year_vol_page,alternative_dominated_by_support,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:19686:36390:36410:shape_vol_page_year,2011 ONCA 190 (2012),shape_vol_page_year,alternative_dominated_by_support,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:20126:28064:28082:shape_year_vol_page,"(2003), 2004 SCC 9",shape_year_vol_page,alternative_dominated_by_support,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:20711:21306:21326:shape_vol_page_year,2011 ONCA 445 (2011),shape_vol_page_year,alternative_dominated_by_support,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:20755:8599:8618:shape_year_vol_page,"(2004), 2004 SCC 80",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:20755:8607:8618:shape_neutral_bare,2004 SCC 80,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:20755:8607:8618:shape_vol_abbr_page,2004 SCC 80,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:21027:28637:28656:shape_year_vol_page,"(2011), 2011 SCC 13",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:21027:28645:28656:shape_neutral_bare,2011 SCC 13,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:21027:28645:28656:shape_vol_abbr_page,2011 SCC 13,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:2115:17198:17222:shape_year_vol_page,"(1996), 1996 CanLII 7979",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:2115:17206:17222:shape_neutral_bare,1996 CanLII 7979,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:2115:17206:17222:shape_vol_abbr_page,1996 CanLII 7979,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:21216:38453:38476:shape_year_vol_page,"(1985), 1985 CanLII 164",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:21216:38461:38476:shape_neutral_bare,1985 CanLII 164,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:21216:38461:38476:shape_vol_abbr_page,1985 CanLII 164,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:21307:20679:20702:shape_year_vol_page,"(1992), 1992 CanLII 431",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:21307:20687:20702:shape_neutral_bare,1992 CanLII 431,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:21307:20687:20702:shape_vol_abbr_page,1992 CanLII 431,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:21532:16192:16217:shape_year_vol_page,"(2006), 2006 CanLII 40088",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:21532:16200:16217:shape_neutral_bare,2006 CanLII 40088,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:21532:16200:16217:shape_vol_abbr_page,2006 CanLII 40088,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:21662:16230:16254:shape_year_vol_page,"(1986), 1986 CanLII 2474",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:21662:16238:16254:shape_neutral_bare,1986 CanLII 2474,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:21662:16238:16254:shape_vol_abbr_page,1986 CanLII 2474,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:21710:12151:12172:shape_year_vol_page,"(2009), 2009 ONCA 645",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:21710:12159:12172:shape_neutral_bare,2009 ONCA 645,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:21710:12159:12172:shape_vol_abbr_page,2009 ONCA 645,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:21710:12237:12257:shape_year_vol_page,"(2011), 2011 ONCA 89",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:21710:12245:12257:shape_neutral_bare,2011 ONCA 89,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:21710:12245:12257:shape_vol_abbr_page,2011 ONCA 89,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:21710:12322:12343:shape_year_vol_page,"(2013), 2013 ONCA 514",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:21710:12330:12343:shape_neutral_bare,2013 ONCA 514,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:21710:12330:12343:shape_vol_abbr_page,2013 ONCA 514,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:21969:23039:23063:shape_year_vol_page,"(1990), 1990 CanLII 6955",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:21969:23047:23063:shape_neutral_bare,1990 CanLII 6955,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:21969:23047:23063:shape_vol_abbr_page,1990 CanLII 6955,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:22125:48003:48024:shape_year_vol_page,"(1980), 1980 ABCA 214",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:22125:48011:48024:shape_neutral_bare,1980 ABCA 214,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:22125:48011:48024:shape_vol_abbr_page,1980 ABCA 214,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:22292:15505:15527:shape_year_vol_page,"(1893), 1893 CanLII 65",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:22292:15513:15527:shape_neutral_bare,1893 CanLII 65,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:22292:15513:15527:shape_vol_abbr_page,1893 CanLII 65,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:2230:4825:4850:shape_year_vol_page,"(2003), 2003 CanLII 21746",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:2230:4833:4850:shape_neutral_bare,2003 CanLII 21746,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:2230:4833:4850:shape_vol_abbr_page,2003 CanLII 21746,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:22334:29810:29833:shape_year_vol_page,"(1998), 1998 SKQB 13883",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:22334:29818:29833:shape_neutral_bare,1998 SKQB 13883,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:22334:29818:29833:shape_vol_abbr_page,1998 SKQB 13883,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:22397:37014:37034:shape_year_vol_page,"(1994), 1994 ABCA 20",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:22397:37022:37034:shape_neutral_bare,1994 ABCA 20,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:22397:37022:37034:shape_vol_abbr_page,1994 ABCA 20,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:22578:19943:19967:shape_year_vol_page,"(2000), 2000 CanLII 5630",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:22578:19951:19967:shape_neutral_bare,2000 CanLII 5630,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:22578:19951:19967:shape_vol_abbr_page,2000 CanLII 5630,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:22853:41594:41619:shape_year_vol_page,"(2001), 2001 CanLII 24130",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:22853:41602:41619:shape_neutral_bare,2001 CanLII 24130,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:22853:41602:41619:shape_vol_abbr_page,2001 CanLII 24130,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:23103:22699:22724:shape_year_vol_page,"(2007), 2007 CanLII 13949",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:23103:22707:22724:shape_neutral_bare,2007 CanLII 13949,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:23103:22707:22724:shape_vol_abbr_page,2007 CanLII 13949,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:23150:2779:2803:shape_year_vol_page,"(1992), 1992 CanLII 7561",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:23150:2787:2803:shape_neutral_bare,1992 CanLII 7561,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:23150:2787:2803:shape_vol_abbr_page,1992 CanLII 7561,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:23351:12724:12749:shape_year_vol_page,"(2002), 2002 CanLII 49359",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:23351:12732:12749:shape_neutral_bare,2002 CanLII 49359,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:23351:12732:12749:shape_vol_abbr_page,2002 CanLII 49359,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:23812:10259:10280:shape_year_vol_page,"(2012), 2013 ONCJ 160",shape_year_vol_page,alternative_dominated_by_support,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:23847:7564:7585:shape_year_vol_page,"(1999), 1999 NSCA 162",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:23847:7572:7585:shape_neutral_bare,1999 NSCA 162,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:23847:7572:7585:shape_vol_abbr_page,1999 NSCA 162,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:23933:13005:13028:shape_year_vol_page,"(1975), 1975 CanLII 393",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:23933:13013:13028:shape_neutral_bare,1975 CanLII 393,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:23933:13013:13028:shape_vol_abbr_page,1975 CanLII 393,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:24017:8192:8216:shape_year_vol_page,"(1996), 1996 CanLII 1381",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:24017:8200:8216:shape_neutral_bare,1996 CanLII 1381,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:24017:8200:8216:shape_vol_abbr_page,1996 CanLII 1381,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:24017:9101:9125:shape_year_vol_page,"(2003), 2003 CanLII 4187",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:24017:9109:9125:shape_neutral_bare,2003 CanLII 4187,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:24017:9109:9125:shape_vol_abbr_page,2003 CanLII 4187,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:3220:15093:15113:shape_year_vol_page,"(2005), 2005 BCCA 93",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:3220:15101:15113:shape_neutral_bare,2005 BCCA 93,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:3220:15101:15113:shape_vol_abbr_page,2005 BCCA 93,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:4071:22307:22327:shape_year_vol_page,"(2008), 2008 ONCA 91",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:4071:22315:22327:shape_neutral_bare,2008 ONCA 91,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:4071:22315:22327:shape_vol_abbr_page,2008 ONCA 91,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:5107:106911:106932:shape_year_vol_page,"(2014), 2014 ONCA 611",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:5107:106919:106932:shape_neutral_bare,2014 ONCA 611,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:5107:106919:106932:shape_vol_abbr_page,2014 ONCA 611,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:5403:4211:4232:shape_year_vol_page,"(2007), 2007 ONCA 695",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:5403:4219:4232:shape_neutral_bare,2007 ONCA 695,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:5403:4219:4232:shape_vol_abbr_page,2007 ONCA 695,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:5821:20481:20506:shape_year_vol_page,"(2004), 2004 CanLII 10091",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:5821:20489:20506:shape_neutral_bare,2004 CanLII 10091,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:5821:20489:20506:shape_vol_abbr_page,2004 CanLII 10091,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:5821:20631:20651:shape_year_vol_page,"(2007), 2007 NSCA 52",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:5821:20639:20651:shape_neutral_bare,2007 NSCA 52,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:5821:20639:20651:shape_vol_abbr_page,2007 NSCA 52,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:5821:20744:20764:shape_year_vol_page,"(1993), 1993 ABCA 75",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:5821:20752:20764:shape_neutral_bare,1993 ABCA 75,shape_neutral_bare,alternative_contained,counted,i_b10_related,partner
+ONCA:5821:20752:20764:shape_vol_abbr_page,1993 ABCA 75,shape_vol_abbr_page,alternative_contained,alternative_unsupported_reading,i_b10_related,partner_twin
+ONCA:663:20143:20167:shape_year_vol_page,"(1996), 1996 CanLII 8007",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:663:20151:20167:shape_neutral_bare,1996 CanLII 8007,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:663:20151:20167:shape_vol_abbr_page,1996 CanLII 8007,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:7963:20253:20278:shape_year_vol_page,"(2006), 2006 CanLII 33664",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:7963:20261:20278:shape_neutral_bare,2006 CanLII 33664,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:7963:20261:20278:shape_vol_abbr_page,2006 CanLII 33664,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:7983:19591:19614:shape_year_vol_page,"(2005), 2005 CanLII 253",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:7983:19599:19614:shape_neutral_bare,2005 CanLII 253,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:7983:19599:19614:shape_vol_abbr_page,2005 CanLII 253,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:8127:27438:27466:shape_year_vol_page,"(1987), 1987 CarswellOnt 309",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:8127:27446:27466:shape_neutral_bare,1987 CarswellOnt 309,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:8127:27446:27466:shape_vol_abbr_page,1987 CarswellOnt 309,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:9913:14153:14178:shape_year_vol_page,"(2001), 2001 CanLII 24079",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:9913:14161:14178:shape_neutral_bare,2001 CanLII 24079,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:9913:14161:14178:shape_vol_abbr_page,2001 CanLII 24079,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin
+ONCA:9913:5273:5295:shape_year_vol_page,"(1893), 1893 CanLII 65",shape_year_vol_page,counted,year_reread_as_vol_invalid,i_b10_related,container
+ONCA:9913:5281:5295:shape_neutral_bare,1893 CanLII 65,shape_neutral_bare,alternative_contained,span_alternative_undecided,i_b10_related,partner
+ONCA:9913:5281:5295:shape_vol_abbr_page,1893 CanLII 65,shape_vol_abbr_page,alternative_contained,span_alternative_undecided,i_b10_related,partner_twin

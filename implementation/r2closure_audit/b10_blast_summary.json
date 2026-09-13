@@ -1,0 +1,32 @@
+{
+ "item1": {
+  "containers_flagged": 92,
+  "containers_invalidated": 92,
+  "partner_fate": {
+   "span_alternative_undecided": 60,
+   "counted": 32
+  },
+  "unresolved_containers": 0,
+  "by_partner_table_outcome": {
+   "vendor_or_unresolved": 59,
+   "court_code_resolved": 33
+  }
+ },
+ "item2": {
+  "total_status_changes": 264,
+  "class_i_b10_related": 264,
+  "class_ii_other": 0,
+  "transitions": {
+   "i_b10_related -> alternative_contained [span_alternative_undecided]": 118,
+   "i_b10_related -> counted [year_reread_as_vol_invalid]": 86,
+   "i_b10_related -> alternative_contained [counted]": 27,
+   "i_b10_related -> alternative_contained [alternative_unsupported_reading]": 27,
+   "i_b10_related -> alternative_dominated_by_support [year_reread_as_vol_invalid]": 5,
+   "i_b10_related -> overlap_undecided [year_reread_as_vol_invalid]": 1
+  }
+ },
+ "item6": {
+  "scc_74_counted": "SCC:3359:5048:5059:shape_neutral_bare",
+  "canliii_24079_undecided": "ONCA:10076:8322:8339:shape_neutral_bare"
+ }
+}
