@@ -216,6 +216,37 @@ def _one_edit(a, b):
     return any(l[:i] + l[i + 1:] == s for i in range(len(l)))
 
 
+ALLOWED_BILINGUAL_STATUSES = {
+    "verified_explicit_equivalence",
+}
+
+
+def load_bilingual():
+    """R2 闭环 4.1：已核实的双语代码对（无方向、小写）。只有
+    verification_status 精确属于 ALLOWED_BILINGUAL_STATUSES 的行参与身份等价——
+    候选端点配对（同库 en+fr）**不**自动授权。结果缓存（同一进程一次加载）。"""
+    global _BILINGUAL_CACHE
+    if _BILINGUAL_CACHE is not None:
+        return _BILINGUAL_CACHE
+    path = os.path.join(DECISIONS, "bilingual_neutral_codes.csv")
+    pairs = set()
+    if os.path.exists(path):
+        with open(path, encoding="utf-8", newline="") as f:
+            for r in csv.DictReader(f):
+                if (r.get("verification_status") or "").strip() \
+                        not in ALLOWED_BILINGUAL_STATUSES:
+                    continue
+                a = nk(r.get("code_en") or "")
+                b = nk(r.get("code_fr") or "")
+                if a and b and a != b:
+                    pairs.add(frozenset((a, b)))
+    _BILINGUAL_CACHE = frozenset(pairs)
+    return _BILINGUAL_CACHE
+
+
+_BILINGUAL_CACHE = None
+
+
 def same_decision_kind(ka, ja, dda, kb, jb, ddb):
     """中立引用 ka（较小者）与 kb 是否同一判决；返回匹配依据：
     bilingual（双语代码）/ typo_number / typo_year / None。
@@ -224,7 +255,10 @@ def same_decision_kind(ka, ja, dda, kb, jb, ddb):
     ya, ca, sa, na = _neutral_parts(ka)
     yb, cb, sb, nb = _neutral_parts(kb)
     if ya == yb and na == nb and sa == sb and ja and ja == jb:
-        return "bilingual"               # 同一判决的双语代码（SCC/CSC、FC/CF…）
+        # R2 闭环 4.2：双语等价还须代码对精确存在于已核实双语表
+        if frozenset((ca, cb)) in load_bilingual():
+            return "bilingual"           # 同一判决的双语代码（SCC/CSC…）
+        return None
     if (ca, sa) != (cb, sb) or 2 * dda > ddb:
         return None                      # 笔误必定比正确写法罕见
     if ya == yb and _one_edit(na, nb):
@@ -560,7 +594,8 @@ def _scope_origin(row, scope_idx, stats):
 
 # ---- R2-1/R2-9：身份基础、组聚合、有效来源关联 ----
 BASIS_RANK = {"anchor": 6, "singleton": 6, "same_citation": 5,
-              "anchor_variant_bilingual": 4, "anchor_variant_typo": 3,
+              "anchor_variant_bilingual": 4, "anchor_variant_typo_number": 3,
+              "anchor_variant_typo_year": 3,
               "name_year": 2, "cocitation": 1, "unanchored": 1}
 # 只有显式、可审计的身份等价规则才授权组内传播（R2 订正 §1）：
 #   anchor/singleton = 键本身就是该身份（或唯一成员用直接证据）；
@@ -579,6 +614,10 @@ def assign_identity_basis(members, did_idx, start, reason):
     root, anc, ajur, own, root_kind = decisions_of(members, did_idx, start)
     anchors = {k for k in anc if root.get(k) == k}
     keycount = Counter(m["merge_key"] for m in members)
+    # R2 闭环 4.3：same_citation 只有在**全组只有一个 merge_key**时才成立——
+    # 该键本身就是组的身份。组内存在多个不同键时，重复出现的非锚键保留其实际
+    # 加入依据（typo 变体/name_year/共引），不因重复次数升级。
+    single_key_group = len(keycount) == 1
     out = {}
     for m in members:
         k = m["merge_key"]
@@ -586,10 +625,10 @@ def assign_identity_basis(members, did_idx, start, reason):
             b = "singleton"
         elif k in anchors:
             b = "anchor"
-        elif keycount[k] > 1:
-            b = "same_citation"
         elif k in root and root[k] != k:
             b = "anchor_variant_" + root_kind.get(k, "typo")
+        elif single_key_group:
+            b = "same_citation"
         elif "unanchored" in (reason or ""):
             b = "unanchored"
         elif "decision" in (reason or ""):

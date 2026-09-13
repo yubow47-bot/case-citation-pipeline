@@ -31,6 +31,7 @@ from collections import Counter, defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk                                      # noqa: E402
+from decide import ELIGIBLE_BASES                             # noqa: E402  (R2 闭环 4.4 共享契约)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -48,8 +49,8 @@ TENTATIVE_FIELDS = ["source_decision", "resolved_cited_case", "identity_status",
 
 
 def basis_of(identity_status):
-    return identity_status in ("anchor", "singleton", "same_citation",
-                               "anchor_variant_bilingual")
+    # R2 闭环 4.4：资格集合来自 decide.ELIGIBLE_BASES（同一来源，防止漂移）
+    return identity_status in ELIGIBLE_BASES
 
 
 def candidate_label(identity_status):

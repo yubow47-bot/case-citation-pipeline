@@ -716,9 +716,20 @@ def test_containment_chain_points_to_final_counter():
 
 
 def test_unresolved_suppressor_recycles_dominated():
-    """R2 终集合：支配链终止于被计数者；同档冲突的弃权是残差——
-    有支持的 s 同时支配垃圾 a、又与 t 同档相持 → s 计数（支配裁决优先），
-    a 随 s，t 弃权（不被硬选、也不计数）。"""
+    """【R2 闭环反例 F——本轮唯一预授权修改旧期望的测试】
+
+    修改前（R2 中期口径）断言：s 与 t 同档相持时，s 因另支配垃圾 a 仍 counted、
+    a 以 alternative_same_key 指向 s、t overlap_undecided。
+    修改理由：grounded 终态语义（本轮任务二）下，s 的同档冲突未决时 s 不得
+    counted——「压制者本身未决」的 a 也必须保持未决，否则中间胜负关系会漏成
+    最终计数。旧行为把 s 的另一条支配裁决当成了打破同档相持的证据，那是
+    多前提拆单边的错误。
+
+    新断言：
+      第一段（s 与 t 同档相持）：s、t、a 都不得 counted；a 为
+      overlap_undecided，备注写明压制者本身未决。
+      第二段（移除 t，保留原语义）：s 无攻击者 → counted；a 指向 s。
+    """
     def cand(cid, s, e, jur, extra=None):
         r = {"candidate_id": cid, "corpus_row_index": "0",
              "source_decision_citation": "SCC_t0", "raw_string": cid,
@@ -737,14 +748,18 @@ def test_unresolved_suppressor_recycles_dominated():
     t = cand("t", 15, 40, "GB", {"year_start": "1969", "abbr": "C.D."})
     stats = Counter()
     v = merge.arbitrate_document([a, s, t], stats)
-    check(v["s"][0] == "counted" and v["t"][0] == "overlap_undecided",
-          "R2 终集合：有支持且支配垃圾者计数；同档相他方弃权")
-    check(v["a"][0] == "alternative_same_key" and v["a"][2] == "s",
-          "R2 终集合：垃圾 a 让位于被计数的 s（不因 s 卷入同档相持而复活）")
-    # 反向：t 若无同档相持则照常计数（弱证据双向不偏袒）
+    check(v["s"][0] != "counted" and v["t"][0] != "counted"
+          and v["a"][0] != "counted",
+          "闭环反例F：同档相持的 s/t 与其受压者 a 都不得 counted")
+    check(v["a"][0] == "overlap_undecided" and "未决" in v["a"][1],
+          "闭环反例F：a 为 overlap_undecided，备注压制者本身未决（%r）" % (v["a"][1],))
+    check(v["s"][0] == "overlap_undecided" and v["t"][0] == "overlap_undecided",
+          "闭环反例F：s/t 纯同档环保持 UNDEC（不用形状顺序破环）")
+    # 第二段（保留原语义）：移除 t → s counted，a 指向 s
     v2 = merge.arbitrate_document([a, s], Counter())
-    check(v2["s"][0] == "counted" and v2["a"][2] == "s",
-          "R2 终集合：去掉 t 后 s/a 结论不变")
+    check(v2["s"][0] == "counted" and v2["a"][0] == "alternative_same_key"
+          and v2["a"][2] == "s",
+          "闭环反例F：移除 t 后 s counted、a 指向 s（隔离无攻击者即 IN）")
 
 
 def test_d3_partner_without_support_keeps_conflict_open():
@@ -776,6 +791,314 @@ def test_d3_partner_without_support_keeps_conflict_open():
           "R2：无支持配对者不作无效性证明")
     check(v["p"][0] in ("counted", "overlap_undecided", "span_alternative_undecided"),
           "R2：配对者自身走常规规则")
+
+
+# ============================================================ R2 闭环（身份授权）
+def test_bilingual_explicit_table_only():
+    """R2 闭环反例 1-3：只有显式已核实双语表授权 bilingual。
+    1) 任意假代码不得 bilingual；2) SCC/CSC（本地有同案双语证据）仍 bilingual；
+    3) ABQB/ABKB（改名代码）不得 bilingual。"""
+    import decide
+    pairs = decide.load_bilingual()
+    check(("scc", "csc") in pairs or frozenset(("scc", "csc")) in pairs,
+          "闭环：SCC/CSC 在已核实双语对中（本地证据：2014 CSC 7 = 2014 SCC 7）")
+    check(decide.same_decision_kind("2001||abc||1", "CA", 1,
+                                    "2001||xyz||1", "CA", 1) is None,
+          "闭环：假代码 abc/xyz 不得 bilingual")
+    check(decide.same_decision_kind("2014||scc||7", "CA", 5,
+                                    "2014||csc||7", "CA", 3) == "bilingual",
+          "闭环：SCC/CSC 同年同号仍 bilingual")
+    check(decide.same_decision_kind("2017||abqb||812", "AB", 1,
+                                    "2017||abkb||812", "AB", 1) is None,
+          "闭环：ABQB/ABKB（改名/时代转换）不得 bilingual")
+    check(not any("abqb" in p for p in pairs),
+          "闭环：改名代码不进已核实双语对")
+
+
+def _brow(rid, merge_key, basis, status="UNDETERMINED", country="", evid="",
+          mbasis="", gid="XC-B1", court="SCC"):
+    return {"row_key": rid, "merge_key": merge_key, "merged_group_id": gid,
+            "identity_basis": basis, "member_origin_status": status,
+            "member_origin_country": country, "member_origin_evidence_ids": evid,
+            "member_origin_basis": mbasis, "member_origin_conflict_detail": "",
+            "member_origin_subdivision": "", "case_name_modal": "X v. Y",
+            "citation_kind": "neutral",
+            "distinct_decisions_count": "3", "court": court,
+            "group_foreign_status": "", "group_origin_country": "",
+            "group_origin_status": "", "group_origin_basis": "",
+            "group_origin_evidence_ids": "", "noncore_origin_evidence": "",
+            "foreign_status": "", "origin_country": "", "case_origin": "",
+            "origin_basis": "", "origin_evidence_id": "", "deciding_court": ""}
+
+
+def test_same_citation_requires_single_key_group():
+    """R2 闭环反例 4：锚 K1 + 弱键 K2×2（两法院、案名/共引加入）——
+    K2 不得标 same_citation；弱连接的外国证据不得把组判成 FOREIGN。"""
+    import decide
+    k1 = _brow("SCC|2009||ukhl||18", "2009||ukhl||18", "anchor")
+    k2a = _brow("SCC|2009|3|aller||945", "2009|3|aller||945", "", court="SCC")
+    k2b = _brow("ONCA|2009|3|aller||945", "2009|3|aller||945", "", court="ONCA")
+    # 弱成员是汇编引证（生产里两个 neutral 键会被 split_by_decision 拆开，
+    # 不会同组）——本测试钉的是「非锚成员重复出现 ≠ same_citation」
+    for r in (k2a, k2b):
+        r["citation_kind"] = "reporter"
+    members = [k1, k2a, k2b]
+    did_idx = {}
+    basis = decide.assign_identity_basis(members, did_idx, None, "")
+    check(basis["SCC|2009|3|aller||945"] != "same_citation"
+          and basis["ONCA|2009|3|aller||945"] != "same_citation",
+          "闭环：重复出现的弱键不因 keycount>1 升级 same_citation")
+    # K2 弱成员带外国证据 → 组仍不得 FOREIGN（无合格成员证据）
+    for r, ctry in ((k2a, "GB"), (k2b, "GB")):
+        r["member_origin_status"] = "DETERMINED"
+        r["member_origin_country"] = ctry
+        r["member_origin_evidence_ids"] = "scope:FAKE"
+        r["member_origin_basis"] = "court_scope_rule"
+    # K1 无证据；K2 的身份连接由 assign_identity_basis 决定（非锚）
+    basis = decide.assign_identity_basis(members, did_idx, None, "")
+    for r in members:
+        r["identity_basis"] = basis[r["row_key"]]
+    decide.aggregate_group_origin(members, Counter())
+    check(k1["group_foreign_status"] == "UNDETERMINED",
+          "闭环：仅弱连接成员带证据 → 组 UNDETERMINED（弱连接不得传播 FOREIGN）")
+    check("name_year:GB:scope:FAKE" in (k1["noncore_origin_evidence"] or ""),
+          "闭环：弱成员证据进 noncore 审计列（basis:国别:证据id）")
+
+
+def test_same_citation_single_key_group():
+    """R2 闭环反例 5：全组只有一个 merge_key（K2×2，两法院同印刷串）→
+    same_citation 合格，证据可传播。"""
+    import decide
+    a = _brow("SCC|2009|3|aller||945", "2009|3|aller||945", "", court="SCC",
+              status="DETERMINED", country="GB", evid="scope:X",
+              mbasis="court_scope_rule")
+    b = _brow("ONCA|2009|3|aller||945", "2009|3|aller||945", "", court="ONCA")
+    # 单键组的键本身不是中立锚（汇编串）——若它是锚会先标 anchor（同样合格）
+    for r in (a, b):
+        r["citation_kind"] = "reporter"
+    members = [a, b]
+    basis = decide.assign_identity_basis(members, {}, None, "")
+    check(basis["SCC|2009|3|aller||945"] == "same_citation"
+          and basis["ONCA|2009|3|aller||945"] == "same_citation",
+          "闭环：单键组（同印刷串跨法院）→ same_citation")
+    for r in members:
+        r["identity_basis"] = basis[r["row_key"]]
+    decide.aggregate_group_origin(members, Counter())
+    check(a["group_foreign_status"] == "FOREIGN",
+          "闭环：单键组 same_citation 证据可传播")
+
+
+def test_typo_variant_twice_stays_variant():
+    """R2 闭环反例 6：出现两次的 typo 变体键标 anchor_variant_typo_*，
+    不得 same_citation、不得传播。"""
+    import decide
+    k1 = _brow("SCC|2002||scc||33", "2002||scc||33", "anchor")
+    t1 = _brow("SCC|2002||scc||3", "2002||scc||3", "", court="SCC",
+               status="DETERMINED", country="GB", evid="scope:FAKE",
+               mbasis="court_scope_rule")
+    t2 = _brow("ONCA|2002||scc||3", "2002||scc||3", "", court="ONCA")
+    members = [k1, t1, t2]
+    # 锚键（33）在生产里被更多判决引用（dd 更大）→ 它是 root，3 是变体
+    did_idx = {"SCC|2002||scc||3": set(), "ONCA|2002||scc||3": set(),
+               "SCC|2002||scc||33": {"d1", "d2", "d3", "d4"}}
+    basis = decide.assign_identity_basis(members, did_idx, None, "")
+    check(basis["SCC|2002||scc||3"].startswith("anchor_variant_typo")
+          and basis["ONCA|2002||scc||3"].startswith("anchor_variant_typo"),
+          "闭环：typo 变体重复出现仍标 anchor_variant_typo_*（得到 %r/%r）"
+          % (basis["SCC|2002||scc||3"], basis["ONCA|2002||scc||3"]))
+    check(not any(b == "same_citation" for b in basis.values()),
+          "闭环：typo 变体不得 same_citation")
+    for r in members:
+        r["identity_basis"] = basis[r["row_key"]]
+    decide.aggregate_group_origin(members, Counter())
+    check(k1["group_foreign_status"] == "UNDETERMINED",
+          "闭环：typo 变体的外国证据不得传播")
+
+
+def test_eligible_bases_shared_between_decide_and_edges():
+    """R2 闭环 4.4：edges 与 decide 使用同一合格基础集合。"""
+    import decide
+    import edges
+    check(edges.ELIGIBLE_BASES is decide.ELIGIBLE_BASES
+          or edges.ELIGIBLE_BASES == decide.ELIGIBLE_BASES,
+          "闭环：edges.ELIGIBLE_BASES 与 decide.ELIGIBLE_BASES 为同一集合")
+
+
+
+# ============================================================ R2 闭环（仲裁终态）
+def _acand(cid, s, e, jur, grade="exact", key=None, extra=None):
+    r = {"candidate_id": cid, "corpus_row_index": "0",
+         "source_decision_citation": "SCC_t0", "raw_string": cid,
+         "shape_name": "shape_vol_abbr_page",
+         "match_start_offset": s, "match_end_offset": e,
+         "citation_kind": "reporter", "jurisdiction": jur,
+         "jurisdiction_confidence": "estimated", "lookup_mode": grade,
+         "parse_status": "valid", "structural_conflict": "",
+         "rejected_reason": "", "self_citation": "",
+         "candidate_case_name": "", "source_decision_year": "2020",
+         "year_start": "1968", "vol": "12", "abbr": "A.B.", "page": "34"}
+    if key:
+        r.update(key)
+    r.update(extra or {})
+    return r
+
+
+def test_counterexample_a_win_weak_cannot_break_equal_tie():
+    """闭环反例 A：A、B 部分重叠异键均 exact（互相冲突）；各自包含一个弱候选。
+    期望：A、B、两条弱候选都不得 counted；非 undecided 的 loser 只能指向 counted。"""
+    A = _acand("A", 0, 20, "CA")
+    B = _acand("B", 12, 32, "GB", key={"abbr": "C.D.", "year_start": "1969"})
+    a1 = _acand("a1", 2, 10, "UNSUPPORTED", grade="", key={"page": "30"})
+    b1 = _acand("b1", 14, 22, "UNSUPPORTED", grade="", key={"page": "30"})
+    stats = Counter()
+    v = merge.arbitrate_document([A, B, a1, b1], stats)
+    counted = [c for c, vv in v.items() if vv[0] == "counted"]
+    check(not counted, "闭环A：无任何 counted（%r）" % counted)
+    for c in ("A", "B"):
+        check(v[c][0] == "overlap_undecided",
+              "闭环A：%s 为 overlap_undecided（%r）" % (c, v[c][0]))
+    for c in ("a1", "b1"):
+        check(v[c][0] == "overlap_undecided" and "未决" in v[c][1],
+              "闭环A：弱候选 %s 因压制者未决而 undecided（%r %r）" % (c, v[c][0], v[c][1]))
+
+
+def test_counterexample_b_no_cross_redirect():
+    """闭环反例 B：A exact → B normalized → C unsupported；A 与 C 不重叠。
+    期望：A counted；B 被 A 支配；C counted（孤立无支持可计数——既有口径）；
+    C 不得指向 A。"""
+    A = _acand("A", 0, 15, "CA")
+    B = _acand("B", 3, 18, "CA", grade="")          # normalized 档
+    C = _acand("C", 40, 55, "CA", key={"abbr": "C.D.", "year_start": "1969"})
+    # C 与 A/B 都不重叠；B 攻击 C 的关系来自旧代码的支配规则——本反例里
+    # B 与 C 重叠才构成链；把 B 放到与 C 重叠但与 A 也重叠的位置
+    B2 = _acand("B", 3, 45, "CA", grade="")         # B 跨搭 A 与 C
+    stats = Counter()
+    v = merge.arbitrate_document([A, B2, C], stats)
+    check(v["A"][0] == "counted", "闭环B：A counted")
+    check(v["B"][0] in ("alternative_dominated_by_support",
+                        "alternative_weaker_support"),
+          "闭环B：B 被 A 支配（%r）" % v["B"][0])
+    check(v["C"][0] == "counted",
+          "闭环B：C counted（压制者 B 最终 OUT，弱候选按既有口径回收）")
+    check(v["C"][2] != "A",
+          "闭环B：C 不得被重定向到与它不重叠的 A（%r）" % (v["C"][2],))
+
+
+def test_counterexample_c_d3_partner_unresolved():
+    """闭环反例 C：D 被判跨界解析；其配对者 P 与 Q 同跨度异键同档相持。
+    期望：P、Q 未决；D 不得 cross_boundary_invalid，应为 overlap_undecided
+    且备注指出跨界配对者未决。"""
+    D = _acand("D", 0, 15, "CA", extra={
+        "structural_conflict": "cross_boundary_year_page",
+        "conflict_with_candidate": "P", "page": "2011",
+        "page_span": "8:12", "year_start": "2011"})
+    P = _acand("P", 8, 25, "CA", key={"abbr": "P.Q.", "year_start": "2011"})
+    Q = _acand("Q", 8, 25, "GB", key={"abbr": "Q.R.", "year_start": "2011"})
+    # P 与 D 同键（配对者通常与 D 同码同号）——把 P/Q 设成同跨度异键相持
+    stats = Counter()
+    v = merge.arbitrate_document([D, P, Q], stats)
+    check(v["P"][0] != "counted" and v["Q"][0] != "counted",
+          "闭环C：P/Q 同档相持未决")
+    check(v["D"][0] == "overlap_undecided",
+          "闭环C：D 不得 cross_boundary_invalid（%r）" % v["D"][0])
+    check("配对者" in v["D"][1] or "未决" in v["D"][1],
+          "闭环C：备注指出跨界配对者未决（%r）" % (v["D"][1],))
+
+
+def test_counterexample_d_bstep_loser_not_pointing_to_uncounted():
+    """闭环反例 D：同跨度弱读法 W 让位于代表 R；R 在跨跨度竞争中与 T 同档
+    相持。期望：W 不得指向未计数的 R；W 为 undecided（或指向另一个有直接
+    有效依据的 counted 攻击者）。"""
+    W = _acand("W", 0, 10, "CA", grade="")
+    R = _acand("R", 0, 20, "CA")
+    T = _acand("T", 15, 45, "GB", key={"abbr": "C.D.", "year_start": "1969"})
+    stats = Counter()
+    v = merge.arbitrate_document([W, R, T], stats)
+    check(v["R"][0] != "counted" and v["T"][0] != "counted",
+          "闭环D：R/T 同档相持未决")
+    if v["W"][0] != "overlap_undecided":
+        check(v["W"][2] and v[v["W"][2]][0] == "counted"
+              and v["W"][2] != "R",
+              "闭环D：W 的替代对象必须是最终 counted 且非 R（%r -> %r）"
+              % (v["W"][0], v["W"][2]))
+    else:
+        check("未决" in v["W"][1],
+              "闭环D：W 因压制者未决而 undecided（%r）" % (v["W"][1],))
+
+
+def test_counterexample_e_same_span_undecided_still_competes():
+    """闭环反例 E：X、Y 同跨度异键同档打平；Z 与该跨度部分重叠且同档。
+    期望：Z 不得因 X/Y 早期未决而直接 counted；相关节点保持 undecided。"""
+    X = _acand("X", 0, 20, "CA")
+    Y = _acand("Y", 0, 20, "GB", key={"abbr": "C.D.", "year_start": "1969"})
+    Z = _acand("Z", 12, 40, "CA", key={"abbr": "E.F.", "year_start": "1970"})
+    stats = Counter()
+    v = merge.arbitrate_document([X, Y, Z], stats)
+    counted = [c for c, vv in v.items() if vv[0] == "counted"]
+    check(not counted, "闭环E：同档三方冲突无 counted（%r）" % counted)
+    for c in ("X", "Y", "Z"):
+        check(v[c][0] in ("span_alternative_undecided", "overlap_undecided"),
+              "闭环E：%s undecided（%r）" % (c, v[c][0]))
+
+
+def test_counterexample_g_input_order_invariance_complex():
+    """闭环反例 G：三个以上复杂反例在多种输入排列下结果完全一致（按
+    candidate_id 对齐）。"""
+    import random
+    scenarios = {
+        "A_tie_with_weak": [_acand("A", 0, 20, "CA"),
+                            _acand("B", 12, 32, "GB", key={"abbr": "C.D.",
+                                                           "year_start": "1969"}),
+                            _acand("a1", 2, 10, "UNSUPPORTED", grade="",
+                                   key={"page": "30"}),
+                            _acand("b1", 14, 22, "UNSUPPORTED", grade="",
+                                   key={"page": "30"})],
+        "chain": [_acand("A", 0, 15, "CA"),
+                  _acand("B", 3, 45, "CA", grade=""),
+                  _acand("C", 40, 55, "CA", key={"abbr": "C.D.",
+                                                 "year_start": "1969"})],
+        "mixed": [_acand("X", 0, 20, "CA"),
+                  _acand("Y", 0, 20, "GB", key={"abbr": "C.D.",
+                                                "year_start": "1969"}),
+                  _acand("Z", 12, 40, "CA", key={"abbr": "E.F.",
+                                                 "year_start": "1970"}),
+                  _acand("W", 4, 16, "CA", grade="")],
+    }
+    for name, rows in scenarios.items():
+        base = None
+        for seed in range(4):
+            rr = [dict(r) for r in rows]
+            random.Random(seed).shuffle(rr)
+            stats = Counter()
+            v = merge.arbitrate_document(rr, stats)
+            got = sorted((r["candidate_id"], v[r["candidate_id"]][0],
+                          v[r["candidate_id"]][2]) for r in rr)
+            if base is None:
+                base = got
+            else:
+                check(got == base,
+                      "闭环G：%s 排列 seed=%d 结果不变" % (name, seed))
+
+
+def test_counterexample_h_same_key_duplication_invariance():
+    """闭环反例 H：给一个等价类增加同跨度同键重复解析——counted 语义不变、
+    外部候选状态不变，只有类内代表与 alternative_same_key 关系按预期变化。"""
+    # B 用弱档（lookup_mode 空 + UNSUPPORTED → 支持档 0）：A 支配 B，A counted，
+    # 这样「同键重复加入」的效果才能与 B 的状态隔离观察
+    core = [_acand("A", 0, 20, "CA"),
+            _acand("B", 12, 32, "UNSUPPORTED", grade="",
+                   key={"abbr": "C.D.", "year_start": "1969"})]
+    dup = _acand("A2", 0, 20, "CA")              # 同跨度同键同形状同档的重复解析
+    dup["candidate_id"] = "A2"
+    v1 = merge.arbitrate_document([dict(r) for r in core], Counter())
+    v2 = merge.arbitrate_document([dict(r) for r in core] + [dict(dup)], Counter())
+    check(v1["A"][0] == "counted" and v2["A"][0] == "counted",
+          "闭环H：A 在两次运行中都 counted")
+    check(v1["B"][0] == v2["B"][0] and v1["B"][2] == v2["B"][2],
+          "闭环H：外部候选 B 的终态与替代对象不变")
+    check(v2["A2"][0] == "alternative_same_key" and v2["A2"][2] == "A",
+          "闭环H：新增重复解析进类、以 alternative_same_key 指向代表")
+
 
 
 # ============================================================ R2-1/R2-9
@@ -980,6 +1303,18 @@ def main():
               test_unresolved_suppressor_recycles_dominated,
               test_d3_partner_without_support_keeps_conflict_open,
               test_group_origin_aggregation, test_effective_sources_and_edges,
+              test_bilingual_explicit_table_only,
+              test_same_citation_requires_single_key_group,
+              test_same_citation_single_key_group,
+              test_typo_variant_twice_stays_variant,
+              test_eligible_bases_shared_between_decide_and_edges,
+              test_counterexample_a_win_weak_cannot_break_equal_tie,
+              test_counterexample_b_no_cross_redirect,
+              test_counterexample_c_d3_partner_unresolved,
+              test_counterexample_d_bstep_loser_not_pointing_to_uncounted,
+              test_counterexample_e_same_span_undecided_still_competes,
+              test_counterexample_g_input_order_invariance_complex,
+              test_counterexample_h_same_key_duplication_invariance,
               test_new_path_fixture_measurements):
         t()
     print("全部通过：%d 条断言" % len(PASSED))
