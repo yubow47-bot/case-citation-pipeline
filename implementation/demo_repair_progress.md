@@ -3,6 +3,185 @@
 本文件是本轮修复的持续工作记录。只记事实：做了什么、跑了什么、结果是什么、卡在哪。
 最终验收不属于本轮工作，本文件不作任何「通过」声明。
 
+> **Round 2（2026-09-12 晚）**：针对 round-1 的独立复审订正（R2-1…R2-10），按
+> 订正案建议顺序执行。round-1 记录见下文各节。
+
+## Round 2 记录（2026-09-12）
+
+### 执行顺序与提交
+
+| 步骤 | 内容 | 提交 |
+|---|---|---|
+| 1 | R2-10 输入指纹闸 + 候选爆炸 fail-closed | 60081fd |
+| 2 | R2-2/3/5/6 仲裁支持分级、终集合定点收敛、nominate 序数括注、run 级边界闸 | 60081fd |
+| 3 | R2-1/9 成员/组/边溯源 + 有效来源关联 | 2f587bb |
+| 4 | R2-4 scope 表官方化 + 分辑行 + 标识符年代闸 | 82c456a |
+| 5 | 全量 run + 3.2 核查 + 报告 | （本笔） |
+
+### 实现要点（按缺陷）
+
+- **R2-10**：`run_all.input_identity()` 启动时对 生产代码+全部决策表+select 配置+
+  语料+参数 算一次指纹，**冻结**写进 manifest（后续更新绝不重算覆盖）；收尾重算比对，
+  变更 → status=failed（不是 complete）。候选爆炸从「截断+记账」改为 **fail closed**
+  （complete 与「发生过截断」不能并存）。
+- **R2-2**：`support_grade`（exact=2 > 其余已解析=1 > 无可用支持=0；被拒/结构冲突/
+  歧义未决/UNSUPPORTED 一律 0）。同跨度先按键合并（同义多解析不自打平），异含义间
+  唯一最高档胜出，最高档打平才弃权；带支持的输家标 `alternative_weaker_support`。
+- **R2-3**：不同跨度同规则——严格更高支持档唯一起者胜，输家 `alternative_dominated_by_support`；
+  同档弃权是**残差**（支配类裁决优先，见终集合口径）。
+- **终集合不变量**：重叠不传递——支配链定点收敛到最终被计数者（`arbitrate_document`
+  的 fixpoint：链式重定向 + 被消解/未决者不当唯一压制者，回收重算入 stats）。
+- **R2-5**：nominate 括注本身是序数系列形时按系列正典化进键（165 A. (2d) 82 (1960)
+  与 vol_page_year 读法同键，计一次）。
+- **R2-6**：边界闸改 **run 级**口径——仅当新匹配起点与**同形状更早发射起点**同处一个
+  连续字母数字 run 时才拒；run 内首匹配放行（`Court of Appeal[1997] R.J.Q. 2907`、
+  `1[1961] S.C.R. 614` 不再被吞），同 run 的 `23 A.C. 4` 截断照拒。
+- **R2-1**：decide 产出成员级观察 `member_origin_*`（含全部证据 id、成员本地 CONFLICT
+  不被空国别隐瞒）+ 每成员 `identity_basis`（anchor/singleton/same_citation/
+  anchor_variant_bilingual **合格**；typo 变体/name_year/cocitation/unanchored 只审计）。
+  组级结论 `group_origin_*` 从合格成员证据聚合，院内与跨院轮都执行、写到每行；冲突
+  检查跨院后同样跑。启发式成员的证据进 `noncore_origin_evidence` 审计列。
+- **R2-9**：decide 输出 `effective_sources.csv`（来源→组关联，带 status 与
+  exclusion_reason 与到达路径的最优 identity_basis）；每组 counted 来源数 == dd
+  （断言）。edges.py 只消费该关联：平行形自引（1,366 处 dd+1 虚增）不再重现，
+  留 `self_excluded_edges.csv` 审计；仅启发式路径的边**不继承**组 FOREIGN/DOMESTIC
+  （foreign_status=UNDETERMINED + tentative_edges.csv），组结论留 group_origin_* 列。
+- **R2-4**：scope 表来源全部换成官方/一手（legislation.gov.uk Judicature Acts 1873/1874
+  PDF 原文、BAILII 2001-01-11 PD 原文、judiciary.uk、jcpc.uk PD1 §1.1、CCC/Lexum
+  标识符标准）；年代闸改用**标识符适用期**（SCC/CSC 2000、ONCA 2007、EWCA 系 2001、
+  EWHC Ch 2002——Admin 先行、其余分庭 2002-01-14，corpus 里 [2000]/[2001] EWHC Ch
+  属供应商回溯，被闸挡下诚实降级）；新增 EWCA Civ / EWCA Crim / EWHC Ch 分辑行
+  （键=印刷事实，不实现前缀匹配）；UKUT 仍不入表（分庭属地证据不足）。
+  scope 只适用于 **citation_kind=neutral** 的行（年头+空卷不证明引证种类）。
+- **R2-7（缓办）**：非序数括注拆分键（10 Cush. (Mass.) 337 vs 10 Cush. 337）不改，
+  记账本。**口径订正**：这是未决的身份拆分，其下游计数方向**未确立**——不声称
+  「只会少算」。
+- **§7 能力陈述订正**：round-1 报告里「同形状同起点不同解析=0」**不构成**「不存在
+  其他解析」的证明——单匹配/起点的扫描器在结构上无法证明不存在性；该能力标为
+  partial/deferred（除非未来做独立的分支枚举测试）。round-1 的全语料测量数字保留，
+  只作「观测值」引用。
+
+### 测试（截至本轮提交时）
+
+| 命令 | 退出码 | 说明 |
+|---|---|---|
+| `python pipeline/tests/test_candidates.py` | 0 | 111 条断言（round-1 的 56 条不动，新增 55 条 R2 断言） |
+| `python pipeline/tests/test_layers.py` | 0 | 120 条（legacy 不动） |
+| `python pipeline/extract.py --fixture-check` | 0 | A18/B15/C27/D6/E0/F0 |
+| `python pipeline/tests/run_regression.py --selftest` | 0 | |
+| `python pipeline/tests/test_layers.py --golden` | 0 | **口径**：它比对的是 data/ 旧产出与金标——旧产出与金标未改，故输出「一致」；它**不**检验新候选路线，对新代码无证明力 |
+
+### 全量 run
+
+- 第一次：`data/run_20260912_r2/` —— 10 步全部跑完后在 run_all 收尾验证处因我引入的
+  `self`/`r` 作用域笔误崩溃（NameError），manifest 停在 running。**失败目录按规则
+  原样保留**，修复后重试。
+- 第二次：`data/run_20260912_r2b/` —— 同一笔误的第二处（`if not self.identity_verified`）
+  又崩一次，目录保留。
+- 第三次：`data/run_20260912_r2c/` —— **complete**，R2-10 启动指纹冻结、收尾验证通过。
+
+### 3.2 核查（全量 run：data/run_20260912_r2c/）
+
+**(a) legacy 匹配保全**：998,465 条旧 extracted+superseded 行全部在新候选台账连接成功，
+**缺失 0**（目标 0）；空引证 id 排除 0 条；raw 不一致的连接失败 0 条。
+
+**(b) 旧 counted 行去向**（518,480 行）：
+
+| 去向 | Round 1 基线 | Round 2 |
+|---|---|---|
+| 1 仍被计数 | 510,717 | 512,188 |
+| 2 身份等价替换 | 0 | 0 |
+| 3 仅重叠 counted 跨度 | 713 | 761 |
+| 4 任何地方都没计 | 6,954 | 5,531 |
+| 5 未枚举/连接未决 | 96 | **0** |
+
+「没计」桶分解（r2_lost_breakdown.json）：旧 UNSUPPORTED 5,488 / 旧已解析法域 43；
+形状 neutral_bare 4,989、vol_abbr_page 541；新仲裁状态：同跨度平票弃权 4,980、
+D3 作废 340、部分重叠弃权 210、包含让位 1。大头是 **DTC 系同档平票**（同一代码在
+法院代码表与汇编表都精确命中 → R2-2 规则规定最高档打平即弃权；旧管线按形状顺序
+硬选一边计入，属未证实猜测）；340 条 D3 作废是跨界修正按规则作废旧赢家。
+
+**(c) 组一致性**：173,615 组；组内行 group_foreign_status 不一致 **0**；多国别非
+CONFLICT **0**；case_record 成员落在 UNDETERMINED 组 28（订正后合法：身份连接是
+启发式，证据保留在成员列与 noncore 审计列——含 St. Catharines XC-G000455，
+case_origin:188814appcas46 保留、组 UNDETERMINED）。
+
+**(d) 专案核查**（r2_case_checks.py，FAILS: none）：2004 FC 736 counted（4 提及）+
+汇编读法 weaker_alternative；(1937) Q.R. 64 K.B. 27 每文档恰一条 counted（corpus
+印刷形为圆括号年，含括注变体按包含让位）；165 A. (2d) 82 (1960) 每次出现恰一条
+（该文档原文印两次=两次出现）；EWCA Civ → FOREIGN（70 行）；St. Catharines 如上；
+Thorner v. Major 仍 FOREIGN（5 条 supported 边）；BCE/Almrei/Kvello 不变（Kvello
+occ 82/dd 29，无卷读法重计键）。
+
+**(e) 边计数**（对照 round-1 的 227/35,659/294,476/0）：FOREIGN **386**（+159：
+EWCA Civ/Crim 分辑行生效等，全部有 scope 证据）；DOMESTIC_CA **56,685**（+21,026：
+FC/Q.R./L.R. 恢复 + 合格成员聚合不再依赖主行）；UNDETERMINED 272,765；CONFLICT 0。
+总量 329,836 = round-1 330,362 − 1,366（被剔自引，R2-9）。supported 313,149 /
+heuristic_only 16,687（tentative 台账 1,522 条）。
+
+**(f) kept（dd≥5）**：8,585 组（round-1：8,578，+7）。门槛语义未动——变化全部来自
+仲裁恢复与身份聚合的数据变化，不是阈值改动。
+
+**(g) 案名投票限制测量（§7）**：投票行 466,862，其中来自非 counted 候选 204,048
+（43.7%）——modal 案名不是已核实的身份证据，只作展示列；已测量、已记录，本轮
+不做名字抽取重构。
+
+### Round 2 各缺陷状态
+
+| 缺陷 | 状态 |
+|---|---|
+| R2-1 组来源取主行 | **fixed**（成员观察 + 身份基础 + 两轮聚合写每行 + 冲突跨院复查） |
+| R2-2 FC 全丢 | **fixed**（专案核查过） |
+| R2-3 部分重叠无支持支配 | **fixed**（Q.R./L.R. 系恢复） |
+| R2-4 EWCA 几乎不触发 + Wikipedia 来源 | **fixed**（分辑行 + 官方来源 + 标识符年代闸） |
+| R2-5 nominate 序数括注 | **fixed** |
+| R2-6 边界闸过严 | **fixed**（全量连接缺失 0） |
+| R2-7 非序数括注拆键 | **deferred**（记账本 B8；方向未确立） |
+| R2-8 报告失真 | **fixed**（diff_report.md/demo_examples.md 重生成 + 口径警示） |
+| R2-9 边成员资格与 dd 不一致 | **fixed**（effective_sources 权威 + 1,366 自引剔除 + 断言） |
+| R2-10 指纹不绑决策表 | **fixed**（启动冻结 + 收尾验证；两次崩溃目录保留、第三次换目录成功） |
+
+### Round 2 测试与运行记录
+
+| 命令 | 退出码 |
+|---|---|
+| `python pipeline/tests/test_candidates.py` | 0（111 条：round-1 的 56 条不动 + 55 条 R2 新增） |
+| `python pipeline/tests/test_layers.py` | 0（120 条） |
+| `python pipeline/tests/test_layers.py --golden` | 0（口径见上：只查旧产物稳定性，对新代码无证明力） |
+| `python pipeline/tests/run_regression.py --selftest` | 0 |
+| `python pipeline/extract.py --fixture-check` | 0（A18/B15/C27/D6/E0/F0） |
+| `python pipeline/run_all.py --out data/run_20260912_r2c` | 0（complete，指纹验证过） |
+| `python implementation/r2_regression_join.py data/run_20260912_r2c` | 0 |
+| `python implementation/r2_lost_breakdown.py data/run_20260912_r2c` | 0 |
+| `python implementation/r2_case_checks.py data/run_20260912_r2c` | FAILS: none |
+
+## Round 2 Blocked 增补（§5 格式）
+
+### B7 DTC 系同档平票弃权（不阻塞；诚实少算，方向已知）
+
+- 层/位置：merge.py `arbitrate_document` step B（R2-2 规则）
+- 触发输入：`2022 DTC 5064`（DTC 同时精确命中法院代码表与汇编表 → 两种读法都
+  exact 档 → 平票 → span_alternative_undecided，0 计数；round-2 全量 4,980 行此状态）
+- 阻塞点：两张决策表对同一印刷码都给 exact 档且互相独立——按 R2-2 规则必须弃权，
+  不许按形状顺序硬选
+- 解锁条件：人工裁决 DTC 等双重身份码在两表中的正确定位（或给表行加显式
+  「非法院代码/非汇编」标注），再重放
+- 现状：0 计数 + 逐候选台账留痕（是弃权，不是猜测）
+
+### B8 非序数括注拆键（R2-7，缓办）
+
+- 触发输入：`10 Cush. (Mass.) 337` vs `10 Cush. 337`（35 个基础键）
+- 阻塞点：(N.S.) 是真「新系列」，(Mass.)/(P.C.) 是法院注记，现有表无法区分二者
+- 现状：拆分保持（不同键）；**其下游计数方向未确立**——既可能少算（同一引证拆两组）
+  也可能多算（不同判决被并），不做方向声明；解锁条件=有来源的注记分类表
+
+### B9 案名投票混入非 counted 候选（记录性限制）
+
+- 触发输入：全量 466,862 投票行中 204,048（43.7%）来自非 counted 候选
+- 阻塞点：投票池 = 非 rejected 且切出案名的候选（含让位/弃权者），与
+  「one-mention/one-vote」的严格口径不一致
+- 现状：modal 案名只作展示列，不作为身份证据；解锁条件=投票池口径决定 + 复核
+
 ## 目标与范围
 
 把现有五层管线（extract → classify → merge → decide → select）修到能端到端演示：

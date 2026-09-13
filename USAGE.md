@@ -121,12 +121,22 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
 → select → edges），与上文 1–6 节的旧路线**并存**：
 
 - **一次跑完**：`python pipeline/run_all.py --out <新的空目录>`（目录必须不存在或为空；
-  失败目录保留，重试用新目录）。产物 `run_manifest.json`（status=complete 才算完整），
-  各层日志 `step_*.log`。
-- **最终表怎么读**：`decide_out/cross_court/decided.csv`（组级，含 foreign_status/
-  origin_country/origin_basis/origin_evidence_id）；`select_out/selected.csv` 的 `kept`
-  仍只按 dd≥5（语义未动）；`edges/citation_edges.csv` 一行 = 一条 (引用判决, 被引案件)
-  边，`edges/foreign_edges.csv` 是 foreign_status=FOREIGN 的过滤视图。
+  失败目录保留，重试用新目录）。产物 `run_manifest.json`（status=complete 才算完整；
+  complete 要求收尾时「输入身份指纹」——生产代码+全部决策表+select 配置+语料+参数——
+  与启动时逐字节一致，R2-10），各层日志 `step_*.log`。
+- **最终表怎么读**：`decide_out/cross_court/decided.csv`（组级结论写在**每一行**的
+  group_foreign_status / group_origin_country / group_origin_status /
+  group_origin_evidence_ids；成员级观察在 member_origin_* 与 identity_basis 列——
+  组结论只由合格身份基础（anchor/同印刷串/双语变体/单例）聚合，启发式连接
+  （name_year/cocitation/typo 变体）的证据留在 noncore_origin_evidence 审计列）；
+  `select_out/selected.csv` 的 `kept` 仍只按 dd≥5（语义未动）；
+  `decide_out/cross_court/effective_sources.csv` 是**唯一权威**的「来源判决→案件身份」
+  关联（含被剔自引的 exclusion_reason）。
+- **边**：`edges/citation_edges.csv` 一行 = 一条 (引用判决, 被引案件) 边；
+  `edges/foreign_edges.csv` 只含 **supported 路径**的 FOREIGN 边（只经启发式路径
+  到达的边标 edge_support=heuristic_only、foreign_status=UNDETERMINED，进
+  `edges/tentative_edges.csv`——不冒充确证外国边）；`edges/self_excluded_edges.csv`
+  留被剔自引供审计。
 - **逐候选台账**：`merge_out/{SCC,ONCA}/mentions_candidates.csv`——每个候选的仲裁状态
   （counted / 让位 / 弃权 / 跨界作废…）与让位对象，是「为什么这个串不在结果里」的答案；
   `key_mapping.csv` 给出旧键→新键（系列/罗马页拆分）的映射。

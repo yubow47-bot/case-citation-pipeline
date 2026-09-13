@@ -11,7 +11,7 @@ from collections import Counter, defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OLD = os.path.join(ROOT, "data")
-NEW = os.path.join(OLD, "run_20260912_final")
+NEW = os.path.join(OLD, "run_20260912_r2c")
 OUT = os.path.join(ROOT, "implementation", "diff_report.md")
 
 
@@ -28,11 +28,12 @@ def rows(path):
 def main():
     L = []
     w = L.append
-    w("# 旧 vs 新 差分报告（demo 修复轮，2026-09-12）\n")
+    w("# 旧 vs 新 差分报告（demo 修复轮 + Round 2 订正，2026-09-12）\n")
     w("- 旧 = `data/`（v1.4 管线产出，金标钉住，未改）")
-    w("- 新 = `data/run_20260912_stage2/`（candidates-2.0 + 判决内仲裁 + 键 v2）")
-    w("- 金标 `golden_layers.json` 未重写；与本报告并存，--golden 的差分即预期中的 "
-      "schema/口径变更，逐项见下。\n")
+    w("- 新 = `data/run_20260912_r2c/`（candidates-2.0 + R2 订正后的仲裁/溯源/键 v2）")
+    w("- 金标 `golden_layers.json` 未重写。**口径警示（R2-8）**：`test_layers.py --golden`"
+      "比对的是 `data/` 旧产出与金标——两者都未改动，故输出「一致」；它检验的是旧"
+      "产物的稳定性，**对新代码没有任何证明力**。\n")
 
     # ---- 层级计数对照 ----
     w("## 1. 各层计数对照\n")
@@ -171,6 +172,66 @@ def main():
                                 p["case_name_modal"]))
     w("\n（旧金标 top25 见 pipeline/tests/golden_layers.json；两版组数不同，逐组对照"
       "以 key_mapping.csv 为准。）")
+
+    # ---- R2 3.2：全量回归连接与组一致性（工具 r2_regression_join.py 产出）----
+    w("\n## 6. Round 2 全量回归连接（3.2）\n")
+    jr = json.load(open(os.path.join(ROOT, "implementation", "r2_join_report.json"),
+                        encoding="utf-8"))
+    lp = jr["legacy_preservation"]
+    w("### 6.1 legacy 匹配保全（3.2a，目标缺失=0）\n")
+    w("| 项 | 数 |")
+    w("|---|---|")
+    w("| 旧 extracted+superseded 行连接成功 | %d |" % lp["joined_ok"])
+    w("| **缺失（目标 0）** | **%d** |" % lp["missing"])
+    w("| 空引证 id {COURT}_ 排除 | %d |" % lp["ambiguous_sdc_excluded"])
+    w("| raw 不一致的连接失败 | %d |" % lp["raw_mismatch_join_failures"])
+    f = jr["old_counted_fate"]
+    w("\n### 6.2 旧 counted 行去向（3.2b；round-1 基线 510,717/713/6,954/96）\n")
+    w("| 去向 | Round 1 | Round 2 |")
+    w("|---|---|---|")
+    w("| 1 仍被计数 | 510,717 | %d |" % f.get("1_still_counted", 0))
+    w("| 2 身份等价替换（v2 键相同） | 0* | %d |" % f.get("2_identity_equivalent_replacement", 0))
+    w("| 3 仅重叠 counted 跨度（语义未核实） | 713 | %d |" % f.get("3_overlapping_counted_span_only", 0))
+    w("| 4 任何地方都没计 | 6,954 | %d |" % f.get("4_counted_nowhere", 0))
+    w("| 5 未枚举/连接未决 | 96 | %d |" % f.get("5_not_enumerated_or_join_unresolved", 0))
+    w("| 合计 | 518,480 | %d |" % f["total_old_counted"])
+    lb = json.load(open(os.path.join(ROOT, "implementation", "r2_lost_breakdown.json"),
+                        encoding="utf-8"))
+    w("\n「没计」桶（%d 行）的分解：旧 UNSUPPORTED %d / 旧已解析法域 %d；"
+      "新仲裁状态 %s。"
+      % (lb["total_lost_nowhere"], lb["by_old_jurisdiction"]["unsupported"],
+         lb["by_old_jurisdiction"]["supported"],
+         json.dumps(lb["by_new_arbitration_status"], ensure_ascii=False)))
+    w("大头是同跨度两读法在两张表里**同档**命中的平票弃权（如 DTC 系：代码在法院代码表"
+      "与汇编表都精确命中，R2-2 规则规定最高档打平即弃权）——旧管线此时按形状顺序硬选"
+      "一边计入，属未证实的猜测；新路线按规则弃权并留下台账。340 条 cross_boundary_invalid"
+      " 是 D3 跨界修正按规则作废的旧赢家。\n")
+    gc = jr["group_consistency"]
+    w("### 6.3 组级一致性（3.2c）\n")
+    w("| 核查 | 数 | 目标/口径 |")
+    w("|---|---|---|")
+    w("| 组数 | %d | |" % gc["groups"])
+    w("| 组内行 group_foreign_status 不一致 | %d | 0（R2-1 组结论写每行）|" % gc["rows_disagreeing_on_group_foreign_status"])
+    w("| 多国别却非 CONFLICT 的组 | %d | 0 |" % gc["multi_country_not_conflict"])
+    w("| case_record 成员落在 UNDETERMINED 组 | %d | 订正后合法：身份连接是启发式，"
+      "证据保留不传播（样例含 St. Catharines XC-G000455）|" % gc["case_record_members_in_undetermined_groups"])
+    e = jr["edges"]
+    w("\n### 6.4 边计数对照（3.2c 末项）\n")
+    w("| foreign_status | Round 1 | Round 2 |")
+    w("|---|---|---|")
+    for k1, k2 in (("FOREIGN", "edges_foreign"), ("DOMESTIC_CA", "edges_domestic_ca"),
+                   ("UNDETERMINED", "edges_undetermined"), ("CONFLICT", "edges_conflict")):
+        w("| %s | %d | %d |" % (k1, e["round1"][k1], e["round2"][k2]))
+    w("")
+    w("增减解释：FOREIGN +159（EWCA Civ/Crim 分辑行生效、R2-2 修好的 FC 等使更多组有锚）；"
+      "DOMESTIC_CA +21,026（FC/Q.R./L.R. 恢复 + 合格成员聚合不再依赖主行）；"
+      "UNDETERMINED −21,711 为同一枚举的另一面。增量都有正证据；无「不在表→外国」推断。")
+    w("\n### 6.5 案名投票限制测量（R2 §7）\n")
+    nv = jr["name_vote_limitation"]
+    w("投票行 %d，其中来自非 counted 候选 %d（%.1f%%）——modal 案名**不是**已核实的"
+      "身份证据，只作展示列。已测量、已记录；本轮不做名字抽取重构。"
+      % (nv["votes_total"], nv["votes_from_non_counted"],
+         nv["votes_from_non_counted"] / max(1, nv["votes_total"]) * 100))
 
     with open(OUT, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(L))

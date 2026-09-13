@@ -233,9 +233,9 @@ def main():
                 "--output", os.path.join(args.out, "edges")])
 
     # R2-10：收尾验证——被消费的代码/决策表/配置/语料在运行期间不得变更
-    self.identity_verified, _now = verify_unchanged(
-        self.start_identity, params=self.params)
-    if not self.identity_verified:
+    r.identity_verified, _now = verify_unchanged(
+        r.start_identity, params=r.params)
+    if not r.identity_verified:
         r.write_manifest("failed", failed_step="input_identity_changed")
         raise SystemExit("输入身份在运行期间发生变化（R2-10）：run 标记 failed，"
                          "不标 complete。重试用新目录。")
