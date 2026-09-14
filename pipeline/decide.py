@@ -151,6 +151,32 @@ def load_case_origin():
     return idx
 
 
+# R4 Stage 3：案件级人工核验批次只消费「全部证明项齐备」的行——其余状态
+# （unresolved_within_budget 等）不入表（约束四：无证据不给判定）。
+CASE_ORIGIN_MANUAL_STATUS = frozenset(("verified_research_agent",))
+
+
+def load_case_origin_manual():
+    """decisions/case_origin_manual.csv → 与 case_origin.csv 同构的来源地行。
+
+    行由人（本轮=研究代理）按四项证明逐案核验后写入：印刷引证 ↔ 判决对应、
+    决定法院、上诉来源法院/法域、报告年 ≠ 判决年不混同。**只消费全部证明项
+    齐备**的行；合并进 origin_idx 后走 case_record 最高优先级（与 case_origin.csv
+    同级——若同一引证两表都有且来源地不一致，成员本地 CONFLICT，方向保守）。"""
+    path = os.path.join(DECISIONS, "case_origin_manual.csv")
+    if not os.path.exists(path):
+        return {}
+    out = defaultdict(list)
+    with open(path, encoding="utf-8", newline="") as f:
+        for r in csv.DictReader(f):
+            if (r.get("status") or "").strip() not in CASE_ORIGIN_MANUAL_STATUS:
+                continue
+            k = (r.get("normalized_key") or "").strip()
+            if k:
+                out[k].append(r)
+    return out
+
+
 def load_scope():
     """court_or_reporter_scope.csv：**source-verified、年代有界**的排他来源地规则
     （§9.2）。只有 verification_status 以 verified 开头的行参与推断——估计/名称
@@ -1218,6 +1244,12 @@ def main():
 
     stats = Counter()
     origin_idx = load_case_origin()
+    # R4 Stage 3：人工核验批次并入同一 case_record 索引（同为案件级直接证据、
+    # 最高优先级；两表冲突 → 成员本地 CONFLICT，方向保守）。
+    manual_idx = load_case_origin_manual()
+    for k, rows in manual_idx.items():
+        origin_idx.setdefault(k, []).extend(rows)
+    stats["case_origin_manual_rows"] = sum(len(v) for v in manual_idx.values())
     scope_idx = load_scope()
     reporter_idx = load_reporter_origin()
     stats["scope_rules_verified"] = sum(len(v) for v in scope_idx.values())
