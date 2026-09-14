@@ -18,7 +18,7 @@ import csv
 import os
 import random
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PIPE = os.path.dirname(HERE)
@@ -1648,6 +1648,335 @@ def test_effective_sources_and_edges():
           "R2-9：被剔自引进审计文件，不作普通边重现")
 
 
+# ================================================ R3：排他汇编来源地（Stage 2）
+def _rep_row(abbr, country, sub="", excl="exclusive_publisher", vs="", ve="",
+             ys="", ye="", court="", status=""):
+    """合成 reporter_origin_scope 行（测试夹具，不是生产表内容）。"""
+    st = status or ("verified_exclusive_statute" if excl == "exclusive_statute"
+                    else "verified_exclusive_publisher")
+    return {"printed_abbreviation": abbr, "origin_country": country,
+            "origin_subdivision": sub, "exclusivity": excl,
+            "vol_range_start": vs, "vol_range_end": ve,
+            "year_range_start": ys, "year_range_end": ye,
+            "deciding_court": court, "verification_status": st,
+            "source": "synthetic-fixture", "source_locator": "fixture"}
+
+
+def _rep_idx(*rows):
+    import decide
+    idx = {}
+    for r in rows:
+        idx.setdefault(decide.nk(r["printed_abbreviation"]), []).append(r)
+    return idx
+
+
+def _rep_verdict(merge_key, rep_idx, jur="", kind="reporter", strings=("x",),
+                 origin_idx=None):
+    import decide
+    r = _origin_row(merge_key, kind=kind)
+    if jur:
+        r["jurisdiction"] = jur
+    stats = Counter()
+    decide.decide_case_origin(r, list(strings), origin_idx or {}, stats, None,
+                              rep_idx)
+    return r, stats
+
+
+def test_reporter_origin_overlap_independent_of_classify_jurisdiction():
+    """计划 §1 强制测试：GB-K.B. 与 QC-K.B. 两窗口**故意重叠**，引证落在重叠区。
+    期望 UNDETERMINED + exclusive_reporter_scope_ambiguous，且把 classify 的
+    jurisdiction 分别喂 GB 与 QC 时，decide 的**全部观测字段逐字段相同**——
+    证明这条查找真的不依赖 classify 的消歧猜测（P1）。"""
+    idx = _rep_idx(_rep_row("K.B.", "GB", vs="1", ve="10", ys="1900", ye="1950"),
+                   _rep_row("K.B.", "CA", "QC", vs="5", ve="20", ys="1930",
+                            ye="1960"))
+    seen = []
+    for jur in ("GB", "QC"):
+        r, _ = _rep_verdict("1935|8|kb||100", idx, jur=jur)
+        seen.append((r["member_origin_country"], r["member_origin_status"],
+                     r["member_origin_basis"], r["member_origin_evidence_ids"],
+                     r["member_origin_ambiguous_basis"],
+                     r["member_origin_subdivision"], r["deciding_court"]))
+    check(seen[0] == seen[1],
+          "R3：重叠区判定与 classify 的 jurisdiction 完全无关（GB/QC 两次逐字段相同）")
+    check(seen[0][1] == "UNDETERMINED" and seen[0][0] == ""
+          and seen[0][4] == "exclusive_reporter_scope_ambiguous",
+          "R3：异国重叠窗口 → UNDETERMINED + exclusive_reporter_scope_ambiguous"
+          "（不是普通无证据）")
+
+
+def test_reporter_origin_single_window_beats_wrong_classify_jurisdiction():
+    """恰一行窗口命中 → 取该行来源地，**与 classify 给的 jurisdiction 无关**：
+    故意喂错的 classify 法域，结果不变。"""
+    idx = _rep_idx(_rep_row("K.B.", "GB", vs="1", ve="10", ys="1900", ye="1950"),
+                   _rep_row("K.B.", "CA", "QC", vs="40", ve="60", ys="1920",
+                            ye="1945"))
+    for jur in ("GB", "QC", "ZZ"):
+        r, _ = _rep_verdict("1930|45|kb||129", idx, jur=jur)
+        check((r["member_origin_country"], r["member_origin_subdivision"],
+               r["member_origin_status"], r["member_origin_basis"]) ==
+              ("CA", "QC", "DETERMINED", "exclusive_reporter_scope"),
+              "R3：唯一命中 QC 窗 → CA/QC（classify 给 %s 也不变）" % jur)
+        check(r["member_origin_evidence_ids"] == "reporter_scope:K.B.",
+              "R3：证据 id 记印刷缩写（classify 给 %s）" % jur)
+        check(r["member_origin_ambiguous_basis"] == "",
+              "R3：唯一命中不记 ambiguous（classify 给 %s）" % jur)
+
+
+def test_reporter_origin_out_of_window_and_no_row_stay_undetermined():
+    """窗口外 / 该缩写无表行 → 普通 UNDETERMINED（ambiguous 列为空，与重叠区分开）。"""
+    idx = _rep_idx(_rep_row("D.L.R.", "CA", excl="exclusive_publisher",
+                            vs="1", ve="100", ys="1912", ye="1990"))
+    r, _ = _rep_verdict("|900|dlr||1", idx)
+    check(r["member_origin_status"] == "UNDETERMINED"
+          and r["member_origin_ambiguous_basis"] == "",
+          "R3：窗口外（vol 900）→ 普通 UNDETERMINED，不记 ambiguous")
+    r, _ = _rep_verdict("|5|xyz||1", idx)
+    check(r["member_origin_status"] == "UNDETERMINED"
+          and r["member_origin_ambiguous_basis"] == "",
+          "R3：表内无该缩写 → 普通 UNDETERMINED")
+
+
+def test_reporter_origin_only_for_reporter_parses():
+    """非 reporter 解析（neutral/identifier/ambiguous）不适用汇编排他规则——
+    与中立码 scope 在结构上分开，二者不会互相覆盖。"""
+    idx = _rep_idx(_rep_row("S.C.R.", "CA", excl="exclusive_statute"))
+    for kind in ("neutral", "identifier", "ambiguous"):
+        r, _ = _rep_verdict("1995||scr||3", idx, kind=kind)
+        check(r["member_origin_status"] == "UNDETERMINED",
+              "R3：citation_kind=%s 不走汇编排他规则" % kind)
+
+
+def test_reporter_origin_case_record_precedence():
+    """P2 优先级：案件级直接证据优先于汇编排他范围（同一行两种证据都能用时）。"""
+    idx = _rep_idx(_rep_row("D.L.R.", "CA"))
+    oidx = {"a": [{"case_origin": "GB", "deciding_court": "HL",
+                   "origin_subdivision": "", "normalized_key": "a"}]}
+    r, _ = _rep_verdict("|34|dlr||451", idx, strings=("A",), origin_idx=oidx)
+    check((r["member_origin_country"], r["member_origin_basis"]) ==
+          ("GB", "case_record"),
+          "R3：case_record 优先于 exclusive_reporter_scope（P2）")
+
+
+def test_reporter_origin_two_tiers_statute_beats_publisher():
+    """P2 两档：同一引证同时命中 statute 行与 publisher 行且**国别一致**时，
+    取 statute 行的证据；国别不一致时**不得**用档位破平局 → UNDETERMINED。"""
+    both = _rep_idx(
+        _rep_row("Q.B.", "GB", excl="exclusive_publisher", vs="1", ve="50",
+                 ys="1900", ye="1960"),
+        _rep_row("Q.B.", "GB", excl="exclusive_statute", vs="1", ve="50",
+                 ys="1900", ye="1960", status="verified_exclusive_statute"))
+    r, _ = _rep_verdict("1950|20|qb||5", both)
+    check(r["member_origin_country"] == "GB"
+          and r["member_origin_exclusivity"] == "exclusive_statute",
+          "R3：国别一致时取高档次证据（statute > publisher）")
+    disagree = _rep_idx(
+        _rep_row("Q.B.", "CA", "ON", excl="exclusive_publisher", vs="1", ve="50",
+                 ys="1900", ye="1960"),
+        _rep_row("Q.B.", "GB", excl="exclusive_statute", vs="1", ve="50",
+                 ys="1900", ye="1960", status="verified_exclusive_statute"))
+    r, _ = _rep_verdict("1950|20|qb||5", disagree)
+    check(r["member_origin_status"] == "UNDETERMINED"
+          and r["member_origin_ambiguous_basis"] ==
+          "exclusive_reporter_scope_ambiguous",
+          "R3：两档**国别不一致** → 不得用档位破平局，UNDETERMINED + ambiguous")
+
+
+def test_reporter_origin_multirow_same_country_takes_country():
+    """P2′：多行命中但国别一致 → 取该国；细分仅在各行一致时取，否则留空。"""
+    idx = _rep_idx(
+        _rep_row("Nfld. & P.E.I.R.", "CA", "NL", vs="1", ve="380",
+                 ys="1970", ye="2020"),
+        _rep_row("Nfld. & P.E.I.R.", "CA", "PE", vs="1", ve="380",
+                 ys="1970", ye="2020"))
+    r, _ = _rep_verdict("1990|100|nfldpeir||5", idx)
+    check((r["member_origin_country"], r["member_origin_subdivision"],
+           r["member_origin_status"], r["member_origin_basis"]) ==
+          ("CA", "", "DETERMINED", "exclusive_reporter_scope"),
+          "R3：多行命中但国别一致 → 取 CA、细分留空（P2′）")
+    check(r["member_origin_ambiguous_basis"] == "",
+          "R3：P2′ 不算 ambiguous（国别没有歧义）")
+    same = _rep_idx(
+        _rep_row("P.D.", "GB", vs="1", ve="200", ys="1850", ye="1950"),
+        _rep_row("P.D.", "GB", vs="1", ve="200", ys="1850", ye="1950"))
+    r, _ = _rep_verdict("1900|50|pd||5", same)
+    check(r["member_origin_country"] == "GB" and r["member_origin_subdivision"] == "",
+          "R3：同国同细分多行命中 → 取该国该国别细分")
+
+
+def test_reporter_origin_input_order_invariance():
+    """表行顺序不影响任何结果（读表顺序 = 文件顺序，不得让它决定证据行）。"""
+    rows = [_rep_row("K.B.", "GB", vs="1", ve="10", ys="1900", ye="1950"),
+            _rep_row("K.B.", "CA", "QC", vs="40", ve="60", ys="1920", ye="1945"),
+            _rep_row("K.B.", "CA", "QC", vs="40", ve="60", ys="1920", ye="1945")]
+    outs = []
+    for perm in (rows, list(reversed(rows)),
+                 [rows[1], rows[0], rows[2]]):
+        r, _ = _rep_verdict("1930|45|kb||129", _rep_idx(*perm))
+        outs.append((r["member_origin_country"], r["member_origin_subdivision"],
+                     r["member_origin_basis"], r["member_origin_evidence_ids"]))
+    check(len(set(outs)) == 1, "R3：表行顺序不影响判定（三种排列同结果）")
+
+
+def test_reporter_origin_unverified_rows_ignored():
+    """未核实/估计行不得参与推断（约束四/八）：verification_status 不在白名单
+    → 该缩写视为无表行。verified_mixed 行只作档案，不产生来源地。"""
+    idx = _rep_idx(
+        _rep_row("D.L.R.", "CA", status="estimated"),
+        _rep_row("C.C.C.", "CA", status="name_inference"),
+        _rep_row("A.C.", "GB", excl="mixed", status="verified_mixed"))
+    for key in ("|34|dlr||451", "|10|ccc||1", "1932||ac||562"):
+        r, _ = _rep_verdict(key, idx)
+        check(r["member_origin_status"] == "UNDETERMINED",
+              "R3：非白名单/verified_mixed 行不产生来源地（键 %s）" % key)
+
+
+def test_reporter_origin_real_table_stage1_rows():
+    """真实表口径（Stage 1 产物；本测试在表落地前**必须红**）：
+      `[1995] 2 S.C.R. 3`（无中立平行引用）→ CA，basis=exclusive_reporter_scope；
+      `(1930), 45 K.B. 129` → CA（唯一命中 QC/K.B. 窗）；
+      `[1932] A.C. 562`（混合汇编）→ UNDETERMINED；
+      表行纪律：可写行必须有 ≥1 个窗口、origin_country 合法、exclusivity 合法、
+      exclusive_publisher 行必须有反例搜寻记录。"""
+    import decide
+    idx = decide.load_reporter_origin()
+    check(bool(idx), "R3：decisions/reporter_origin_scope.csv 存在且含可写行"
+                     "（Stage 1 尚未落地时本断言即红）")
+    r, _ = _rep_verdict("1995|2|scr||3", idx)
+    check((r["member_origin_country"], r["member_origin_status"],
+           r["member_origin_basis"]) == ("CA", "DETERMINED",
+                                         "exclusive_reporter_scope"),
+          "R3：[1995] 2 S.C.R. 3 → CA（exclusive_statute 排他汇编）")
+    r, _ = _rep_verdict("1930|45|kb||129", idx)
+    check((r["member_origin_country"], r["member_origin_basis"],
+           r["member_origin_ambiguous_basis"]) ==
+          ("CA", "exclusive_reporter_scope", ""),
+          "R3：(1930), 45 K.B. 129 → CA，且**不是** ambiguous")
+    r, _ = _rep_verdict("1932||ac||562", idx)
+    check(r["member_origin_status"] == "UNDETERMINED",
+          "R3：[1932] A.C. 562（A.C. 混合：上院 + 枢密院）→ UNDETERMINED")
+    for code, rows in idx.items():
+        for row in rows:
+            check(bool((row.get("vol_range_start") or "").strip()
+                       or (row.get("vol_range_end") or "").strip()
+                       or (row.get("year_range_start") or "").strip()
+                       or (row.get("year_range_end") or "").strip()),
+                  "R3：可写行必须有 ≥1 个窗口（%s）" % code)
+            check((row.get("origin_country") or "").strip() != "",
+                  "R3：可写行必须有 origin_country（%s）" % code)
+            check((row.get("exclusivity") or "").strip() in
+                  ("exclusive_statute", "exclusive_publisher"),
+                  "R3：可写行 exclusivity 合法（%s）" % code)
+            if (row.get("exclusivity") or "").strip() == "exclusive_publisher":
+                check(bool((row.get("counter_example_check") or "").strip()),
+                      "R3：exclusive_publisher 行必须记反例搜寻（%s）" % code)
+            if (row.get("normalized_key") or "").strip():
+                check(decide.nk(row["normalized_key"]) ==
+                      decide.nk(row["printed_abbreviation"]),
+                      "R3：表键口径一致 nk(normalized_key)==nk(printed_abbreviation)"
+                      "（%s）" % code)
+            check(bool((row.get("source") or "").strip())
+                  and bool((row.get("source_locator") or "").strip()),
+                  "R3：每行必须带 source + source_locator（%s）" % code)
+
+
+# ================================================ R3 Stage 3：身份修复（表驱动）
+def _id_row(year, vol, abbr, series, page, vs):
+    return {"year_start": year, "vol": vol, "abbreviation": abbr,
+            "series": series, "page": page, "series_paren": "",
+            "paren_note": "", "series_prefix": "", "page_roman": "",
+            "volume_system": vs, "citation_kind": "reporter",
+            "shape_name": "shape_vol_abbr_page"}
+
+
+def _apply(doc_rows):
+    """doc_rows = [(doc_key, row), …] → 跑修复（行**拷贝**，不污染夹具），
+    返回 {doc_key: merge_key}。"""
+    import merge
+    docs = defaultdict(list)
+    for dk, r in doc_rows:
+        docs[dk].append(dict(r))
+    stats = Counter()
+    merge.apply_reporter_identity_fixes(docs, stats)
+    keys = {}
+    for dk in docs:
+        for r in docs[dk]:
+            keys[dk] = merge.build_merge_key_v2(r)
+    return keys, stats
+
+
+def test_reporter_identity_continuous_zeroes_year_slot():
+    """Stage 3-A：`volume_system=continuous`（D.L.R. 式卷号跨年连续）→ 年槽结构性
+    零化：同一卷页的带年写法与不带年写法进**同一个键**；year_volume 的年槽不动；
+    未盖值的行也不动（表驱动，不猜）。"""
+    keys, stats = _apply([
+        ("d1", _id_row("1970", "34", "D.L.R.", "2d", "451", "continuous")),
+        ("d2", _id_row("", "34", "D.L.R.", "2d", "451", "continuous")),
+        ("d3", _id_row("1970", "34", "O.R.", "2d", "451", "year_volume")),
+        ("d4", _id_row("1970", "34", "X.X.", "2d", "451", "")),
+    ])
+    check(keys["d1"] == keys["d2"],
+          "Stage 3-A：continuous 汇编的带年/不带年写法同键（34 D.L.R. (2d) 451）")
+    check(keys["d1"].split("|")[0] == "" and keys["d1"].split("|")[1] == "34",
+          "Stage 3-A：零化的是年槽（vol/abbr/series/page 不动）")
+    check(keys["d3"].split("|")[0] == "1970",
+          "Stage 3-A：year_volume 的年槽不动")
+    check(keys["d4"].split("|")[0] == "1970",
+          "Stage 3-A：未盖 volume_system 的行不动（表驱动，不猜）")
+    check(stats["reporter_identity_year_zeroed_rows"] == 1,
+          "Stage 3-A：记账「被零化的行数」= 实际改动的行（不含本来就空年的）")
+
+
+def test_reporter_identity_year_volume_unique_year_fill_and_abstain():
+    """Stage 3-B：`year_volume` 且年槽为空 → 族 (vol,abbr,series,page) 内**本 run**
+    恰一个非空年 → 补年（与带年写法同键）；**≥2 个非空年 → 弃权**（不猜那年）。
+    对照计划的反例要求。"""
+    keys, stats = _apply([
+        # 族 A：恰一个非空年（1986）→ 空年行补成 1986，与带年行同键
+        ("a1", _id_row("1986", "1", "S.C.R.", "", "103", "year_volume")),
+        ("a2", _id_row("", "1", "S.C.R.", "", "103", "year_volume")),
+        # 族 B：两个非空年（2002/2003）→ 弃权，空年行保持空
+        ("b1", _id_row("2002", "2", "S.C.R.", "", "235", "year_volume")),
+        ("b2", _id_row("2003", "2", "S.C.R.", "", "235", "year_volume")),
+        ("b3", _id_row("", "2", "S.C.R.", "", "235", "year_volume")),
+    ])
+    check(keys["a1"] == keys["a2"],
+          "Stage 3-B：族内唯一非空年 → 空年写法并入同键")
+    check(keys["a1"].split("|")[0] == "1986",
+          "Stage 3-B：补的是声明的年份")
+    check(keys["b3"].split("|")[0] == "",
+          "Stage 3-B：≥2 个非空年 → 弃权，空年行不补（反例族）")
+    check(keys["b1"] != keys["b2"] != keys["b3"],
+          "Stage 3-B：弃权族仍按年分键（不误并）")
+    check(stats["reporter_identity_year_fill_families"] == 1
+          and stats["reporter_identity_year_fill_families_abstained"] == 1,
+          "Stage 3-B：合并族 1 / 弃权族 1 记账")
+
+
+def test_reporter_identity_fix_input_order_invariance():
+    """修复结果与输入行顺序无关（按族统计，不依赖遍历顺序）。"""
+    import merge
+    base = [("a1", _id_row("1986", "1", "S.C.R.", "", "103", "year_volume")),
+            ("a2", _id_row("", "1", "S.C.R.", "", "103", "year_volume")),
+            ("c1", _id_row("1970", "34", "D.L.R.", "2d", "451", "continuous")),
+            ("c2", _id_row("", "34", "D.L.R.", "2d", "451", "continuous"))]
+    outs = []
+    for perm in (base, list(reversed(base)),
+                 [base[2], base[0], base[3], base[1]]):
+        keys, _ = _apply(perm)
+        outs.append(tuple(sorted(keys.values())))
+    check(len(set(outs)) == 1, "Stage 3：修复结果与输入顺序无关（三种排列同结果）")
+    docs = defaultdict(list)
+    for dk, r in base:
+        docs[dk].append(r)
+    merge.apply_reporter_identity_fixes(docs, Counter())
+    # 幂等：再跑一遍不应再改（否则 run 间会漂移）
+    before = [r["year_start"] for dk in sorted(docs) for r in docs[dk]]
+    merge.apply_reporter_identity_fixes(docs, Counter())
+    after = [r["year_start"] for dk in sorted(docs) for r in docs[dk]]
+    check(before == after, "Stage 3：修复幂等（同输入重跑不再改动）")
+
+
 def main():
     for t in (test_boundary_guard, test_kvello_2009_scc_51, test_bce_swallow,
               test_almrei_swallow, test_same_span_multi_shape_counted_once,
@@ -1691,7 +2020,22 @@ def main():
               test_r2f_misspelling_stays_unsupported,
               test_r2f_span_set_identical,
               test_r2f_identity_system_scoped,
-              test_new_path_fixture_measurements):
+              test_new_path_fixture_measurements,
+              test_reporter_origin_overlap_independent_of_classify_jurisdiction,
+              test_reporter_origin_single_window_beats_wrong_classify_jurisdiction,
+              test_reporter_origin_out_of_window_and_no_row_stay_undetermined,
+              test_reporter_origin_only_for_reporter_parses,
+              test_reporter_origin_case_record_precedence,
+              test_reporter_origin_two_tiers_statute_beats_publisher,
+              test_reporter_origin_multirow_same_country_takes_country,
+              test_reporter_origin_input_order_invariance,
+              test_reporter_origin_unverified_rows_ignored,
+              test_reporter_identity_continuous_zeroes_year_slot,
+              test_reporter_identity_year_volume_unique_year_fill_and_abstain,
+              test_reporter_identity_fix_input_order_invariance,
+              # 依赖 Stage 1 真实表的测试放最后：表未落地时它是唯一红项，
+              # 前面的规则测试仍全部跑完（test-first 的预期状态）。
+              test_reporter_origin_real_table_stage1_rows):
         t()
     print("全部通过：%d 条断言" % len(PASSED))
 

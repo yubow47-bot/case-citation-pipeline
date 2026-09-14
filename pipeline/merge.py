@@ -101,6 +101,60 @@ SHAPE_RANK = {name: i for i, name in enumerate([
     "shape_leading_abbr"])}
 
 
+def apply_reporter_identity_fixes(docs, stats):
+    """R3 Stage 3：两条**表驱动、按 run、不持久化**的身份修复。
+
+    输入是已经读进来的全部候选行（`docs` = {(sdc, row_index): [row…]}）。本层
+    **不读 decisions/**——`volume_system` 是分类层按 `reporter_origin_scope.csv`
+    盖在行上的字段（与 jurisdiction 同源）。只有盖了值的汇编才修；没盖值的一律不动
+    （「不猜」，也保证「按 reporter 溯源并记录」而非硬编码清单）。
+
+    A. `continuous`（卷号跨年连续）：年槽**不是**身份的一部分 → 结构性零化年槽。
+       同一件案子印成 `34 D.L.R. (2d) 451` 与 `(1970) 34 D.L.R. (2d) 451` 才不会被
+       拆成两组。此修复与任何法域消歧无关，对单法域汇编同样成立。
+
+    B. `year_volume`（卷号每年从 1 重起）且年槽为空：按 (vol, abbr, series, page)
+       家族统计**本 run 内**出现过的非空年——恰一个 → 用它补上空槽；**≥2 个 → 弃权**
+       （不猜哪一年对）。跨 run 不持久化：修复只由本次输入决定。
+
+    返回改动的行数（写进 manifest，约束九）。"""
+    docs_list = [r for dkey in sorted(docs) for r in docs[dkey]]
+    zeroed = filled = 0
+    fam_years = defaultdict(set)        # 家族 -> 本 run 出现过的非空年
+    fam_empty = defaultdict(list)       # 家族 -> 年槽为空的行
+    for r in docs_list:
+        vs = (r.get("volume_system") or "").strip()
+        if vs not in ("continuous", "year_volume"):
+            continue
+        if vs == "continuous":
+            if (r.get("year_start") or "").strip():
+                r["year_start"] = ""
+                zeroed += 1
+            continue
+        fam_years[fam_of(r)].add((r.get("year_start") or "").strip())
+        if not (r.get("year_start") or "").strip():
+            fam_empty[fam_of(r)].append(r)
+    for fam, rows in fam_empty.items():
+        years = {y for y in fam_years[fam] if y}
+        if len(years) == 1:
+            y = next(iter(years))
+            for r in rows:
+                r["year_start"] = y
+                filled += 1
+            stats["reporter_identity_year_fill_families"] += 1
+        elif len(years) >= 2:
+            stats["reporter_identity_year_fill_families_abstained"] += 1
+    stats["reporter_identity_year_zeroed_rows"] = zeroed
+    stats["reporter_identity_year_filled_rows"] = filled
+    return zeroed, filled
+
+
+def fam_of(row):
+    """身份家族 = merge_key v2 去掉年槽。用于 B 的「族内唯一年」判定。"""
+    p = build_merge_key_v2(row).split("|")
+    return "|".join([""] + p[1:])
+
+
 def build_merge_key(row):
     """§9.1：用结构化字段拼接，不对整条原始串做字符级压平。
 
@@ -676,6 +730,10 @@ def run_candidates(args, stats, pool_mode=None):
             docs[(row.get("source_decision_citation") or "",
                   row.get("corpus_row_index") or "")].append(row)
     stats["documents"] = len(docs)
+
+    # R3 Stage 3：表驱动的身份修复（只在候选行上改 year_start，仲裁与聚合随后
+    # 都按修好的键走；不读 decisions/、不持久化）
+    apply_reporter_identity_fixes(docs, stats)
 
     # 判决内仲裁（绝不回调 extract/classify）
     verdicts = {}

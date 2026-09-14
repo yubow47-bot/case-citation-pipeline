@@ -54,7 +54,7 @@ import json
 import os
 import re
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk, normalize_code                      # noqa: E402
@@ -86,7 +86,11 @@ NEW_COLUMNS = ["citation_kind", "abbreviation", "jurisdiction",
                #   year_vol_ambiguity —— 4 位数字既可读年又可读卷、且两表都
                #     无法裁决时的显式 unresolved 标记（不默认任何一方）。
                "parse_status", "year_vol_ambiguity",
-               "identifier_subdivision_code", "jurisdiction_subdivision"]
+               "identifier_subdivision_code", "jurisdiction_subdivision",
+               # R3 Stage 3：汇编的卷/年体系（表驱动，来源=reporter_origin_scope.csv
+               # 的 volume_system 列）。归并层据它做身份修复，但**归并层不读决策表**——
+               # 表的读取与字段盖章在本层完成，归并层只用行上的字段。
+               "volume_system"]
 
 # 年份形状（4 位数字），用于 year/vol 同形判定
 _YEAR_SHAPE_RE = re.compile(r"^(?:1[6-9]|20)\d{2}$")
@@ -172,6 +176,28 @@ def load_table(name):
     with open(path, encoding="utf-8", newline="") as f:
         return [r for r in csv.DictReader(f)
                 if any((v or "").strip() for v in r.values())]
+
+
+def load_volume_systems():
+    """R3 Stage 3：`reporter_origin_scope.csv` 的 volume_system 列 → {nk(印刷缩写):
+    year_volume|continuous}。
+
+    只收**已核实**行（verification_status ∈ 白名单，与 decide 同口径）；同一缩写
+    的多行若给出**不一致**的 volume_system → 该缩写**不给值**（保守：不拿两个互相
+    矛盾的体系去改键）。本层盖章，归并层只读行字段——归并层依旧不读决策表。"""
+    allowed = {"verified_exclusive_statute", "verified_exclusive_publisher"}
+    path = os.path.join(DECISIONS, "reporter_origin_scope.csv")
+    vals = defaultdict(set)
+    if os.path.exists(path):
+        with open(path, encoding="utf-8", newline="") as f:
+            for r in csv.DictReader(f):
+                if (r.get("verification_status") or "").strip() not in allowed:
+                    continue
+                vs = (r.get("volume_system") or "").strip()
+                k = nk(r.get("printed_abbreviation") or "")
+                if k and vs in ("year_volume", "continuous"):
+                    vals[k].add(vs)
+    return {k: next(iter(v)) for k, v in vals.items() if len(v) == 1}
 
 
 def build_index(rows, field):
@@ -579,6 +605,8 @@ class Classifier(object):
         self.prefix_norm = build_index(tables["series_prefix"], "normalized_key")
         # R2F：identifier 系统（印刷 token 逐字精确匹配；大小写敏感）
         self.ident_exact = tables.get("identifier_systems") or {}
+        # R3 Stage 3：汇编卷/年体系（表驱动，仅用于盖章给归并层）
+        self.vol_system = tables.get("volume_system") or {}
         self.stats = stats
 
     def _court_lookup(self, printed_token, has_vol):
@@ -784,6 +812,11 @@ class Classifier(object):
             self.step3(row)
         split_case_name(row)
         row.pop("_prefix_jur", None)
+        # R3 Stage 3：把该汇编的卷/年体系盖在行上（与法域同源：都来自已核实决策表）。
+        vs = self.vol_system.get(nk(row.get("abbreviation") or ""), "")
+        row["volume_system"] = vs
+        if vs:
+            self.stats["volume_system_" + vs] += 1
         # PROBLEMS #13/#54：判决头部必印自身引证，抽取层照单全收。本行抽出串 == 本判决
         # 自身引证（source_decision_citation 即「法院_nk(citation_en)」）即自引。它是真
         # 引证，故不进 rejected_reason（§8.3 要求「不是引证」与其他含义分开），只打标记；
@@ -844,6 +877,7 @@ def main():
               ("neutral_court_codes", "reporter_jurisdiction",
                "series_prefix", "case_origin")}
     tables["identifier_systems"] = load_identifier_systems()
+    tables["volume_system"] = load_volume_systems()
     clf = Classifier(tables, stats)
 
     os.makedirs(args.output, exist_ok=True)

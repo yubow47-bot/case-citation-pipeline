@@ -1214,3 +1214,103 @@ Stage 0 到此为止，**未动任何管线代码**。以下决策点需签收�
   实际兑现比例取决于研究覆盖与反例核查的严格程度。请裁决：(a) 按原计划推进 Stage 1
   （三个只读研究子代理，按提及量排序，同时做排他性核查与反例搜寻）；(b) 先补
   identity_basis 缺口（B14 的 4,477 组案名/锚问题）再回来；(c) 缩范围只做 top-N 缩写。
+
+### R3-10 用户签收（2026-09-13）
+
+三项均按推荐通过：**Stage 1 按原计划推进**（三个只读研究子代理）；**接受 P2′**（多行命中
+但国别一致 → 取该国、细分留空、记审计字段；异国重叠仍 UNDETERMINED + ambiguous，
+计划 §1 的强制测试不受影响）；**P1/P2/P3 全部生效**，其中合格 identity_basis **以代码为准**
+（`pipeline/decide.py` 的 `ELIGIBLE_BASES`：`name_year` 不合格、`same_citation` 合格）。
+
+### R3-11 Stage 1 目标清单（研究输入，`audit/`）
+
+仪器：`audit/stage1_targets.py`（审计环；只读生产产出，产出提案）。输出：
+`audit/findings/r3_stage1_targets_{canadian,british,other}.md` + `r3_stage1_targets.json`
+（tier1–2 全字段；tier3 压缩字段）。按 **counted 汇编提及量**排序并附**语料实测的
+vol/年区间与高频组合**（研究者据此知道哪段区间真正要紧）。
+
+| 组 | 目标数 | tier1 | counted 提及 | 可带来净新增组 |
+|---|---:|---:|---:|---:|
+| 加拿大/省级 | 106 | 16 | 320,930 | 89,901 |
+| 英国 | 73 | 8 | 51,160 | 18,550 |
+| 美国及其他 | 5,621（其中 tier1–2 仅 6） | 1 | 51,641 | 4,981 |
+
+任务书对每个缩写要求两件事：**排他性溯源**（`exclusive_statute`/`exclusive_publisher`/
+`mixed`）与**反例搜寻**（`exclusive_publisher` 强制）；并新增两个「记录但不写行」的档：
+`scope_evidence_third_party_only`（只找到第三方手册——P2 只认两档，但出处与反例结果先
+记下来，供以后决定是否增设第三档）、`not_a_reporter`（期刊/噪声）。三个子代理已启动，
+产出写 `audit/findings/r3_reporter_origin_{canadian,british,other}.md`，**不得改
+`decisions/` 与 `pipeline/`**；表由人按 findings 手工整理（`audit/README.md` 的膜规则）。
+
+### R3-12 Stage 2：`decide.py` 排他汇编来源地（test-first）
+
+**实现**（`pipeline/decide.py`）：
+
+- `load_reporter_origin()`：读 `decisions/reporter_origin_scope.csv`，键 = `nk(printed_abbreviation)`；
+  只有 `verification_status ∈ {verified_exclusive_statute, verified_exclusive_publisher}`
+  的行参与推断，`verified_mixed` 等只作档案。
+- `_reporter_origin(row, reporter_idx, stats)`：**自查表，不读 classify 的 `jurisdiction`**（P1）。
+  窗口匹配即消歧：恰一行命中 → 该行来源地，`basis=exclusive_reporter_scope`；
+  ≥2 行命中且国别一致 → 取该国、细分仅一致时取（P2′）；≥2 行且**国别不同** →
+  UNDETERMINED 且审计列 `member_origin_ambiguous_basis=exclusive_reporter_scope_ambiguous`；
+  零行命中 → 普通 UNDETERMINED。**白名单在规则内部再筛一遍**，不只依赖 loader。
+- 优先级（P2）：`case_record > court_scope_rule > 汇编排他`。前两者与第三者在
+  **结构上互斥**（`citation_kind` 单一取值：neutral/identifier 走 scope，reporter 走汇编表），
+  所以「scope 与汇编范围同时适用」不会发生；两档汇编排他性只在**同一行有多条命中行且
+  国别一致**时决定用哪条证据，**绝不裁决国别冲突**。
+- 新列：`member_origin_exclusivity`（该证据行的档位）、`member_origin_ambiguous_basis`
+  （审计，与「无证据」分开记）。跨法院轮沿用院内轮（`setdefault` 兜底）。
+
+**两处与计划字面的偏离（我的判断，登记待复核）**：
+
+1. **basis 值保持 `exclusive_reporter_scope`**（计划 §1 的强制测试就是这么命名的），
+   档位另放 `member_origin_exclusivity` 列，而不把档位烘进 basis 字符串
+   （否则 `(1930), 45 K.B. 129 → basis=exclusive_reporter_scope` 这条测试按字面就红了）。
+2. **`series` 槽不作为匹配维度**。理由：series 只会**增加**命中行，而增加命中只可能把
+   「唯一命中」推向「多行命中」（国别不一致 → UNDETERMINED），**不会凭空造出一个国别**——
+   方向与 P1「宁可多留未知」一致；同时避免为 D.L.R./C.C.C./O.R./W.W.R. 这类多系列汇编
+   建一张「每系列一行」的窗口矩阵。代价：多系列汇编若只给某个系列的 vol 区间，
+   其它系列的引用会落窗口外 → UNDETERMINED（诚实少算，不是错判）。整理表时对
+   `volume_system=continuous` 的多系列汇编**优先给年区间**（卷号每系列从 1 重起，
+   年区间才是跨系列有效的窗口）。
+
+**测试**（`pipeline/tests/test_candidates.py`，新增 13 项）：§1 的**重叠独立性**测试
+（GB-K.B. 与 QC-K.B. 窗口故意重叠 → UNDETERMINED + ambiguous；把 classify 的 jurisdiction
+分别喂 GB 与 QC，decide 的观测字段**逐字段相同**——证明真独立）、唯一命中且 classify 法域
+**故意喂错**仍取窗口来源地、窗口外/无表行 → 普通 UNDETERMINED（ambiguous 列空）、
+非 reporter 解析不走该规则、case_record 优先、两档 statute>publisher（含档位不一致时
+**不得**破国别平局）、P2′ 同国多行、表行顺序不变性、未核实/`verified_mixed` 行不参与，
+以及**依赖 Stage 1 真实表**的一项（`[1995] 2 S.C.R. 3`→CA、`(1930), 45 K.B. 129`→CA 非
+ambiguous、`[1932] A.C. 562`→UNDETERMINED、表行纪律：每行 ≥1 个窗口 + origin_country +
+exclusivity + `exclusive_publisher` 必带反例搜寻 + `source`/`source_locator` + 键口径一致）。
+
+**当前状态**：表未落地，故「真实表」那一项**是红的**（test-first 的预期状态，断言信息
+写明「Stage 1 尚未落地」）；其余 65 项测试 / **238 条断言全绿**，`test_layers.py`
+120 条、`run_regression.py --selftest`、`extract.py --fixture-check` 全部 exit 0。
+
+### R3-13 Stage 3：身份修复（表驱动，test-first）
+
+**架构约束**：`merge.py` 明确**不加载 `decisions/` 下任何文件**（层界）。因此
+`volume_system` 由**分类层**按 `reporter_origin_scope.csv` 盖章到行字段上
+（`classify.load_volume_systems()`：只收已核实行；同一缩写多行给出**不一致**的
+volume_system → 该缩写不给值，保守），归并层只读行字段。归并层的两条修复
+（`merge.apply_reporter_identity_fixes`，在逐判决仲裁**之前**跑）：
+
+- **A. `continuous`（卷号跨年连续，如 D.L.R.）**：年槽不是身份的一部分 →
+  **结构性零化年槽**。`34 D.L.R. (2d) 451` 与 `(1970) 34 D.L.R. (2d) 451` 自此同键。
+  与法域消歧无关，单法域汇编同样适用。
+- **B. `year_volume` 且年槽为空**：按族 `(vol, abbr, series, page)` 统计**本 run 内**
+  出现过的非空年——恰一个 → 补为空年行的年（同族合并）；**≥2 个 → 弃权**（不猜）。
+  **按 run 计算、不持久化**。
+- 未盖 `volume_system` 的行**一律不动**（不猜、不硬编码清单）。记账：
+  `reporter_identity_year_zeroed_rows` / `_filled_rows` / `_fill_families` /
+  `_fill_families_abstained` 进 merge manifest。
+- **现状核对**：表未落地时 `volume_system` 恒为空 → 两条修复是**空操作**
+  （测试内的迷你全链实测两个计数器均为 0，既有产出不变）。
+
+**测试**（新增 3 项）：continuous 零化年槽（带年/不带年同键；year_volume 与未盖值行不动；
+记账口径 = 实际改动行数）、year_volume 族内唯一年补年 + **≥2 年反例族弃权**、
+输入顺序不变性 + **幂等**（同输入重跑不再改动）。
+
+**账本补记**：M3 的 7,581 族 / 13,130 族是**结构上限**——只有 `volume_system` 被
+核实并写进表的汇编才修；未覆盖的汇编保持现状。Stage 4 要报「实际修复数 vs M3 上限」。

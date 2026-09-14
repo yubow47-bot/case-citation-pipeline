@@ -170,6 +170,151 @@ def load_scope():
     return idx
 
 
+# ---- R3：排他汇编来源地（P1/P2/P2′）--------------------------------------
+# 只有**已核实**的排他行参与推断。两档排他性（P2）：
+#   exclusive_statute   有约束力的法律/宪制文本规定其刊登范围
+#   exclusive_publisher 只有出版方自己的编辑方针（须带反例搜寻记录）
+REPORTER_ORIGIN_ALLOWED_STATUSES = frozenset((
+    "verified_exclusive_statute",
+    "verified_exclusive_publisher",
+))
+REPORTER_ORIGIN_TIER = {
+    "exclusive_statute": 2,
+    "exclusive_publisher": 1,
+}
+
+
+def load_reporter_origin():
+    """decisions/reporter_origin_scope.csv：排他汇编的**来源地**表（R3）。
+
+    键 = nk(printed_abbreviation)——印刷事实。同形异义汇编（K.B./Q.B./C.P.…）
+    在同一键下有多行，每行带**自己独立溯源**的 vol/year 窗口：**窗口匹配即消歧**。
+    本函数与 _reporter_origin **都不读 classify 的 jurisdiction**——那条路会把
+    一个未核实的消歧猜测洗成有出处的来源地结论（P1）。
+
+    只有 verification_status ∈ REPORTER_ORIGIN_ALLOWED_STATUSES 的行参与推断；
+    `verified_mixed` 等行只作档案（写明「这个汇编混合，不可作来源证据」）。"""
+    path = os.path.join(DECISIONS, "reporter_origin_scope.csv")
+    if not os.path.exists(path):
+        return {}
+    idx = {}
+    with open(path, encoding="utf-8", newline="") as f:
+        for r in csv.DictReader(f):
+            st = (r.get("verification_status") or "").strip()
+            if st not in REPORTER_ORIGIN_ALLOWED_STATUSES:
+                continue
+            k = nk(r.get("printed_abbreviation") or "")
+            if k:
+                idx.setdefault(k, []).append(r)
+    return idx
+
+
+def _in_span(v, lo, hi):
+    """闭区间；空界 = 该侧无约束。v/界非数字按不可判处理（调用方已先判可比性）。"""
+    try:
+        iv = int(v)
+    except (TypeError, ValueError):
+        return None
+    for b, op in ((lo, "lo"), (hi, "hi")):
+        try:
+            ib = int(b)
+        except (TypeError, ValueError):
+            continue
+        if op == "lo" and iv < ib:
+            return False
+        if op == "hi" and iv > ib:
+            return False
+    return True
+
+
+def _reporter_window_ok(vol, year, row):
+    """维度式包含：仅当**引证与表行该维度都有值**时才可判、才可否决。
+    两维都不可比 → 该行无约束（它靠「排他性」本身作证据，窗口只用来切分候选）。
+    行号/年号非数字 → 该维度不可判（不否决，也不据此命中）。"""
+    vs = (row.get("vol_range_start") or "").strip()
+    ve = (row.get("vol_range_end") or "").strip()
+    ys = (row.get("year_range_start") or "").strip()
+    ye = (row.get("year_range_end") or "").strip()
+    if vol and (vs or ve):
+        if _in_span(vol, vs, ve) is False:
+            return False
+    if year and (ys or ye):
+        if _in_span(year, ys, ye) is False:
+            return False
+    return True
+
+
+def _reporter_origin(row, reporter_idx, stats):
+    """P1/P2′：排他汇编的来源地是**正面证据**，查表自查、**不读 classify 的
+    jurisdiction**。
+
+    适用条件：本行是 counted 的 reporter 解析（citation_kind=reporter，即该缩写
+    不是法院中立码、也不是数据库标识符）。
+
+    判定（窗口匹配即消歧）：
+      * 候选 = 表内该缩写下所有**未被窗口否决**的行；
+      * 恰一行命中 → 取该行来源地；basis=exclusive_reporter_scope；
+      * ≥2 行命中且**国别一致** → 取该国（P2′：国别无歧义，细分仅在一致时取）；
+      * ≥2 行命中且国别不同（含表行 origin_country 缺失）→ **UNDETERMINED**，
+        并在审计列 member_origin_ambiguous_basis 记
+        `exclusive_reporter_scope_ambiguous`（与「查不到证据」分开记，Stage 4
+        单独计数）；**不得**用 classify 的 jurisdiction、投票或其他信号破这个平局；
+      * 零行命中（窗口外/该缩写无表行）→ 保持 UNDETERMINED（普通无证据）。
+
+    细分与证据行：证据行在两档间取高（exclusive_statute > exclusive_publisher，
+    P2）。优先级只决定**单个行**用哪条证据，绝不裁决两行**国别不一致**的冲突。
+    """
+    if (row.get("citation_kind") or "") != "reporter":
+        stats["reporter_scope_not_reporter_parse"] += 1
+        return
+    p = row["merge_key"].split("|")
+    if len(p) < 5:
+        return
+    code = nk(p[2])
+    # 白名单在规则内部再筛一次（不只依赖 load_reporter_origin）：未核实行
+    # （estimated / name_inference）与 verified_mixed 档**永远**不产生来源地。
+    cand = [r for r in reporter_idx.get(code, ())
+            if (r.get("verification_status") or "").strip()
+            in REPORTER_ORIGIN_ALLOWED_STATUSES]
+    if not cand:
+        return
+    year, vol = p[0], p[1]
+    hit = [r for r in cand if _reporter_window_ok(vol, year, r)]
+    if not hit:
+        stats["reporter_scope_out_of_window"] += 1
+        return
+    countries = sorted({(r.get("origin_country") or "").strip() for r in hit
+                        if (r.get("origin_country") or "").strip()})
+    if len(countries) != 1:
+        row["member_origin_ambiguous_basis"] = "exclusive_reporter_scope_ambiguous"
+        stats["reporter_scope_ambiguous"] += 1
+        return
+    best = sorted(hit, key=lambda r: (
+        -REPORTER_ORIGIN_TIER.get((r.get("exclusivity") or "").strip(), 0),
+        (r.get("printed_abbreviation") or "").strip(),
+        (r.get("origin_subdivision") or "").strip()))[0]
+    subs = sorted({(r.get("origin_subdivision") or "").strip() for r in hit
+                   if (r.get("origin_subdivision") or "").strip()})
+    row["member_origin_country"] = countries[0]
+    row["member_origin_status"] = "DETERMINED"
+    row["member_origin_basis"] = "exclusive_reporter_scope"
+    row["member_origin_evidence_ids"] = "reporter_scope:" + (
+        best.get("printed_abbreviation") or code)
+    row["member_origin_conflict_detail"] = ""
+    row["member_origin_subdivision"] = subs[0] if len(subs) == 1 else ""
+    row["member_origin_exclusivity"] = (best.get("exclusivity") or "").strip()
+    row["deciding_court"] = (best.get("deciding_court") or "").strip()
+    stats["case_origin_by_reporter_scope"] += 1
+    if len(hit) > 1:
+        stats["reporter_scope_multirow_same_country"] += 1
+    if not ((best.get("vol_range_start") or "").strip()
+            or (best.get("vol_range_end") or "").strip()
+            or (best.get("year_range_start") or "").strip()
+            or (best.get("year_range_end") or "").strip()):
+        stats["reporter_scope_from_row_without_window"] += 1
+
+
+
 def year_of(merge_key):
     """归并键首字段即 year_start（§9.1）。merged.csv 没有独立年份列。"""
     head = merge_key.split("|", 1)[0]
@@ -641,10 +786,17 @@ def cluster_same_case(rows, did_idx, stats, start=None):
     return out
 
 
-def decide_case_origin(row, member_strings, origin_idx, stats, scope_idx=None):
+def decide_case_origin(row, member_strings, origin_idx, stats, scope_idx=None,
+                       reporter_idx=None):
     """§10.2（R2-1 订正）：**成员级来源地观察**——只观察本行键自己，不继承组结论。
     结果写 member_origin_* 字段；组级结论由 aggregate_group_origin 从成员观察聚合。
     未入表时 UNDETERMINED，**不得默认取 jurisdiction 的值**。
+
+    证据优先级（P2）：**案件级直接证据 > 法院/中立码排他范围 > 排他汇编范围
+    （statute 档 > publisher 档）**。前三者由 citation_kind 结构性分开：本行要么是
+    neutral/identifier（走 scope），要么是 reporter（走 R3 汇编范围），因此
+    「scope 与汇编范围同时适用」在结构上不会发生；两档汇编排他性的先后只在
+    **同一行有多条**命中行且国别一致时决定用哪条证据（P2），绝不裁决国别冲突。
 
     证据两级（D6）：
       1. 案件级直接证据（case_origin.csv，键=印刷引证）——**保留全部**命中行的
@@ -654,8 +806,13 @@ def decide_case_origin(row, member_strings, origin_idx, stats, scope_idx=None):
          **已是被接受的 neutral 解析**（citation_kind=neutral，即经法院代码表
          证实）、代码在表、年代在窗内时适用。归并表只聚 counted 候选，故
          「解析已过仲裁」由上游结构保证。basis=court_scope_rule 与 1 分档。
+      3. R3：排他汇编范围（reporter_origin_scope.csv）——仅当本行是
+         citation_kind=reporter 时适用；**自查表、不读 classify 的 jurisdiction**
+         （P1）。窗口匹配即消歧；异国重叠 → UNDETERMINED 且记审计列。
     约束七：FOREIGN 只来自正面排他规则，绝不来自「不在加拿大例外表」。
     UKPC/JCPC 等跨法域法院不在规则表 → UNDETERMINED（§9.3）。"""
+    row["member_origin_ambiguous_basis"] = ""
+    row["member_origin_exclusivity"] = ""
     hits = []
     for s in member_strings:
         for h in origin_idx.get(nk(s), []):
@@ -691,6 +848,8 @@ def decide_case_origin(row, member_strings, origin_idx, stats, scope_idx=None):
         row["deciding_court"] = ""
         if scope_idx:
             _scope_origin(row, scope_idx, stats)
+        if row["member_origin_status"] == "UNDETERMINED" and reporter_idx:
+            _reporter_origin(row, reporter_idx, stats)
         if row["member_origin_status"] == "UNDETERMINED":
             stats["case_origin_undetermined"] += 1
     row["origin_subdivision"] = row.get("member_origin_subdivision", "")
@@ -881,7 +1040,7 @@ def load_decision_ids(path, court=None):
 
 
 def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin,
-               scope_idx=None):
+               scope_idx=None, reporter_idx=None):
     start = neutral_start(rows)
     stats["neutral_rows_before_court_start"] = sum(
         1 for r in rows if r.get("citation_kind") == "neutral" and _before_start(r["merge_key"], start))
@@ -922,7 +1081,7 @@ def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin
                 # 成员级观察（R2-1）：只看本行键自己的证据，不继承组结论
                 decide_case_origin(r, folded_idx.get(m["merge_key"],
                                                      [m["canonical_string"]]),
-                                   origin_idx, stats, scope_idx)
+                                   origin_idx, stats, scope_idx, reporter_idx)
             else:
                 # 跨法院轮：成员观察沿用院内轮的 member_origin_*（组结论不作
                 # 新成员证据）；缺列的输入按 UNDETERMINED 兜底
@@ -931,7 +1090,9 @@ def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin
                               ("member_origin_basis", ""),
                               ("member_origin_evidence_ids", ""),
                               ("member_origin_conflict_detail", ""),
-                              ("member_origin_subdivision", "")):
+                              ("member_origin_subdivision", ""),
+                              ("member_origin_ambiguous_basis", ""),
+                              ("member_origin_exclusivity", "")):
                     r.setdefault(c, dv)
                 r.setdefault("deciding_court", "")
             # 跨法院轮不重判成员来源地：院内轮已在成员串级别查过表，此处只有
@@ -1010,7 +1171,11 @@ def main():
     stats = Counter()
     origin_idx = load_case_origin()
     scope_idx = load_scope()
+    reporter_idx = load_reporter_origin()
     stats["scope_rules_verified"] = sum(len(v) for v in scope_idx.values())
+    stats["reporter_scope_rows_verified"] = sum(len(v)
+                                                for v in reporter_idx.values())
+    stats["reporter_scope_abbrs"] = len(reporter_idx)
 
     if a.cross_court:
         rows, did_idx = [], defaultdict(set)
@@ -1034,7 +1199,8 @@ def main():
     stats["input_rows"] = len(rows)
     in_occ_total = sum(key_occ(r) for r in rows)
     out, out_ids, eff_rows = adjudicate(rows, did_idx, origin_idx, folded_idx,
-                                        prefix, stats, redo, scope_idx)
+                                        prefix, stats, redo, scope_idx,
+                                        reporter_idx)
     # PROBLEMS #62：同名、年份相差 ≤1 的同级组。只在跨法院轮算——跨院合并跑完才是
     # 最终分组；院内轮该列留空（它不是产品列，选取层读的是跨院产出）
     if a.cross_court:
