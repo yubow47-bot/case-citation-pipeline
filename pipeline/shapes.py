@@ -79,6 +79,18 @@ _SERIES_OPT = rf"(?:{_SEP_COMMA}(?P<series>{_ORD})|(?P<series_glued>\d{{1,2}}(?:
 #   加了就是"看着在防什么、实际从不执行"的代码，同 §7.3 对 year_raw.split("-")
 #   的告诫；v1.5 自检时按同一标准删除（原带守卫版与本版全语料命中集合逐位相同）。
 _SERIAL_SLOT = r"(?:\s+(?P<serial_marker>No\.|no))?"
+# R4（D1）：**法院标注**零宽捕获——印刷在完整引证（页码或页码后缀、或已消费的
+#   尾部年份括注）之后的圆括号标注，如 "[1932] A.C. 562 (H.L.)"、
+#   "42 C.C.C. (3d) 1 (1997) (P.C.)"。与 neutral_bare 的 trailing_paren 同一技术
+#   （零宽前瞻捕获，(start,end,shape) 跨度集合逐字节不变）但**独立捕获组、独立字段**，
+#   不复用 trailing_paren。
+#   边界（D1）：标注与页码之间只允许空白与一个逗号（\s*,?\s*）；内容不含换行/圆括号、
+#   长度 1–30。**排除纯序数系列**（(4th)/(2d) 类）——那是下一条引证的系列槽，
+#   不属于本引证（负测试钉住）。年份括注**不排除**：捕获后由 classify 判 not_a_court
+#   （负测试 "(1932) → not a court" 的对象）。含义只来自 court_designations.csv 的
+#   精确匹配（D1：抽取层不解释）。
+_CDES = (r"(?:(?=\s*,?\s*\((?!\s*\d+\s*(?:st|nd|rd|th|d)\s*\))"
+         r"(?P<court_designation>[^()\n]{1,30})\)))?")
 # 页码：数字（可选字母斜杠前缀 D/、脚注后缀 n）或罗马页码（xi/vii，leave to appeal
 # 序册页）。罗马子式 {2} 最小长度挡空串与章节标记 c.；交替整体包在 (?:) 内，
 # 防止嵌入 _SEP_COMMA+ _PAGE 时 | 在错误层级分裂。
@@ -99,7 +111,8 @@ SHAPES = [
      rf"{_SERIAL_SLOT}"                                # v1.4 债1：编号标记槽（共享子式）
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
-     rf"{_SEP_COMMA}{_PAGE}"),
+     rf"{_SEP_COMMA}{_PAGE}"
+     rf"{_CDES}"),                                     # R4：法院标注（零宽）
 
     ("shape_vol_page_year",
      rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"
@@ -107,7 +120,8 @@ SHAPES = [
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
      rf"{_SEP_COMMA}{_PAGE}"
-     rf"\s*\(\s*(?P<year>{_YEAR})\s*\)"),
+     rf"\s*\(\s*(?P<year>{_YEAR})\s*\)"
+     rf"{_CDES}"),                                     # R4：年份括注已消费→标注取下一个（零宽）
 
     ("shape_year_vol_page",
      rf"\(\s*(?P<year>{_YEAR})\s*\)"
@@ -115,13 +129,15 @@ SHAPES = [
      rf"{_SERIAL_SLOT}"                                # 编号标记槽（共享）
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
-     rf"{_SEP_COMMA}{_PAGE}"),
+     rf"{_SEP_COMMA}{_PAGE}"
+     rf"{_CDES}"),                                     # R4：法院标注（零宽）
 
     ("shape_nominate",
      rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"
      rf"{_SERIAL_SLOT}"                                # 编号标记槽（共享）
      rf"{_SEP_COMMA}\((?P<paren_note>[^)]+)\){_SEP_COMMA}{_PAGE}"   # D4：括注捕获
-     rf"\s*\(\s*(?P<year>{_YEAR})\s*\)"),
+     rf"\s*\(\s*(?P<year>{_YEAR})\s*\)"
+     rf"{_CDES}"),                                     # R4：年份括注已消费→标注取下一个（零宽）
 
     ("shape_neutral_bare",
      # v1.4：token 2-12 位（大写开头无空格纯字母段）。上界依据=观测到的最长
@@ -140,7 +156,8 @@ SHAPES = [
      rf"{_SERIAL_SLOT}"                                # 编号标记槽（共享）
      rf"{_SERIES_OPT}"
      rf"{_SERP_SLOT}"
-     rf"{_SEP_COMMA}{_PAGE}"),
+     rf"{_SEP_COMMA}{_PAGE}"
+     rf"{_CDES}"),                                     # R4：法院标注（零宽）
 
     ("shape_leading_abbr",
      rf"(?:\(\s*(?P<year>{_YEAR})\s*\){_SEP_COMMA})?"  # v1.4 改动一：年份前缀槽
@@ -149,7 +166,8 @@ SHAPES = [
      rf"(?P<leading_abbr>{_ABBR})"
      rf"{_SEP_TIGHT}(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"
      rf"{_SERIAL_SLOT}"                                # 编号标记槽（共享）
-     rf"{_SEP_COMMA}{_PAGE}"),
+     rf"{_SEP_COMMA}{_PAGE}"
+     rf"{_CDES}"),                                     # R4：法院标注（零宽）
 ]
 
 SHAPE_ORDER = [name for name, _ in SHAPES]

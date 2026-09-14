@@ -86,6 +86,10 @@ CAND_SCHEMA = [
     "year_span", "page_span", "vol_span", "abbr_span",
     # R2F：neutral_bare 尾括注（零宽前瞻捕获；identifier 细分用，可空）
     "trailing_paren",
+    # R4（D1）：法院标注零宽前瞻捕获（reporter 形状；可空）——原文原样，不解释；
+    #   含义由 classify 对 decisions/court_designations.csv 精确匹配得出
+    "court_designation_raw",
+    "court_designation_span",
     # 同一段落两种读法的区分签名
     "parse_signature",
     "preceding_text",
@@ -194,6 +198,13 @@ def extract_candidates(text, sdc, year, row_index, court):
                 "vol_span": spans["vol_span"],
                 "abbr_span": spans["abbr_span"],
                 "trailing_paren": g.get("trailing_paren") or "",
+                # R4（D1）：法院标注（零宽前瞻捕获；reporter 形状）。span =
+                # 标注原文的绝对偏移（捕获组真实位置，含前瞻内）；未捕获为 -1:-1
+                "court_designation_raw": g.get("court_designation") or "",
+                "court_designation_span": "%d:%d" % m.span("court_designation")
+                                          if "court_designation" in rx.groupindex
+                                          and m.group("court_designation") is not None
+                                          else "-1:-1",
                 "parse_signature": parse_signature(name, g),
                 "preceding_text": text[max(0, start - 120):start],
                 "structural_conflict": "",
@@ -546,10 +557,11 @@ def write_manifest(out_root, run_stats, merge_counts, args):
     manifest = {
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
         "git_head": git_head(),
-        "shapes_version": "v1.4 (frozen) + D4 capture groups (series_paren/paren_note)",
-        "candidates_schema": "candidates-2.1 (candidates-2.0 + neutral_bare "
-                             "trailing_paren zero-width lookahead capture; legacy "
-                             "kept/superseded retained as diagnostic only)",
+        "shapes_version": "v1.4 (frozen) + D4 capture groups (series_paren/paren_note) "
+                          "+ R4 court_designation zero-width capture (reporter shapes)",
+        "candidates_schema": "candidates-2.2 (candidates-2.1 + court_designation "
+                             "zero-width lookahead capture on reporter shapes; "
+                             "legacy kept/superseded retained as diagnostic only)",
         "params": {"batch_size": args.batch_size,
                    "year_from": args.year_from,
                    "limit_batches": args.limit_batches,

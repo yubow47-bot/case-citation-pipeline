@@ -60,7 +60,11 @@ def _clf():
                                 "series_prefix": prefix,
                                 "identifier_systems": {
                                     r["printed_token"]: r
-                                    for r in _IDENT_ROWS}}, Counter())
+                                    for r in _IDENT_ROWS},
+                                # R4（D1）：法院标注表用**真表**（封闭集合、逐行带出处）
+                                "court_designations":
+                                    classify.load_court_designations()},
+                               Counter())
 
 
 def candidates_of(text, court="SCC", row=0):
@@ -2057,6 +2061,166 @@ def test_r3_row_year_prefers_printed_year():
           "row_year：零化键与带年键读出同一年份")
 
 
+# ====================== R4（D1）：法院标注捕获与识别 ======================
+def test_r4_designation_end_to_end():
+    """R4（D1）：抓取 + 识别端到端（layers 1-2）。
+    正路径：H.L./P.C. → recognized + observed_deciding_court；裸 C.A. → ambiguous。
+    负路径：年份/定位/法官/解释性 → not_a_court；无标注 → 三列全空。
+    ★跨度不变量：候选 end 偏移停在页码处，不含标注（D1 抓取是零宽前瞻）。"""
+    text = ("R. v. Osolin, [1993] 4 S.C.R. 595 (H.L.); "
+            "R. v. Pan, [2001] 2 S.C.R. 42 (P.C.); "
+            "R. v. Court, 10 C.R. 1 (C.A.); "
+            "R. v. Smith, [1932] A.C. 141 (1932); "
+            "R. v. Jones, [1995] 1 A.C. 1 (at p. 12); "
+            "R. v. Brown, [1973] A.C. 1 (per Lord Atkin); "
+            "R. v. Kim, [1994] 2 A.C. 1 (see above); "
+            "R. v. Chan, [2004] 1 A.C. 1 (emphasis added); "
+            "R. v. Wu, [1988] 1 A.C. 1 (4th) 200.")
+    rows = classified_of(text)
+    # 重叠形状会对同一引证产出多条候选（每条都带标注）→ 按**去重后的标注原文**断言
+    raws = {}
+    for r in rows:
+        raw = (r.get("court_designation_raw") or "").strip()
+        if raw:
+            raws.setdefault(raw, (r["court_designation_status"],
+                                  r["observed_deciding_court"]))
+    exp = {"H.L.": ("recognized", "House of Lords"),
+           "P.C.": ("recognized",
+                    "Judicial Committee of the Privy Council"),
+           "C.A.": ("ambiguous_designation", ""),
+           "1932": ("not_a_court", ""),
+           "at p. 12": ("not_a_court", ""),
+           "per Lord Atkin": ("not_a_court", ""),
+           "see above": ("not_a_court", ""),
+           "emphasis added": ("not_a_court", "")}
+    check(set(raws) == set(exp),
+          "R4：8 种标注全部按预期识别（实得 %d 种：%r）"
+          % (len(raws), sorted(raws)))
+    for raw, (st, oc) in exp.items():
+        got = raws.get(raw)
+        check(got == (st, oc),
+              "R4：%r → %r/%r（实得 %r/%r）"
+              % (raw, st, oc, got and got[0], got and got[1]))
+    # 跨度不变量：带标注的候选，end 偏移停在页码末尾（不含标注）
+    hl = [r for r in rows if r.get("court_designation_raw") == "H.L."][0]
+    check(int(hl["match_end_offset"]) ==
+          int(hl["match_start_offset"]) + int(hl["match_span"]),
+          "R4：标注是零宽捕获——候选 end 不含标注（跨度不变量）")
+    check(hl["court_designation_span"] != "-1:-1",
+          "R4：标注自带绝对偏移 span")
+    # 边界：下一条引证的序数系列槽不被本引证捕获
+    wu = [r for r in rows if r["raw_string"] == "[1988] 1 A.C. 1"]
+    check(wu and (wu[0].get("court_designation_raw") or "") == "",
+          "R4：下一条引证的序数系列 (4th) 不被本引证捕获（NEXT-citation 边界）")
+
+
+def test_r4_designation_key_level_conflict():
+    """R4（D1 负测试）：同一键上 H.L. 与 P.C. → 键级冲突、无法院。
+    C.C.C. 连续编卷零化后，带 (H.L.) 与带 (P.C.) 的两条引证同键。"""
+    import merge
+    import tempfile
+    base = {"candidate_id": "", "corpus_row_index": "0",
+            "match_start_offset": "0", "match_end_offset": "10",
+            "source_decision_citation": "", "source_decision_year": "1992",
+            "raw_string": "", "shape_name": "shape_vol_abbr_page",
+            "token": "", "leading_abbr": "", "serial_marker": "",
+            "page_prefix": "", "page_roman": "", "page_suffix": "",
+            "series": "", "series_paren": "", "paren_note": "",
+            "year_raw": "", "year_start": "", "year_span": "-1:-1",
+            "page_span": "-1:-1", "vol_span": "-1:-1", "abbr_span": "-1:-1",
+            "parse_signature": "test", "preceding_text": "",
+            "structural_conflict": "", "conflict_with_candidate": "",
+            "conflict_note": "", "citation_kind": "reporter",
+            "jurisdiction": "CA", "jurisdiction_confidence": "estimated",
+            "lookup_mode": "exact", "vol_missing": "", "series_prefix": "",
+            "candidate_case_name": "", "rejected_reason": "",
+            "name_rejected_reason": "", "disambiguated_by": "",
+            "self_citation": "", "parse_status": "valid",
+            "year_vol_ambiguity": "", "volume_system": "continuous",
+            "court_designation_raw": "", "court_designation_span": "-1:-1",
+            "court_designation_status": "recognized",
+            "observed_deciding_court": "", "court_designation_evidence_id": ""}
+    rows = []
+    for i, (doc, court, yr) in enumerate(
+            (("0", "House of Lords", "1991"),
+             ("1", "Judicial Committee of the Privy Council", ""))):
+        r = dict(base)
+        r["candidate_id"] = "ONCA:%s:0:10:shape_vol_abbr_page" % doc
+        r["corpus_row_index"] = doc
+        r["source_decision_citation"] = "ONCA_%s" % doc
+        r["year_start"] = yr
+        r["observed_deciding_court"] = court
+        rows.append(r)
+    tmp = tempfile.mkdtemp(prefix="test_r4_")
+    inp = os.path.join(tmp, "classified.csv")
+    with open(inp, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(base.keys()))
+        w.writeheader()
+        w.writerows(rows)
+    outd = os.path.join(tmp, "out")
+    stats = Counter()
+
+    class _A:
+        court = "ONCA"
+        input = inp
+        output = outd
+    merge.run_candidates(_A, stats)
+    merged = list(csv.DictReader(open(os.path.join(outd, "merged.csv"),
+                                      encoding="utf-8", newline="")))
+    check(len(merged) == 1, "R4：零化后两条引证同键（合并为 1 行）")
+    m0 = merged[0]
+    check(m0["court_designation_conflict"] == "true",
+          "R4：同键 H.L. + P.C. → 键级冲突")
+    check((m0["observed_deciding_court"] or "") == "",
+          "R4：冲突时**无法院**（D1 负测试）")
+    check(m0["court_designation_support"] == "2"
+          and m0["court_designation_citing"] == "2",
+          "R4：冲突键仍保留支撑提及数与引用判决数")
+
+
+def test_r4_designation_group_propagation():
+    """R4（D1 负测试）：法院标注只经**合格身份基础**提升为组级列；
+    纯启发式组（name_year/cocitation）**不传播**；★绝不写来源地。"""
+    import decide
+    g = [{"merge_key": "1993|4|scr||595", "court": "ONCA",
+          "identity_basis": "anchor",
+          "observed_deciding_court": "House of Lords",
+          "group_origin_country": "UNDETERMINED"},
+         {"merge_key": "|86|ccc|3d|481", "court": "ONCA",
+          "identity_basis": "name_year", "observed_deciding_court": "",
+          "group_origin_country": "UNDETERMINED"}]
+    stats = Counter()
+    decide.add_court_designation_columns(g, stats)
+    check(g[0]["group_observed_deciding_court"] == "House of Lords",
+          "R4：合格成员的标注提升为组级审计列")
+    check(g[1]["group_observed_deciding_court"] == "House of Lords",
+          "R4：组级列写到组内每一行（组属性）")
+    check(g[0]["group_origin_country"] == "UNDETERMINED"
+          and g[1]["group_origin_country"] == "UNDETERMINED",
+          "R4：★法院标注绝不写来源地（D2）")
+    # 纯启发式组：无合格成员 → 组级列空（标注不随启发式组传播）
+    g2 = [{"merge_key": "a", "court": "ONCA", "identity_basis": "name_year",
+           "observed_deciding_court": "House of Lords",
+           "group_origin_country": "UNDETERMINED"},
+          {"merge_key": "b", "court": "ONCA", "identity_basis": "cocitation",
+           "observed_deciding_court": "", "group_origin_country": "UNDETERMINED"}]
+    decide.add_court_designation_columns(g2, Counter())
+    check(g2[0]["group_observed_deciding_court"] == "",
+          "R4：纯启发式组不传播法院标注（D1 负测试）")
+    # 同组两个不同法院（合格成员） → 冲突、不写
+    g3 = [{"merge_key": "a", "court": "ONCA", "identity_basis": "anchor",
+           "observed_deciding_court": "House of Lords",
+           "group_origin_country": "UNDETERMINED"},
+          {"merge_key": "b", "court": "ONCA", "identity_basis": "anchor",
+           "observed_deciding_court":
+               "Judicial Committee of the Privy Council",
+           "group_origin_country": "UNDETERMINED"}]
+    decide.add_court_designation_columns(g3, Counter())
+    check(g3[0]["group_observed_deciding_court"] == ""
+          and g3[0]["group_observed_deciding_court_conflict"] == "true",
+          "R4：组级两法院 → 冲突、无法院")
+
+
 def main():
     for t in (test_boundary_guard, test_kvello_2009_scc_51, test_bce_swallow,
               test_almrei_swallow, test_same_span_multi_shape_counted_once,
@@ -2116,6 +2280,9 @@ def main():
               test_r3_year_printed_survives_zeroing,
               test_r3_parallel_citation_stays_in_same_group,
               test_r3_row_year_prefers_printed_year,
+              test_r4_designation_end_to_end,
+              test_r4_designation_key_level_conflict,
+              test_r4_designation_group_propagation,
               # 依赖 Stage 1 真实表的测试放最后：表未落地时它是唯一红项，
               # 前面的规则测试仍全部跑完（test-first 的预期状态）。
               test_reporter_origin_real_table_stage1_rows):

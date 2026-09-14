@@ -90,7 +90,11 @@ NEW_COLUMNS = ["citation_kind", "abbreviation", "jurisdiction",
                # R3 Stage 3：汇编的卷/年体系（表驱动，来源=reporter_origin_scope.csv
                # 的 volume_system 列）。归并层据它做身份修复，但**归并层不读决策表**——
                # 表的读取与字段盖章在本层完成，归并层只用行上的字段。
-               "volume_system"]
+               "volume_system",
+               # R4（D1）：法院标注识别——只写 observed_deciding_court；**绝不**写
+               # jurisdiction 或来源地（D2：无 court→origin 规则）。
+               "court_designation_status", "observed_deciding_court",
+               "court_designation_evidence_id"]
 
 # 年份形状（4 位数字），用于 year/vol 同形判定
 _YEAR_SHAPE_RE = re.compile(r"^(?:1[6-9]|20)\d{2}$")
@@ -176,6 +180,58 @@ def load_table(name):
     with open(path, encoding="utf-8", newline="") as f:
         return [r for r in csv.DictReader(f)
                 if any((v or "").strip() for v in r.values())]
+
+
+def load_court_designations():
+    """R4（D1）：`court_designations.csv` → {nk(printed_designation): row}。
+
+    精确匹配口径：classify 对候选抓到的标注原文做 **nk 归一后查表**（nk 去掉全部
+    非字母数字并小写——"H.L." 与 "H.L" 同键）。表行由人整理、逐行带 source +
+    source_locator；本函数不加任何解释（D1：含义只来自封闭决策表）。"""
+    path = os.path.join(DECISIONS, "court_designations.csv")
+    out = {}
+    if os.path.exists(path):
+        with open(path, encoding="utf-8", newline="") as f:
+            for r in csv.DictReader(f):
+                k = nk(r.get("printed_designation") or "")
+                if k:
+                    out[k] = r
+    return out
+
+
+def classify_court_designation(raw, cd_idx):
+    """R4（D1）：对抓到的标注原文做**法院识别**（只认法院，不碰来源地）。
+
+    返回 (status, observed_deciding_court, evidence_id)：
+      * 表命中 recognized        → (recognized, canonical_court, "court_designations:<key>")
+      * 表命中 ambiguous_designation → (ambiguous_designation, "", 同上)（D3：裸 C.A.）
+      * 纯数字（年份/页码/序号）  → (not_a_court, "", "")（负测试 "(1932)"）
+      * 定位（at p. / at para.）  → (not_a_court, "", "")
+      * 法官（per …）             → (not_a_court, "", "")
+      * 解释性（see above / emphasis / sub nom.）→ (not_a_court, "", "")
+      * 其他                     → (unrecognized, "", "")（含未收录的真法院缩写——
+                                    如 "Q.B."/"K.B."/"Ch. D."，不猜）"""
+    t = (raw or "").strip()
+    if not t:
+        return "", "", ""
+    key = nk(t)
+    hit = cd_idx.get(key)
+    if hit is not None:
+        st = (hit.get("status") or "").strip()
+        court = (hit.get("canonical_court") or "").strip()
+        if st == "recognized" and court:
+            return "recognized", court, "court_designations:" + key
+        return st or "unrecognized", "", "court_designations:" + key
+    low = t.lower()
+    if t.isdigit():
+        return "not_a_court", "", ""
+    if "at p." in low or "at para." in low:
+        return "not_a_court", "", ""
+    if low.startswith("per "):
+        return "not_a_court", "", ""
+    if "see above" in low or "emphasis" in low or low.startswith("sub nom"):
+        return "not_a_court", "", ""
+    return "unrecognized", "", ""
 
 
 def load_volume_systems():
@@ -607,6 +663,8 @@ class Classifier(object):
         self.ident_exact = tables.get("identifier_systems") or {}
         # R3 Stage 3：汇编卷/年体系（表驱动，仅用于盖章给归并层）
         self.vol_system = tables.get("volume_system") or {}
+        # R4（D1）：法院标注决策表（封闭集合，精确匹配）
+        self.court_desig = tables.get("court_designations") or {}
         self.stats = stats
 
     def _court_lookup(self, printed_token, has_vol):
@@ -817,6 +875,19 @@ class Classifier(object):
         row["volume_system"] = vs
         if vs:
             self.stats["volume_system_" + vs] += 1
+        # R4（D1）：法院标注识别——含义只来自 court_designations.csv 的精确匹配。
+        # 只写 observed_deciding_court；**绝不**写 jurisdiction / 来源地（D2）。
+        raw_cd = (row.get("court_designation_raw") or "").strip()
+        if raw_cd:
+            st, oc, ev = classify_court_designation(raw_cd, self.court_desig)
+            row["court_designation_status"] = st
+            row["observed_deciding_court"] = oc
+            row["court_designation_evidence_id"] = ev
+            if st:
+                self.stats["court_designation_" + st] += 1
+                if st == "recognized":
+                    self.stats["court_designation_court_" +
+                               oc.replace(" ", "_")] += 1
         # PROBLEMS #13/#54：判决头部必印自身引证，抽取层照单全收。本行抽出串 == 本判决
         # 自身引证（source_decision_citation 即「法院_nk(citation_en)」）即自引。它是真
         # 引证，故不进 rejected_reason（§8.3 要求「不是引证」与其他含义分开），只打标记；
@@ -878,6 +949,7 @@ def main():
                "series_prefix", "case_origin")}
     tables["identifier_systems"] = load_identifier_systems()
     tables["volume_system"] = load_volume_systems()
+    tables["court_designations"] = load_court_designations()
     clf = Classifier(tables, stats)
 
     os.makedirs(args.output, exist_ok=True)

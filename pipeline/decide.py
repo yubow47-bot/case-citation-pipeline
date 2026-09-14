@@ -1137,12 +1137,37 @@ def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin
         # R2-1：组级来源地 = 合格成员证据聚合（两轮都做、写到每行；
         # 冲突检查在跨院合并之后同样执行）
         aggregate_group_origin(group_rows, stats)
+        # R4（D1/D2）：法院标注 → 组级审计列（只经合格身份基础；绝不写来源地）
+        add_court_designation_columns(group_rows, stats)
 
         # R2-9：显式的有效来源→组关联（edges 只消费本关联）
         eff_rows.extend(build_effective_sources(group_rows, ids, selfd,
                                                 did_idx, stats))
     stats["groups_out"] = len(clusters)
     return out, out_ids, eff_rows
+
+
+def add_court_designation_columns(group_rows, stats):
+    """R4（D1/D2）：把键级 `observed_deciding_court` 提升为**组级审计列**。
+
+    只经**合格身份基础**（ELIGIBLE_BASES）传播——法院标注不随 name_year/共引等
+    启发式分组流动（D1；机制 (a)/(b) 的组员混合未修，见 B21/B20）。
+    组内合格成员的法院标注**唯一** → 写出；≥2 个不同法院 → 冲突、不写法院；
+    没有 → 空（= 没有证据）。
+    ★纯审计：**绝不**写来源地（D2：无 court→origin 规则）。"""
+    courts = {(m.get("observed_deciding_court") or "").strip()
+              for m in group_rows
+              if (m.get("identity_basis") or "") in ELIGIBLE_BASES
+              and (m.get("observed_deciding_court") or "").strip()}
+    court = next(iter(courts)) if len(courts) == 1 else ""
+    conflict = "true" if len(courts) > 1 else ""
+    for m in group_rows:
+        m["group_observed_deciding_court"] = court
+        m["group_observed_deciding_court_conflict"] = conflict
+    if court:
+        stats["groups_with_observed_deciding_court"] += 1
+    if conflict:
+        stats["groups_court_designation_conflict"] += 1
 
 
 def add_peer_column(out, stats):

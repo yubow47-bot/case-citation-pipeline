@@ -80,6 +80,13 @@ MERGED_FIELDS = ["merge_key", "canonical_string", "abbreviation", "citation_kind
                  "case_name_agreement", "case_name_support", "variants_count",
                  "candidates_admitted", "candidates_rejected", "self_citation_of",
                  "self_case_name",
+                 # R4（D1/D2）：法院标注——键级聚合。observed_deciding_court 只在
+                 # counted 成员的识别结果**唯一**时写出；≥2 个不同法院 → conflict、
+                 # 不写法院（D1 负测试：H.L. 与 P.C. 同键 → 冲突、无法院）。
+                 # 空 = 没有证据（不是反对意见）。support/citing = 支撑 recognized
+                 # 法院的提及数与引用判决数。★绝不写 jurisdiction / 来源地（D2）。
+                 "observed_deciding_court", "court_designation_conflict",
+                 "court_designation_support", "court_designation_citing",
                  # R3 修复（身份回归）：年份有两个用途——①身份键的一部分、②裁定层
                  # 聚类的属性。连续编卷汇编（volume_system=continuous）只在**键**里去掉
                  # 年份（`year_start` 置空），**印出来的年份另存本列**，供裁定层聚类/
@@ -99,7 +106,10 @@ MENTION_FIELDS = ["candidate_id", "corpus_row_index", "source_decision_citation"
                   "superseded_by_candidate", "arbitration_note",
                   "citation_kind", "jurisdiction", "jurisdiction_confidence",
                   "parse_status", "structural_conflict", "rejected_reason",
-                  "self_citation", "candidate_case_name"]
+                  "self_citation", "candidate_case_name",
+                  # R4（D1）：法院标注（classify 识别结果，随提及带给归并层聚合）
+                  "court_designation_status", "observed_deciding_court",
+                  "court_designation_evidence_id"]
 
 SHAPE_RANK = {name: i for i, name in enumerate([
     "shape_bracket", "shape_vol_page_year", "shape_year_vol_page",
@@ -870,6 +880,19 @@ def _emit(args, stats, per_key_counted, per_key_members, mentions,
         def pick_modal(field, tiebreak):
             return modal([m.get(field) or "" for m in counted], tiebreak)
 
+        # R4（D1/D2）：法院标注键级聚合——只认 counted 成员的 recognized 结果。
+        # ≥2 个不同法院 → conflict、无法院（D1 负测试）；0 或 1 → 法院或空。
+        # ★空 = 没有证据（不是反对）；★绝不写 jurisdiction / 来源地（D2）。
+        des_courts = sorted({m.get("observed_deciding_court") for m in counted
+                             if m.get("court_designation_status") == "recognized"
+                             and (m.get("observed_deciding_court") or "").strip()})
+        des_conflict = len(des_courts) > 1
+        des_court = des_courts[0] if len(des_courts) == 1 else ""
+        des_support = sum(1 for m in counted
+                          if m.get("court_designation_status") == "recognized")
+        des_citing = len({m["source_decision_citation"] for m in counted
+                          if m.get("court_designation_status") == "recognized"})
+
         canon_row = next(m for m in counted if m["raw_string"] == canonical)
         if len({m.get("citation_kind") for m in counted}) > 1 or \
                 len({m.get("jurisdiction") for m in counted}) > 1:
@@ -877,6 +900,13 @@ def _emit(args, stats, per_key_counted, per_key_members, mentions,
         merged.append({
             "merge_key": key,
             "canonical_string": canonical,
+            # R4（D1/D2）：法院标注键级聚合——只在 counted 成员的识别结果唯一时写法院；
+            # ≥2 个不同法院 → conflict、不写法院；没有 → 空（= 没有证据，不是反对）。
+            # ★绝不写 jurisdiction / 来源地（D2：无 court→origin 规则）。
+            "observed_deciding_court": des_court,
+            "court_designation_conflict": "true" if des_conflict else "",
+            "court_designation_support": des_support,
+            "court_designation_citing": des_citing,
             # R3：键里没有年份（连续编卷被零化）时，**印出来的年份**仍要传下去给裁定层
             # 聚类用 → 取本键 counted 成员里最常见的非空 `year_printed`；全空则留空。
             "year_printed": (modal([v for v in
