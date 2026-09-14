@@ -42,7 +42,7 @@ for r in rows:
                 and not (r.get("counter_example_check") or "").strip():
             flag.append("publisher row lacks counter_example_check")
         if (r.get("volume_system") or "").strip() not in ("year_volume",
-                                                          "continuous"):
+                                                          "continuous", ""):
             flag.append("writable row bad volume_system")
     else:
         flag.append("unknown verification_status")

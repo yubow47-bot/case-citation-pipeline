@@ -1668,3 +1668,94 @@ raw.githubusercontent 读取；`npx skills use` 因沙箱禁止 node 以管道 s
 **下一步（同一轮内继续）**：加拿大组研究已用可用检索重跑（子代理含魁北克 S-20 与
 各省「官方汇编法条」的专项核查），findings 落地后由我合并进表，再重跑全量并按 R3-17
 的同一套仪器复核（覆盖、爆半径、原文追溯、一致性、指纹）。
+
+### R3-20 恢复检索后的第一批新行（表 26 → 28 行；可写 4 → 6）
+
+不等子代理，先用**自己一手核到**的证据写两行（`decisions/reporter_origin_scope.csv`）：
+
+| 行 | origin | 档 | volume_system | 年窗 | 一手证据 | 预计净新增组 |
+|---|---|---|---|---|---|---|
+| `R.J.Q.` (rjq) | CA/QC | **exclusive_statute** | year_volume | 1986–2013 | Légis Québec **S-20 s.21**（SOQUIJ 出版「les jugements rendus par les tribunaux judiciaires **siégeant au Québec**」）＋ SOQUIJ 自己的汇编表（`R.J.Q. 1986 à 2013`）。**三方印证**：语料 2 242 条提及印刷形全为 `[YYYY] R.J.Q. N`、年份恰落 1986–2013 | 766 |
+| `O.R.` (or) | CA/ON | exclusive_publisher | （留空：年卷＋连续卷并存） | 1882– | LexisNexis Canada 产品页**逐字**：「Published by the Law Society of Ontario through LexisNexis Canada, Ontario Reports, Third Series provides, in full text, leading cases decided at **all levels of Ontario courts**」（本机可直取，HTTP 200）＋ 安省上诉法院实务指引把 Ontario Reports 列为 official or semi-official reporter | 9 027 |
+
+`R.J.Q.` 的年份窗口与语料实测**逐点一致**（1986–2013），这是本轮「表驱动窗口」第一次
+被独立数据完整印证。`O.R.` 的反例搜寻按 P2 记了三条（含「唯一能推翻本行的反例是
+**非加拿大**判决被收录——未检索到」），并明确：**第三方手册（Bluebook/图书馆指南）
+只用来定年窗，不作授权依据**。
+
+补记两条本轮**没写**的（避免过度外推）：
+- `cs`（C.S.，魁省高等法院官方汇编，1892–1985，来源链完整：1892 年起由魁省律师总会出版、
+  1975–1985 由 SOQUIJ 出版）——**两字母缩写 C.S. 的碰撞风险无法用单一来源排除**，
+  312 组，按「方向永远是宁可留未知」不写，留给子代理的 findings 决定。
+- `queqb`（`[1956] Que. Q.B. 447`，1892–1969）、`qr.kb`/`qr.sc`（`Q.R. 19 K.B. 68` 形，
+  1893–1941）、`ucqb`（`19 U.C.Q.B. 341`，Upper Canada = 安省，1846–1882）——印刷形与
+  年代都清楚，但**官方沿革与窗口尚无一手来源**，不写。
+
+同时把「可写行必须有 volume_system」的**校验工具**放宽为「可为空 = 体系未定，Stage 3
+不动该缩写的键」（表侧 `volume_system` 为空不影响来源地判定，只影响身份修复范围）。
+测试 273 条断言通过；随后重跑全量（`data/run_20260913_r3b/`），再按 R3-17 的同一套
+仪器复核。
+
+### R3-21 加拿大商业/省级汇编合并：表 28 → **40 行**（可写 6 → **18**）
+
+加拿大组重跑子代理交付 `audit/findings/r3_reporter_origin_canadian.md`（507 行、23 个目标、
+12 条建议可写行、逐条附引文 URL 与反例搜寻记录、并自陈工具限制与最该被复核的三处）。
+它同时完成了「各省是否有官方汇编法条」的全国排查：**只有魁北克有**（S-20 s.21 / r.1）；
+安省 LSO By-Law 13 名叫「REPORTING OF COURT DECISIONS」但**只规定分发与广告分离**，
+不含刊登范围——`or` 的可写性因此挂在出版方产品页上、**不挂法条**。
+
+**我（Lead）最重要的一处改判：把「跨省」与「跨国」分开。**
+子代理把 `D.L.R.`、`C.C.C.`、`R.F.L.` 判为 `mixed`，依据是出版方题名页写「every province」/
+「in all the provinces」/「from all Canadian jurisdictions」以及命中了 Quebec/Manitoba/BC
+来源地的反例。**但这些反例只推翻「单一省」，不推翻「单一国」**：本项目的组级结论字段是
+`origin_country`，而这三本汇编列出的来源**全部在加拿大之内**（各省法院 + 最高法院 +
+财务法院 + 铁路委员会 + 「上诉至枢密院的**加拿大**案」——后者按本仓库 `case_origin.csv`
+203/203 行的语义来源地就是 CA）。故按 P2′ 的同类原则处理：**国别一致 → 取国别；
+细分不唯一 → subdivision 留空**。这三行因此**可写**（合计约 19,200 个净新增组），
+若按子代理的 mixed 判法则全部作废。这是本轮最大的一次判断，已把两种读法都写进 notes。
+
+**另一处必须记的技术细节（差点让 12 行全部变成死行）**：子代理的 CSV 把
+`printed_abbreviation` 一列填的是**汇编全名**（`Dominion Law Reports`、`Canadian Criminal
+Cases`…），而运行时的查表键是 `nk(printed_abbreviation)`——全名归一后是
+`dominionlawreports`，**永远匹配不上语料键 `dlr`**。12 行会被静默忽略（不报错、不生效）。
+我的表校验探针（`_probe_table_check.py` 的键口径断言）把它抓出来了；已改为**印刷缩写**
+（`D.L.R.` / `C.C.C.` / `W.W.R.` / `A.R.` / `Alta. L.R.` / `Man. R.` / `Sask. R.` /
+`N.S.R.` / `N.B.R.` / `N.R.` / `Ex. C.R.` / `R.F.L.`），并**逐条与语料实测印刷形核对**
+（12/12 的 `nk()` 等于目标键）。**教训登记**：未来任何来源的 CSV 入库前，键口径必须机器校验，
+不能只看它自称「字段顺序与取值域符合规定」。
+
+**第三处改判**：`excr` 子代理判 `exclusive_statute` 但自陈**法定链不完整**（未取得
+Exchequer Court Act 的出版条款）→ 我改判 **`exclusive_publisher`**（出版方＝该院自己的
+Registrar，卷首「PUBLISHED UNDER AUTHORITY BY THE REGISTRAR OF THE COURT」即出版方自述的
+范围声明），不主张没读到的法条。
+
+**新增 12 行**（全部 `exclusive_publisher`，除非注明）：
+
+| abbr | origin | subdivision | volume_system | 年窗 | 关键依据 |
+|---|---|---|---|---|---|
+| `dlr` | CA | **留空**（跨省） | **留空**（1923–1955 是按年卷，写 continuous 会误并） | 1912– | 出版方题名页「every province + 加拿大枢密院上诉」 |
+| `ccc` | CA | **留空** | continuous | 1898– | 题名页「in all the provinces」但「in Canada」 |
+| `wwr` | CA | **留空**（BC/AB/SK/MB） | year_volume | 1911– | 出版方卷内短语「All cases of value in Western Canada…」 |
+| `ar` | CA | Alberta | continuous | 1976– | MLB 产品表（魁省以外每省一本） |
+| `altalr` | CA | Alberta | continuous | 1908– | Carswell 卷首「from the Courts of Alberta and Appeals」 |
+| `manr` | CA | **留空**（"other provincial courts" 歧义） | continuous | 1979– | MLB 自述 |
+| `saskr` | CA | Saskatchewan | continuous | 1979– | MLB 自述（含「originating in Saskatchewan」明文） |
+| `nsr` | CA | Nova Scotia | continuous | 1965– | MLB 创始人自述 + 产品表 |
+| `nbr` | CA | New Brunswick | continuous | 1969– | MLB 自述 |
+| `nr` | CA | **留空**（范围是法院不是省） | continuous | 1974– | MLB 产品表「SCC & FCA」 |
+| `excr` | CA | 留空 | continuous | 1877–1970 | Registrar 授权出版卷首 |
+| `rfl` | CA | **留空**（跨法域） | continuous | 1970– | Westlaw FamilySource「all Canadian jurisdictions」 |
+
+**明确不写（连同理由，供下一轮接手）**：`bclr`（唯一范围语来自大学图书馆——子代理自己建议
+降级，我采纳）；`crr`（第三方馆藏描述 + 键身份存疑：语料卷 1–578/年 1946–2021 与 C.R.R.
+的 1982–1991/卷 1–50 严重不符）；`cbr`/`bcac`/`oac`/`olr`/`ontlr`（只有第三方馆藏/索引表
+——**oac 2 558 组、olr 630 组、ontlr 768 组、cbr 1 112 组、bcac 790 组 合计约 5 858 组
+停在 UNDETERMINED**）；`bcj`/`fcj`（是 Quicklaw 数据库标识符不是汇编——按 B19 走
+`identifier_systems` 路线，不进本表）；`qr.kb`/`qr.sc`/`queqb`/`cs`（法条基础已在手，
+差键身份与各系列窗口——**下一轮最容易兑现的增量**）；`ucqb`/`mpr`/`cpc`（键身份或反例
+未做）；`oj`/`scca`（供应商/中立键身份未定，`scca` 1 189 组优先级高）。
+
+**预计净新增**（Stage 0 上限口径）：新增 12 行合计约 **28 700 组**，加上 `or` 9 027 与
+`rjq` 766，本轮 18 条可写行覆盖约 **38 500 / 113 432（34%）**。表校验 0 问题、测试
+**345 条断言**全绿；随后跑 `data/run_20260913_r3c/`（`r3b` 因表在它跑完后又被扩充而作废，
+保留供对照），再按 R3-17 同一套仪器复核。
