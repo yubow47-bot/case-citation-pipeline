@@ -1848,10 +1848,13 @@ def test_reporter_origin_real_table_stage1_rows():
                                          "exclusive_reporter_scope"),
           "R3：[1995] 2 S.C.R. 3 → CA（exclusive_statute 排他汇编）")
     r, _ = _rep_verdict("1930|45|kb||129", idx)
-    check((r["member_origin_country"], r["member_origin_basis"],
-           r["member_origin_ambiguous_basis"]) ==
-          ("CA", "exclusive_reporter_scope", ""),
-          "R3：(1930), 45 K.B. 129 → CA，且**不是** ambiguous")
+    check(r["member_origin_status"] == "UNDETERMINED"
+          and r["member_origin_ambiguous_basis"] == "",
+          "R3：(1930), 45 K.B. 129 → UNDETERMINED（**计划原期望 CA 的前提已被证据推翻**："
+          "计划写这条时用的是**未核实**区间表的 QC 窗 vol 5–100/1892–1941；已溯源的"
+          "魁北克 K.B. 窗是 1892–1898/卷 1–7 且英国侧卷首题名页未取得（判 mixed），"
+          "故无可命中窗 → 按 P1「宁可多留未知」保持 UNDETERMINED。规则本身的"
+          "「唯一命中窗即定案」由夹具测试覆盖）")
     r, _ = _rep_verdict("1932||ac||562", idx)
     check(r["member_origin_status"] == "UNDETERMINED",
           "R3：[1932] A.C. 562（A.C. 混合：上院 + 枢密院）→ UNDETERMINED")
