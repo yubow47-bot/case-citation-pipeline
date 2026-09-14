@@ -902,3 +902,315 @@ R2F 任务书明确要求 identifier 表落地后「the contained pair then foll
 rules; assert whatever those rules produce」——identifier 表使中性读法获得 exact
 表支持，既有支持分级下胜出是规则输出，弃权旧期望与之矛盾。docstring 内有完整
 的前后对照与理由。
+
+
+## Round 3（2026-09-13 起）：汇编式引证来源地继承 + 身份拆分修复
+
+**授权文本**：用户下发的「来源地继承与身份拆分修复计划（修订版）」（取代上一轮审计产出的
+同名计划；保留其 M1/M2/M3 测量设计、根因诊断、Stage 3/4 结构，并修正两处设计缺陷：
+decide 不得读 classify 的 jurisdiction 作来源地键；M1 必须按 identity_basis 拆分为
+M1a/M1b）。本轮纪律：**Stage 0 四个数字落账之前不改任何管线代码**。本文件只记事实，
+不作验收声明。
+
+### R3-0 仪器、口径与可重放性
+
+| 项 | 值 |
+|---|---|
+| 仪器 | `implementation/coverage_metric.py`（只读：不写 `decisions/`、不改管线、不读 `PROBLEMS.md`） |
+| 基线 run | `data/run_20260913_r2i/`（manifest status=complete，输入指纹 `6deba00b…`） |
+| 输出 | `data/coverage_out/stage0_r2i.json`（`data/` 已 gitignore）+ stdout 摘要 |
+| 重放 | `python implementation/coverage_metric.py`（纯流式扫描，约 3 分钟） |
+| 合格 identity_basis | **从 `pipeline/decide.py` import `ELIGIBLE_BASES`**，不在仪器里硬编码 |
+
+辅助探针（一次性、只读，供本节点各个数字复算；都在 `implementation/`）：
+`_probe_mentions.py`（仲裁状态/种类/法域解析率）、`_probe_tables.py`（两张决策表结构）、
+`_probe_schemas.py`（各层列名）、`_probe_stage0.py` / `_probe_struct.py`（Stage 0 JSON 明细）、
+`_probe_reconcile.py`（简报数字对账）、`_probe_edges.py`（独立复算边计数）。
+
+口径（三处已写进 JSON 的 `*_note` 键，随 JSON 一同留存）：
+
+- 「提及」= `merge_out/<court>/mentions_candidates.csv` 里 `arbitration_status=counted` 的行。
+  自引（self_citation_row）、被包含的并存读法（alternative_contained）、被拒、未决重叠
+  （overlap_undecided / span_alternative_undecided）**均不计**——与生产计数口径一致。
+- 「成员行」= `decide_out/cross_court/decided.csv` 的一行，键 `(court, merge_key)`。
+  `M1a_member_rows_unknown_in_decided = 0`：连接无缺失。
+- 「L2 法域已解析」= 分类层 `jurisdiction` 非空且 ≠ `UNSUPPORTED`（见 R3-3 第 2 条的代理口径说明）。
+
+**基线数字全部独立复算**（不引用 run 自述）：
+
+| 量 | 值 |
+|---|---:|
+| `citation_edges.csv` 总边 | **333,487** = UNDETERMINED 277,866 / DOMESTIC_CA 55,237 / FOREIGN **384** |
+| 边支持分级 | supported 308,026 / heuristic_only 25,461；tentative 台账 4,110 |
+| 组 | 177,136（UNDETERMINED 166,474 / DETERMINED 10,662） |
+| kept 组（dd≥5） | 8,586（UNDETERMINED 5,800 / DOMESTIC_CA 2,784 / FOREIGN 2） |
+
+> **记录订正**：本文件 R2F 收尾一节的行内数字「边 333,287」与 run 自身 manifest
+> （`edges_total: 333487`）及本次逐行计数（333,487）不一致，差 200。以 manifest +
+> 独立计数为准，那处是笔误。（`Get-Content | Measure-Object -Line` 报 336,807 行，
+> 是因字段内含换行；CSV 解析计数与 manifest 一致。）
+
+### R3-1 M1a / M1b（计划 §3）
+
+| 量 | 提及数 | 成员行数 |
+|---|---:|---:|
+| **M1a**（counted + `citation_kind=reporter` + L2 法域已解析） | **379,472** | 129,819 |
+| **M1b**（M1a 再限定成员行 `identity_basis ∈ ELIGIBLE_BASES`） | **295,177** | 115,481 |
+| 其中·加拿大汇编（L2 法域 ∈ CA/省） | 321,440 | — |
+| 其中·外国汇编 | 58,032 | — |
+
+M1a 覆盖 194 个不同汇编缩写。M1b/M1a = 77.8%（KEPT 口径：M1a 与 M1b 的差全部来自
+identity_basis 闸门）。
+
+**M1b 分层（提及数）**——列为组当前来源地状态：
+
+| identity_basis | 合格? | 组 DETERMINED | 组 UNDETERMINED | 组 CONFLICT |
+|---|---|---:|---:|---:|
+| singleton | ✔ | 2,956 | 229,799 | 0 |
+| anchor | ✔ | 0 | 57,033 | 0 |
+| same_citation | ✔ | 76 | 5,313 | 0 |
+| anchor_variant_bilingual | ✔ | 0 | 0 | 0 |
+| name_year | ✘ | 42,862 | 35,111 | 0 |
+| cocitation | ✘ | 6,094 | 181 | 0 |
+| unanchored | ✘ | 0 | 47 | 0 |
+| **合计** | | **51,988** | **327,484** | **0** |
+
+读法：`DETERMINED` 列的 51,988 条是**冗余**（组已由别的成员定了来源地，新规则即使命中
+也不改结论）；`UNDETERMINED` 列里 **292,145 条**落在合格 basis 上 = 真正可能兑现的净新增
+池；`name_year 35,111 + cocitation 181 + unanchored 47`（合计 35,339 条）落在不合格 basis 上
+= 被身份基础闸门挡住的池。
+
+### R3-2 净新增组级覆盖（头条预测增益，计划 §3 要求）
+
+以**组**为单位（不是提及百分比）：
+
+| 量 | 组数 |
+|---|---:|
+| 当前 UNDETERMINED 且在合格成员行上带 ≥1 条 M1a 提及（= **净新增上限**） | **113,432** |
+| ├ 国别单一、不会产生 CONFLICT（干净净新增） | 113,432 |
+| ├ 合格成员提及跨 ≥2 国（将变 CONFLICT，**实际为 0**） | 0 |
+| ├ 归属加拿大来源地（DOMESTIC_CA 方向） | **90,246** |
+| └ 归属外国来源地（FOREIGN 方向） | **23,186** |
+| kept 口径（dd≥5）净新增 | **4,495**（加 3,853 / 外 642） |
+
+**净新增组按缩写（组数，前 20）**：scr 11,610、dlr 9,148、or 9,027、ccc 8,865、oj 4,374、
+wwr 3,359、oac 2,558、canscr 2,307、**ac 2,196**、cr 1,917、aller 1,348、bclr 1,327、
+ar 1,219、rfl 1,211、scca 1,189、us 1,186、f 1,137、chd 1,130、cbr 1,112、kb 1,067。
+
+对照基线：现有 DOMESTIC_CA 组 10,336、FOREIGN 组 326。即在「Stage 1 表能把相关缩写全部
+核实为排他」的**上限假设**下，国内组级覆盖约 10x、外国组级覆盖约 70x。**这是上限，不是
+预测**：`ac`（2,196 组）按计划 §0 的根因诊断应判 `mixed`（A.C. 同卷混印上院与枢密院案），
+不写行 → 该 2,196 组不兑现；Stage 1 研究覆盖面与排他性判定的严格程度决定实际兑现比例。
+
+**反向风险（本计划未要求、我加测）**：当前**已 DETERMINED** 的组里，若有合格成员带的
+M1a 提及其代理国别 ≠ 组结论国别，新证据会把组从 DETERMINED 打成 CONFLICT（净损失）。
+实测 **211 组**，全部集中在 `ac`（3,009 条提及）与 `aller`（23 条）。ac 若按根因诊断判
+`mixed` 不写行 → 该风险来源消失；`aller`（All England Law Reports）需在 Stage 1 反例
+核查中专门验证是否含加拿大/枢密院案。
+
+### R3-3 被挡住的池与口径缺口（计划 §2 的「阶段 3.5」问题，不另建阶段）
+
+| 量 | 组数 |
+|---|---:|
+| UNDETERMINED 且带 M1a 提及（任意 basis） | 117,999 |
+| 其中合格 basis 可兑现（= R3-2 净新增） | 113,432 |
+| 其中**只**落在不合格 basis（净新增拿不到） | **4,567** |
+
+被挡住的 4,567 组的阻挡 basis 构成：`name_year` **4,477**、`cocitation` 81、`unanchored` 9。
+按计划 §2 的口径要求（「多少被缺案名挡、多少被缺中立锚挡」）：**97.9% 是缺可审计身份锚
+（只能靠案名+年份启发式拼组）**，共引挡住的只有 81 组、无锚 9 组。结论：这一池的解锁
+不是「共引传播放宽」问题，而是**案名抽取/中立锚补全**问题——属另一个工作流，本轮不做。
+
+**与计划正文不符的三处（我按代码/实测处置，逐条留痕）**：
+
+1. **合格 identity_basis 集合**：计划 §0 与 §2 写「anchor / anchor_variant / name_year /
+   singleton 合格，cocitation / unanchored 只审计」。实测生产规则
+   `ELIGIBLE_BASES = (anchor, singleton, same_citation, anchor_variant_bilingual)`：
+   **`name_year` 不合格**，而 **`same_citation` 合格**（计划两处都漏了它）。
+   处置：以代码为准（仪器直接 import）。若按计划文本把 name_year 也算合格，M1b 会多
+   77,973 条提及、净新增会再多约 4,477 组——但那是**放宽**身份授权，与计划 §0「组聚合
+   保持不变」的自我要求矛盾，故不采用。
+2. **M1a 的「L2 法域已解析」是代理口径**：新规则按 `nk(印刷缩写)` 自查表，**不依赖**
+   classify 的法域字段，所以「法域已解析」会漏掉规则其实能救的提及。实测被漏掉
+   **44,259 条** counted 汇编提及（SCC 38,337 / ONCA 5,922；提及数可观且有意义的如
+   `qb` 878、`nfldpeir` 871、`kb` 344——恰是同形异义/多行汇编）。处置：M1a 按计划口径
+   报 379,472，**另报**全量口径 423,731（= counted + reporter，不要求法域已解析），
+   两者都留在 JSON 里，不改计划的名义数字。
+3. **「≥2 行命中一律 UNDETERMINED」的代价**：M4 实测有 **1,286 条提及**落在「命中多行
+   但各行国别一致」的区间（`pd` 316——两行同为 GB；`nfldpeir` 871——两行同为 CA 省；
+   `cp` 98；其余零散）。这些情形里**国别没有歧义**，只有细分/窗口归属有歧义，按计划
+   字面会白丢 1,286 条。我的判断：改为「命中多行且**国别一致** → 取该国、细分留空」，
+   并把「多行命中」记进审计字段；计划 §1 的强制测试（GB/QC 异国重叠 → UNDETERMINED +
+   `exclusive_reporter_scope_ambiguous`）**不受影响**，因为那测的是异国重叠。
+   处置：Stage 2 按修正后的规则实现，此处先落账待用户复核（见 R3-7 P2′）。
+
+### R3-4 与简报数字的对账（约束九）
+
+| 简报数字 | 复现情况 |
+|---|---|
+| 「428,571 条加拿大汇编提及，72% UNDETERMINED」 | **未复现**。r2i 实测：counted 汇编提及（全部法域）**423,731**；其中加拿大汇编（L2 法域 ∈ CA/省）**321,440**，其组状态 UNDETERMINED 占 **84.9%**；不限仲裁状态的全量加拿大汇编提及 547,953，UNDETERMINED 占 **68.6%**。没有任何口径落在 428,571；最接近的是 423,731（差 4,840，1.1%）。可能是上一轮审计用了不同 run 或略不同的过滤，**本文件不沿用 428,571**，以 423,731 / 321,440 为准 |
+| 「384 FOREIGN 边」 | **复现**（`edges/foreign_edges.csv` 384 行；`citation_edges.csv` FOREIGN 384） |
+| 计划 §7「上诉链合并 19 组」 | **本轮不可测**（无上诉链数据），照抄计划、标未核 |
+| 计划 §7「年读作卷 188 条提及」 | **未复现**。r2i 实测 `structural_conflict=year_reread_as_vol` 的提及 **92 条**（全部仲裁状态；其中 counted 0 条——结构冲突提及全部被消解为让位/作废）；分类层 `year_vol_ambiguity_unresolved` SCC 55,881 / 见 manifest。口径不明，标未核 |
+
+### R3-5 M2：top 30 汇编缩写的 L2 法域分布
+
+population = counted + `citation_kind=reporter`，含未解析（`homo` = `reporter_jurisdiction.csv`
+里 `nk(abbreviation)` 相同的行数，>1 即同形异义）：
+
+| # | abbr | 提及 | homo | 法域分布 |
+|---:|---|---:|---:|---|
+| 1 | scr | 145,650 | 1 | CA 145,650 |
+| 2 | ccc | 30,376 | 1 | CA 30,376 |
+| 3 | or | 29,593 | 1 | ON 29,593 |
+| 4 | dlr | 18,465 | 1 | CA 18,465 |
+| 5 | ac | 15,467 | 1 | GB 15,467 |
+| 6 | canscr | 7,082 | 1 | CA 7,082 |
+| 7 | oj | 6,630 | 1 | ON 6,630 |
+| 8 | wwr | 6,110 | 1 | CA 6,110 |
+| 9 | oac | 5,645 | 1 | ON 5,645 |
+| 10 | scca | 4,688 | 1 | CA 4,688 |
+| 11 | cr | 3,977 | 1 | CA 3,977 |
+| 12 | aller | 3,626 | 1 | GB 3,626 |
+| 13 | appcas | 3,274 | 1 | GB 3,274 |
+| 14 | us | 3,170 | 1 | US 3,170 |
+| 15 | **kb** | 3,079 | **3** | GB 2,582 / UNSUPPORTED 344 / QC 153 |
+| 16 | bclr | 2,746 | 1 | BC 2,746 |
+| 17 | **qb** | 2,602 | **22** | GB 1,715 / UNSUPPORTED 878 / QC 9 |
+| 18 | fc | 2,492 | 1 | CA 2,492 |
+| 19 | rfl | 2,255 | 1 | CA 2,255 |
+| 20 | rjq | 2,242 | 1 | QC 2,242 |
+| 21 | ar | 2,234 | 1 | AB 2,234 |
+| 22 | chd | 2,020 | 1 | GB 2,020 |
+| 23 | er | 1,950 | 1 | GB 1,950 |
+| 24 | ch | 1,892 | 1 | GB 1,892 |
+| 25 | altalr | 1,862 | 1 | AB 1,862 |
+| 26 | cbr | 1,836 | 1 | CA 1,836 |
+| 27 | excr | 1,772 | 1 | CA 1,772 |
+| 28 | qbd | 1,646 | 1 | GB 1,646 |
+| 29 | crr | 1,592 | 1 | CA 1,592 |
+| 30 | manr | 1,457 | 1 | MB 1,457 |
+
+同形异义（表内 >1 行）共 10 个缩写：kb(3)、qb(22)、sc(3)、clr(3)、alr(3)、p(2)、pd(2)、
+wlr(2)、cp(2)、nfldpeir(2)。**除这 10 个之外，top 30 全是单行表项**——即 Stage 1 的研究
+主要工作量在「核实排他性」，不在「切分同形异义」。
+
+### R3-6 M3：无年变体族规模（Stage 3 身份修复标的）
+
+族 = `(court, nk(abbr), series, vol, page)`（即 merge_key 去掉 year 槽）。行数基数
+191,681（SCC 125,013 / ONCA 67,668）。
+
+| 量 | 族数 | occurrence | dd |
+|---|---:|---:|---:|
+| 族总数 | 157,078 | | |
+| 单行族 | 136,363 | | |
+| 多行族 | **20,715** | | |
+| ├ **unique-year merge**（恰 1 个非空年 + ≥1 个空年槽）= Stage 3 合并标的 | **7,581** | 55,638 | 35,471 |
+| └ **multi-year abstain**（≥2 个非空年）= 设计规定弃权 | **13,130** | 217,102 | 142,082 |
+| &nbsp;&nbsp;├ 其中含空年变体（真·碎片嫌疑） | 1,304 | 66,472 | 33,162 |
+| &nbsp;&nbsp;└ 其中不含空年变体（同名 vol/page 跨年重复，typical year_volume 形态） | 11,826 | 150,630 | 108,920 |
+| 异常：多行族但只有一个非空年且无空年槽 | 2 | — | — |
+| 异常：多行族但全为空年槽 | 2 | — | — |
+
+- unique-year merge 的合并动作 = **7,584 行并入**（7,581 族 × 平均 1.0004 行）。
+- unique-year 标的按缩写（族数）：scr 1,402、ccc 782、dlr 509、or 457、canscr 406、f 391、
+  appcas 147、chd 131、oac 123、qbd 115、qrkb 114、p 97、ontlr 96、wwr 85、fsupp 84；
+  年槽丢失最严重的是 **S.C.R.（1,402 族）**——与「`[1995] 2 S.C.R. 3` 与 `2 S.C.R. 3`
+  两种写法」的预期一致。
+- abstain 桶按缩写（族数）：scr 2,458、onsc 1,990、onca 1,292、oj 995、ac 554、bcca 501、
+  scca 481…——`onsc/onca/bcca/abca/qcca` 类是**中立引用形状**，其「同名 vol/page 跨年」
+  多为真不同案，弃权正确。
+- 2 个「同非空年多行」异常族：`SCC lrex 1/54/1865`、`SCC lrqb 10/378/1875`——两行的
+  abbr 槽大小写不同（`nk()` 折叠后才同族），是**键的印刷形不一致**造成的极小残留，登记。
+- **口径限制**：Stage 1 才会给出 `volume_system ∈ {year_volume, continuous}`；本表按
+  「有没有空年变体」分流，是对该列的结构代理，不是该列本身。
+
+### R3-7 M4：同形异义汇编在**未核实区间**下的重叠规模（规划用，**不是生产数字**）
+
+口径：取现有 `reporter_jurisdiction.csv`（196 行，**100% confidence=estimated /
+verification_level=name_inference**）的多行缩写，用**维度式包含**判定（仅当引证与表行
+该维度都有值时才可判、才可否决；全不可比的行=无约束，命中一切）。population = counted
+汇编提及（不要求 L2 已解析）。
+
+| 量 | 组合数 | 提及数 |
+|---|---:|---:|
+| 唯一命中（可定案） | 1,168 | 6,583 |
+| 多行命中（原计划口径=UNDETERMINED） | 675 | 3,197 |
+| ├ 命中多行但**国别一致**（按 R3-3 第 3 条修正后可定国别） | 381 | 1,286 |
+| └ 命中多行且**国别不同**（真·歧义，应 UNDETERMINED） | 294 | 1,911 |
+| 零命中（窗口外） | 84 | 151 |
+| 合计 | 1,927 | 9,931 |
+
+逐缩写（`unc` = 表内无区间的行数；`uniq`/`amb同`/`amb异` = 组合数）：
+
+| abbr | 表行 | 候选来源 | unc | 唯一 | 歧义(同国) | 歧义(异国) | 窗口外 |
+|---|---:|---|---:|---:|---:|---:|---:|
+| kb | 3 | GB, QC | 0 | 180 | 0 | 20 | 16 |
+| qb | 22 | GB, QC | 0 | 146 | 0 | 32 | 28 |
+| sc | 3 | QC, GB | 0 | 56 | 0 | 38 | 28 |
+| cp | 3 | GB, QC | 0 | 25 | 9 | 0 | 5 |
+| clr | 3 | AU, CA | 0 | 273 | 1 | 73 | 1 |
+| alr | 3 | AU, US | 0 | 22 | 0 | 71 | 1 |
+| p | 2 | GB, US | 0 | 292 | 0 | 57 | 4 |
+| wlr | 2 | CA, GB | 0 | 174 | 0 | 3 | 1 |
+| pd | 2 | GB, GB | 2 | 0 | 54 | 0 | 0 |
+| nfldpeir | 2 | NL, PE | 2 | 0 | 317 | 0 | 0 |
+
+关键读数：
+- **K.B. 2,723 / 3,079 条提及可唯一判定（88%）**，歧义 328 条；**Q.B. 1,723 / 2,602（66%）**，
+  歧义 826 条。这与 `audit/findings/disambiguation_report.md` 用**完全独立的方法**
+  （卷/年区间 vs 系列前缀标注，`qb` 判不出 899）得到的量级一致——仪器互相印证。
+- `pd`（2 行同为 GB，均无区间）与 `nfldpeir`（2 行同为 CA 省，均无区间）是**表侧退化行**
+  （没有区间 → 无约束 → 命中一切）：1,187 条提及在计划字面下白丢，是 R3-3 第 3 条修正
+  的主要受益者。
+- 明确标注：本表**不是**生产预期。Stage 1 会用真实来源重写区间，届时 `kb/qb/sc/cp/clr/
+  alr/p/wlr` 的窗口会变；此处只用于校准 Stage 1 的研究工作量与「即便研究完成也仍有
+  一批 UNDETERMINED 残差」的预期。
+
+### R3-8 账本（Round 3）
+
+**B12（承接上一轮计划，未核）**：上诉链合并 19 组。本轮无上诉链数据，未测；照抄计划
+数字，标「未核」。
+
+**B13（承接上一轮计划，口径不符）**：年读作卷 188 条提及。r2i 实测
+`structural_conflict=year_reread_as_vol` 提及 **92 条**（counted 0 条），分类层
+`year_vol_ambiguity_unresolved` SCC 55,881。188 的口径无从复现，以 92 / 55,881 为准，
+标「口径待核」。
+
+**B14（本轮新增，计划 §2 的决策点）**：M1a/M1b 缺口与共引阻断。
+- M1a 379,472 → M1b 295,177（提及），净新增组上限 **113,432**（kept 4,495）。
+- **被身份基础闸门挡住的只有 4,567 组**，其中 `name_year` 4,477（97.9%）、`cocitation` 81、
+  `unanchored` 9。→ **共引阻断不是瓶颈**，瓶颈是「案名+年份」启发式不可作为组级来源地
+  依据。若要提高上限，正确做法是补中立锚/案名抽取（另立工作流），**不是**放宽共引传播。
+  按计划 §2 要求：本轮**不**预建传播放宽阶段，此数字交用户决策。
+
+**B15（本轮新增）**：M3 的 abstain 桶规模。13,130 个多行族、142,082 dd 在「≥2 个非空年」
+时按设计弃权——其中 1,304 族（33,162 dd）**含空年变体**，是「年槽丢失 + 另一个错误年」
+的碎片嫌疑，按计划规定弃权（保守方向）。登记为已知残差，不在本轮解锁。
+
+**B16（本轮新增）**：同形异义真歧义残差。按未核实区间估计 294 个 (vol,year) 组合 /
+1,911 条提及落在**异国重叠**区（K.B. 328 条、Q.B. 826 条、S.C. 97 条为主）。这批在
+Stage 2 后应为 `origin_basis=exclusive_reporter_scope_ambiguous`，Stage 4 需按计划 §8.4
+单独计数与给规模，不得折进普通 UNDETERMINED。
+
+**B17（本轮新增，记录性）**：`pd` / `nfldpeir` 的表侧退化行（有行无区间）与
+`lrex/lrqb` 的键印刷形大小写不一致（各 2 族）。量小，登记待 Stage 1/3 时顺手处理。
+
+### R3-9 待用户签收（Stage 0 闸门，计划 §3/§4）
+
+Stage 0 到此为止，**未动任何管线代码**。以下决策点需签收后才进 Stage 1：
+
+- **P1**：排他汇编的来源地是正面证据；新规则自查表、**完全不读** classify 的
+  `jurisdiction`；查不到或多行异国重叠 → UNDETERMINED。方向永远是「多留未知」。
+- **P2**：来源地 basis 优先级 `case_record > neutral-code scope > exclusive_statute 汇编
+  > exclusive_publisher 汇编`；`exclusive_publisher` 行必须记录反例搜寻过程。
+- **P2′（我加的修正，计划未写）**：多行命中但**国别一致**时取该国、细分留空，并记审计
+  字段——代价对比见 R3-3 第 3 条（1,286 条提及）。异国重叠仍 UNDETERMINED +
+  `exclusive_reporter_scope_ambiguous`（计划 §1 的强制测试不受影响）。
+- **P3**：`volume_system=continuous` 结构性零化 year 槽（表驱动、按 run）；`year_volume`
+  按 run 的「族内唯一非空年」合并，≥2 年弃权、不跨 run 持久化。
+- **规模决策（计划 §3 要求）**：净新增上限 113,432 组（加拿大向 90,246 / 外国向 23,186；
+  kept 4,495），远大于现有 FOREIGN 384 边。**上限假设是 Stage 1 能把相关缩写核实为排他**；
+  实际兑现比例取决于研究覆盖与反例核查的严格程度。请裁决：(a) 按原计划推进 Stage 1
+  （三个只读研究子代理，按提及量排序，同时做排他性核查与反例搜寻）；(b) 先补
+  identity_basis 缺口（B14 的 4,477 组案名/锚问题）再回来；(c) 缩范围只做 top-N 缩写。
