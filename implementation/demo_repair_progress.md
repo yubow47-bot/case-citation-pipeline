@@ -1575,3 +1575,41 @@ exit 0；`extract.py --fixture-check` exit 0。
 | Stage 1 研究产出 | `audit/findings/r3_reporter_origin_{british,other}.md`（加拿大组子代理 **failed**，无产出） |
 | Stage 4 仪器 | `implementation/r3_blast_radius.py`、`r3_fingerprint_check.py`（指纹 + 一致性） |
 | 全量 run | `data/run_20260913_r3a/`（status=complete，指纹自核一致） |
+
+### R3-18 检索能力审计（回答「不是有插件搜索工具吗」）
+
+把 npm cache 指到工作区内即可运行 `npx @liustack/modsearch doctor`（此前 npx 报 EPERM
+只是因为 npm cache 在工作区外、沙箱不许写，不是工具缺失）。实测结果：
+
+| 源 | 状态 | 说明 |
+|---|---|---|
+| search → **firecrawl** | 名义 `READY`，**本机 403** | doctor 称「keyless: works with no key and no signup（1000 credits/月，按 IP 计量）」；实际请求返回 `firecrawl rejected the keyless request (403) — your IP address looks suspicious, so Firecrawl can't be used without an API key from here`。**这是 `web_search`/`x_search` 全线失败的唯一原因** |
+| search → antigravity-cli | `not set` | 需 `agy` 二进制 + 一次登录 |
+| search → tavily / exa | `not set` | 需 key |
+| social（X）→ grok-cli | 不可用 | 需 `grok` 二进制 + `~/.grok/auth.json` |
+| fetch → firecrawl | 同上 403 | |
+| fetch → **local** | **`READY`** | 内置、无需安装——本轮所有网页取证（法条、SCC 官网、BAILII）都走它 |
+
+配置文件 `C:\Users\hp\.modsearch\config.json`（不存在 = 全默认）。**恢复搜索的两条命令**
+（在工作区外，我无权执行、也没有 key）：
+
+```
+npx @liustack/modsearch config set firecrawl.apiKey <key>   # firecrawl 免费档 1000 credits/月
+npx @liustack/modsearch config set tavily.apiKey <key>      # 或 tavily
+```
+
+**无 key 时仍可用的检索路径（实测）**：Wikipedia MediaWiki API
+（`en.wikipedia.org/w/api.php?action=query&list=search` 与 `prop=extracts`；可用，但本主题
+覆盖薄——只有 "Dominion Law Reports"、"Supreme Court Reports (Canada)"、"Law report" 三条
+相关条目）、Internet Archive 元数据 API（本主题 numFound 0）、**确切 URL 直取**（法条、
+法院官网、BAILII；最好用）。
+**无 key 时不可用**：DuckDuckGo（html 与 lite 都出人机挑战）、Mojeek（JS 挑战）、
+searx.be（浏览器验证）、Bing（返回页面但**忽略引号与检索算子**，结果与查询无关）、
+Google Books API（该项目配额 0）、Marginalia（软等待页）。
+
+**对 B18 的直接影响（结论要改）**：解锁那 84,299 组的第一条路（「恢复检索能力」）
+**不是研究问题，是一件一分钟的配置动作**——由用户提供任一 key。在此之前能拿到的只有
+第三方材料，例如 Wikipedia 的 D.L.R. 条目：1912 年创刊、Canada Law Book 出版、收录
+**联邦与各省法院**判例，并引 Banks《Using a Law Library》与 Yogis《Legal Writing and
+Research Manual》。这类材料**恰好就是「第三方引用手册」第三档**的证据类型——所以
+第二、三条路其实是同一个决定：**要么给 key 拿到出版方自述，要么明确承认第三档。**
