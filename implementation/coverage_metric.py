@@ -198,6 +198,8 @@ def measure_m1(run_dir, decided, groups, stats):
         for a in abbrs:
             gby[a] += 1
     stats["M1_netnew_groups_by_abbr_top40"] = gby.most_common(40)
+    stats["M1a_mentions_by_abbr_full"] = dict(per_abbr)
+    stats["M1_netnew_groups_by_abbr_full"] = dict(gby)
     clean = sum(1 for g in netnew_groups
                 if len(netnew_group_countries.get(g, ())) == 1)
     stats["M1_netnew_clean_single_country_groups"] = clean

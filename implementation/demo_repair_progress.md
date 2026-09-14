@@ -1314,3 +1314,79 @@ volume_system → 该缩写不给值，保守），归并层只读行字段。�
 
 **账本补记**：M3 的 7,581 族 / 13,130 族是**结构上限**——只有 `volume_system` 被
 核实并写进表的汇编才修；未覆盖的汇编保持现状。Stage 4 要报「实际修复数 vs M3 上限」。
+
+### R3-14 Stage 1 研究结果（子代理产出，提案）
+
+三个只读子代理，任务书见 R3-11；产出写 `audit/findings/r3_reporter_origin_{group}.md`。
+
+**环境限制（影响证据等级，必须先说）**：本轮 `web_search` / `x_search` 在**所有引擎**上
+持续失败（modsearch → firecrawl keyless 403；无 API key，会话内无法修复；我本人复核
+确认），只有**已知确切 URL 的 `web_fetch`** 可用。后果：**「我搜过 X 而没找到」这类
+否定性结论在本轮无法被证明**，因此凡属此类一律不升级为可写行。这不是研究者的失误，
+是环境缺陷；三名子代理都记录了它，并因此主动保守。若后续要扩大 Stage 1 覆盖，
+**恢复检索能力（配一个 firecrawl/其他 key）是可预期的第一步**。
+
+**定义分叉的裁决（我的判断，有本仓库数据支持）**：子代理提出「枢密院案算来源地还是
+算审理法院」的分叉。本仓库的语义已有定论——`decisions/case_origin.csv` 203 行**全部**
+是 `case_origin=CA` + `deciding_court=JCPC`（枢密院审理的加拿大上诉）。故：
+**JCPC 案按案件来源地记**。推论：
+- `A.C.`/`App. Cas.`：同卷混印上院案（GB 来源地）与各殖民地枢密院上诉（非 GB 来源地）
+  → **真混合**，不可作来源证据 ✓（与计划 §0 的根因诊断一致，与计划 §6 的强制测试一致）。
+- `C.L.R.`（联邦法律汇编：高等法院 + 从高等法院上诉到枢密院的案）：枢密院部分**来源地
+  仍是 AU**，故「含枢密院 ⇒ 混合」这条推理对 C.L.R. **不成立**。但 `clr` 另有未解决的
+  加拿大同形侧（语料 164 条 CA 提及；现有未核实表猜「Construction Law Reports」，
+  本轮无法核实）→ **仍不写行**，理由是**同形未解决**，不是枢密院。
+
+**已完成两组的结果**：
+
+| 组 | tier1 | 已核目标 | `exclusive_statute` | `exclusive_publisher` | `mixed` | 第三方手册 | 非汇编 | 无权威出处 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 英国 | 8/8 | 15 | **0** | **0** | 12 | 3 | 0 | 若干 |
+| 美国及其他 | 1/1 | 58 | 0 | 2（**建议降级**） | 2 | 4 | 50 | ~30 |
+
+- **英国组 = 零可写行**。关键证据：ICLR 1930 年 A.C. 卷首题名页逐字为「LAW REPORTS OF
+  THE INCORPORATED COUNCIL OF LAW REPORTING. HOUSE OF LORDS, JUDICIAL COMMITTEE OF THE
+  PRIVY COUNCIL AND PEERAGE CASES.」，并配枢密院专职 reporter；反例
+  `Edwards v Canada (AG) = [1930] AC 124`（BAILII `Cite as: [1930] AC 124, [1929] UKPC 86`，
+  来自加拿大最高法院）同一卷内另有十余件加拿大枢密院案（页 111/144/152/161/244/357/
+  623/629/640/659/673/686）与尼日利亚、锡兰、新南威尔士、海峡殖民地、马耳他案。
+  → **`ac`/`appcas` 不写行**；R3-2 里那 211 组会变 CONFLICT 的反向风险**随之消失**。
+- `er`（English Reports）178 卷：12–20 卷是枢密院（含印度上诉 1809–1865），1–11 卷含
+  苏格兰/爱尔兰上院上诉 → 非英国专属。
+- `wlr`：ICLR 自述范围含上院与枢密院；`Subramaniam v Public Prosecutor (Malaya) =
+  [1956] 1 WLR 965`。**这回答了上一轮审计的悬案**：语料里 76 条 CA 法域标注的 W.L.R.
+  提及**多半不是分组错误**——W.L.R. 真的刊登从加拿大上诉到枢密院的案（按本项目语义
+  来源地=CA）。但 `wlr` 自身不携带来源证据（混合，不写行）。
+- `kb`/`ch`/`chd`/`qbd` 判 `mixed` 的理由是**没拿到卷首题名页**（不是找到了反例）——
+  即「可升级但缺一件实物」。`qb` 的魁北克侧已独立溯源：1900 年魁省律师总会总索引给出
+  **1892–1898、B.R. 卷 1–7 + C.S. 卷 1–14**，与语料 `qb` 的高频形态（卷 1–2、年 1891–1900）
+  吻合；1892–1898 重叠区按设计保持 UNDETERMINED。
+- **美国及其他组**：`us` 判 `mixed`，反例具体——`277 U.S. 189 (1928)` *Springer v.
+  Government of the Philippine Islands*（美最高法院 1901–1946 对菲律宾行使上诉管辖，
+  28 U.S.C. §411 历史注说明 1946-07-04 删除菲律宾条款）；`2 U.S. (2 Dall.)` 含宾州各法院
+  判决。`f`/`fsupp` 由子代理标为 `exclusive_publisher` 但**只有第三方（维基）范围描述**，
+  按 P2 必须**降级为 `scope_evidence_third_party_only`（不写行）**——我按 P2 处置。
+  `nfldpeir`（871 条提及）**无任何权威出处**（维基 404、Maritime Law Book 域名失效、
+  CanLII 403）→ 不写行。50 个目标判 `not_a_reporter`（17 种法学期刊 + 33 个噪声 token）。
+
+**对计划的直接影响**：计划 §3 的净新增上限里，**外国方向那 23,186 组基本兑现不了**——
+英国组零可写行，美国组零可写行（`us`/`clr` 混合、`f`/`fsupp` 降级、`nfldpeir` 无源）。
+外国方向的失败有**同一个根因**：普通法汇编普遍混印枢密院/殖民地/苏格兰/爱尔兰案
+（这正是计划 §0 的根因，只是范围比 A.C. 一处大得多）。**加拿大组仍在跑**，它承担
+scr(11,610)/dlr(9,148)/or(9,027)/ccc(8,865) 等国内主体的可写行判定——本轮实际兑现
+多少，取决于它的产出。
+
+### R3-15 Stage 4 仪器（先建）
+
+`implementation/r3_blast_radius.py`（只读）：逐层比较两个 run，给每个变化归因。
+- 层：提及（candidate_id → arbitration_status）/ 成员行（(court, merge_key) →
+  identity_basis、member_origin_*、**组内容签名**）/ 组（签名 → group_foreign_status）/
+  边（foreign_status 分布 + foreign_edges 行数）/ 选取（dd、kept）。
+- **不把 `merged_group_id` 当跨版本键**（`audit/README.md` 明说组号会变）：用
+  「组内成员 row_key 排序并集」作内容签名。必须读**跨法院轮**产出——读院内轮会虚高
+  （自测实测 182,384 vs 最终 177,136）。
+- 归因类：`reporter_scope` / `scope_or_record` / `identity` / `arbitration` / `group_only`，
+  目标是 0 未解释；另单独数 `member_origin_ambiguous_basis=exclusive_reporter_scope_ambiguous`
+  的**行数与去重组数**（计划 §8.4）。
+- 自测（r2i 对自身）：提及 0 变化、成员 0 变化、签名 0 变化、边与 kept 全同 → 仪器不产生
+  假变化 ✓。
