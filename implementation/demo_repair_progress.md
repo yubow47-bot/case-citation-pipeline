@@ -1613,3 +1613,58 @@ Google Books API（该项目配额 0）、Marginalia（软等待页）。
 **联邦与各省法院**判例，并引 Banks《Using a Law Library》与 Yogis《Legal Writing and
 Research Manual》。这类材料**恰好就是「第三方引用手册」第三档**的证据类型——所以
 第二、三条路其实是同一个决定：**要么给 key 拿到出版方自述，要么明确承认第三档。**
+
+### R3-19 检索恢复（Exa）——B18 的阻塞已解除
+
+用户提供 Exa API key 后按其官方 skill（`exa-labs/agent-skills` 的 `build-with-exa`，经
+raw.githubusercontent 读取；`npx skills use` 因沙箱禁止 node 以管道 spawn git 而 EPERM，
+故改为直接读 skill 文件）配置：
+
+| 动作 | 结果 |
+|---|---|
+| 读官方 skill | `SKILL.md` + `references/search.md`：认证用 `EXA_API_KEY`；**推荐请求 = query + `type:"auto"` + `contents.highlights:true`，其余参数一律不加**（不加 boilerplate `numResults`、不加 `category`、不加 domain 过滤、不用日期过滤代替「latest」） |
+| 写 key | `modsearch config set exa.apiKey` → `C:\Users\hp\.modsearch\config.json`；`config show` 回显**已打码**（`44ff6c...4e (file)`） |
+| 固定引擎 | `modsearch config set search.engine exa`（doctor 确认：`search engine: exa (from config file)`）；auto 会先解析到 firecrawl 再回退，固定后不再空耗一次失败调用 |
+| 验证 | `web_search` 走 Exa，实测可用 |
+
+**能力边界（重要，别过度期待）**：
+- **搜索（发现 URL）= 已修好**：`web_search` 由 Exa 服务端检索并返回 highlights。
+- **取页（读某个 URL）= 仍走本机 IP**：`modsearch search -u <url>` 先试 firecrawl（403）再退到
+  `local`（= 本机出口）。实测 `legisquebec.gouv.qc.ca` 对本机 IP 返回 CloudFront 403。
+  **绕法**：对封锁本机的站点，**用搜索问句把正文问出来**——Exa 的 highlights 是它自己
+  服务端取回的页面内容，s.21 逐字原文就是这样拿到的。
+- `x_search`（社交）仍不可用：`grok` 二进制与 `~/.grok/auth.json` 均不存在。
+
+**恢复检索后的第一批实证（说明这条路值多少钱）**：
+
+1. **魁北克官方汇编有法条依据**（`exclusive_statute`，最高一档）：
+   Légis Québec **S-20《Loi sur la Société québécoise d'information juridique》s.21**
+   （https://www.legisquebec.gouv.qc.ca/fr/document/lc/s-20）——「La Société collabore avec
+   l'Éditeur officiel du Québec à la publication des **jugements rendus par les tribunaux
+   judiciaires siégeant au Québec** …」；s.20 规定其出版职责；S-20, r.1 是其选编规则。
+   配套证据：SOQUIJ 自己的汇编表（`R.J.Q. 1986 à 2013`，
+   https://aide.soquij.qc.ca/s/article/tableau-recueils-jurisprudentiels-publies-par-SOQUIJ）
+   与 SOQUIJ 博客的沿革（1892 年起由 Barreau 编制，1974 年 SOQUIJ 接手，1986 年
+   R.J.Q. 把上诉法院/高等法院/省法院等并入同一汇编，
+   https://blogue.soquij.qc.ca/2016/05/10/retour-sur-les-recueils/）。→ `rjq` 及其同族
+   （`qr.kb`/`qr.sc`/`queqb`/`ucqb`/`cs`）可望写入，且证据档位比商业汇编高一档。
+2. **安大略官方汇编有出版方自述**（`exclusive_publisher`）：LexisNexis Canada 产品页
+   「Published by the Law Society of Ontario through LexisNexis Canada, Ontario Reports …
+   leading cases decided at **all levels of Ontario courts**」
+   （https://www.lexisnexis.com/en-ca/products/ontario-reports）；CanLII 博客另证 ORs 是
+   Law Society of Upper Canada 的财产（https://blog.canlii.org/2013/10/23/383/）。
+3. **系列/年代窗口的一次性权威来源**：Bluebook **T2.6 Canada**
+   （https://www.legalbluebook.com/bluebook/v21/tables/t2-foreign-jurisdictions/t2-6-canada）
+   给出 D.L.R. 1912–date（2d 1956/3d 1969/4th 1984 断点）、O.R. 1882–1901 与 O.L.R.
+   1901–1930/31、W.W.R. 1911–date、A.R. 1977–date、B.C.L.R. 2d/3d/4th 断点等；
+   图书馆指南 https://www.unb.ca/fredericton/law/library/about/law-reporters-by-database.html
+   亦同。**这些是第三方（不可单独授权一行）**，但它们正是窗口字段的自然来源。
+4. 顺带消除了一个我自己留下的疑问：Bluebook T2.6 的分期表把 1876–1922 记作
+   "Canada Supreme Court Reports"、**1923–1969 记作 "Canada Law Reports: Supreme Court of
+   Canada"**、1970– 再回到 "Canada Supreme Court Reports"——与我 `canscr` 行的
+   「同一官方汇编的早期印刷形」判断一致（我方窗口 1876– 为宽口径，未按 1922 收口，
+   因为收口依据来自第三方手册）。
+
+**下一步（同一轮内继续）**：加拿大组研究已用可用检索重跑（子代理含魁北克 S-20 与
+各省「官方汇编法条」的专项核查），findings 落地后由我合并进表，再重跑全量并按 R3-17
+的同一套仪器复核（覆盖、爆半径、原文追溯、一致性、指纹）。
