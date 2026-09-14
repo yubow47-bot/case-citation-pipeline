@@ -868,8 +868,16 @@ def decide_case_origin(row, member_strings, origin_idx, stats, scope_idx=None,
             if h not in hits:
                 hits.append(h)
     evids = ["case_origin:" + (h.get("normalized_key") or "") for h in hits]
-    countries = sorted({(h.get("case_origin") or "").strip() for h in hits
-                        if (h.get("case_origin") or "").strip()})
+
+    def _country(h):
+        # R4：两张案件级表列名不同——case_origin.csv 用 `case_origin`；
+        # case_origin_manual.csv（任务书列名）用 `origin_country`。二者同义，
+        # 都读；缺列不得静默当「无国家」（r4b 首轮即因只读 case_origin 而
+        # 命中 0——连接上了却取不到国家）。
+        return ((h.get("case_origin") or h.get("origin_country") or "")
+                .strip())
+
+    countries = sorted({_country(h) for h in hits if _country(h)})
     if len(countries) == 1:
         row["member_origin_country"] = countries[0]
         row["member_origin_status"] = "DETERMINED"

@@ -2049,3 +2049,156 @@ Stage 2 要抓取的东西；等 Stage 2 落地并核实后，可再回来用「
 严格遵守「只经合格身份基础」，且**绝不**写来源地——按 D1 已有规定执行；另外
 `observed_deciding_court` 的组级列在本轮是**纯审计**，其可能被错误合并的组污染这一点
 记入 B21 的风险段。
+
+### R4-2 Stage 2：法院标注的抓取、识别、键级聚合与组级审计列
+
+**抓取（层 1）**：`shapes.py` 新增 `_CDES` 零宽前瞻捕获组，接在**六个 reporter 形状**
+的末尾（bracket / vol_page_year / year_vol_page / nominate / vol_abbr_page /
+leading_abbr；`neutral_bare` 不动——它的尾括注是 R2F 的 `trailing_paren`，另有用途）。
+与 R2F 同一技术：**零宽** → (start,end,shape) 跨度集合不变；**独立捕获组、独立字段**，
+不复用 trailing_paren。
+- 边界（D1）：标注与页码之间只允许空白与一个逗号（`\s*,?\s*`）；内容不含换行/圆括号、
+  长度 1–30；**排除纯序数系列**（`(4th)`/`(2d)` 类——那是**下一条引证**的系列槽，
+  负测试钉住）。年份括注**不排除**（捕获后由 classify 判 not_a_court）。
+- `vol_page_year`/`nominate` 的尾部 `(YYYY)` 已被年槽消费 → 标注取**下一个**紧邻括注
+  （任务要求「显式定义并测试」；测试含此形）。
+- 新字段 `court_designation_raw` / `court_designation_span`（**绝对偏移**，取自捕获组
+  真实位置）；`candidates_schema` 升 **candidates-2.2**。
+- **跨度/candidate_id 不变量（实测断言）**：r3e vs r4a 的 candidate_id 集合
+  **1,013,948 条完全相同**，双向差集 **0 / 0** ✓。
+
+**识别（层 2）**：新决策表 `decisions/court_designations.csv`（**8 行**，封闭集合、
+逐行带 source + source_locator）：
+`H.L.`/`U.K. H.L.`→House of Lords；`P.C.`/`J.C.P.C.`→JCPC；`H.C.A.`/`Aust. H.C.`/
+`Austl. H.C.`→High Court of Australia；`C.A.`→**ambiguous_designation（无法院）**（D3）。
+来源：加拿大司法部《缩写表》（H.L.=House of Lords；P.C.=Privy Council；且同一来源的
+判例汇编一节又把 `C.A.` 记为魁北克上诉法院判例集——**同一权威来源自证歧义**，正是 D3
+的依据）、Cardiff Index（HCA=High Court of Australia）、Exeter Privy Council Papers +
+The National Archives（JCPC）。组合式缩写行（`U.K. H.L.`、`Aust. H.C.`、`Austl. H.C.`）
+在 notes 里明示「组合式·非独立出处」。
+`classify_court_designation()`：精确匹配（nk 归一后查表）→ recognized / ambiguous；
+纯数字（年份/页码）→ not_a_court；`at p.`/`at para.`、`per …`、`see above`、
+`emphasis`、`sub nom.` → not_a_court；其他 → unrecognized（含 Q.B./K.B./Ch. D. 等
+**未收录的真法院缩写——不猜**）。输出三列：`court_designation_status`、
+`observed_deciding_court`、`court_designation_evidence_id`。**绝不写 jurisdiction/来源地**。
+
+**实测识别量（全语料全部候选，SCC+ONCA 合计）**：recognized **3,397**
+（House of Lords 2,178 / JCPC 1,056 / High Court of Australia 163）、
+ambiguous_designation **24,711**（裸 C.A. 族）、not_a_court **6,387**、
+unrecognized **67,070**。
+
+**键级聚合（层 3）**：只对**完整 reporter 引证键**的 counted 成员聚合
+（`MERGED_FIELDS` 增 `observed_deciding_court` / `court_designation_conflict` /
+`court_designation_support` / `court_designation_citing`）。**唯一** → 写法院；
+**≥2 个不同法院 → conflict、不写法院**（D1 负测试：同键 H.L. + P.C.）；空 = **没有证据**
+（不是反对意见）。**无多数投票**；**绝不**跨 name_year/共引/拼写变体传播。
+
+**组级审计列（层 4）**：`add_court_designation_columns()` 把键级法院提升为
+`group_observed_deciding_court`（+ `..._conflict`），**只经合格身份基础
+（ELIGIBLE_BASES）**——纯启发式组不传播（负测试）。★纯审计，**绝不写来源地**（D2：
+本轮无任何 court→origin 规则）。
+
+**测试**：357 → **378 条断言**（+21）。含 D1 要求的全部负测试：`(see above)`/`(1932)`/
+`(at p. 12)`/`(per Lord Atkin)`/`(emphasis added)` → not_a_court；下一条引证的序数系列
+`(4th)` **不被本引证捕获**；裸 `(C.A.)` → ambiguous、无法院；同键 H.L.+P.C. → 键级冲突
+且无法院（仍保留支撑数与引用判决数）；组级只经合格基础传播、纯启发式组不传播、
+两法院冲突不写；标注零宽 → 候选 end 不含标注（跨度不变量）。
+
+**已知盲区（如实登记）**：**嵌套括号**标注（如 `(H.L. (Sc.))`、`(Ont. Ct. (Gen. Div.))`）
+被 `[^()\n]{1,30}` 结构性排除——Stage 0 实测此类「有 `(` 但抓不到」共 **106 条（0.24%）**，
+多为 `sub nom.` 别名引注等非法院内容，但**确含真法院标注**（如 `(Ont. Ct. (Gen. Div.))`）。
+本轮**未**扩展嵌套解析（D1 的封闭表也未含嵌套形）；登记为下一轮候选。
+
+### R4-3 Stage 3：50 案队列 → 32 案核验入表 + 18 案未决（如实）
+
+**队列（先提交后检索）**：`audit/findings/r4_case_batch_queue.json`——50 个引证身份，
+A 30（法院识别后仍 UNDETERMINED、混合汇编键、按 dd 降序）/ B 10（带 `(P.C.)` 标注、
+超出 case_origin.csv 的 CanLII ukpc 覆盖）/ C 10（边界：H.L. 1922–23 与 HCA/Nauru）。
+头部即地标案：`[1978] A.C. 728`（Anns，dd 115）、`[1932] A.C. 562`（Donoghue v
+Stevenson，dd 79）、`(1881) 7 App. Cas. 96`（Citizens Insurance v Parsons——正是 USAGE §4
+点名的那类缺口）。
+
+**执行（如实）**：原计划 3 个并行研究子代理，**三个全部在启动阶段失败**（无产出）。
+改由 Lead 直接核验（单案 1–2 次查询），来源优先级 1–4：BAILII UKPC（**标题自带管辖地**，
+如 `(Quebec)`/`(New South Wales)`/`(Cape of Good Hope)`）、AustLII/CommonLII、vLex、
+Scottish Council of Law Reporting、DPLA 判决原件、司法部判例库、hrcr.org 等；
+Wikipedia 只作线索、不作唯一支撑（逐行 notes 可查）。
+
+**成果**：`decisions/case_origin_manual.csv` **32 行**（17 列；字段数/键一致性已校验：
+0 问题、0 键不符）。来源地分布 **CA 18 / GB 8 / AU 3 / HK 1 / ZA 1 / NZ 1**。
+每行 status=`verified_research_agent`、reviewer=`research agent；not human-reviewed`
+（**不作任何人类已复核的暗示**）。decide 侧：`load_case_origin_manual()` 只消费
+status ∈ 白名单的行，并入 case_record 索引（**最高优先级**；与 case_origin.csv 冲突则
+成员本地 CONFLICT，方向保守）。
+
+**未决 18 案**：`audit/findings/r4_case_batch_unresolved.md` 逐条登记**下一步检索路径**
+（不是「查不到」，是本轮查询/上下文预算耗尽）。**未降低来源标准去凑满 50**。
+
+**批次副产品（真发现）**：
+1. **语料案名错误一例**：`[1914] A.C. 599` 语料案名「Boudreau v. The King」，
+   实为 **Ibrahim v. The King**（P.C.，上诉自**香港**）——案名投票/携带错误的实例，
+   与 B20 残差同源。
+2. **报告年 ≠ 判决年 8 例**（Anns 1977→1978、Salomon 1896→1897、Makin 1893→1894、
+   City of Toronto 1904→1905、Grand Trunk 1906→1907、Tennant 1893→1894、
+   AG Manitoba 1901→1902、Hedley Byrne 1963→1964）——人工表**分列**两栏，实证
+   「报告年不得当判决年」。
+3. **BAILII UKPC 标题即权威上诉来源证据**；索引为 `(Canada)` 时**省别不写**
+   （只按明示省名填省），避免把索引粗粒度当省别证据。
+
+### R4-4 Stage 4：交付 run `data/run_20260914_r4c` 的全量复核（8 项）
+
+**r4b → r4c 的插曲（如实登记）**：r4b 完成后复核发现**批次命中 0**——根因是
+`decide_case_origin` 只读 `h["case_origin"]`，而任务书规定的人工表列名是
+`origin_country` → 连接命中了却取不到国家（`case_origin_manual_rows=32` 说明表**已加载**）。
+已修：`_country(h)` 两列同义兼容。**修后必须整跑**（run_all 无分段选项）→ 交付 run 改为
+`r4c`（r4b 保留供对照）。这条登记为「连接上了却取不到值」的实例：**计数正确
+（32 行已载）不等于语义生效**。
+
+| # | 报告项 | 实测 |
+|---|---|---|
+| 1 | 候选跨度/candidate_id 不变 | r3e vs r4c：**1,013,948 条完全相同，双向差集 0 / 0** ✓ |
+| 2 | 标注按状态/法院 + 键级冲突 + 偏移可回溯 | 全语料全部候选：recognized **3,397**（HL 2,178 / JCPC 1,056 / HCA 163）、ambiguous **24,711**、not_a_court **6,387**、unrecognized **67,070**；**键级**：带法院的键 **1,343**（HL 841 / JCPC 425 / HCA 77）、**键级冲突 3**、支撑提及 **2,328**；**偏移抽检 240/240** 与原文一致（`court_designation_span` 回读 == raw） |
+| 3 | Stage 1 身份变化 | **无**（Stage 1 触发停止条件未实现）：组数 173,845 → 173,845、成员签名集合仅前/仅后 **0 / 0**、同签名+同名 dd 变化 **0** |
+| 4 | 批次新增案件级来源地 | 由 UNDETERMINED 变为已定 **33 组**：**DOMESTIC_CA +17 / FOREIGN +16**；**33/33 可溯人工表行**、**不可溯 0**；按国家 ZA 1 / AU 4 / CA 17 / GB 7 / NZ 2 / HK 2 |
+| 5 | FOREIGN 净变化 == 批次派生 | **+16 == 16** ✓（无标注驱动：46,046 条混合汇编提及的标注**一条都没写来源地**，D2） |
+| 6 | dd 变化/未解释 | **0 / 0**（身份零变化） |
+| 7 | occurrence 守恒 + 一致性 + 指纹 | occurrence_total **532,101**（r3e 与 r4c 相同）、键数 189,508 相同；一致性三元组 **0/0/0**；指纹自核 **一致**（24 文件） |
+| 8 | 测试（含退出码） | test_candidates **378 条**（exit 0）、test_layers **120 条**（exit 0）、selftest（exit 0）、legacy fixtures（exit 0） |
+
+**kept 组构成**：8,646 不变；DOMESTIC_CA 6,179 → **6,193**、FOREIGN 2 → **11**、
+UNDETERMINED 2,465 → 2,442。
+
+**最低验收对照**：旧跨度不变 ✓；每条标注自带偏移 ✓（240/240）；解释性括注与邻接引证
+不被附着 ✓（负测试）；H.L./P.C. 冲突**从不产生国家** ✓（冲突键 3 个、法院留空，且标注
+**根本不写来源地**）；无「无正确时间字段就触发的年份规则」✓（本轮无年份规则）；
+同键传播保留证据与支撑计数 ✓；启发式组**从不**传播法院证据 ✓（负测试）；**每个新增
+FOREIGN 都有可见证据** ✓（16/16 追到人工表行+URL）；计数守恒、dd 变化逐项 ✓。
+
+### R4-5 账本与交接
+
+**Stage 0 对账**（见 R4-0）：45,046 / H.L. 1,264·651 / P.C. 683·308 / both 3 逐数复现；
+C.A. 1,104 vs 1,043（= 原文恰为 `C.A.` 的条数）与 US 19 vs 16（含 3 条年份括注）
+口径差异已解释；盲区 106（0.24%）。
+
+**Stage 1 诊断与决定**（见 R4-1）：机制 (a) 单锚簇 4,035 组 / 搭车 5,249（异年 1,001）；
+拟议共引路由规则**被否**（移 345 组 = kept 的 4.0% > 1%，且 B12 有效率仅 16/98）。
+**入账 B21**。**Stage 1 未实现**——故本轮 r4c 身份零变化。
+
+**批次内标注准确率**：32 个核验身份中，语料**印了标注**的 26 个**全部与核验的决定法院
+一致（26/26，0 不符）**；另 6 个语料**未印标注**。即：**已识别的法院标注在本批次内
+零错**；错漏都在「未印/未收录」（`unrecognized` 67,070 条含 Q.B./K.B./Ch. D. 等
+真法院缩写，本轮**按封闭表不猜**）。
+
+**未决案件**：18 案登记在 `audit/findings/r4_case_batch_unresolved.md`（逐条带下一步
+检索路径）；**未降低来源标准去凑满 50**。
+
+**候选未来规则（本轮一律未启用，D2）**：
+- **H.L. → 来源地**：需要「该院在某段时间对某法域享有排他终审权」的**权威证明**，
+  且必须带**明确 `year_basis`（判决年，不是报告年）**。现状：H.L. 同时收英格兰威尔士、
+  苏格兰、北爱尔兰（乃至历史时期爱尔兰）上诉——**单一国家不可判**（本批次 Donoghue
+  即为苏格兰上诉、Quinn v. Leathem 为爱尔兰上诉），故**只能记法院**。
+- **HCA → 来源地**：HCA 收澳大利亚各州上诉，**并保留 Nauru 等域外上诉管辖**及 2018 年后
+  待决事项——同样需要「时期 + 法域排他」的权威证明与 `year_basis` 才能写来源地。
+- 两条规则的**最后一公里**已铺好：本轮已把 `(H.L.)`/`(P.C.)`/`(H.C.A.)` 等标注**逐键**
+  识别并带上 `observed_deciding_court` + 证据 id + 支撑计数；将来只需在**案件级**补齐
+  「上诉来源」证据（本批次的人工表就是范式），即可在合格身份基础上启用规则。
