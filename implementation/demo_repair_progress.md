@@ -1759,3 +1759,78 @@ Registrar，卷首「PUBLISHED UNDER AUTHORITY BY THE REGISTRAR OF THE COURT」�
 `rjq` 766，本轮 18 条可写行覆盖约 **38 500 / 113 432（34%）**。表校验 0 问题、测试
 **345 条断言**全绿；随后跑 `data/run_20260913_r3c/`（`r3b` 因表在它跑完后又被扩充而作废，
 保留供对照），再按 R3-17 同一套仪器复核。
+
+### R3-22 Stage 4 复核（最终交付 run：`data/run_20260913_r3c/`）
+
+**0. run 与独立指纹**。`status=complete`；自算指纹
+`7610ace4934e82d0bbf022acf27ff1769dc38d2581cfa1ee68e9d539172f376c` = manifest 值，
+**22 文件 0 不匹配**，40 行新表在指纹内。
+
+**1. 覆盖前后（两个总体）**
+
+| 量 | r2i（前） | r3c（后） | Δ |
+|---|---:|---:|---:|
+| 组总数 | 177,136 | 176,975 | −161 |
+| 组·**DOMESTIC_CA** | 10,336 | **61,316** | **+50,980（约 5.9 倍）** |
+| 组·FOREIGN | 326 | 326 | **0** |
+| 组·UNDETERMINED | 166,474 | 115,333 | −51,141 |
+| kept 组（dd≥5） | 8,586 | **8,790** | **+204** |
+| kept 组·DOMESTIC_CA | 2,784 | ~2,988 | +204 |
+| 边·DOMESTIC_CA | 55,237 | **176,945** | **+121,708** |
+| 边·FOREIGN | 384 | 384 | **0** |
+| 边·UNDETERMINED | 277,866 | 153,286 | −124,580 |
+| 支撑分级 | supported 308,026 / heuristic 25,461 | supported **315,474** / heuristic 15,141 | 更多边走 supported 路径 |
+
+**头条仍是两句**：组级国内覆盖 **+50,980 组**（10,336 → 61,316，约 5.9 倍，占 Stage 0 上限
+113,432 的 **45%**）；**产品门槛内 kept 组 +204**（8,586 → 8,790，+2.4%）——新增判定里
+大头仍是 dd<5 的单例。外国方向**零变化**。
+
+**2. 爆半径（0 未解释）**
+
+| 层 | 变化 | 归因 |
+|---|---:|---|
+| 提及（candidate_id） | **70,997** | 100% 单类 `alternative_contained → alternative_same_key`（Stage 3 同键化），全为 reporter |
+| 成员行 origin 字段 | **45,248** | `reporter_scope`（另有新增行 12,815 行 → 本规则实际判定 **58,063** 行：`exclusive_publisher` 39,386 + `exclusive_statute` 18,677） |
+| 组签名变化 | **3,622** | `identity`（Stage 3 合并/重键） |
+| 组结论变而自身证据未变 | **146** | 全部归因：该行所在组有同组 `reporter_scope` 成员 → **未解释 0** |
+| 一致性三元组 | **0 / 0 / 0** | 行来源不一致 / 多国别非 CONFLICT / 同系统多键 |
+
+新增 `exclusive_reporter_scope` 成员行按缩写：scr 14,648、or 10,920、ccc 10,464、
+dlr 10,128、canscr 1,836、rfl 1,314、ar 1,296、altalr 984、fc 974、rjq 900、manr 810、
+nsr 790、excr 652、nr 619、nbr 570、saskr 545、fcr 319、wwr 294（合计 58,063）。
+
+**3. dd / kept（按组内容签名，不用组号、不用 (court,merge_key)）**：共同签名 162,178，
+**dd 升 1,263 / 降 0**；kept **false→true 295 / true→false 0**；kept 组 8,586 → 8,790；
+签名只在新 run 14,797（kept 1,203）、只在旧 run 14,958（kept 1,294）——后两者是 Stage 3
+重键造成的对称churn。`kept` 在组内**一律性检查 0 违反**。`occurrence_total` 与分类/归并
+层计数见各 manifest（本次未做跨轮 occurrence 对照，故不在此声称守恒）。
+
+**4. 人工对照原文（计划 §8.3）**。**新增 FOREIGN 判定 = 0**（FOREIGN 组与边都不变），
+故「逐条回溯新 FOREIGN」为空集；**同形异义汇编带来的新 DOMESTIC_CA = 0**（同形表行一条
+未写）。抽样回溯（`pipeline/traceback.py --run-dir data/run_20260913_r3c`）：
+
+| 判定 | 样本 | 原文（节选） | 结论 |
+|---|---|---|---|
+| `dlr` → CA | `SCC:6450:8248:8267`（citing = 2001 SCC 44） | `… R. v. Consolidated Maybrun Mines Ltd., [1998] 1 S.C.R. 706; McIntosh v. Parent, <<[1924] 4 D.L.R. 420>>; …` | 加拿大判例（Ontario）✓ |
+| `rjq` → CA/Quebec | `SCC:4049:1011:1029`（citing = [1988] 1 SCR 667） | `Applied: R. v. Prince, [1986] 2 S.C.R. 480.` ＋ `APPEAL from a judgment of the **Quebec Court of Appeal**, <<[1986] R.J.Q. 2162>>, 29 C.C.C. (3d) 498 …` | **魁北克上诉法院判决** ✓ 且说明该组把「上诉审 CA 判决」与「SCC 平行引证」并为同案是**正确的** |
+| （r3a 已做）`scr`/`canscr`/`fc`/`fcr` | 4 例 | 见 R3-17 §4 | ✓ |
+
+其余 12 个新缩写的抽样（dd≥5 的组）逐条打印了印刷形与案名，人工核对与各省法院一致：
+`ccc` R. v. W. (W.)／`or` Kenny v. Lockwood（Ontario）／`ar` R. v. Ferris（Alberta）／
+`rfl` Molodowich v. Penttinen／`nsr` Ross v. Ross（NS）／`manr` King v. Operating
+Engineers…（Manitoba）／`saskr` R. v. B. (G.)（Sask）／`nr` Canada v. South Yukon Forest
+Corp.（联邦）／`excr` 11 Ex. C.R. 119／`wwr` 30 W.W.R. 241（无年，年窗不约束、国别仍 CA）。
+
+**5. `exclusive_reporter_scope_ambiguous` = 0 行 / 0 组**（同 R3-17：同形表行未写，
+残差落在「无行」桶，不落 ambiguous 列）。
+
+**6. 全部测试**：`test_candidates.py` **345 条断言 exit 0**；`test_layers.py` 120 条 exit 0；
+`run_regression.py --selftest` exit 0；`extract.py --fixture-check` exit 0。
+
+**7. 本轮实际兑现 vs Stage 0 上限**：可写行 18 条，实测 **+50,980 组**（上限 113,432 →
+**45%**；kept +204 组）。未兑现部分：**已研究但按 P2 不可写**（英国组全部、`us`/`clr`、
+`f`/`fsupp`、`bclr`、`crr`、`oac` 2 558、`cbr` 1 112、`bcac` 790、`olr` 630、`ontlr` 768
+等 ≈ 3.4 万组）＋**未研究**（`qr.kb` 671、`queqb` 403、`ucqb` 543、`mpr`、`cpc` 845、
+`scca` 1 189、`oj` 4 374、`cs` 312 等）＋**身份基础闸门**（`name_year` 4 468 组，B14）。
+**这个拆分是下一轮的施工图**：安省/魁省早期官方汇编（法条与索引都已在手）与
+供应商标识符（走 B19 的 identifier 路线）是最近的两个增量。
