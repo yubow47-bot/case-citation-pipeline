@@ -79,7 +79,13 @@ MERGED_FIELDS = ["merge_key", "canonical_string", "abbreviation", "citation_kind
                  "occurrence_count", "distinct_decisions_count",
                  "case_name_agreement", "case_name_support", "variants_count",
                  "candidates_admitted", "candidates_rejected", "self_citation_of",
-                 "self_case_name"]
+                 "self_case_name",
+                 # R3 修复（身份回归）：年份有两个用途——①身份键的一部分、②裁定层
+                 # 聚类的属性。连续编卷汇编（volume_system=continuous）只在**键**里去掉
+                 # 年份（`year_start` 置空），**印出来的年份另存本列**，供裁定层聚类/
+                 # 同年邻组继续使用。没有本列，零化会把「同案的平行引证」拆成孤立组
+                 # （实测 R. v. W.(D.) 694→548+151）。
+                 "year_printed"]
 
 FOLDED_FIELDS = ["merge_key", "raw_string", "count", "distinct_decisions_count"]
 
@@ -117,12 +123,21 @@ def apply_reporter_identity_fixes(docs, stats):
        家族统计**本 run 内**出现过的非空年——恰一个 → 用它补上空槽；**≥2 个 → 弃权**
        （不猜哪一年对）。跨 run 不持久化：修复只由本次输入决定。
 
-    返回改动的行数（写进 manifest，约束九）。"""
+    返回改动的行数（写进 manifest，约束九）。
+
+    ★R3 修复（身份回归）：**年份有两个用途**——①身份键的一部分（本函数动的是这个）、
+    ②裁定层聚类的属性（按「案名 + 年份」连链，year_volume 的 S.C.R. 与连续编卷的
+    C.C.C./D.L.R. 平行引证靠它连在一起）。所以零化年槽时**必须把印出来的年份另存**：
+    本函数第一件事就是给**每一行**写 `year_printed`，之后只改 `year_start`（键），
+    `year_printed` 保留「假如不做本修复、键里会用的那个年份」——这样裁定层的行为与修复前
+    完全一致，而键已按连续编卷的正确语义去掉了年份。"""
     docs_list = [r for dkey in sorted(docs) for r in docs[dkey]]
     zeroed = filled = 0
     fam_years = defaultdict(set)        # 家族 -> 本 run 出现过的非空年
     fam_empty = defaultdict(list)       # 家族 -> 年槽为空的行
     for r in docs_list:
+        # ① 先固化的「聚类用年份」= 未做任何修复前键里的年份
+        r["year_printed"] = (r.get("year_start") or "").strip()
         vs = (r.get("volume_system") or "").strip()
         if vs not in ("continuous", "year_volume"):
             continue
@@ -140,6 +155,7 @@ def apply_reporter_identity_fixes(docs, stats):
             y = next(iter(years))
             for r in rows:
                 r["year_start"] = y
+                r["year_printed"] = y      # ② 补出来的年份同样是聚类该用的年份
                 filled += 1
             stats["reporter_identity_year_fill_families"] += 1
         elif len(years) >= 2:
@@ -861,6 +877,13 @@ def _emit(args, stats, per_key_counted, per_key_members, mentions,
         merged.append({
             "merge_key": key,
             "canonical_string": canonical,
+            # R3：键里没有年份（连续编卷被零化）时，**印出来的年份**仍要传下去给裁定层
+            # 聚类用 → 取本键 counted 成员里最常见的非空 `year_printed`；全空则留空。
+            "year_printed": (modal([v for v in
+                                    ((m.get("year_printed") or "").strip()
+                                     for m in counted) if v], "")
+                             if any((m.get("year_printed") or "").strip()
+                                    for m in counted) else ""),
             "abbreviation": pick_modal("abbreviation", canon_row.get("abbreviation") or ""),
             "citation_kind": pick_modal("citation_kind", canon_row.get("citation_kind") or ""),
             "jurisdiction": pick_modal("jurisdiction", canon_row.get("jurisdiction") or ""),
@@ -1058,6 +1081,8 @@ def run_legacy(args, stats):
         merged.append({
             "merge_key": key,
             "canonical_string": canonical,
+            # legacy 路线不做身份修复（键里的年槽原样保留），故 `year_printed` 留空即可：
+            # 裁定层的 row_year() 在空值时回退到「键首槽」，行为与本列引入前一致。
             "abbreviation": modal([m[6] for m in pick], canon_row[6]),
             "citation_kind": modal([m[7] for m in pick], canon_row[7]),
             "jurisdiction": modal([m[8] for m in pick], canon_row[8]),

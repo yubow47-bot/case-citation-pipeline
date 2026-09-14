@@ -1980,6 +1980,83 @@ def test_reporter_identity_fix_input_order_invariance():
     check(before == after, "Stage 3：修复幂等（同输入重跑不再改动）")
 
 
+def test_r3_year_printed_survives_zeroing():
+    """R3 身份回归修复 A（归并层）：年份有两个用途——①身份键、②裁定层聚类属性。
+    连续编卷零化的是**键**里的年槽，同时必须把**印出来的年份**写进 `year_printed`；
+    `year_volume` 族内补出来的年份同样要写（否则聚类看不到）。"""
+    import merge
+    docs = defaultdict(list)
+    rows = [("d0", _id_row("1970", "34", "D.L.R.", "2d", "451", "continuous")),
+            ("d1", _id_row("", "34", "D.L.R.", "2d", "451", "continuous")),
+            ("d2", _id_row("", "1", "S.C.R.", "", "103", "year_volume")),
+            ("d3", _id_row("1986", "1", "S.C.R.", "", "103", "year_volume")),
+            ("d4", _id_row("1970", "34", "X.X.", "2d", "451", ""))]
+    for dk, r in rows:
+        docs[dk].append(dict(r))
+    merge.apply_reporter_identity_fixes(docs, Counter())
+    check(docs["d0"][0]["year_start"] == ""
+          and docs["d0"][0]["year_printed"] == "1970",
+          "修复A：连续编卷键去年份，但 year_printed 保留 1970（聚类要用）")
+    check(docs["d1"][0]["year_start"] == ""
+          and docs["d1"][0]["year_printed"] == "",
+          "修复A：本来没印年份的行 → year_printed 空（不无中生有）")
+    check(docs["d2"][0]["year_start"] == "1986"
+          and docs["d2"][0]["year_printed"] == "1986",
+          "修复A：year_volume 族内补出来的年份同时写入 year_printed")
+    check(docs["d3"][0]["year_printed"] == "1986",
+          "修复A：本来就有年份的 year_volume 行 year_printed = 该年份")
+    check(docs["d4"][0]["year_printed"] == "1970"
+          and docs["d4"][0]["year_start"] == "1970",
+          "修复A：未盖 volume_system 的行键与 year_printed 都不动")
+
+
+def _cluster_row(merge_key, name, year_printed, court="ONCA"):
+    return {"merge_key": merge_key, "canonical_string": "x",
+            "citation_kind": "reporter", "case_name_modal": name,
+            "court": court, "year_printed": year_printed,
+            "occurrence_count": "1", "distinct_decisions_count": "1",
+            "merged_group_id": "", "is_primary": "true"}
+
+
+def test_r3_parallel_citation_stays_in_same_group():
+    """R3 身份回归修复 B（裁定层）：**带年份的 C.C.C./D.L.R. 平行引证必须和它的
+    S.C.R. 同组**。C.C.C./D.L.R. 的键已被结构性零化（键里没有年份），靠
+    `year_printed` 与 S.C.R. 的年份连上；若无此列，三者会各自成孤立组
+    ——这正是复核人测到的 r3c 回归（R. v. W.(D.) 694 → 548 + 151）。"""
+    import decide
+    rows = [_cluster_row("1991|1|scr||742", "R. v. W.(D.)", "1991"),
+            _cluster_row("|63|ccc|3d|1", "R. v. W.(D.)", "1991"),
+            _cluster_row("|34|dlr|4th|375", "R. v. W.(D.)", "1991")]
+    parts = decide.cluster_same_case([dict(r) for r in rows], {}, Counter(), None)
+    got = sorted(len(p[0]) for p in parts)
+    check(got == [3], "修复B：S.C.R. + C.C.C. + D.L.R. 平行引证在同一组（%r）" % got)
+    check(all(p[1] == "" for p in parts if len(p[0]) == 3),
+          "修复B：同组且未被判为拆分（split_reason 为空）")
+
+    # 反证：把 year_printed 去掉（= 键去年份后没有补救列）→ 三者各自成组
+    rows2 = [dict(r) for r in rows]
+    for r in rows2[1:]:
+        r["year_printed"] = ""
+    parts2 = decide.cluster_same_case(rows2, {}, Counter(), None)
+    got2 = sorted(len(p[0]) for p in parts2)
+    check(got2 == [1, 1, 1],
+          "修复B（反证）：没有 year_printed 时平行引证各自成孤立组——回归机制")
+
+
+def test_r3_row_year_prefers_printed_year():
+    """row_year()：优先 year_printed；空则回退键首槽（中立码键/旧产出）。"""
+    import decide
+    check(decide.row_year(_cluster_row("|63|ccc|3d|1", "x", "1991")) == 1991,
+          "row_year：键无年份 + year_printed=1991 → 1991")
+    check(decide.row_year(_cluster_row("|63|ccc|3d|1", "x", "")) is None,
+          "row_year：两者都没有 → None")
+    check(decide.row_year(_cluster_row("1991|1|scr||742", "x", "")) == 1991,
+          "row_year：无 year_printed 时回退键首槽（旧产出/中立码）")
+    check(decide.row_year(_cluster_row("|63|ccc|3d|1", "x", "1991")) ==
+          decide.row_year(_cluster_row("1991|1|scr||742", "x", "1991")),
+          "row_year：零化键与带年键读出同一年份")
+
+
 def main():
     for t in (test_boundary_guard, test_kvello_2009_scc_51, test_bce_swallow,
               test_almrei_swallow, test_same_span_multi_shape_counted_once,
@@ -2036,6 +2113,9 @@ def main():
               test_reporter_identity_continuous_zeroes_year_slot,
               test_reporter_identity_year_volume_unique_year_fill_and_abstain,
               test_reporter_identity_fix_input_order_invariance,
+              test_r3_year_printed_survives_zeroing,
+              test_r3_parallel_citation_stays_in_same_group,
+              test_r3_row_year_prefers_printed_year,
               # 依赖 Stage 1 真实表的测试放最后：表未落地时它是唯一红项，
               # 前面的规则测试仍全部跑完（test-first 的预期状态）。
               test_reporter_origin_real_table_stage1_rows):

@@ -278,7 +278,10 @@ def _reporter_origin(row, reporter_idx, stats):
             in REPORTER_ORIGIN_ALLOWED_STATUSES]
     if not cand:
         return
-    year, vol = p[0], p[1]
+    # R3 修复：窗口的「年」维度用**印出来的年份**（row_year），不是键首槽——连续编卷
+    # 汇编的键已零化年槽，读键会让年窗永远不可比（等于放弃窗过滤）。
+    year = "" if row_year(row) is None else str(row_year(row))
+    vol = p[1]
     hit = [r for r in cand if _reporter_window_ok(vol, year, r)]
     if not hit:
         stats["reporter_scope_out_of_window"] += 1
@@ -316,9 +319,24 @@ def _reporter_origin(row, reporter_idx, stats):
 
 
 def year_of(merge_key):
-    """归并键首字段即 year_start（§9.1）。merged.csv 没有独立年份列。"""
+    """归并键首字段即 year_start（§9.1）。**仅用于中立码键与旧产出**——见 row_year()。"""
     head = merge_key.split("|", 1)[0]
     return int(head) if head.isdigit() else None
+
+
+def row_year(row):
+    """这一行用于**聚类/同年邻组**的年份。
+
+    R3 修复（身份回归）：年份有两个用途——①身份键的一部分、②裁定层聚类的属性。
+    连续编卷汇编（volume_system=continuous）的键被结构性零化（年槽置空，正确：年不是
+    它的身份），但**印出来的年份**由归并层保留在 `year_printed` 列里。聚类必须读这一列，
+    否则同案的平行引证（`[1991] 1 S.C.R. 742` 与 `(1991), 63 C.C.C. (3d) 1`）会因为
+    后者键里没有年份而被拆成两个孤立组——这正是 r3c 的身份回归（R. v. W.(D.) 694 →
+    548+151）。`year_printed` 缺列或为空时回退到键首槽（中立码键与旧产出走这条）。"""
+    v = (row.get("year_printed") or "").strip()
+    if v.isdigit():
+        return int(v)
+    return year_of(row["merge_key"])
 
 
 def row_key(r):
@@ -674,7 +692,12 @@ def split_by_decision(members, did_idx, stats, start=None):
             target = good[0]
         elif len(good) > 1:
             top = [d for d in good if ov[d] == ov[good[0]]]
-            same_year = [d for d in top if d.split("|", 1)[0] == mk.split("|", 1)[0]]
+            # R3 修复：这个平局裁决按「单元年份 == 判决年份」取。单元年份**不能读键首槽**
+            # ——连续编卷汇编的年槽已被结构性零化，读键会永远得到空串、平局永远破不了，
+            # 单元于是落进 pending 变成孤立无锚组（实测 R. v. Osolin 68 → 61+7）。
+            uy = row_year(us[0])
+            same_year = [d for d in top
+                         if uy is not None and d.split("|", 1)[0] == str(uy)]
             if len(same_year) == 1:
                 target = same_year[0]
                 stats["units_tie_broken_by_year"] += 1
@@ -749,7 +772,7 @@ def cluster_same_case(rows, did_idx, stats, start=None):
     buckets, out = defaultdict(list), []
     for r in rows:
         name = nk(r.get("case_name_modal") or "")
-        y = year_of(r["merge_key"])
+        y = row_year(r)          # R3：用「印出来的年份」，不是键首槽（连续编卷键已零化）
         if name and y is not None:
             buckets[name].append((y, r))
         else:
@@ -1136,7 +1159,7 @@ def add_peer_column(out, stats):
         if r["is_primary"] == "true":
             gid = r["merged_group_id"]
             name[gid] = nk(r.get("case_name_modal") or "")
-            year[gid] = year_of(r["merge_key"])
+            year[gid] = row_year(r)     # R3：印出来的年份（见 row_year 的说明）
     by_name = defaultdict(list)
     for gid, nm in name.items():
         if nm and year.get(gid) is not None:
@@ -1228,11 +1251,11 @@ def main():
     assert all(int(r["distinct_decisions_count"]) <= int(r["occurrence_count"])
                for r in out), "dd 大于 occurrence，说明取了相加"
     wide = [g for g, ms in groups.items()
-            if len({year_of(m["merge_key"]) for m in ms
-                    if m.get("case_name_modal") and year_of(m["merge_key"])}) > 0
+            if len({row_year(m) for m in ms
+                    if m.get("case_name_modal") and row_year(m)}) > 0
             and (lambda ys: max(ys) - min(ys))(
-                [year_of(m["merge_key"]) for m in ms
-                 if m.get("case_name_modal") and year_of(m["merge_key"])]) > 1]
+                [row_year(m) for m in ms
+                 if m.get("case_name_modal") and row_year(m)]) > 1]
     assert not wide, "有组的年份跨度 > 1：%r" % wide[:5]
     start = neutral_start(rows)
     multi = [g for g, ms in groups.items()
