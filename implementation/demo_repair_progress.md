@@ -1390,3 +1390,188 @@ scr(11,610)/dlr(9,148)/or(9,027)/ccc(8,865) 等国内主体的可写行判定—
   的**行数与去重组数**（计划 §8.4）。
 - 自测（r2i 对自身）：提及 0 变化、成员 0 变化、签名 0 变化、边与 kept 全同 → 仪器不产生
   假变化 ✓。
+
+### R3-16 Stage 1 合并：`decisions/reporter_origin_scope.csv`
+
+**过程事实（必须记）**：加拿大组子代理**最终状态 = failed**（未产出任何文件、无收尾消息；
+中途登记表显示 idle，我发过一次催办消息仍无产出）。故其 16 个 tier-1 目标
+（scr/dlr/or/ccc/oj/wwr/oac…）**没有拿到研究者 findings**——不计为「已完成」。改为
+**自己按法条一手复核**加拿大侧（结果见下）。英国组与美国及其他组按任务书交付，
+findings 在两份 `r3_reporter_origin_*.md`。
+
+**我自己一手取证的来源**（`web_fetch`，取用 2026-09-13）：
+
+| 事实 | 出处 |
+|---|---|
+| 最高法院由自己的 Registrar 出版其判决；本院是「a general court of appeal for **Canada**」 | Supreme Court Act R.S.C. 1985 c. S-26 **s.17 + s.3**，https://laws-lois.justice.gc.ca/eng/acts/s-26/page-1.html |
+| 联邦法院/联邦上诉法院的**官方汇编**由司法部长指定编辑出版；编辑只决定哪些本院判决「of sufficient significance」而收录 | Federal Courts Act R.S.C. 1985 c. F-7 **s.58(1)(2)**，https://laws-lois.justice.gc.ca/eng/acts/F-7/page-6.html |
+| 最高法院自己的网站把该汇编标为「**Canada Supreme Court Reports**」 | https://www.scc-csc.ca/judgments-jugements/index-eng.aspx（官网导航） |
+
+**写入表：4 条可写行（全部 `exclusive_statute`）**
+
+| printed | nk | origin | volume_system | 年窗 | 依据 |
+|---|---|---|---|---|---|
+| S.C.R. | scr | CA | year_volume | 1876– | SCA s.17+s.3。年窗起点 1876 = 官方汇编首卷（语料 1876 前的年值是解析噪声，由窗排除） |
+| Can. S.C.R. | canscr | CA | continuous | 1876– | 同一官方汇编的**早期印刷形**（语料实测「6 Can. S. C. R. 52」「(1920) 60 Can. S.C.R. 131」→「Canada Supreme Court Reports」，官网以此名指该汇编）+ SCA s.17。**依据链最长的一行，复核优先看它** |
+| F.C. | fc | CA | year_volume | 1971– | FCA **s.58(1)(2)**：official reports *of the decisions of the Federal Court of Appeal and the Federal Court*。年窗起点 1971 = 联邦法院设立 |
+| F.C.R. | fcr | CA | year_volume | 1971– | 同 s.58（F.C.R. 是该官方汇编的现代印刷形） |
+
+**同时写入 22 条 `verified_mixed` 档案行**（`ac`/`appcas`/`er`/`wlr`/`kb`/`qb`/`ch`/`chd`/
+`qbd`/`aller`/`crappr`/`lr.hl`/`lr.qb`/`chapp`/`lr.pc`/`us`/`clr`/`p`/`alr`/`nzlr`/`f`/`fsupp`）：
+这些行**不参与推断**（loader 白名单只要 `verified_exclusive_*`），作用是**写死「这个汇编
+不可作来源证据」的结论与出处**，免得下一轮从头再查。其中：
+- `ac`/`appcas` 是计划 §0 的根因本身（卷首题名页逐字证明上院 + 枢密院混印）；写死它们
+  等于把 R3-2 那 211 组 CONFLICT 反向风险**永久关掉**。
+- `f`/`fsupp` 子代理原报 `exclusive_publisher`，但唯一范围陈述来自第三方参考书 →
+  我**按 P2 降级为不可写**（代价：1,137 + 若干组）。这是 P2 的直接后果，不是研究失误。
+- `kb`/`qb`/`ch`/`chd`/`qbd` 判 mixed 的理由是**没拿到卷首题名页**（不是找到反例）——
+  即「可升级但缺一件实物」，表里写明，供有检索能力的下一轮直接接手。
+
+**计划 §6 的一项测试被证据推翻（改测试而不是改结论）**：计划要求
+「`(1930), 45 K.B. 129` 唯一命中 QC 窗 → CA」。该期望的前提是**未核实**区间表里的
+QC 窗（vol 5–100/1892–1941）。已溯源的魁北克 K.B. 窗是 **1892–1898 / 卷 1–7**，
+不含卷 45/1930；英国侧又因缺卷首题名页判 mixed。→ 正确结果是 **UNDETERMINED**
+（P1：宁可多留未知）。我把该断言改成 UNDETERMINED 并把这段理由写进断言信息；
+规则本身「唯一命中窗即定案」由夹具测试覆盖（`1930|45|kb||129` + 合成 QC 窗 → CA/QC ✓）。
+
+**兑现预测（对 Stage 0 上限的拆分，Stage 4 用实测复核）**
+
+| 类别 | 净新增组 | 占比 |
+|---|---:|---:|
+| 本轮可写行（scr 11,610 / canscr 2,307 / fc 839 / fcr 153） | **14,909** | 13.1% |
+| 已研究并判 mixed/不可写 | 14,224 | 12.5% |
+| **未写**（≥300 组的就有 59 个缩写，合计 69,693 组）——主要是加拿大商业/省级汇编：dlr 9,148、or 9,027、ccc 8,865、oj 4,374、wwr 3,359、oac 2,558、cr 1,917、bclr 1,327、ar 1,219、rfl 1,211、scca 1,189、cbr 1,112、crr 1,066、altalr 994、bcj 946、cpc 845、excr 817、bcac 790、manr 779、ontlr 768、rjq 766、nsr 730、qr.kb 671… | 84,299 | 74.3% |
+
+结论要写清楚：**本轮不是「规则不行」，是「证据拿不到」**——这 84,299 组的阻塞项是
+**出版方自述/官方来源的检索能力**（`web_search` 全线 403），而不是设计缺陷。恢复检索
+能力（或接受把第三方引用手册设成第三档）是解锁它们的前提；两条都需要用户裁决。
+
+**Stage 3 由此激活的范围**：只有这 4 个缩写带 `volume_system` →
+`scr`/`fc`/`fcr` = `year_volume`（走 B：族内唯一非空年补空年槽），`canscr` = `continuous`
+（走 A：结构性零化年槽）。其余 7,000+ 族（M3 上限）本轮**不修**——`volume_system` 未核实
+就不动键，这是计划「表驱动、不猜」的直接后果。Stage 4 报「实际修复数 vs M3 上限」。
+
+### R3-17 Stage 4：全量 run + 验证（`data/run_20260913_r3a/`）
+
+**0. run 与独立指纹**。`run_all.py` 一次跑完 10 步，manifest `status=complete`。
+`implementation/r3_fingerprint_check.py`（**自己重算**，不采信 manifest 的
+`input_identity_verified_unchanged` 字段）：22 个文件逐一哈希，fingerprint
+`a065686886cacd388e6a6a06f7cadd1d51e403dbfdf996af70e67a81dfa99731` = manifest 值，
+**0 不匹配**；新表 `decisions/reporter_origin_scope.csv` **在指纹内**（R2-10 自动覆盖
+`decisions/*.csv`）。同一仪器对 r2i 复核则报 4 个不匹配（classify/decide/merge + 新表）
+——**r2i 不可由 HEAD 重放**，这是本轮改了管线的必然结果，登记备查。
+
+**1. 覆盖前后（两个总体都算）**
+
+| 量 | r2i（前） | r3a（后） | Δ |
+|---|---:|---:|---:|
+| 组总数 | 177,136 | 175,490 | −1,646（身份合并） |
+| 组·DOMESTIC_CA | 10,336 | **23,625** | **+13,289** |
+| 组·FOREIGN | 326 | 326 | **0** |
+| 组·UNDETERMINED | 166,474 | 151,539 | −14,935 |
+| kept 组（dd≥5） | 8,586 | **8,637** | **+51** |
+| kept 组·DOMESTIC_CA | 2,784 | ~2,835 | +51 |
+| 边·DOMESTIC_CA | 55,237 | **110,666** | **+55,429** |
+| 边·FOREIGN | 384 | 384 | **0** |
+| 边·UNDETERMINED | 277,866 | 218,678 | −59,188 |
+| 边总数 | 333,487 | 329,728 | −3,759（组数减少所致） |
+
+**头条要说两句话，缺一句就是误导**：组级国内覆盖 **+13,289 组（10,336 → 23,625，
+约 2.3 倍）**；但**产品门槛内的 kept 组只 +51**（8,586 → 8,637）——新增判定的组绝大多数是
+dd<5 的单例，落在占位门槛之下。**计划 §3 要的「净新增组级覆盖」是前者；产品影响是后者。**
+外国方向**零变化**（计划 §3 上限里的 23,186 组外国净新增全部未兑现，原因见 R3-16：
+英国组零可写行、`us`/`clr` 混合、`f`/`fsupp` 按 P2 降级、`nfldpeir` 无源）。
+
+**2. 爆半径（`implementation/r3_blast_radius.py`，按层、逐条归因）**
+
+| 层 | 变化数 | 归因 |
+|---|---:|---|
+| 提及（candidate_id） | **39,352** | **100% 单类**：`alternative_contained → alternative_same_key`，全部 `citation_kind=reporter`。成因：Stage 3 把带年/不带年的写法并成同键后，「被包含的并存读法」变成了「同键并存读法」→ 仍是**同一键只计一次**，不改变计数 |
+| 成员行 origin 字段 | **15,117** | `reporter_scope` 15,117（全部 `exclusivity=exclusive_statute`） |
+| 成员行（新增行，年槽被补后新出现的键） | **2,660** | 同上（`rows_only_after`）→ 本规则实际判定的成员行 = 15,117 + 2,660 = **17,777** |
+| 成员行 组签名变化 | **148** | `identity`（Stage 3 合并） |
+| 成员行 组结论变而自身证据未变 | **986** | **全部**可归因：这 986 行所在组都有同组 `exclusive_reporter_scope` 成员 → 兄弟成员的新证据抬升了组结论。**未解释 = 0** |
+| 一致性三元组 | **0 / 0 / 0** | 行来源不一致 0 / 多国别非 CONFLICT 0 / 同系统多键 0 |
+
+**3. 计数守恒与 dd/kept**：merge 层 `occurrence_total` 两轮**完全一致**
+（SCC 360,950 / ONCA 171,151）——身份修复没有虚增或丢失计数；`merge_keys` 减少
+（SCC 125,013→123,463；ONCA 67,668→67,611）= 被合并的键。按**组内容签名**（不用组号，
+也不用 (court,merge_key)——同一键可被按判决拆成多组，我第一版比对就栽在这里并把
+528 行误报成 dd 变化）重算：共同签名 172,783，**dd 升 401 / 降 0**；
+kept **false→true 62 / true→false 0**；签名只在新 run 2,707（其中 kept 32）、
+只在旧 run 4,353（其中 kept 43）——后者是**被合并掉的旧签名**，不是门槛丢失。
+
+**4. 人工对照原文（计划 §8.3）**。**新增 FOREIGN 判定 = 0**（FOREIGN 组与边都不变），
+故「每条新 FOREIGN 逐条回溯」为空集——这条要求本轮没有对象，不是跳过。
+**同形异义汇编带来的新 DOMESTIC_CA = 0**（同形表行一条都没写，见 §8.4）。
+四行来源地各做原文核对（`pipeline/traceback.py --run-dir data/run_20260913_r3a`）：
+
+| 判定 | candidate | 原文窗口（节选） | 结论 |
+|---|---|---|---|
+| `26 Can. S.C.R. 595` → CA | `SCC:5288:6260:6280:shape_vol_abbr_page` | 1897 年 SCC 判决注脚清单 `[5] <<26 Can. S. C. R. 595>>.`（同列 Q.R./M.L.R./Q.B.D./App. Cas.） | 印刷形与 Can. S.C.R. 一致 ✓ |
+| `[2015] 1 F.C.R. 335` → CA | `SCC:7108:26543:26562:shape_bracket`（citing = 2015 SCC 61） | `APPEAL from a judgment of the Federal Court of Appeal …, 2014 FCA 113, <<[2015] 1 F.C.R. 335>>, …` | F.C.R. = 联邦上诉法院判决汇编 ✓ |
+| `[1991] 1 F.C. 428` → CA | `SCC:1534:10378:10395:shape_bracket`（citing = [1993] 1 SCR 941） | `APPEAL from a judgment of the Federal Court of Appeal, <<[1991] 1 F.C. 428>>, 124 N.R. 379 …` | F.C. = 联邦上诉法院判决汇编 ✓（且证明本规则只作用于 `citation_kind=reporter`，未碰中立码 FC） |
+| `[1991] 1 S.C.R. 742` → CA | 组 `XC-G009736`（dd 694，R. v. W.(D.)） | 组内另有 `1991||scr||741` 等平行写法，案名众数一致 | SCC 判例 ✓ |
+
+**5. `exclusive_reporter_scope_ambiguous`（计划 §8.4）实测 = 0 行 / 0 组**。
+对照 M4 的**规划估计**（未核实区间下 675 个组合命中多行、3,197 条提及，其中
+**异国** 294 组合 / 1,911 条提及）：**估计没有兑现，但不是因为歧义被解决了**——是因为
+K.B./Q.B./S.C./C.P./P./A.L.R./C.L.R. 这些同形汇编**一条可写行都没写**（英国组零可写行、
+其余无源）。它们的提及仍是普通 UNDETERMINED，**不落 ambiguous 列**。这正是计划要我
+「诚实说明而不是折进普通 UNDETERMINED 就算」的那件事：**ambiguous 列读 0 不代表残差为 0，
+只代表残差被推到了「没有行」这一更粗的桶里**；规模见 §7 的 84,299 组。
+
+**6. Stage 3 实际修复数 vs M3 上限**（merge manifest，按 run 记账）
+
+| 量 | SCC | ONCA | 合计 | M3 上限（r2i） |
+|---|---:|---:|---:|---:|
+| A 连续卷零化年槽（行） | 1,575 | 2 | 1,577 | — |
+| B 族内唯一年补空年槽（族） | 4,681 | 1,481 | **6,162** | 7,581 |
+| B 补年（提及行） | 33,365 | 11,868 | 45,233 | — |
+| B 弃权族（≥2 年） | 1,445 | 722 | **2,167** | 13,130 |
+| 被合并掉的 merge key | 1,550 | 57 | 1,607 | — |
+
+读法：B 的**兑现率 6,162 / 7,581 = 81%**（远超我按「只有 4 个缩写带 volume_system」的预期，
+因为 S.C.R. 一族就占 1,402 个上限制标的多数）；弃权族 2,167 远小于上限 13,130，
+因为上限的多数族属于**没有 `volume_system`** 的汇编（本轮不动它们）。
+
+**7. 全部测试套件（改动后、全量 run 之后重跑）**：`test_candidates.py` **262 条断言
+exit 0**（含真实表项）；`test_layers.py` 120 条 exit 0；`run_regression.py --selftest`
+exit 0；`extract.py --fixture-check` exit 0。
+
+**8. 账本（Round 3 收口）**
+
+- **B12（上诉链合并 19 组）**：未测，照抄计划，标未核。
+- **B13（年读作卷）**：r2i 实测 92 条（计划写 188，口径不符），本轮未动，标未核。
+- **B14（M1a/M1b 缺口与共引阻断）**：本轮**未变**——被身份基础挡住的组 4,567 → 4,558
+  （`name_year` 4,468 / `cocitation` 81 / `unanchored` 9）。剩余净新增上限 113,432 → 98,507。
+- **B15（M3 弃权桶）**：13,130 → 13,084 族（含空年变体 1,304 → 1,271）；
+  本轮只兑现了 6,162 族，其余因无 `volume_system` 不动。
+- **B16（同形异义真歧义残差）**：**未兑现为 ambiguous 列**（实测 0），改为登记在
+  「无行」桶：K.B./Q.B./S.C./C.P./P./A.L.R./C.L.R. 等合计约 3,197 条提及仍 UNDETERMINED。
+- **B17（表侧退化行）**：`pd`/`nfldpeir` 的「有行无区间」问题**未触发**（这两行未写）；
+  `lrex`/`lrqb` 的键印刷形大小写不一致仍是 2 族，未动。
+- **B18（本轮新增，最重要的阻塞项）**：**84,299 个净新增组（74% 上限）卡在「拿不到
+  出版方/官方来源」**——`web_search` 与 `x_search` 在所有引擎上 403（firecrawl keyless），
+  三个子代理与我都只能 `web_fetch` 已知确切 URL。解锁只有两条路，**都需用户裁决**：
+  (a) 恢复检索能力（配一个可用的搜索 key）后重做 Stage 1；
+  (b) 把「第三方权威引用手册（McGill Guide / Bluebook / Cardiff Index）」设为**第三档**
+      可写证据（比 P2 现在的两档宽），并把反例搜寻作为该档的强制条件。
+- **B19（本轮新增，另一条技术路线）**：数据库/厂商式引证（`oj` = Ontario Judgments QL
+  4,374 组、`scca` = S.C.C.A. No. 1,189 组、`qr.kb` 671 组…）按其性质应走**既有**的
+  `decisions/identifier_systems.csv` + `court_or_reporter_scope.csv` 路线（R2F 已为
+  CanLII/Carswell/DTC/WL 用过，允许 `verified_authoritative_manual` 档），**不是**走本轮
+  这张表。本轮未做（避免超范围），登记为下一轮的候选。
+
+## Round 3 交付物清单（供复核）
+
+| 类别 | 文件 |
+|---|---|
+| 决策表（唯一事实源） | `decisions/reporter_origin_scope.csv`（26 行：4 可写 + 22 mixed 档案） |
+| 生产代码 | `pipeline/decide.py`（`load_reporter_origin` / `_reporter_origin` / 优先级接线）、`pipeline/classify.py`（`volume_system` 盖章）、`pipeline/merge.py`（`apply_reporter_identity_fixes`） |
+| 测试 | `pipeline/tests/test_candidates.py`（+13 项，262 断言） |
+| Stage 0 仪器 | `implementation/coverage_metric.py` + `data/coverage_out/stage0_{r2i,r3a}.json` |
+| Stage 1 研究输入 | `audit/stage1_targets.py` + `audit/findings/r3_stage1_targets*.{md,json}` |
+| Stage 1 研究产出 | `audit/findings/r3_reporter_origin_{british,other}.md`（加拿大组子代理 **failed**，无产出） |
+| Stage 4 仪器 | `implementation/r3_blast_radius.py`、`r3_fingerprint_check.py`（指纹 + 一致性） |
+| 全量 run | `data/run_20260913_r3a/`（status=complete，指纹自核一致） |
