@@ -60,6 +60,7 @@
 | `gate_effect_audit.py` | 支持度闸的**逐组**效应（PROBLEMS #60）：闸把哪些组合拆开了、拆开后两边的名字/引证/年份各是什么——据此判断闸是挡住了错并、还是拆散了本该在一起的平行引证 |
 | `decide_no_gate.py` | 关掉支持度闸跑一遍裁定层，重建「不设闸」的对照产出。**只是审计仪器**：生产线永远按 `pipeline/decide.py` 里的常量跑 |
 | `append_problems_entry.py` | 向 `PROBLEMS.md` 追加/改写登记项。账本是 CRLF，只按 `"\r\n"` 切分拼回，写前断言无裸 LF——普通编辑器会把整份文件改写成 LF，diff 变成全文重写。`--set-disposition` 只换「处置」一格，其余行逐字节不动 |
+| `glm_prep.py` + `glm_verify.py` | 外部廉价模型（GLM）双检，产出进 `data/glm_audit/`（gitignore）。C 任务：随机抽判决段落，模型只原样抄出段内每条引证（不做判断）；核对脚本确认抄出串在原文里真有、且没被抽取层任一 span（kept 或 superseded）盖住，没盖住的写进 `C_candidates.csv`（**疑似漏抽**，交人判）。A 任务：kept 组按 dd 取前 N 组，模型判投票案名有没有毛病，须附原文逐字引语；核对脚本验证引语在原文里找得到，写进 `A_review.csv`。模型输出一律不直接信（约束九）——两个任务都只做"能机器判定的事"，最终判断留给人 |
 
 ### `gap_audit.py` 用法
 
