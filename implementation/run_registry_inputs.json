@@ -1,0 +1,708 @@
+{
+ "run_20260912_r2": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "98b31cc204fcf06bb329c63c8b5bb7b96bfac1fb43b1332dc08c78b6a6575e09",
+   "decisions/neutral_court_codes.csv": "8b38e590a935881cca203a4b7ee3bc60e7f0e5d367f1dfeb3fa98c12bddcf2ef",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "67f434906c3b5c5b5d80b907fc2de59d8f9791302f0e1011dd5b49805ebdd3e1",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "a6cf15a88ef773f2ebe95da098114e18d23a193a5344d7060677c41aad18501e",
+   "pipeline/edges.py": "2188d1cd24a4fd00bac67783364337d9893aa05e2ef7da635147b86412300c99",
+   "pipeline/extract.py": "1065821e164c98a27cd3f5445d03644276626ba29c4ab9fc2fd65b07a0fabea0",
+   "pipeline/merge.py": "6866f76f9ce41def35029994921768828edb32d1a765c74417d7d3bd0f1195b9",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "f9cb1d155cd1337d73bdfe4c2bed173792f8a798aee059b9e542a602d3ae07a6",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "f9b85ea25edb31022ec38086eb5436b4f42b2b839875ad3cada56b6c46a14908",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "5af717f6a3c566bb191d2656a1fbb72a96cdeceb99eb5264fc536f35a1f73892",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260912_r2b": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "98b31cc204fcf06bb329c63c8b5bb7b96bfac1fb43b1332dc08c78b6a6575e09",
+   "decisions/neutral_court_codes.csv": "8b38e590a935881cca203a4b7ee3bc60e7f0e5d367f1dfeb3fa98c12bddcf2ef",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "67f434906c3b5c5b5d80b907fc2de59d8f9791302f0e1011dd5b49805ebdd3e1",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "a6cf15a88ef773f2ebe95da098114e18d23a193a5344d7060677c41aad18501e",
+   "pipeline/edges.py": "2188d1cd24a4fd00bac67783364337d9893aa05e2ef7da635147b86412300c99",
+   "pipeline/extract.py": "1065821e164c98a27cd3f5445d03644276626ba29c4ab9fc2fd65b07a0fabea0",
+   "pipeline/merge.py": "6866f76f9ce41def35029994921768828edb32d1a765c74417d7d3bd0f1195b9",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "65e0386afe7555807ff25d898454611f5a81eae910b924d442e8bf18c68407a1",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "f9b85ea25edb31022ec38086eb5436b4f42b2b839875ad3cada56b6c46a14908",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "2bfe2f5740689926f2b6ebd4e1e77bac79ce97a57d3a17240998eb1c9ffb5468",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260912_r2c": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "98b31cc204fcf06bb329c63c8b5bb7b96bfac1fb43b1332dc08c78b6a6575e09",
+   "decisions/neutral_court_codes.csv": "8b38e590a935881cca203a4b7ee3bc60e7f0e5d367f1dfeb3fa98c12bddcf2ef",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "67f434906c3b5c5b5d80b907fc2de59d8f9791302f0e1011dd5b49805ebdd3e1",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "a6cf15a88ef773f2ebe95da098114e18d23a193a5344d7060677c41aad18501e",
+   "pipeline/edges.py": "2188d1cd24a4fd00bac67783364337d9893aa05e2ef7da635147b86412300c99",
+   "pipeline/extract.py": "1065821e164c98a27cd3f5445d03644276626ba29c4ab9fc2fd65b07a0fabea0",
+   "pipeline/merge.py": "6866f76f9ce41def35029994921768828edb32d1a765c74417d7d3bd0f1195b9",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "e5d2bcc3489120eb1482018889eb532fb2d5f19a1498e5a6883a1296497015ab",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "f9b85ea25edb31022ec38086eb5436b4f42b2b839875ad3cada56b6c46a14908",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "53ae1f248f6ea1dc04115e33fb63dc0c650fe49edd00eb27dff91ef7bdb5b35e",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260913_r2d": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "68af53793b50bac0ef3f19e3f218f9f2950cba3a8df8714bc65d7ebaa595a204",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "98b31cc204fcf06bb329c63c8b5bb7b96bfac1fb43b1332dc08c78b6a6575e09",
+   "decisions/neutral_court_codes.csv": "8b38e590a935881cca203a4b7ee3bc60e7f0e5d367f1dfeb3fa98c12bddcf2ef",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "67f434906c3b5c5b5d80b907fc2de59d8f9791302f0e1011dd5b49805ebdd3e1",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "edbd7512038c5dc1651a1eaf1abedc39f8740099d1e9861e19b0ab5f4e6bad79",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "1065821e164c98a27cd3f5445d03644276626ba29c4ab9fc2fd65b07a0fabea0",
+   "pipeline/merge.py": "0def1bc2366fbba0e9d2dabf81c01894db2adfa72838bde2aca66b1ba58a6ae7",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "e5d2bcc3489120eb1482018889eb532fb2d5f19a1498e5a6883a1296497015ab",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "f9b85ea25edb31022ec38086eb5436b4f42b2b839875ad3cada56b6c46a14908",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "e5af9a08d1126f7fde01ab05869accf732503e4f0cb635f9f16b30995f14870b",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260913_r2d_b": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "68af53793b50bac0ef3f19e3f218f9f2950cba3a8df8714bc65d7ebaa595a204",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "98b31cc204fcf06bb329c63c8b5bb7b96bfac1fb43b1332dc08c78b6a6575e09",
+   "decisions/neutral_court_codes.csv": "8b38e590a935881cca203a4b7ee3bc60e7f0e5d367f1dfeb3fa98c12bddcf2ef",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "67f434906c3b5c5b5d80b907fc2de59d8f9791302f0e1011dd5b49805ebdd3e1",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "edbd7512038c5dc1651a1eaf1abedc39f8740099d1e9861e19b0ab5f4e6bad79",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "1065821e164c98a27cd3f5445d03644276626ba29c4ab9fc2fd65b07a0fabea0",
+   "pipeline/merge.py": "cb3b983c11119ef20e12266fe7e120348163a006cb29a8234d8015fc3078a39a",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "e5d2bcc3489120eb1482018889eb532fb2d5f19a1498e5a6883a1296497015ab",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "f9b85ea25edb31022ec38086eb5436b4f42b2b839875ad3cada56b6c46a14908",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "d80bd92b4e9215e8445a464c34cd028f1d04e93ceb89f6b4e0ab8e4a760c9212",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260913_r2d_c": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "68af53793b50bac0ef3f19e3f218f9f2950cba3a8df8714bc65d7ebaa595a204",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "98b31cc204fcf06bb329c63c8b5bb7b96bfac1fb43b1332dc08c78b6a6575e09",
+   "decisions/neutral_court_codes.csv": "8b38e590a935881cca203a4b7ee3bc60e7f0e5d367f1dfeb3fa98c12bddcf2ef",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "67f434906c3b5c5b5d80b907fc2de59d8f9791302f0e1011dd5b49805ebdd3e1",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "edbd7512038c5dc1651a1eaf1abedc39f8740099d1e9861e19b0ab5f4e6bad79",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "1065821e164c98a27cd3f5445d03644276626ba29c4ab9fc2fd65b07a0fabea0",
+   "pipeline/merge.py": "6e5c5115c5e6b2265e6b8372fa956a69f4caec5539e861d0f7c6c435cae603c1",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "e5d2bcc3489120eb1482018889eb532fb2d5f19a1498e5a6883a1296497015ab",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "f9b85ea25edb31022ec38086eb5436b4f42b2b839875ad3cada56b6c46a14908",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "58b15d1b77b110c65a825728039fdbb999b642d991a36dc8d67a356a136eb3c7",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260913_r2e": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "68af53793b50bac0ef3f19e3f218f9f2950cba3a8df8714bc65d7ebaa595a204",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "98b31cc204fcf06bb329c63c8b5bb7b96bfac1fb43b1332dc08c78b6a6575e09",
+   "decisions/neutral_court_codes.csv": "8b38e590a935881cca203a4b7ee3bc60e7f0e5d367f1dfeb3fa98c12bddcf2ef",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "fd0fdb3a2d6a484046d928f0e6de983e1a2d1a11687dc64d1ec9a1747b07cdbf",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "edbd7512038c5dc1651a1eaf1abedc39f8740099d1e9861e19b0ab5f4e6bad79",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "bad0d3b9591e4c8a1575815093905f7729c7a77dd5c225582288b11a89cb8460",
+   "pipeline/merge.py": "00cfc479d749363c3603fac26cadb9e4082bbbb9988c6dd8e4d5a0004e2a35d6",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "e5d2bcc3489120eb1482018889eb532fb2d5f19a1498e5a6883a1296497015ab",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "f9b85ea25edb31022ec38086eb5436b4f42b2b839875ad3cada56b6c46a14908",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "ecb1102834146e591a475a1121ec08a8d2e5d713d027c811715a044f159be7e8",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260913_r2f": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "f36d2b53157518c52651866aee76ebbee683d558951d335613e32ddd6ba2def8",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "98b31cc204fcf06bb329c63c8b5bb7b96bfac1fb43b1332dc08c78b6a6575e09",
+   "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+   "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "977fee06cd799eff5df666e172dee586979e2fba7e0ef22416fff328688c694b",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "77d913a9371304d5bcfd904c8236d65777e1f962b4786612d210c5e49f178f01",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "466f089acad2b904183597df8f60e690c54257250b34c0df8f478123ec429c7e",
+   "pipeline/merge.py": "00cfc479d749363c3603fac26cadb9e4082bbbb9988c6dd8e4d5a0004e2a35d6",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "fe0b463e6f6236c331482d68cbdf2396eb240405b001c8e280d49465906156b7",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "e7c1abdd804dcc9b0d5815ae54746ddbb448ed0ea876faaac58d20eb91ded36c",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "1c4cc49b627498fe10328c3e533f3be7e9d78536d52c32831ed5943df84a1186",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260913_r2g": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "f36d2b53157518c52651866aee76ebbee683d558951d335613e32ddd6ba2def8",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+   "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+   "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "977fee06cd799eff5df666e172dee586979e2fba7e0ef22416fff328688c694b",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "8d1116c72fb158ca504d410a03858fbf974496464c9550d75fe1399aa948d38f",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "466f089acad2b904183597df8f60e690c54257250b34c0df8f478123ec429c7e",
+   "pipeline/merge.py": "00cfc479d749363c3603fac26cadb9e4082bbbb9988c6dd8e4d5a0004e2a35d6",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "fe0b463e6f6236c331482d68cbdf2396eb240405b001c8e280d49465906156b7",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "e7c1abdd804dcc9b0d5815ae54746ddbb448ed0ea876faaac58d20eb91ded36c",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "76537c82abb79ef467e74290ed29ac69811e390385738e6010e93de6078c4731",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260913_r2h": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "f36d2b53157518c52651866aee76ebbee683d558951d335613e32ddd6ba2def8",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+   "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+   "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "b9f53b336c9fc2092ffab3348274e315ca1bb2d06400d595ba17d25e3fc37719",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "8d1116c72fb158ca504d410a03858fbf974496464c9550d75fe1399aa948d38f",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "466f089acad2b904183597df8f60e690c54257250b34c0df8f478123ec429c7e",
+   "pipeline/merge.py": "00cfc479d749363c3603fac26cadb9e4082bbbb9988c6dd8e4d5a0004e2a35d6",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "fe0b463e6f6236c331482d68cbdf2396eb240405b001c8e280d49465906156b7",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "e7c1abdd804dcc9b0d5815ae54746ddbb448ed0ea876faaac58d20eb91ded36c",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "dc6fe5be49419a5a157d6203ba62a67a3c6dd410d05acdbc74cd18b1da2c25b0",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260913_r2i": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "f36d2b53157518c52651866aee76ebbee683d558951d335613e32ddd6ba2def8",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+   "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+   "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "b9f53b336c9fc2092ffab3348274e315ca1bb2d06400d595ba17d25e3fc37719",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "8d1116c72fb158ca504d410a03858fbf974496464c9550d75fe1399aa948d38f",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "466f089acad2b904183597df8f60e690c54257250b34c0df8f478123ec429c7e",
+   "pipeline/merge.py": "47a48f2980de568136dcb64b5a38f02a2f44c96d8cd25e27c920c9729b2c6c3a",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "fe0b463e6f6236c331482d68cbdf2396eb240405b001c8e280d49465906156b7",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "e7c1abdd804dcc9b0d5815ae54746ddbb448ed0ea876faaac58d20eb91ded36c",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "6deba00b40ff51053a9f4c7dea827854f885ef5714be9c9eca90bc820be9504b",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260913_r3a": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "f36d2b53157518c52651866aee76ebbee683d558951d335613e32ddd6ba2def8",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+   "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+   "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/reporter_origin_scope.csv": "e0afcd9126775f483692294468f5d302caff9e1585f37cb3d78e4f3854249842",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "ebd9d89b103c3f0c7f937de2641ddf002a08a972e905d7cdacdbae2ce26c3311",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "2c8dc80f5fc4b69991506709dde14c34bab9daf956efeda4e360e70b1afe8b3e",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "466f089acad2b904183597df8f60e690c54257250b34c0df8f478123ec429c7e",
+   "pipeline/merge.py": "9381761258a1f9cfae0e83efe757408d295b2da87fcc98afa137cc579e6d23e0",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "fe0b463e6f6236c331482d68cbdf2396eb240405b001c8e280d49465906156b7",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "e7c1abdd804dcc9b0d5815ae54746ddbb448ed0ea876faaac58d20eb91ded36c",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "a065686886cacd388e6a6a06f7cadd1d51e403dbfdf996af70e67a81dfa99731",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260913_r3b": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "f36d2b53157518c52651866aee76ebbee683d558951d335613e32ddd6ba2def8",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+   "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+   "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/reporter_origin_scope.csv": "32d43daf2c8c75aa46d77b224957f536f1c01131b5bb11dd499c549ec0a928bf",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "ebd9d89b103c3f0c7f937de2641ddf002a08a972e905d7cdacdbae2ce26c3311",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "2c8dc80f5fc4b69991506709dde14c34bab9daf956efeda4e360e70b1afe8b3e",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "466f089acad2b904183597df8f60e690c54257250b34c0df8f478123ec429c7e",
+   "pipeline/merge.py": "9381761258a1f9cfae0e83efe757408d295b2da87fcc98afa137cc579e6d23e0",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "fe0b463e6f6236c331482d68cbdf2396eb240405b001c8e280d49465906156b7",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "e7c1abdd804dcc9b0d5815ae54746ddbb448ed0ea876faaac58d20eb91ded36c",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "db24db9ba7e9d658eb885d1e79ea9fc1906ff53d2489f7210ee2df3aafde8e85",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260913_r3c": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "f36d2b53157518c52651866aee76ebbee683d558951d335613e32ddd6ba2def8",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+   "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+   "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/reporter_origin_scope.csv": "141a6edae0c2fa8ec1a1575ac8847b6a2f980fac20b1df458d1fde4bce49d019",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "ebd9d89b103c3f0c7f937de2641ddf002a08a972e905d7cdacdbae2ce26c3311",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "2c8dc80f5fc4b69991506709dde14c34bab9daf956efeda4e360e70b1afe8b3e",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "466f089acad2b904183597df8f60e690c54257250b34c0df8f478123ec429c7e",
+   "pipeline/merge.py": "9381761258a1f9cfae0e83efe757408d295b2da87fcc98afa137cc579e6d23e0",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "fe0b463e6f6236c331482d68cbdf2396eb240405b001c8e280d49465906156b7",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "e7c1abdd804dcc9b0d5815ae54746ddbb448ed0ea876faaac58d20eb91ded36c",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "7610ace4934e82d0bbf022acf27ff1769dc38d2581cfa1ee68e9d539172f376c",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260913_r3d": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "f36d2b53157518c52651866aee76ebbee683d558951d335613e32ddd6ba2def8",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+   "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+   "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/reporter_origin_scope.csv": "141a6edae0c2fa8ec1a1575ac8847b6a2f980fac20b1df458d1fde4bce49d019",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "ebd9d89b103c3f0c7f937de2641ddf002a08a972e905d7cdacdbae2ce26c3311",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "9f8e58aec8791c22d9750d268b2ccdac5ddf50aa334e07a262544407f9b2a91b",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "466f089acad2b904183597df8f60e690c54257250b34c0df8f478123ec429c7e",
+   "pipeline/merge.py": "419bf0f0bac669bdb066a6fe1111c103590f581668b96a00012371fc2d0e2db0",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "fe0b463e6f6236c331482d68cbdf2396eb240405b001c8e280d49465906156b7",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "e7c1abdd804dcc9b0d5815ae54746ddbb448ed0ea876faaac58d20eb91ded36c",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "58af3b39d203626d73227db4119a598efd513a9afea43cd22ca9c4c2f2712a1c",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260913_r3e": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "f36d2b53157518c52651866aee76ebbee683d558951d335613e32ddd6ba2def8",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_or_reporter_scope.csv": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+   "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+   "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/reporter_origin_scope.csv": "141a6edae0c2fa8ec1a1575ac8847b6a2f980fac20b1df458d1fde4bce49d019",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "ebd9d89b103c3f0c7f937de2641ddf002a08a972e905d7cdacdbae2ce26c3311",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "1de0daa8f3478c968768063689282c06f979ec1e3f1bd751a7b2958a9acfc67e",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "466f089acad2b904183597df8f60e690c54257250b34c0df8f478123ec429c7e",
+   "pipeline/merge.py": "419bf0f0bac669bdb066a6fe1111c103590f581668b96a00012371fc2d0e2db0",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "fe0b463e6f6236c331482d68cbdf2396eb240405b001c8e280d49465906156b7",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "e7c1abdd804dcc9b0d5815ae54746ddbb448ed0ea876faaac58d20eb91ded36c",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "998c7e44a218b11ca3cf22edd069c153c7a8809c2fdaa8a01628fe0d3207d882",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260914_r4a": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "f36d2b53157518c52651866aee76ebbee683d558951d335613e32ddd6ba2def8",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/court_designations.csv": "374832958b8466c317368c5bfb1110374aab404e90ec0b162b9a7b53a23238c5",
+   "decisions/court_or_reporter_scope.csv": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+   "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+   "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/reporter_origin_scope.csv": "141a6edae0c2fa8ec1a1575ac8847b6a2f980fac20b1df458d1fde4bce49d019",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "ec44fc037fa39e35603f63d200bad05a211ad9c8ea0dfb62ddd5430b54e79124",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "922b0070d2a46139c2db223b4a884ab1bd62e80d7136ca872723fd56e23fb649",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "89b79e377776b96c34d6af03f48590e19f7b136705b20da3f501b627c3d187a9",
+   "pipeline/merge.py": "d3242cf3ffdd55027ab7df3bcd8c3ba10daf00d6e33a989abf52aab42b5f80af",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "fe0b463e6f6236c331482d68cbdf2396eb240405b001c8e280d49465906156b7",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "f0e4c6d58c82845ce3cd9030e3c69206ad6f3b7e543567ea7721b0e765b24726",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "59958410c604a805ccb52f7bc9c047df34e90543d3d3c35fdec6a7c8d82deeb0",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260914_r4b": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "f36d2b53157518c52651866aee76ebbee683d558951d335613e32ddd6ba2def8",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/case_origin_manual.csv": "d2cb7f9f1e4bac148145c4acf51e73e31036097092cf4bd35c3ea46365e495ab",
+   "decisions/court_designations.csv": "374832958b8466c317368c5bfb1110374aab404e90ec0b162b9a7b53a23238c5",
+   "decisions/court_or_reporter_scope.csv": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+   "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+   "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/reporter_origin_scope.csv": "141a6edae0c2fa8ec1a1575ac8847b6a2f980fac20b1df458d1fde4bce49d019",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "ec44fc037fa39e35603f63d200bad05a211ad9c8ea0dfb62ddd5430b54e79124",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "83afce3d842b6b496e70d24048b21a355362a93aeb7e2942ece8788cd28a013f",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "89b79e377776b96c34d6af03f48590e19f7b136705b20da3f501b627c3d187a9",
+   "pipeline/merge.py": "d3242cf3ffdd55027ab7df3bcd8c3ba10daf00d6e33a989abf52aab42b5f80af",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "fe0b463e6f6236c331482d68cbdf2396eb240405b001c8e280d49465906156b7",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "f0e4c6d58c82845ce3cd9030e3c69206ad6f3b7e543567ea7721b0e765b24726",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "3cf94ef49e31e5a574b4c1af943ff68fda4e192f1928b3588c5e9a7a0d186d50",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ },
+ "run_20260914_r4c": {
+  "files": {
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "decisions/bilingual_neutral_codes.csv": "f36d2b53157518c52651866aee76ebbee683d558951d335613e32ddd6ba2def8",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/case_origin_manual.csv": "d2cb7f9f1e4bac148145c4acf51e73e31036097092cf4bd35c3ea46365e495ab",
+   "decisions/court_designations.csv": "374832958b8466c317368c5bfb1110374aab404e90ec0b162b9a7b53a23238c5",
+   "decisions/court_or_reporter_scope.csv": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+   "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+   "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+   "decisions/reporter_jurisdiction.csv": "c729294e7a9f21d74cc234a5da25845e4fb7bb5e8fe86dd1ef789b8e939e6a19",
+   "decisions/reporter_origin_scope.csv": "141a6edae0c2fa8ec1a1575ac8847b6a2f980fac20b1df458d1fde4bce49d019",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "pipeline/classify.py": "ec44fc037fa39e35603f63d200bad05a211ad9c8ea0dfb62ddd5430b54e79124",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "d6e0253d4b6deff735b61b5e4945a102160799ffe47c019bdb7aa5592c56870c",
+   "pipeline/edges.py": "104761a0d94fb68896fd81764720421a6d4155c3ffec4f8079ad3bf757664e4f",
+   "pipeline/extract.py": "89b79e377776b96c34d6af03f48590e19f7b136705b20da3f501b627c3d187a9",
+   "pipeline/merge.py": "d3242cf3ffdd55027ab7df3bcd8c3ba10daf00d6e33a989abf52aab42b5f80af",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/run_all.py": "fe0b463e6f6236c331482d68cbdf2396eb240405b001c8e280d49465906156b7",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "f0e4c6d58c82845ce3cd9030e3c69206ad6f3b7e543567ea7721b0e765b24726",
+   "pipeline/traceback.py": "16d9fd802ca59aaac1ba277a6f73a4be82ed18e238c9b16867b7011bac77efe3",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916"
+  },
+  "fingerprint": "92bd2840dc315383e7e5b6cde976d74d2ea9484bd838b15224dd3c8a4ea8426d",
+  "params": {
+   "batch_size": 500,
+   "courts": [
+    "SCC",
+    "ONCA"
+   ],
+   "limit_batches": null,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)",
+   "year_from": null
+  }
+ }
+}
