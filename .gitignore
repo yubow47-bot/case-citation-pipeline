@@ -1,7 +1,22 @@
 corpus/
 data/
 *.parquet
-__pycache__/ 
+__pycache__/
 # 建表工具的 API 抓取缓存（机器产物；每行 source_locator 自带可重放端点，缓存无需入库）
 decisions/tools/cache/
 decisions/tools/*.json
+
+# ---- 密钥防线（仓库自带，不依赖本机全局 gitignore）----
+# 背景：建表工具走 --key-file / CANLII_API_KEY 取 key（见 decisions/tools/build_*.py），
+# 把 key 文件放在仓库旁边是自然操作，故在此拦住，避免 git add -A 误收。
+.env
+.env.*
+*.key
+canlii*.txt
+
+# ---- 本机 AI 工具目录 ----
+# .zcode/（会话计划）与 .claude/settings.local.json（本地权限）此前只由本机全局
+# gitignore（~/.config/git/ignore）保护，克隆到别处即失效，故在仓库内再钉一道。
+# 注：.claude/ 只挡 settings.local.json——其余 .claude/ 内容若要入库，须逐个过目。
+.zcode/
+.claude/settings.local.json
