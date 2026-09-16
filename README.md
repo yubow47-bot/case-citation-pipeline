@@ -1,40 +1,52 @@
-# 判决引证全量统计管线
+# Case Citation Network
 
-从加拿大法院判决全文语料中，结构化抽取判决引用的**全部案例引证**——外国与国内、中立与汇编、数据库与厂商标识符均在范围内——整理成带案名、法域、来源地、引用频次的统计表格。用途是学术研究：对法庭历史中被引案件的完整图景做可审计的统计。
+**English** | [中文](README.zh.md)
 
-**读数据之前先读 [`USAGE.md`](USAGE.md)**：它写清了「被引 N 次」到底量的是什么、`dd` 与
-`occurrence_count` 的区别、门槛值未校准、法域与来源地是两件事，以及一份完整的少算清单。
+A citation-extraction pipeline over Canadian case law. From full-text judgments it structurally extracts **every case citation** — foreign and domestic, neutral and reprinted, database and vendor identifiers alike — and assembles them into an auditable statistical table carrying case name, jurisdiction, case origin, and citation frequency. The purpose is academic research: an auditable census of the cited-case landscape in the history of these courts.
 
-## 五层架构
+**Corpus — [`a2aj/canadian-case-law`](https://huggingface.co/datasets/a2aj/canadian-case-law).** The source is that dataset on HuggingFace (Parquet), **not** a corpus collected by this project. Two courts only:
 
-1. **抽取** — 结构匹配，全量输出，不筛不判
-2. **分类** — 逐行独立：查表定法域、切分案名候选、标记误报
-3. **归并** — 跨行统计：同串合并、变体折叠、案名众数投票
-4. **裁定** — 案件身份：来源地判定、平行汇编合并、跨法院合并、同名异案拆分
-5. **选取** — 一道门槛，不删行，打标记
+| Court | Judgments | Year range |
+|---|---:|---|
+| Supreme Court of Canada (SCC) | 10,891 | 1877–2026 |
+| Court of Appeal for Ontario (ONCA) | 24,089 | 1998–2026 |
 
-## 目录结构
+Provincial superior courts, appellate courts other than ONCA, federal courts and tribunals are **not** in the corpus — see §1 of [`USAGE.md`](USAGE.md).
+
+**Read [`USAGE.md`](USAGE.md) before reading any number** (Chinese): it states exactly what "cited N times" measures, the difference between `dd` and `occurrence_count`, that the `kept` threshold is an uncalibrated placeholder, that jurisdiction and case origin are two different things, and a complete list of what this table under-counts.
+
+## Five layers
+
+1. **Extract** — structural matching; full output, nothing filtered or judged
+2. **Classify** — row-independent: look up jurisdiction, split case-name candidates, flag false positives
+3. **Merge** — cross-row statistics: collapse identical strings, fold variants, mode-vote on case names
+4. **Decide** — case identity: origin determination, parallel-reporter merging, cross-court merging, splitting homonymous distinct cases
+5. **Select** — a single threshold; rows are flagged, never deleted
+
+## Repository layout
 
 ```
-D:\cases data analisis\
+.
 ├── .gitignore
-├── README.md
-├── USAGE.md                       使用与解读说明（读数据前先读）
-├── PROBLEMS.md                    进 git，纯记录，不得被脚本读取
+├── README.md                       this file
+├── README.zh.md                    Chinese original of this file
+├── USAGE.md                        how to read the data — read this first (Chinese)
+├── PROBLEMS.md                     tracked; a record only, scripts must not read it
+├── 外国引证数据整理抽取管线项目技术规格.md   the single technical spec (Chinese)
 ├── select_config.yaml
-├── download_corpus.sh             语料快照下载脚本（HF 枚举、断点续传、SHA256 校验；bash/WSL）
-├── corpus\                        gitignore，只读快照；下载日期与指纹登记于技术规格 §1.3
+├── download_corpus.sh              corpus snapshot downloader (HF enumeration, resume, SHA256; bash/WSL)
+├── corpus/                         gitignored, read-only snapshot; download dates and fingerprints in spec §1.3
 │   ├── SCC.parquet
 │   └── ONCA.parquet
-├── decisions\                     进 git，唯一事实源
+├── decisions/                      tracked; the single source of truth
 │   ├── README.md
 │   ├── reporter_jurisdiction.csv
 │   ├── neutral_court_codes.csv
 │   ├── series_prefix.csv
 │   └── case_origin.csv
-├── audit\                         进 git，审计环：产出是提案不是数据（规则见 audit/README.md）
-│   └── findings\                  分诊移交、溯源提案、排除清单
-├── pipeline\                      进 git
+├── audit/                          tracked; audit ring — output is proposals, not data (rules in audit/README.md)
+│   └── findings/                   triage hand-offs, provenance proposals, exclusion lists
+├── pipeline/                       tracked
 │   ├── normalize.py
 │   ├── shapes.py
 │   ├── extract.py
@@ -42,24 +54,24 @@ D:\cases data analisis\
 │   ├── merge.py
 │   ├── decide.py
 │   ├── select.py
-│   ├── coverage_report.py         填表优先级报告（§12.1）
-│   └── tests\                      run_regression.py（抽取层）、test_layers.py（第 2–5 层）、golden_layers.json（全量金标）
-├── implementation\                进 git，会话报告与探针；run_registry.csv + rebuild_run.py 管旧 run 的重建
-├── data\                          gitignore，派生产物（每个目录是什么、保留规则：data/README.md）
-│   ├── run_20260915_r21a\         ★ 交付 run（2026-09-15 起，#21/债 1 修复，见 implementation/r21_fix_report.md）
-│   ├── run_20260914_r4c\          上一交付 run，保留供对照（切换前的交付物）
-│   ├── run_20260913_r3e\          上一基线（R4 复核读它，完整保留）
-│   ├── run_2026091x_*\            5 个历史 run，只留答案层或敏感性产物（不可重建，旧探针的输入）
-│   ├── extract_out … coverage_out 老路线产出 6 个目录（--golden 金标门与 USAGE §8 的锚）
-│   ├── audit\                     改前快照与测量输出
-│   └── canlii_cache\              build_case_origin.py --offline 依赖
-└── _legacy\                       旧管线产物，仅供人工对照
+│   ├── coverage_report.py          table-filling priority report (§12.1)
+│   └── tests/                      run_regression.py (extract layer), test_layers.py (layers 2–5), golden_layers.json
+├── implementation/                 tracked; session reports and probes; run_registry.csv + rebuild_run.py rebuild old runs
+├── data/                           gitignored; derived artifacts (what each dir is and retention rules: data/README.md)
+│   ├── run_20260915_r21a/          ★ delivery run (from 2026-09-15; #21 / debt 1 fix, see implementation/r21_fix_report.md)
+│   ├── run_20260914_r4c/           previous delivery run, kept for comparison
+│   ├── run_20260913_r3e/           previous baseline (fully retained)
+│   ├── run_2026091x_*/             5 historical runs; only answer-layer or sensitivity artifacts kept (not rebuildable)
+│   ├── extract_out … coverage_out  6 directories from the old route (--golden gate and USAGE §8 anchors)
+│   ├── audit/                      pre-change snapshots and measurement output
+│   └── canlii_cache/               required by build_case_origin.py --offline
+└── _legacy/                        old-pipeline artifacts, for manual comparison only
     └── README.md
 ```
 
-## 运行
+## Running
 
-完整执行顺序与命令见技术规格 §12。改动任何一层之后：
+The full order of execution and the exact commands are in the technical spec §12. After changing any layer:
 
 ```bash
 python pipeline/tests/run_regression.py --selftest
@@ -67,16 +79,17 @@ python pipeline/tests/test_layers.py
 python pipeline/tests/test_layers.py --golden
 ```
 
-实现中对规格的补充与偏离都登记在 PROBLEMS.md，规格里以「实现注记（v1.6）」标出，待人复核。
+Additions to, and deviations from, the spec are logged in `PROBLEMS.md` and marked in the spec as "implementation note (v1.6)", pending human review.
 
-## 约束
+## Constraints
 
-详见技术规格。核心几条：
-- 问题必须在产生它的那一层修复
-- 抽取层禁止使用固定缩写清单
-- 法域判定不依赖周边文本关键词
-- 查不到就是 UNSUPPORTED
-- 不删行，只打标记
-- 层与层单向，每层只跑一次
-- 决策表的键必须是判决书上印着的事实
-- 每一行必须带出处
+See the technical spec for the full list. The core ones:
+
+- A problem must be fixed at the layer that produces it
+- The extract layer may not use a fixed abbreviation list
+- Jurisdiction determination may not rely on surrounding-text keywords
+- Not found means `UNSUPPORTED`
+- Never delete a row; only flag it
+- Layers are one-directional, and each runs exactly once
+- Keys of decision tables must be facts printed in the judgment
+- Every row must carry a source
