@@ -177,7 +177,7 @@ SHAPES = [
     # 兜底形状：shape_paren_year_abbr_page —— (年) 缩写 页，无卷号圆括号年份
     # （(1924) A.C. 222. / (1892) P. 17. / (1951) O.W.N. 635）。PROBLEMS #21。
     # 兜底语义（#16 规矩 §5.1）：**只允许在七个既有形状都不命中的位置生效**
-    # ——重叠抑制在 extract 层做（extract._suppress_overlapping_fallback），
+    # ——重叠抑制在 extract 层做（extract._apply_fallback_semantics），
     # 新候选与既有候选结构上不可能共存，从根上拔掉「新匹配挤掉正确匹配」
     # （上次回滚的病因，见 PROBLEMS #21 回滚记录）。
     # 结构判据（§5.3，无词表；行级结构谓词在 extract 层）：
