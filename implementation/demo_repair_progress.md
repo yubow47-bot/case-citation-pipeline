@@ -577,6 +577,11 @@ python pipeline/run_all.py --out <新的空目录>
 
 ## Blocked（§5 账本）
 
+> **2026-09-15 已并入 `PROBLEMS.md`**：本节及后文 B12–B21 全部条目已按用户决定编号
+> 并入 `PROBLEMS.md`（成为 #64–#84），并在 `DEBT_LEDGER.md` §1/§3 完成分诊。
+> 本文件从此保留作历史记录，**不再是独立的追踪账本**——新问题一律先登记进
+> `PROBLEMS.md`，不要再往这里加 "B22" 之类的新编号。下面的原文保持不动，仅供溯源。
+
 ### B1 汇编式引证的来源地不可推断（不阻塞演示闭环，长期残项）
 
 - 层/位置：decide.py `_scope_origin`（decisions/court_or_reporter_scope.csv）
