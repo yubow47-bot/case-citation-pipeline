@@ -1,0 +1,636 @@
+court,corpus_row_index,raw_string,year,abbr,page,merge_key,jurisdiction,jurisdiction_confidence,citation_kind,source_decision_citation
+SCC,4357,(1892) A.C. 75,1892,A.C.,75,1892||ac||75,GB,estimated,reporter,SCC_189221scr637
+SCC,7204,(1896) A. C. 551,1896,A. C.,551,1896||ac||551,GB,estimated,reporter,SCC_189828scr425
+SCC,5209,(1893) A. C. 524,1893,A. C.,524,1893||ac||524,GB,estimated,reporter,SCC_189828scr458
+SCC,5209,(1895) A. C. 433,1895,A. C.,433,1895||ac||433,GB,estimated,reporter,SCC_189828scr458
+SCC,5161,(1897) A.C. 299,1897,A.C.,299,1897||ac||299,GB,estimated,reporter,SCC_189829scr33
+SCC,5161,(1892) A.C. 125,1892,A.C.,125,1892||ac||125,GB,estimated,reporter,SCC_189829scr33
+SCC,7197,(1897) A. C. 199,1897,A. C.,199,1897||ac||199,GB,estimated,reporter,SCC_189830scr151
+SCC,4601,(1898) A.C. 457,1898,A.C.,457,1898||ac||457,GB,estimated,reporter,SCC_190333scr376
+SCC,7237,(1891) A.C. 210,1891,A.C.,210,1891||ac||210,GB,estimated,reporter,SCC_190536scr321
+SCC,2454,(1892) A.C. 125,1892,A.C.,125,1892||ac||125,GB,estimated,reporter,SCC_190536scr476
+SCC,4974,(1903) A.C. 85,1903,A.C.,85,1903||ac||85,GB,estimated,reporter,SCC_190536scr655
+SCC,4974,(1903) A.C. 85,1903,A.C.,85,1903||ac||85,GB,estimated,reporter,SCC_190536scr655
+SCC,4974,(1903) A.C. 85,1903,A.C.,85,1903||ac||85,GB,estimated,reporter,SCC_190536scr655
+SCC,4971,(1903) A.C. 59,1903,A.C.,59,1903||ac||59,GB,estimated,reporter,SCC_190536scr686
+SCC,7037,(1901) A.C. 354,1901,A.C.,354,1901||ac||354,GB,estimated,reporter,SCC_190537scr100
+SCC,7037,(1905) P.D. 66,1905,P.D.,66,1905||pd||66,GB,estimated,reporter,SCC_190537scr100
+SCC,7037,(1894) P.D. 151,1894,P.D.,151,1894||pd||151,GB,estimated,reporter,SCC_190537scr100
+SCC,7036,(1897) A.C. 499,1897,A.C.,499,1897||ac||499,GB,estimated,reporter,SCC_190537scr124
+SCC,7036,(1897) A.C. 499,1897,A.C.,499,1897||ac||499,GB,estimated,reporter,SCC_190537scr124
+SCC,7043,(1896) A.C. 325,1896,A.C.,325,1896||ac||325,GB,estimated,reporter,SCC_190537scr55
+SCC,8174,(1904) A.C. 515,1904,A.C.,515,1904||ac||515,GB,estimated,reporter,SCC_190637scr177
+SCC,8452,(1893) A.C. 181,1893,A.C.,181,1893||ac||181,GB,estimated,reporter,SCC_190637scr331
+SCC,7065,(1891) A.C. 455,1891,A.C.,455,1891||ac||455,GB,estimated,reporter,SCC_190637scr385
+SCC,7065,(1891) A.C. 455,1891,A.C.,455,1891||ac||455,GB,estimated,reporter,SCC_190637scr385
+SCC,7065,(1898) A.C. 700,1898,A.C.,700,1898||ac||700,GB,estimated,reporter,SCC_190637scr385
+SCC,7063,(1906) A.C. 110,1906,A.C.,110,1906||ac||110,GB,estimated,reporter,SCC_190637scr464
+SCC,4995,(1898) A.C. 700,1898,A.C.,700,1898||ac||700,GB,estimated,reporter,SCC_190637scr577
+SCC,4995,(1898) A.C. 700,1898,A.C.,700,1898||ac||700,GB,estimated,reporter,SCC_190637scr577
+SCC,2479,(1906) A.C. 100,1906,A.C.,100,1906||ac||100,GB,estimated,reporter,SCC_190638scr106
+SCC,2479,(1905) A.C. 52,1905,A.C.,52,1905||ac||52,GB,estimated,reporter,SCC_190638scr106
+SCC,2479,(1906) A.C. 100,1906,A.C.,100,1906||ac||100,GB,estimated,reporter,SCC_190638scr106
+SCC,1369,(1906) A.C. 325,1906,A.C.,325,1906||ac||325,GB,estimated,reporter,SCC_190638scr126
+SCC,1375,(1892) A.C. 201,1892,A.C.,201,1892||ac||201,GB,estimated,reporter,SCC_190638scr187
+SCC,2475,(1903) A.C. 240,1903,A.C.,240,1903||ac||240,GB,estimated,reporter,SCC_190738scr258
+SCC,2475,(1903) A.C. 240,1903,A.C.,240,1903||ac||240,GB,estimated,reporter,SCC_190738scr258
+SCC,2475,(1903) A.C. 49,1903,A.C.,49,1903||ac||49,GB,estimated,reporter,SCC_190738scr258
+SCC,7005,(1905) A.C. 21,1905,A.C.,21,1905||ac||21,GB,estimated,reporter,SCC_190738scr411
+SCC,7005,(1896) A.C. 88,1896,A.C.,88,1896||ac||88,GB,estimated,reporter,SCC_190738scr411
+SCC,7003,(1901) P.D. 221,1901,P.D.,221,1901||pd||221,GB,estimated,reporter,SCC_190738scr431
+SCC,7003,(1891) A.C. 401,1891,A.C.,401,1891||ac||401,GB,estimated,reporter,SCC_190738scr431
+SCC,7003,(1897) A.C. 351,1897,A.C.,351,1897||ac||351,GB,estimated,reporter,SCC_190738scr431
+SCC,7003,(1901) P.D. 221,1901,P.D.,221,1901||pd||221,GB,estimated,reporter,SCC_190738scr431
+SCC,8358,(1892) A.C. 166,1892,A.C.,166,1892||ac||166,GB,estimated,reporter,SCC_190738scr516
+SCC,8358,(1892) A.C. 166,1892,A.C.,166,1892||ac||166,GB,estimated,reporter,SCC_190738scr516
+SCC,8358,(1902) A.C. 405,1902,A.C.,405,1902||ac||405,GB,estimated,reporter,SCC_190738scr516
+SCC,2471,(1892) A.C. 287,1892,A.C.,287,1892||ac||287,GB,estimated,reporter,SCC_190738scr577
+SCC,8453,(1893) A.C. 552,1893,A.C.,552,1893||ac||552,GB,estimated,reporter,SCC_190738scr588
+SCC,8453,(1888) W.N. 69,1888,W.N.,69,1888||wn||69,UNSUPPORTED,unsupported,reporter,SCC_190738scr588
+SCC,1363,(1906) A.C. 241,1906,A.C.,241,1906||ac||241,GB,estimated,reporter,SCC_190739scr151
+SCC,1411,(1905) A.C. 239,1905,A.C.,239,1905||ac||239,GB,estimated,reporter,SCC_190739scr340
+SCC,1411,(1898) A.C. 1,1898,A.C.,1,1898||ac||1,GB,estimated,reporter,SCC_190739scr340
+SCC,1411,(1905) A.C. 239,1905,A.C.,239,1905||ac||239,GB,estimated,reporter,SCC_190739scr340
+SCC,2420,(1906) A.C. 542,1906,A.C.,542,1906||ac||542,GB,estimated,reporter,SCC_190739scr405
+SCC,2420,(1903) A.C. 59,1903,A.C.,59,1903||ac||59,GB,estimated,reporter,SCC_190739scr405
+SCC,7417,(1899) A.C. 367,1899,A.C.,367,1899||ac||367,GB,estimated,reporter,SCC_190739scr476
+SCC,2425,(1899) A.C. 442,1899,A.C.,442,1899||ac||442,GB,estimated,reporter,SCC_190739scr567
+SCC,1425,(1892) A.C. 201,1892,A.C.,201,1892||ac||201,GB,estimated,reporter,SCC_190839scr625
+SCC,1425,(1902) A.C. 147,1902,A.C.,147,1902||ac||147,GB,estimated,reporter,SCC_190839scr625
+SCC,1356,(1896) A.C. 44,1896,A.C.,44,1896||ac||44,GB,estimated,reporter,SCC_190840scr115
+SCC,1357,(1905) A.C. 168,1905,A.C.,168,1905||ac||168,GB,estimated,reporter,SCC_190840scr128
+SCC,1330,(1892) A.C. 481,1892,A.C.,481,1892||ac||481,GB,estimated,reporter,SCC_190840scr229
+SCC,1330,(1906) A.C. 187,1906,A.C.,187,1906||ac||187,GB,estimated,reporter,SCC_190840scr229
+SCC,2427,(1900) A.C. 260,1900,A.C.,260,1900||ac||260,GB,estimated,reporter,SCC_190840scr557
+SCC,1513,(1901) P. 289,1901,P.,289,1901||p||289,GB,estimated,reporter,SCC_190841scr54
+SCC,1514,(1906) A.C. 187,1906,A.C.,187,1906||ac||187,GB,estimated,reporter,SCC_190841scr71
+SCC,2442,(1902) A.C. 429,1902,A.C.,429,1902||ac||429,GB,estimated,reporter,SCC_190941scr516
+SCC,1349,(1908) A.C. 144,1908,A.C.,144,1908||ac||144,GB,estimated,reporter,SCC_190941scr639
+SCC,1542,(1903) A.C. 39,1903,A.C.,39,1903||ac||39,GB,estimated,reporter,SCC_190942scr161
+SCC,1504,(1907) A.C. 499,1907,A.C.,499,1907||ac||499,GB,estimated,reporter,SCC_191042scr613
+SCC,1504,(1906) A.C. 204,1906,A.C.,204,1906||ac||204,GB,estimated,reporter,SCC_191042scr613
+SCC,2490,(1891) A.C. 325,1891,A.C.,325,1891||ac||325,GB,estimated,reporter,SCC_191043scr494
+SCC,1484,(1893) A.C. 85,1893,A.C.,85,1893||ac||85,GB,estimated,reporter,SCC_191044scr179
+SCC,1443,(1893) A.C. 416,1893,A.C.,416,1893||ac||416,GB,estimated,reporter,SCC_191144scr364
+SCC,8804,(1910) A.C. 317,1910,A.C.,317,1910||ac||317,GB,estimated,reporter,SCC_191145scr425
+SCC,8804,(1908) A.C. 493,1908,A.C.,493,1908||ac||493,GB,estimated,reporter,SCC_191145scr425
+SCC,8804,(1896) A.C. 231,1896,A.C.,231,1896||ac||231,GB,estimated,reporter,SCC_191145scr425
+SCC,8804,(1896) A.C. 231,1896,A.C.,231,1896||ac||231,GB,estimated,reporter,SCC_191145scr425
+SCC,1472,"(1908), A.C. 508",1908,A.C.,508,1908||ac||508,GB,estimated,reporter,SCC_191245scr469
+SCC,1473,(1907) P. 1,1907,P.,1,1907||p||1,GB,estimated,reporter,SCC_191245scr551
+SCC,1120,(1892) A.C. 481,1892,A.C.,481,1892||ac||481,GB,estimated,reporter,SCC_191246scr132
+SCC,1120,(1892) A.C. 481,1892,A.C.,481,1892||ac||481,GB,estimated,reporter,SCC_191246scr132
+SCC,1120,(1898) A.C. 700,1898,A.C.,700,1898||ac||700,GB,estimated,reporter,SCC_191246scr132
+SCC,8808,(1893) A.C. 170,1893,A.C.,170,1893||ac||170,GB,estimated,reporter,SCC_191246scr477
+SCC,1122,(1896) A.C. 348,1896,A.C.,348,1896||ac||348,GB,estimated,reporter,SCC_191246scr502
+SCC,1165,(1912) A.C. 756,1912,A.C.,756,1912||ac||756,GB,estimated,reporter,SCC_191247scr313
+SCC,1165,(1893) A.C. 369,1893,A.C.,369,1893||ac||369,GB,estimated,reporter,SCC_191247scr313
+SCC,1112,(1898) A.C. 700,1898,A.C.,700,1898||ac||700,GB,estimated,reporter,SCC_191347scr493
+SCC,8812,(1910) A.C. 422,1910,A.C.,422,1910||ac||422,GB,estimated,reporter,SCC_191348scr208
+SCC,1103,(1908) A.C. 54,1908,A.C.,54,1908||ac||54,GB,estimated,reporter,SCC_191348scr98
+SCC,1103,(1899) A.C. 367,1899,A.C.,367,1899||ac||367,GB,estimated,reporter,SCC_191348scr98
+SCC,1103,(1896) A.C. 348,1896,A.C.,348,1896||ac||348,GB,estimated,reporter,SCC_191348scr98
+SCC,1057,"(1894), P. 151",1894,P.,151,1894||p||151,GB,estimated,reporter,SCC_191449scr305
+SCC,8764,(1892) A.C. 481,1892,A.C.,481,1892||ac||481,GB,estimated,reporter,SCC_191449scr470
+SCC,8764,(1892) A.C. 481,1892,A.C.,481,1892||ac||481,GB,estimated,reporter,SCC_191449scr470
+SCC,8764,"(1892), A.C. 481",1892,A.C.,481,1892||ac||481,GB,estimated,reporter,SCC_191449scr470
+SCC,2510,(1914) A.C. 569,1914,A.C.,569,1914||ac||569,GB,estimated,reporter,SCC_191450scr265
+SCC,755,(1902) A.C. 83,1902,A.C.,83,1902||ac||83,GB,estimated,reporter,SCC_191450scr32
+SCC,1096,(1912) A.C. 333,1912,A.C.,333,1912||ac||333,GB,estimated,reporter,SCC_191450scr84
+SCC,1047,(1897) A.C. 231,1897,A.C.,231,1897||ac||231,GB,estimated,reporter,SCC_191550scr534
+SCC,1047,(1905) A.C. 52,1905,A.C.,52,1905||ac||52,GB,estimated,reporter,SCC_191550scr534
+SCC,1047,(1909) A.C. 194,1909,A.C.,194,1909||ac||194,GB,estimated,reporter,SCC_191550scr534
+SCC,2522,(1899) A.C. 114,1899,A.C.,114,1899||ac||114,GB,estimated,reporter,SCC_191550scr626
+SCC,9064,(1910) A.C. 606,1910,A.C.,606,1910||ac||606,GB,estimated,reporter,SCC_191551scr216
+SCC,1255,(1915) A.C. 550,1915,A.C.,550,1915||ac||550,GB,estimated,reporter,SCC_191552scr30
+SCC,1255,(1915) A.C. 550,1915,A.C.,550,1915||ac||550,GB,estimated,reporter,SCC_191552scr30
+SCC,1255,(1915) A.C. 550,1915,A.C.,550,1915||ac||550,GB,estimated,reporter,SCC_191552scr30
+SCC,1255,(1915) A.C. 550,1915,A.C.,550,1915||ac||550,GB,estimated,reporter,SCC_191552scr30
+SCC,1261,(1894) P. 58,1894,P.,58,1894||p||58,GB,estimated,reporter,SCC_191552scr349
+SCC,760,(1908) A.C. 504,1908,A.C.,504,1908||ac||504,GB,estimated,reporter,SCC_191554scr1
+SCC,760,(1908) A.C. 504,1908,A.C.,504,1908||ac||504,GB,estimated,reporter,SCC_191554scr1
+SCC,764,(1902) A.C. 165,1902,A.C.,165,1902||ac||165,GB,estimated,reporter,SCC_191652scr561
+SCC,764,(1907) A.C. 415,1907,A.C.,415,1907||ac||415,GB,estimated,reporter,SCC_191652scr561
+SCC,764,(1902) A.C. 165,1902,A.C.,165,1902||ac||165,GB,estimated,reporter,SCC_191652scr561
+SCC,764,(1907) A.C. 415,1907,A.C.,415,1907||ac||415,GB,estimated,reporter,SCC_191652scr561
+SCC,1168,(1892) A.C. 481,1892,A.C.,481,1892||ac||481,GB,estimated,reporter,SCC_191652scr644
+SCC,1237,(1912) A.C. 204,1912,A.C.,204,1912||ac||204,GB,estimated,reporter,SCC_191653scr275
+SCC,1247,(1893) A.C. 602,1893,A.C.,602,1893||ac||602,GB,estimated,reporter,SCC_191653scr431
+SCC,9069,(1913) A.C. 816,1913,A.C.,816,1913||ac||816,GB,estimated,reporter,SCC_191653scr459
+SCC,9069,(1915) A.C. 345,1915,A.C.,345,1915||ac||345,GB,estimated,reporter,SCC_191653scr459
+SCC,9069,(1913) A.C. 816,1913,A.C.,816,1913||ac||816,GB,estimated,reporter,SCC_191653scr459
+SCC,9069,(1915) A.C. 345,1915,A.C.,345,1915||ac||345,GB,estimated,reporter,SCC_191653scr459
+SCC,772,(1914) A.C. 569,1914,A.C.,569,1914||ac||569,GB,estimated,reporter,SCC_191653scr519
+SCC,772,(1914) A.C. 569,1914,A.C.,569,1914||ac||569,GB,estimated,reporter,SCC_191653scr519
+SCC,1266,(1902) A. C. 220,1902,A. C.,220,1902||ac||220,GB,estimated,reporter,SCC_191653scr72
+SCC,1266,(1907) A. C. 454,1907,A. C.,454,1907||ac||454,GB,estimated,reporter,SCC_191653scr72
+SCC,1266,(1905) A. C. 72,1905,A. C.,72,1905||ac||72,GB,estimated,reporter,SCC_191653scr72
+SCC,1266,(1905) A. C. 72,1905,A. C.,72,1905||ac||72,GB,estimated,reporter,SCC_191653scr72
+SCC,1266,(1902) A.C. 220,1902,A.C.,220,1902||ac||220,GB,estimated,reporter,SCC_191653scr72
+SCC,1266,(1902) A. C. 220,1902,A. C.,220,1902||ac||220,GB,estimated,reporter,SCC_191653scr72
+SCC,1266,(1907) A. C. 454,1907,A. C.,454,1907||ac||454,GB,estimated,reporter,SCC_191653scr72
+SCC,1266,(1912) A. C. 333,1912,A. C.,333,1912||ac||333,GB,estimated,reporter,SCC_191653scr72
+SCC,1266,(1913) A. C. 263,1913,A. C.,263,1913||ac||263,GB,estimated,reporter,SCC_191653scr72
+SCC,1266,(1907) A. C. 454,1907,A. C.,454,1907||ac||454,GB,estimated,reporter,SCC_191653scr72
+SCC,1281,(1914) A.C. 258,1914,A.C.,258,1914||ac||258,GB,estimated,reporter,SCC_191654scr143
+SCC,1281,(1914) A.C. 153,1914,A.C.,153,1914||ac||153,GB,estimated,reporter,SCC_191654scr143
+SCC,1281,(1900) A.C. 48,1900,A.C.,48,1900||ac||48,GB,estimated,reporter,SCC_191654scr143
+SCC,1281,(1911) A.C. 489,1911,A.C.,489,1911||ac||489,GB,estimated,reporter,SCC_191654scr143
+SCC,1281,(1911) A.C. 489,1911,A.C.,489,1911||ac||489,GB,estimated,reporter,SCC_191654scr143
+SCC,1281,(1914) A.C. 258,1914,A.C.,258,1914||ac||258,GB,estimated,reporter,SCC_191654scr143
+SCC,1282,(1916) W.N. 281,1916,W.N.,281,1916||wn||281,UNSUPPORTED,unsupported,reporter,SCC_191654scr220
+SCC,1283,(1894) A.C. 347,1894,A.C.,347,1894||ac||347,GB,estimated,reporter,SCC_191654scr265
+SCC,1283,(1894) A.C. 347,1894,A.C.,347,1894||ac||347,GB,estimated,reporter,SCC_191654scr265
+SCC,1284,"(1911), A.C. 520",1911,A.C.,520,1911||ac||520,GB,estimated,reporter,SCC_191654scr310
+SCC,1275,(1907) A.C. 65,1907,A.C.,65,1907||ac||65,GB,estimated,reporter,SCC_191654scr36
+SCC,716,"(1907), A.C. 315",1907,A.C.,315,1907||ac||315,GB,estimated,reporter,SCC_191756scr117
+SCC,4275,(1911) A.C. 552,1911,A.C.,552,1911||ac||552,GB,estimated,reporter,SCC_191756scr80
+SCC,1172,"(1907), A.C. 101",1907,A.C.,101,1907||ac||101,GB,estimated,reporter,SCC_191856scr342
+SCC,1908,(1915) A.C. 499,1915,A.C.,499,1915||ac||499,GB,estimated,reporter,SCC_191958scr551
+SCC,739,(1901) A.C. 495,1901,A.C.,495,1901||ac||495,GB,estimated,reporter,SCC_191959scr240
+SCC,1822,(1914) A.C. 176,1914,A.C.,176,1914||ac||176,GB,estimated,reporter,SCC_192060scr1
+SCC,1760,(1925) S.C.R. 224,1925,S.C.R.,224,1925||scr||224,CA,estimated,reporter,SCC_1927scr261
+SCC,1764,(1903) A.C. 59,1903,A.C.,59,1903||ac||59,GB,estimated,reporter,SCC_1927scr288
+SCC,1764,(1903) A.C. 59,1903,A.C.,59,1903||ac||59,GB,estimated,reporter,SCC_1927scr288
+SCC,1764,(1914) Q.R. 47,1914,Q.R.,47,1914||qr||47,UNSUPPORTED,unsupported,reporter,SCC_1927scr288
+SCC,1777,(1927) S.C.R. 136,1927,S.C.R.,136,1927||scr||136,CA,estimated,reporter,SCC_1927scr458
+SCC,1702,(1918) A.C. 626,1918,A.C.,626,1918||ac||626,GB,estimated,reporter,SCC_1928scr264
+SCC,346,(1925) S.C.R. 659,1925,S.C.R.,659,1925||scr||659,CA,estimated,reporter,SCC_1929scr400
+SCC,1732,(1905) A.C. 72,1905,A.C.,72,1905||ac||72,GB,estimated,reporter,SCC_1929scr650
+SCC,261,"(1879) R.E.D., 352",1879,R.E.D.,352,1879||red||352,UNSUPPORTED,unsupported,reporter,SCC_1930scr16
+SCC,636,"(1815) G. Coop., 161",1815,G. Coop.,161,1815||gcoop||161,UNSUPPORTED,unsupported,reporter,SCC_1930scr212
+SCC,279,(1917) L.R.A. 916,1917,L.R.A.,916,1917||lra||916,UNSUPPORTED,unsupported,reporter,SCC_1930scr231
+SCC,4620,(1928) P. 91,1928,P.,91,1928||p||91,GB,estimated,reporter,SCC_1930scr252
+SCC,380,(1895) A.C. 202,1895,A.C.,202,1895||ac||202,GB,estimated,reporter,SCC_1930scr663
+SCC,457,(1923) S.C.R. 476,1923,S.C.R.,476,1923||scr||476,CA,estimated,reporter,SCC_1931scr1
+SCC,467,(1857) L.C.J. 280,1857,L.C.J.,280,1857||lcj||280,QC,estimated,reporter,SCC_1931scr113
+SCC,467,(1906) Q.P.R. 129,1906,Q.P.R.,129,1906||qpr||129,UNSUPPORTED,unsupported,reporter,SCC_1931scr113
+SCC,467,(1921) Q.R. 33,1921,Q.R.,33,1921||qr||33,UNSUPPORTED,unsupported,reporter,SCC_1931scr113
+SCC,460,(1929) Q.R. 48,1929,Q.R.,48,1929||qr||48,UNSUPPORTED,unsupported,reporter,SCC_1931scr47
+SCC,463,(1896) P. 10,1896,P.,10,1896||p||10,GB,estimated,reporter,SCC_1931scr76
+SCC,463,(1900) P. 112,1900,P.,112,1900||p||112,GB,estimated,reporter,SCC_1931scr76
+SCC,463,(1893) P. 329,1893,P.,329,1893||p||329,GB,estimated,reporter,SCC_1931scr76
+SCC,463,(1896) P. 10,1896,P.,10,1896||p||10,GB,estimated,reporter,SCC_1931scr76
+SCC,463,(1900) P. 112,1900,P.,112,1900||p||112,GB,estimated,reporter,SCC_1931scr76
+SCC,487,(1931) Q.R. 50,1931,Q.R.,50,1931||qr||50,UNSUPPORTED,unsupported,reporter,SCC_1932scr131
+SCC,488,(1928) Q.R. 34,1928,Q.R.,34,1928||qr||34,UNSUPPORTED,unsupported,reporter,SCC_1932scr134
+SCC,8892,(1922) I. A.C. 178,1922,I. A.C.,178,1922||iac||178,UNSUPPORTED,unsupported,reporter,SCC_1933scr163
+SCC,437,(1923) S.C.R. 414,1923,S.C.R.,414,1923||scr||414,CA,estimated,reporter,SCC_1933scr201
+SCC,437,(1923) S.C.R. 414,1923,S.C.R.,414,1923||scr||414,CA,estimated,reporter,SCC_1933scr201
+SCC,437,(1923) S.C.R. 414,1923,S.C.R.,414,1923||scr||414,CA,estimated,reporter,SCC_1933scr201
+SCC,437,(1923) S.C.R. 414,1923,S.C.R.,414,1923||scr||414,CA,estimated,reporter,SCC_1933scr201
+SCC,437,(1923) S.C.R. 414,1923,S.C.R.,414,1923||scr||414,CA,estimated,reporter,SCC_1933scr201
+SCC,437,(1923) S.C.R. 414,1923,S.C.R.,414,1923||scr||414,CA,estimated,reporter,SCC_1933scr201
+SCC,437,(1923) S.C.R. 414,1923,S.C.R.,414,1923||scr||414,CA,estimated,reporter,SCC_1933scr201
+SCC,443,(1932) S.C.R. 101,1932,S.C.R.,101,1932||scr||101,CA,estimated,reporter,SCC_1933scr242
+SCC,444,(1932) Q.R. 5,1932,Q.R.,5,1932||qr||5,UNSUPPORTED,unsupported,reporter,SCC_1933scr246
+SCC,399,(1907) A.C. 139,1907,A.C.,139,1907||ac||139,GB,estimated,reporter,SCC_1933scr456
+SCC,67,(1892) Q.R. S.C. 443,1892,Q.R. S.C.,443,1892||qrsc||443,UNSUPPORTED,unsupported,reporter,SCC_1934scr249
+SCC,607,(1906) N.Z.L.R. 1167,1906,N.Z.L.R.,1167,1906||nzlr||1167,NZ,estimated,reporter,SCC_1934scr280
+SCC,74,(1933) Q.R. K.B. 414,1933,Q.R. K.B.,414,1933||qrkb||414,UNSUPPORTED,unsupported,reporter,SCC_1934scr445
+SCC,74,(1893) Q.R. 3,1893,Q.R.,3,1893||qr||3,UNSUPPORTED,unsupported,reporter,SCC_1934scr445
+SCC,80,(1926) S.C.R. 558,1926,S.C.R.,558,1926||scr||558,CA,estimated,reporter,SCC_1934scr528
+SCC,106,(1894) Can. S.C.R. 55,1894,Can. S.C.R.,55,||canscr||55,CA,estimated,reporter,SCC_1935scr568
+SCC,51,(1912) T.L.R. 505,1912,T.L.R.,505,1912||tlr||505,GB,estimated,reporter,SCC_1936scr281
+SCC,57,(1931) A.C. 310,1931,A.C.,310,1931||ac||310,GB,estimated,reporter,SCC_1936scr379
+SCC,29,(1924) A.C. 222,1924,A.C.,222,1924||ac||222,GB,estimated,reporter,SCC_1936scr398
+SCC,29,(1896) A.C. 359,1896,A.C.,359,1896||ac||359,GB,estimated,reporter,SCC_1936scr398
+SCC,29,(1898) A.C. 700,1898,A.C.,700,1898||ac||700,GB,estimated,reporter,SCC_1936scr398
+SCC,9,(1892) P. 17,1892,P.,17,1892||p||17,GB,estimated,reporter,SCC_1936scr624
+SCC,9,(1892) P. 419,1892,P.,419,1892||p||419,GB,estimated,reporter,SCC_1936scr624
+SCC,8178,(1899) A.C. 15,1899,A.C.,15,1899||ac||15,GB,estimated,reporter,SCC_1937scr354
+SCC,197,(1879) S. 81,1879,S.,81,1879||s||81,UNSUPPORTED,unsupported,reporter,SCC_1938scr433
+SCC,142,(1920) A.C. 184,1920,A.C.,184,1920||ac||184,GB,estimated,reporter,SCC_1939scr11
+SCC,169,(1904) A.C. 429,1904,A.C.,429,1904||ac||429,GB,estimated,reporter,SCC_1940scr49
+SCC,7701,(1897) A.C. 231,1897,A.C.,231,1897||ac||231,GB,estimated,reporter,SCC_1941scr396
+SCC,8993,(1893) O..A.R. 372,1893,O..A.R.,372,1893||oar||372,ON,estimated,reporter,SCC_1941scr573
+SCC,166,(1934) A.C. 45,1934,A.C.,45,1934||ac||45,GB,estimated,reporter,SCC_1941scr670
+SCC,2706,(1923) A.C. 695,1923,A.C.,695,1923||ac||695,GB,estimated,reporter,SCC_1943scr1
+SCC,840,(1931) S.C.R. 437,1931,S.C.R.,437,1931||scr||437,CA,estimated,reporter,SCC_1944scr308
+SCC,840,(1927) S.C.R. 598,1927,S.C.R.,598,1927||scr||598,CA,estimated,reporter,SCC_1944scr308
+SCC,811,(1943) K.B. 184,1943,K.B.,184,1943||kb||184,UNSUPPORTED,unsupported,reporter,SCC_1944scr317
+SCC,811,(1943) K.B. 184,1943,K.B.,184,1943||kb||184,UNSUPPORTED,unsupported,reporter,SCC_1944scr317
+SCC,1012,(1931) A.C. 270,1931,A.C.,270,1931||ac||270,GB,estimated,reporter,SCC_1946scr178
+SCC,974,(1933) S.C.R. 694,1933,S.C.R.,694,1933||scr||694,CA,estimated,reporter,SCC_1946scr20
+SCC,1014,(1918) Can. S.C.R. 150,1918,Can. S.C.R.,150,||canscr||150,CA,estimated,reporter,SCC_1946scr248
+SCC,1025,(1942) S.C. 231,1942,S.C.,231,1942||sc||231,UNSUPPORTED,unsupported,reporter,SCC_1946scr450
+SCC,7391,(1841) Web. P.C. 295,1841,Web. P.C.,295,1841||webpc||295,UNSUPPORTED,unsupported,reporter,SCC_1948scr1
+SCC,3613,(1924) S.C.R. 368,1924,S.C.R.,368,1924||scr||368,CA,estimated,reporter,SCC_1948scr101
+SCC,8186,(1919) A.C. 935,1919,A.C.,935,1919||ac||935,GB,estimated,reporter,SCC_1948scr126
+SCC,8186,(1892) A.C. 437,1892,A.C.,437,1892||ac||437,GB,estimated,reporter,SCC_1948scr126
+SCC,8186,(1892) A.C. 437,1892,A.C.,437,1892||ac||437,GB,estimated,reporter,SCC_1948scr126
+SCC,8186,(1919) A.C. 935,1919,A.C.,935,1919||ac||935,GB,estimated,reporter,SCC_1948scr126
+SCC,8186,(1892) A.C. 437,1892,A.C.,437,1892||ac||437,GB,estimated,reporter,SCC_1948scr126
+SCC,8186,(1892) A.C. 437,1892,A.C.,437,1892||ac||437,GB,estimated,reporter,SCC_1948scr126
+SCC,8186,(1919) A.C. 935,1919,A.C.,935,1919||ac||935,GB,estimated,reporter,SCC_1948scr126
+SCC,8304,(1899) A.C. 580,1899,A.C.,580,1899||ac||580,GB,estimated,reporter,SCC_1948scr248
+SCC,7707,(1944) S.C.R. 138,1944,S.C.R.,138,1944||scr||138,CA,estimated,reporter,SCC_1948scr28
+SCC,7707,"(1930) S.C.R., 293",1930,S.C.R.,293,1930||scr||293,CA,estimated,reporter,SCC_1948scr28
+SCC,8152,(1893) L.R. Probate 5,1893,L.R. Probate,5,1893||lrprobate||5,UNSUPPORTED,unsupported,reporter,SCC_1948scr339
+SCC,8957,(1912) A.C. 333,1912,A.C.,333,1912||ac||333,GB,estimated,reporter,SCC_1948scr373
+SCC,8957,(1914) A.C. 1067,1914,A.C.,1067,1914||ac||1067,GB,estimated,reporter,SCC_1948scr373
+SCC,8185,(1917) A.C. 38,1917,A.C.,38,1917||ac||38,GB,estimated,reporter,SCC_1948scr57
+SCC,7713,(1896) A.C. 348,1896,A.C.,348,1896||ac||348,GB,estimated,reporter,SCC_1949scr1
+SCC,7713,(1892) A.C. 437,1892,A.C.,437,1892||ac||437,GB,estimated,reporter,SCC_1949scr1
+SCC,7713,(1912) A.C. 333,1912,A.C.,333,1912||ac||333,GB,estimated,reporter,SCC_1949scr1
+SCC,3625,(1878) U.C.C.P. 345,1878,U.C.C.P.,345,1878||uccp||345,ON,estimated,reporter,SCC_1949scr201
+SCC,8106,(1924) S.C. 231,1924,S.C.,231,1924||sc||231,GB,estimated,reporter,SCC_1949scr287
+SCC,8106,(1924) S.C. 231,1924,S.C.,231,1924||sc||231,GB,estimated,reporter,SCC_1949scr287
+SCC,6054,(1935) I.R. 21,1935,I.R.,21,1935||ir||21,UNSUPPORTED,unsupported,reporter,SCC_1949scr329
+SCC,8110,(1937) P. 191,1937,P.,191,1937||p||191,GB,estimated,reporter,SCC_1949scr407
+SCC,7734,(1867) C.C.R. 90,1867,C.C.R.,90,1867||ccr||90,UNSUPPORTED,unsupported,reporter,SCC_1949scr647
+SCC,9202,(1918) A.C. 350,1918,A.C.,350,1918||ac||350,GB,estimated,reporter,SCC_1950scr187
+SCC,9202,(1924) A.C. 431,1924,A.C.,431,1924||ac||431,GB,estimated,reporter,SCC_1950scr187
+SCC,9144,(1936) A.C. 635,1936,A.C.,635,1936||ac||635,GB,estimated,reporter,SCC_1950scr313
+SCC,8127,(1915) R.P.C. 256,1915,R.P.C.,256,1915||rpc||256,GB,estimated,reporter,SCC_1950scr36
+SCC,9159,(1901) H.L. 506,1901,H.L.,506,1901||hl||506,GB,estimated,reporter,SCC_1950scr664
+SCC,3569,(1947) S.C. 79,1947,S.C.,79,1947||sc||79,UNSUPPORTED,unsupported,reporter,SCC_1950scr700
+SCC,3569,(1945) O.W.N. 479,1945,O.W.N.,479,1945||own||479,ON,estimated,reporter,SCC_1950scr700
+SCC,9163,(1894) A.C. 57,1894,A.C.,57,1894||ac||57,GB,estimated,reporter,SCC_1951scr115
+SCC,9163,(1935) A.C. 309,1935,A.C.,309,1935||ac||309,GB,estimated,reporter,SCC_1951scr115
+SCC,9163,(1926) S.C.R. 539,1926,S.C.R.,539,1926||scr||539,CA,estimated,reporter,SCC_1951scr115
+SCC,9163,(1894) A.C. 57,1894,A.C.,57,1894||ac||57,GB,estimated,reporter,SCC_1951scr115
+SCC,9163,(1926) S.C.R. 539,1926,S.C.R.,539,1926||scr||539,CA,estimated,reporter,SCC_1951scr115
+SCC,9163,(1944) A.C. 315,1944,A.C.,315,1944||ac||315,GB,estimated,reporter,SCC_1951scr115
+SCC,8968,(1893) A.C. 468,1893,A.C.,468,1893||ac||468,GB,estimated,reporter,SCC_1951scr3
+SCC,9169,(1867) Asp. M.C. 148,1867,Asp. M.C.,148,1867||aspmc||148,UNSUPPORTED,unsupported,reporter,SCC_1951scr396
+SCC,9169,(1911) P. 40,1911,P.,40,1911||p||40,GB,estimated,reporter,SCC_1951scr396
+SCC,9270,(1942) S.C.R. 141,1942,S.C.R.,141,1942||scr||141,CA,estimated,reporter,SCC_1951scr450
+SCC,9245,(1918) S.C. 303,1918,S.C.,303,1918||sc||303,GB,estimated,reporter,SCC_1951scr608
+SCC,2635,(1937) S.C.R. 341,1937,S.C.R.,341,1937||scr||341,CA,estimated,reporter,SCC_1951scr830
+SCC,8399,(1903) A.C. 299,1903,A.C.,299,1903||ac||299,GB,estimated,reporter,SCC_19521scr123
+SCC,9257,(1929) A.C. 269,1929,A.C.,269,1929||ac||269,GB,estimated,reporter,SCC_19521scr143
+SCC,3572,(1925) S.C. 425,1925,S.C.,425,1925||sc||425,GB,estimated,reporter,SCC_19521scr211
+SCC,8195,(1888) P.D. 82,1888,P.D.,82,1888||pd||82,GB,estimated,reporter,SCC_19521scr260
+SCC,9256,(1928) L.R.P. 91,1928,L.R.P.,91,1928||lrp||91,UNSUPPORTED,unsupported,reporter,SCC_19521scr28
+SCC,3558,(1894) P. 248,1894,P.,248,1894||p||248,GB,estimated,reporter,SCC_19521scr3
+SCC,9215,(1941) U.S. Av. R. 76,1941,U.S. Av. R.,76,1941||usavr||76,UNSUPPORTED,unsupported,reporter,SCC_19521scr571
+SCC,9215,(1933) U.S. Av. R. 50,1933,U.S. Av. R.,50,1933||usavr||50,UNSUPPORTED,unsupported,reporter,SCC_19521scr571
+SCC,9215,(1941) U.S. Av. R. 28,1941,U.S. Av. R.,28,1941||usavr||28,UNSUPPORTED,unsupported,reporter,SCC_19521scr571
+SCC,2612,(1915) Han. B.R. 53,1915,Han. B.R.,53,1915||hanbr||53,UNSUPPORTED,unsupported,reporter,SCC_19522scr109
+SCC,8975,(1914) A.C. 71,1914,A.C.,71,1914||ac||71,GB,estimated,reporter,SCC_19522scr122
+SCC,8975,(1900) A.C. 182,1900,A.C.,182,1900||ac||182,GB,estimated,reporter,SCC_19522scr122
+SCC,9220,(1871) L.J.C.P. 21,1871,L.J.C.P.,21,1871||ljcp||21,UNSUPPORTED,unsupported,reporter,SCC_19522scr161
+SCC,9220,(1923) A.C. 253,1923,A.C.,253,1923||ac||253,GB,estimated,reporter,SCC_19522scr161
+SCC,9224,(1943) A.C. 550,1943,A.C.,550,1943||ac||550,GB,estimated,reporter,SCC_19522scr231
+SCC,9224,(1930) A.C. 357,1930,A.C.,357,1930||ac||357,GB,estimated,reporter,SCC_19522scr231
+SCC,9224,(1928) A.C. 358,1928,A.C.,358,1928||ac||358,GB,estimated,reporter,SCC_19522scr231
+SCC,2610,(1891) P. 139,1891,P.,139,1891||p||139,GB,estimated,reporter,SCC_19522scr312
+SCC,9229,(1927) B.W.C.C. 305,1927,B.W.C.C.,305,1927||bwcc||305,UNSUPPORTED,unsupported,reporter,SCC_19522scr359
+SCC,9230,(1931) S.C.R. 399,1931,S.C.R.,399,1931||scr||399,CA,estimated,reporter,SCC_19522scr377
+SCC,7388,(1951) S.C.R. 31,1951,S.C.R.,31,1951||scr||31,CA,estimated,reporter,SCC_19522scr392
+SCC,8848,(1937) S.C. 77,1937,S.C.,77,1937||sc||77,GB,estimated,reporter,SCC_19522scr506
+SCC,8526,(1863)L.T.N.S.641,1863,L.T.N.S.,641,1863||ltns||641,GB,estimated,reporter,SCC_19522scr517
+SCC,2587,(1924) A.C. 999,1924,A.C.,999,1924||ac||999,GB,estimated,reporter,SCC_19532scr299
+SCC,2587,(1936) A.C. 578,1936,A.C.,578,1936||ac||578,GB,estimated,reporter,SCC_19532scr299
+SCC,2587,(1924) A.C. 999,1924,A.C.,999,1924||ac||999,GB,estimated,reporter,SCC_19532scr299
+SCC,8511,(1935) A.C. 346,1935,A.C.,346,1935||ac||346,GB,estimated,reporter,SCC_19532scr423
+SCC,8514,(1897) A.C. 22,1897,A.C.,22,1897||ac||22,GB,estimated,reporter,SCC_19532scr496
+SCC,8557,(1903) A.C. 524,1903,A.C.,524,1903||ac||524,GB,estimated,reporter,SCC_1954scr127
+SCC,3398,(1951) O.W.N. 635,1951,O.W.N.,635,1951||own||635,ON,estimated,reporter,SCC_1955scr430
+SCC,3398,(1953) O.W.N. 197,1953,O.W.N.,197,1953||own||197,ON,estimated,reporter,SCC_1955scr430
+SCC,2581,(1937) A.C. 377,1937,A.C.,377,1937||ac||377,GB,estimated,reporter,SCC_1955scr529
+SCC,2581,(1925) S.C.R. 505,1925,S.C.R.,505,1925||scr||505,CA,estimated,reporter,SCC_1955scr529
+SCC,2581,(1925) S.C.R. 505,1925,S.C.R.,505,1925||scr||505,CA,estimated,reporter,SCC_1955scr529
+SCC,9305,(1955) Can. C.C. 180,1955,Can. C.C.,180,1955||cancc||180,CA,estimated,reporter,SCC_1956scr124
+SCC,7408,(1916) Can. S.C.R. 220,1916,Can. S.C.R.,220,||canscr||220,CA,estimated,reporter,SCC_1956scr191
+SCC,3424,"(1935) A.C., 346",1935,A.C.,346,1935||ac||346,GB,estimated,reporter,SCC_1956scr366
+SCC,7486,(1929) St. R. Qd. 276,1929,St. R. Qd.,276,1929||strqd||276,UNSUPPORTED,unsupported,reporter,SCC_1956scr49
+SCC,7486,(1929) St. R. Qd. 276,1929,St. R. Qd.,276,1929||strqd||276,UNSUPPORTED,unsupported,reporter,SCC_1956scr49
+SCC,2577,(1933) A.C. 710,1933,A.C.,710,1933||ac||710,GB,estimated,reporter,SCC_1956scr610
+SCC,8361,"(1874), L.C. Jur. 103",1874,L.C. Jur.,103,1874||lcjur||103,QC,estimated,reporter,SCC_1958scr20
+SCC,7333,(1927) S.C.R. 364,1927,S.C.R.,364,1927||scr||364,CA,estimated,reporter,SCC_1958scr744
+SCC,7333,(1892) A.C. 437,1892,A.C.,437,1892||ac||437,GB,estimated,reporter,SCC_1958scr744
+SCC,9194,"(1953), A.M.C. 86",1953,A.M.C.,86,1953||amc||86,UNSUPPORTED,unsupported,reporter,SCC_1959scr372
+SCC,3478,(1946) O.R. 837,1946,O.R.,837,1946||or||837,ON,estimated,reporter,SCC_1959scr418
+SCC,3478,(1939) A.C. 629,1939,A.C.,629,1939||ac||629,GB,estimated,reporter,SCC_1959scr418
+SCC,3478,(1946) O.R. 309,1946,O.R.,309,1946||or||309,ON,estimated,reporter,SCC_1959scr418
+SCC,9297,(1903) A.C. 524,1903,A.C.,524,1903||ac||524,GB,estimated,reporter,SCC_1959scr497
+SCC,9056,(1941) S.C.R. 19,1941,S.C.R.,19,1941||scr||19,CA,estimated,reporter,SCC_1960scr391
+SCC,3718,(1959) O.W.N. 40,1959,O.W.N.,40,1959||own||40,ON,estimated,reporter,SCC_1960scr452
+SCC,3718,(1941) S.C.R. 32,1941,S.C.R.,32,1941||scr||32,CA,estimated,reporter,SCC_1960scr452
+SCC,7460,(1937) S.C.R. 305,1937,S.C.R.,305,1937||scr||305,CA,estimated,reporter,SCC_1960scr672
+SCC,7461,(1903) A.C. 524,1903,A.C.,524,1903||ac||524,GB,estimated,reporter,SCC_1960scr804
+SCC,9380,(1920) A.C. 479,1920,A.C.,479,1920||ac||479,GB,estimated,reporter,SCC_1960scr871
+SCC,7715,(1954) P. 338,1954,P.,338,1954||p||338,GB,estimated,reporter,SCC_1961scr43
+SCC,7562,(1898) A.C. 571,1898,A.C.,571,1898||ac||571,GB,estimated,reporter,SCC_1961scr775
+SCC,7562,(1935) A.C. 445,1935,A.C.,445,1935||ac||445,GB,estimated,reporter,SCC_1961scr775
+SCC,7562,(1899) A.C. 580,1899,A.C.,580,1899||ac||580,GB,estimated,reporter,SCC_1961scr775
+SCC,3952,(1908) S.C. 490,1908,S.C.,490,1908||sc||490,GB,estimated,reporter,SCC_1962scr26
+SCC,7564,(1930) S.C.R. 45,1930,S.C.R.,45,1930||scr||45,CA,estimated,reporter,SCC_1962scr38
+SCC,3897,"(1856), Dears. C.C. 606",1856,Dears. C.C.,606,1856||dearscc||606,UNSUPPORTED,unsupported,reporter,SCC_1962scr507
+SCC,7777,(1914) A.C. 569,1914,A.C.,569,1914||ac||569,GB,estimated,reporter,SCC_1963scr64
+SCC,3915,(1936) A.C. 578,1936,A.C.,578,1936||ac||578,GB,estimated,reporter,SCC_1963scr651
+SCC,3912,(1947) O.R. 155,1947,O.R.,155,1947||or||155,ON,estimated,reporter,SCC_1964scr212
+SCC,7628,(1911) A.C. 674,1911,A.C.,674,1911||ac||674,GB,estimated,reporter,SCC_1964scr606
+SCC,7628,(1945) S.C.R. 289,1945,S.C.R.,289,1945||scr||289,CA,estimated,reporter,SCC_1964scr606
+SCC,10379,(1938) S.C.R. 423,1938,S.C.R.,423,1938||scr||423,CA,estimated,reporter,SCC_1965scr57
+SCC,8202,(1951) Ex. C.R. 290,1951,Ex. C.R.,290,||excr||290,CA,estimated,reporter,SCC_1965scr582
+SCC,7593,(1951) A.C. 850,1951,A.C.,850,1951||ac||850,GB,estimated,reporter,SCC_1965scr638
+SCC,2603,(1894) A.C. 57,1894,A.C.,57,1894||ac||57,GB,estimated,reporter,SCC_1965scr739
+SCC,2602,(1936) A.C. 578,1936,A.C.,578,1936||ac||578,GB,estimated,reporter,SCC_1965scr798
+SCC,8211,"(1926), A.M.C. 438",1926,A.M.C.,438,1926||amc||438,UNSUPPORTED,unsupported,reporter,SCC_1966scr180
+SCC,7419,(1948) S.C.R. 46,1948,S.C.R.,46,1948||scr||46,CA,estimated,reporter,SCC_1966scr189
+SCC,4016,(1930) S.C.R. 284,1930,S.C.R.,284,1930||scr||284,CA,estimated,reporter,SCC_1966scr28
+SCC,7603,"(1885), Cass. S.C. Dig. 36",1885,Cass. S.C. Dig.,36,1885||cassscdig||36,UNSUPPORTED,unsupported,reporter,SCC_1966scr367
+SCC,7609,(1959) S.C.R. 378,1959,S.C.R.,378,1959||scr||378,CA,estimated,reporter,SCC_1966scr604
+SCC,7609,(1959) S.C.R. 378,1959,S.C.R.,378,1959||scr||378,CA,estimated,reporter,SCC_1966scr604
+SCC,8223,(1906) A.C. 448,1906,A.C.,448,1906||ac||448,GB,estimated,reporter,SCC_1966scr685
+SCC,8223,(1906) A.C. 448,1906,A.C.,448,1906||ac||448,GB,estimated,reporter,SCC_1966scr685
+SCC,8223,(1906) A.C. 448,1906,A.C.,448,1906||ac||448,GB,estimated,reporter,SCC_1966scr685
+SCC,8223,(1941) S.C.R. 19,1941,S.C.R.,19,1941||scr||19,CA,estimated,reporter,SCC_1966scr685
+SCC,8223,(1919) S.C. 289,1919,S.C.,289,1919||sc||289,GB,estimated,reporter,SCC_1966scr685
+SCC,8223,(1937) A.C. 685,1937,A.C.,685,1937||ac||685,GB,estimated,reporter,SCC_1966scr685
+SCC,8223,(1924) S.C. 231,1924,S.C.,231,1924||sc||231,GB,estimated,reporter,SCC_1966scr685
+SCC,8223,(1937) A.C. 685,1937,A.C.,685,1937||ac||685,GB,estimated,reporter,SCC_1966scr685
+SCC,8223,(1926) A.C. 205,1926,A.C.,205,1926||ac||205,GB,estimated,reporter,SCC_1966scr685
+SCC,8223,(1943) S.C.R. 58,1943,S.C.R.,58,1943||scr||58,CA,estimated,reporter,SCC_1966scr685
+SCC,8223,(1892) A. C. 309,1892,A. C.,309,1892||ac||309,GB,estimated,reporter,SCC_1966scr685
+SCC,8223,(1910) S.C. 519,1910,S.C.,519,1910||sc||519,GB,estimated,reporter,SCC_1966scr685
+SCC,8223,(1941) S.C.R. 19,1941,S.C.R.,19,1941||scr||19,CA,estimated,reporter,SCC_1966scr685
+SCC,8223,(1941) S.C.R. 19,1941,S.C.R.,19,1941||scr||19,CA,estimated,reporter,SCC_1966scr685
+SCC,8223,(1958) S.C.R. 133,1958,S.C.R.,133,1958||scr||133,CA,estimated,reporter,SCC_1966scr685
+SCC,8223,(1943) S.C.R. 58,1943,S.C.R.,58,1943||scr||58,CA,estimated,reporter,SCC_1966scr685
+SCC,8223,(1954) S.C.R. 55,1954,S.C.R.,55,1954||scr||55,CA,estimated,reporter,SCC_1966scr685
+SCC,10330,(1947) A.C. 109,1947,A.C.,109,1947||ac||109,GB,estimated,reporter,SCC_1967scr223
+SCC,10253,(1936) S.C.R. 649,1936,S.C.R.,649,1936||scr||649,CA,estimated,reporter,SCC_1967scr514
+SCC,10319,(1933) R.C.S. 629,1933,R.C.S.,629,1933||rcs||629,UNSUPPORTED,unsupported,reporter,SCC_1967scr60
+SCC,10281,(1938) S.C.R. 398,1938,S.C.R.,398,1938||scr||398,CA,estimated,reporter,SCC_1967scr702
+SCC,4002,(1923) S.C.R. 436,1923,S.C.R.,436,1923||scr||436,CA,estimated,reporter,SCC_1967scr746
+SCC,4002,(1927) S.C.R. 436,1927,S.C.R.,436,1927||scr||436,CA,estimated,reporter,SCC_1967scr746
+SCC,10278,(1906) A.C. 542,1906,A.C.,542,1906||ac||542,GB,estimated,reporter,SCC_1967scr792
+SCC,10273,(1926) A.C. 205,1926,A.C.,205,1926||ac||205,GB,estimated,reporter,SCC_1968scr17
+SCC,10750,(1936) S.C.R. 398,1936,S.C.R.,398,1936||scr||398,CA,estimated,reporter,SCC_1968scr238
+SCC,10750,(1937) A.C. 377,1937,A.C.,377,1937||ac||377,GB,estimated,reporter,SCC_1968scr238
+SCC,10750,(1925) S.C.R. 434,1925,S.C.R.,434,1925||scr||434,CA,estimated,reporter,SCC_1968scr238
+SCC,10750,(1931) S.C.R. 357,1931,S.C.R.,357,1931||scr||357,CA,estimated,reporter,SCC_1968scr238
+SCC,10750,(1912) A.C. 33,1912,A.C.,33,1912||ac||33,GB,estimated,reporter,SCC_1968scr238
+SCC,10750,(1925) S.C.R. 434,1925,S.C.R.,434,1925||scr||434,CA,estimated,reporter,SCC_1968scr238
+SCC,10750,(1936) Can. S.C.R. 398,1936,Can. S.C.R.,398,||canscr||398,CA,estimated,reporter,SCC_1968scr238
+SCC,10750,(1937) A.C. 377,1937,A.C.,377,1937||ac||377,GB,estimated,reporter,SCC_1968scr238
+SCC,10800,(1962) S.C.R. 346,1962,S.C.R.,346,1962||scr||346,CA,estimated,reporter,SCC_1968scr413
+SCC,10805,"(1913), T.P.D. 758",1913,T.P.D.,758,1913||tpd||758,UNSUPPORTED,unsupported,reporter,SCC_1968scr462
+SCC,10810,(1964) S.C.R. 642,1964,S.C.R.,642,1964||scr||642,CA,estimated,reporter,SCC_1968scr517
+SCC,10810,(1897) A.C. 199,1897,A.C.,199,1897||ac||199,GB,estimated,reporter,SCC_1968scr517
+SCC,10810,(1897) A.C. 199,1897,A.C.,199,1897||ac||199,GB,estimated,reporter,SCC_1968scr517
+SCC,10810,(1899) A.C. 367,1899,A.C.,367,1899||ac||367,GB,estimated,reporter,SCC_1968scr517
+SCC,3988,(1927) S.C.R. 112,1927,S.C.R.,112,1927||scr||112,CA,estimated,reporter,SCC_1968scr802
+SCC,3988,(1932) S.C.R. 343,1932,S.C.R.,343,1932||scr||343,CA,estimated,reporter,SCC_1968scr802
+SCC,3986,(1958) OWN 80,1958,OWN,80,1958||own||80,ON,estimated,reporter,SCC_1968scr902
+SCC,3986,(1958) O.W.N. 80,1958,O.W.N.,80,1958||own||80,ON,estimated,reporter,SCC_1968scr902
+SCC,3986,(1914) A.C. 599,1914,A.C.,599,1914||ac||599,GB,estimated,reporter,SCC_1968scr902
+SCC,3986,(1914) A.C. 599,1914,A.C.,599,1914||ac||599,GB,estimated,reporter,SCC_1968scr902
+SCC,3986,(1949) S.C.R. 262,1949,S.C.R.,262,1949||scr||262,CA,estimated,reporter,SCC_1968scr902
+SCC,3772,(1957) O.R. 93,1957,O.R.,93,1957||or||93,ON,estimated,reporter,SCC_1969scr221
+SCC,3776,(1952) A.C. 694,1952,A.C.,694,1952||ac||694,GB,estimated,reporter,SCC_1969scr373
+SCC,10704,(1944) O.R. 339,1944,O.R.,339,1944||or||339,ON,estimated,reporter,SCC_1969scr551
+SCC,10864,(1892) A.C. 491,1892,A.C.,491,1892||ac||491,GB,estimated,reporter,SCC_1969scr60
+SCC,3778,(1899) A.C. 580,1899,A.C.,580,1899||ac||580,GB,estimated,reporter,SCC_1969scr779
+SCC,3778,(1899) A.C. 580,1899,A.C.,580,1899||ac||580,GB,estimated,reporter,SCC_1969scr779
+SCC,3778,(1915) A.C. 330,1915,A.C.,330,1915||ac||330,GB,estimated,reporter,SCC_1969scr779
+SCC,3778,(1892) A.C.437,1892,A.C.,437,1892||ac||437,GB,estimated,reporter,SCC_1969scr779
+SCC,3778,(1915) A.C. 330,1915,A.C.,330,1915||ac||330,GB,estimated,reporter,SCC_1969scr779
+SCC,3778,(1924) A.C. 328,1924,A.C.,328,1924||ac||328,GB,estimated,reporter,SCC_1969scr779
+SCC,3778,(1915) A.C. 330,1915,A.C.,330,1915||ac||330,GB,estimated,reporter,SCC_1969scr779
+SCC,3778,(1924) A.C. 328,1924,A.C.,328,1924||ac||328,GB,estimated,reporter,SCC_1969scr779
+SCC,3778,(1899) A.C. 580,1899,A.C.,580,1899||ac||580,GB,estimated,reporter,SCC_1969scr779
+SCC,3778,(1924) A.C. 328,1924,A.C.,328,1924||ac||328,GB,estimated,reporter,SCC_1969scr779
+SCC,3778,(1924) A.C. 328,1924,A.C.,328,1924||ac||328,GB,estimated,reporter,SCC_1969scr779
+SCC,3778,(1924) A.C. 328,1924,A.C.,328,1924||ac||328,GB,estimated,reporter,SCC_1969scr779
+SCC,3758,(1960) S.C.R. 286,1960,S.C.R.,286,1960||scr||286,CA,estimated,reporter,SCC_1970scr1022
+SCC,10561,(1952) OR 345,1952,OR,345,1952||or||345,ON,estimated,reporter,SCC_1970scr109
+SCC,10688,(1932) S.C.R. 529,1932,S.C.R.,529,1932||scr||529,CA,estimated,reporter,SCC_1970scr533
+SCC,10688,(1949) S.C.R. 201,1949,S.C.R.,201,1949||scr||201,CA,estimated,reporter,SCC_1970scr533
+SCC,10562,(1942) S.C.R. 269,1942,S.C.R.,269,1942||scr||269,CA,estimated,reporter,SCC_1970scr64
+SCC,10647,(1966) S.C.R. 419,1966,S.C.R.,419,1966||scr||419,CA,estimated,reporter,SCC_1970scr833
+SCC,10647,(1891) A.C. 107,1891,A.C.,107,1891||ac||107,GB,estimated,reporter,SCC_1970scr833
+SCC,10844,(1965) S.C.R. 174,1965,S.C.R.,174,1965||scr||174,CA,estimated,reporter,SCC_1971scr101
+SCC,10844,(1966) S.C.R. 254,1966,S.C.R.,254,1966||scr||254,CA,estimated,reporter,SCC_1971scr101
+SCC,3734,(1892) A.C. 61,1892,A.C.,61,1892||ac||61,GB,estimated,reporter,SCC_1971scr184
+SCC,10817,(1914) A.C. 599,1914,A.C.,599,1914||ac||599,GB,estimated,reporter,SCC_1971scr23
+SCC,10817,(1914) A.C. 599,1914,A.C.,599,1914||ac||599,GB,estimated,reporter,SCC_1971scr23
+SCC,2631,(1955) S.C.R. 593,1955,S.C.R.,593,1955||scr||593,CA,estimated,reporter,SCC_1971scr272
+SCC,2631,(1962) Crim. L.R. 697,1962,Crim. L.R.,697,1962||crimlr||697,UNSUPPORTED,unsupported,reporter,SCC_1971scr272
+SCC,10612,(1915) A.C. 705,1915,A.C.,705,1915||ac||705,GB,estimated,reporter,SCC_1971scr321
+SCC,10607,(1915) A.C. 871,1915,A.C.,871,1915||ac||871,GB,estimated,reporter,SCC_1971scr385
+SCC,10607,(1926) A.C. 725,1926,A.C.,725,1926||ac||725,GB,estimated,reporter,SCC_1971scr385
+SCC,10310,(1964) S.C.R. 267,1964,S.C.R.,267,1964||scr||267,CA,estimated,reporter,SCC_1972scr101
+SCC,10310,(1953) O.R. 800,1953,O.R.,800,1953||or||800,ON,estimated,reporter,SCC_1972scr101
+SCC,10887,(1935) A.C. 462,1935,A.C.,462,1935||ac||462,GB,estimated,reporter,SCC_1972scr303
+SCC,10885,(1956) S.C.R. 137,1956,S.C.R.,137,1956||scr||137,CA,estimated,reporter,SCC_1972scr359
+SCC,2633,(1932) A.C. 562,1932,A.C.,562,1932||ac||562,GB,estimated,reporter,SCC_1972scr441
+SCC,10874,(1964) Ex. C.R. 955,1964,Ex. C.R.,955,||excr||955,CA,estimated,reporter,SCC_1972scr506
+SCC,10874,"(1966), S.C.R. 313",1966,S.C.R.,313,1966||scr||313,CA,estimated,reporter,SCC_1972scr506
+SCC,9734,(1935) Ex. C.R. 25,1935,Ex. C.R.,25,||excr||25,CA,estimated,reporter,SCC_1974scr1088
+SCC,9609,(1962) R.P.C. 37,1962,R.P.C.,37,1962||rpc||37,GB,estimated,reporter,SCC_1974scr111
+SCC,9414,(1904) A.C. 73,1904,A.C.,73,1904||ac||73,GB,estimated,reporter,SCC_19751scr665
+SCC,9414,(1919) A.C. 254,1919,A.C.,254,1919||ac||254,GB,estimated,reporter,SCC_19751scr665
+SCC,9447,(1898) A.C. 1,1898,A.C.,1,1898||ac||1,GB,estimated,reporter,SCC_19751scr756
+SCC,9447,"(1901), A.C. 506",1901,A.C.,506,1901||ac||506,GB,estimated,reporter,SCC_19751scr756
+SCC,9556,(1894) A.C. 456,1894,A.C.,456,1894||ac||456,GB,estimated,reporter,SCC_19752scr465
+SCC,9556,(1910) A.C. 300,1910,A.C.,300,1910||ac||300,GB,estimated,reporter,SCC_19752scr465
+SCC,9898,(1960) S.C. 8,1960,S.C.,8,1960||sc||8,UNSUPPORTED,unsupported,reporter,SCC_19761scr170
+SCC,2623,(1973) Crim. L.R. 113,1973,Crim. L.R.,113,1973||crimlr||113,UNSUPPORTED,unsupported,reporter,SCC_19761scr763
+SCC,8032,(1955) L.Q.R. 402,1955,L.Q.R.,402,1955||lqr||402,UNSUPPORTED,unsupported,reporter,SCC_19762scr46
+SCC,9790,(1935) A.C. 309,1935,A.C.,309,1935||ac||309,GB,estimated,reporter,SCC_19771scr339
+SCC,9796,(1965) S.C. Report 575,1965,S.C. Report,575,1965||screport||575,UNSUPPORTED,unsupported,reporter,SCC_19771scr536
+SCC,9871,"(1899), O.A.R. 277",1899,O.A.R.,277,1899||oar||277,ON,estimated,reporter,SCC_19772scr1036
+SCC,10439,(1894) A.C 670,1894,A.C,670,1894||ac||670,GB,estimated,reporter,SCC_19772scr218
+SCC,10439,(1906) P. 209,1906,P.,209,1906||p||209,GB,estimated,reporter,SCC_19772scr218
+SCC,10439,(1892) P. 402,1892,P.,402,1892||p||402,GB,estimated,reporter,SCC_19772scr218
+SCC,9878,"(1940), Que. K.B. 255",1940,Que. K.B.,255,1940||quekb||255,QC,estimated,reporter,SCC_19772scr849
+SCC,8075,(1956) Crim. L.R. 122,1956,Crim. L.R.,122,1956||crimlr||122,UNSUPPORTED,unsupported,reporter,SCC_19781scr275
+SCC,7895,"(1811), Stu. K.B. 21",1811,Stu. K.B.,21,1811||stukb||21,UNSUPPORTED,unsupported,reporter,SCC_19782scr638
+SCC,7895,"(1833), Stu. K.B. 560",1833,Stu. K.B.,560,1833||stukb||560,UNSUPPORTED,unsupported,reporter,SCC_19782scr638
+SCC,7848,(1950) A.C. 87,1950,A.C.,87,1950||ac||87,GB,estimated,reporter,SCC_19782scr869
+SCC,7860,"(1976), C.L.L.C. 16",1976,C.L.L.C.,16,1976||cllc||16,UNSUPPORTED,unsupported,reporter,SCC_19791scr120
+SCC,7860,"(1976), C.L.L.C. 16",1976,C.L.L.C.,16,1976||cllc||16,UNSUPPORTED,unsupported,reporter,SCC_19791scr120
+SCC,7958,"(1972), DTC 1222",1972,DTC,1222,1972||dtc||1222,CA,estimated,reporter,SCC_19791scr833
+SCC,10538,(1898) A.C. 387,1898,A.C.,387,1898||ac||387,GB,estimated,reporter,SCC_19792scr104
+SCC,10538,(1912) A.C. 149,1912,A.C.,149,1912||ac||149,GB,estimated,reporter,SCC_19792scr104
+SCC,10538,(1892) A.C. 345,1892,A.C.,345,1892||ac||345,GB,estimated,reporter,SCC_19792scr104
+SCC,2082,(1974) N.Z.L.J. 133,1974,N.Z.L.J.,133,1974||nzlj||133,UNSUPPORTED,unsupported,reporter,SCC_19801scr602
+SCC,10474,(1948) Que. K.B. 406n,1948,Que. K.B.,406,1948||quekb||406,QC,estimated,reporter,SCC_19811scr469
+SCC,2335,(1963) S.C.R. 154,1963,S.C.R.,154,1963||scr||154,CA,estimated,reporter,SCC_19821scr164
+SCC,2344,(1926) S.C.R. 39,1926,S.C.R.,39,1926||scr||39,CA,estimated,reporter,SCC_19821scr834
+SCC,2344,(1944) A.C. 315,1944,A.C.,315,1944||ac||315,GB,estimated,reporter,SCC_19821scr834
+SCC,2357,(1980) Crim. L. Rev. 248,1980,Crim. L. Rev.,248,1980||crimlrev||248,UNSUPPORTED,unsupported,reporter,SCC_19822scr368
+SCC,2201,(1968) R.J.T. 143,1968,R.J.T.,143,1968||rjt||143,UNSUPPORTED,unsupported,reporter,SCC_19831scr529
+SCC,9761,"(1954), A.I.R. Madras 291",1954,A.I.R. Madras,291,1954||airmadras||291,UNSUPPORTED,unsupported,reporter,SCC_19841scr388
+SCC,9757,(1973) OLRB 519,1973,OLRB,519,1973||olrb||519,UNSUPPORTED,unsupported,reporter,SCC_19841scr509
+SCC,9692,(1923) A.C. 695,1923,A.C.,695,1923||ac||695,GB,estimated,reporter,SCC_19842scr603
+SCC,9692,(1947) A.C. 87,1947,A.C.,87,1947||ac||87,GB,estimated,reporter,SCC_19842scr603
+SCC,492,(1947) A.C. 109,1947,A.C.,109,1947||ac||109,GB,estimated,reporter,SCC_19852scr288
+SCC,6844,(1973) Crim. L.R. 113,1973,Crim. L.R.,113,1973||crimlr||113,UNSUPPORTED,unsupported,reporter,SCC_19861scr802
+SCC,7025,"(1854), Dears. C.C. 376",1854,Dears. C.C.,376,1854||dearscc||376,UNSUPPORTED,unsupported,reporter,SCC_19862scr2
+SCC,7025,"(1854), Dears. C.C. 376",1854,Dears. C.C.,376,1854||dearscc||376,UNSUPPORTED,unsupported,reporter,SCC_19862scr2
+SCC,2902,(1948) C.T.C. 195,1948,C.T.C.,195,1948||ctc||195,CA,estimated,reporter,SCC_19871scr32
+SCC,4180,(1955) S.C.R. 529,1955,S.C.R.,529,1955||scr||529,CA,estimated,reporter,SCC_19881scr749
+SCC,9666,"(1726), Sel. Cas. T. King 61",1726,Sel. Cas. T. King,61,1726||selcastking||61,UNSUPPORTED,unsupported,reporter,SCC_19892scr574
+SCC,9666,"(1726), Sel. Cas. T. King 61",1726,Sel. Cas. T. King,61,1726||selcastking||61,UNSUPPORTED,unsupported,reporter,SCC_19892scr574
+SCC,8226,(1970) S.C.R. 608,1970,S.C.R.,608,1970||scr||608,CA,estimated,reporter,SCC_19902scr531
+SCC,7684,"(1987), R.D. McGill 170",1987,R.D. McGill,170,1987||rdmcgill||170,UNSUPPORTED,unsupported,reporter,SCC_19903scr570
+SCC,8832,"(1985), Wis. L. Rev. 1219",1985,Wis. L. Rev.,1219,1985||wislrev||1219,UNSUPPORTED,unsupported,reporter,SCC_19912scr577
+SCC,8842,"(1747), Bull. N.P. 16",1747,Bull. N.P.,16,1747||bullnp||16,UNSUPPORTED,unsupported,reporter,SCC_19912scr714
+SCC,8842,"(1747), Bull. N.P. 16",1747,Bull. N.P.,16,1747||bullnp||16,UNSUPPORTED,unsupported,reporter,SCC_19912scr714
+SCC,5598,"(1989), Imm. L.R. 245",1989,Imm. L.R.,245,1989||immlr||245,CA,estimated,reporter,SCC_19932scr689
+SCC,5395,"(1726), Sel. Cas. T. King 61",1726,Sel. Cas. T. King,61,1726||selcastking||61,UNSUPPORTED,unsupported,reporter,SCC_19943scr377
+SCC,5395,"(1726), Sel. Cas. T. King 61",1726,Sel. Cas. T. King,61,1726||selcastking||61,UNSUPPORTED,unsupported,reporter,SCC_19943scr377
+SCC,7125,(1993) B.D.M. 1,1993,B.D.M.,1,1993||bdm||1,UNSUPPORTED,unsupported,reporter,SCC_19972scr862
+SCC,7125,(1993) B.D.M. 1,1993,B.D.M.,1,1993||bdm||1,UNSUPPORTED,unsupported,reporter,SCC_19972scr862
+SCC,6387,"(1700), Holt. K.B. 441",1700,Holt. K.B.,441,1700||holtkb||441,UNSUPPORTED,unsupported,reporter,SCC_2000scc44
+SCC,6387,"(1700), Holt. K.B. 441",1700,Holt. K.B.,441,1700||holtkb||441,UNSUPPORTED,unsupported,reporter,SCC_2000scc44
+SCC,3079,(1977) C.S. 12,1977,C.S.,12,1977||cs||12,QC,estimated,reporter,SCC_2004scc59
+SCC,5938,"(1947), N.I. 167",1947,N.I.,167,1947||ni||167,UNSUPPORTED,unsupported,reporter,SCC_2013scc70
+SCC,5938,"(1947), N.I. 167",1947,N.I.,167,1947||ni||167,UNSUPPORTED,unsupported,reporter,SCC_2013scc70
+SCC,5087,(1978) QB 500,1978,QB,500,1978||qb||500,GB,estimated,reporter,SCC_2014scc62
+SCC,5087,(1983) AC 244,1983,AC,244,1983||ac||244,GB,estimated,reporter,SCC_2014scc62
+SCC,5122,"(2006), SOR/2006",2006,SO,2006,2006||so||2006,UNSUPPORTED,unsupported,reporter,SCC_2015scc14
+SCC,6232,"(2006), S.A.E. 7953",2006,S.A.E.,7953,2006||sae||7953,UNSUPPORTED,unsupported,reporter,SCC_2016scc8
+SCC,6232,"(2000), S.A.E. 7006",2000,S.A.E.,7006,2000||sae||7006,UNSUPPORTED,unsupported,reporter,SCC_2016scc8
+SCC,6232,"(1988), S.A.E. 4674",1988,S.A.E.,4674,1988||sae||4674,UNSUPPORTED,unsupported,reporter,SCC_2016scc8
+SCC,6232,"(1975), S.A. 513",1975,S.A.,513,1975||sa||513,UNSUPPORTED,unsupported,reporter,SCC_2016scc8
+SCC,6232,"(1985), S.A.E. 3964",1985,S.A.E.,3964,1985||sae||3964,UNSUPPORTED,unsupported,reporter,SCC_2016scc8
+SCC,6232,"(2006), S.A.E. 7953",2006,S.A.E.,7953,2006||sae||7953,UNSUPPORTED,unsupported,reporter,SCC_2016scc8
+SCC,6232,"(2000), S.A.E. 7006",2000,S.A.E.,7006,2000||sae||7006,UNSUPPORTED,unsupported,reporter,SCC_2016scc8
+SCC,6232,"(1988), S.A.E. 4674",1988,S.A.E.,4674,1988||sae||4674,UNSUPPORTED,unsupported,reporter,SCC_2016scc8
+SCC,6232,"(1975), S.A. 513",1975,S.A.,513,1975||sa||513,UNSUPPORTED,unsupported,reporter,SCC_2016scc8
+SCC,6232,"(1985), S.A.E. 3964",1985,S.A.E.,3964,1985||sae||3964,UNSUPPORTED,unsupported,reporter,SCC_2016scc8
+SCC,6166,"(1726), Sel. Cas. T. King 61",1726,Sel. Cas. T. King,61,1726||selcastking||61,UNSUPPORTED,unsupported,reporter,SCC_2018scc4
+SCC,6166,"(1726), Sel. Cas. T. King 61",1726,Sel. Cas. T. King,61,1726||selcastking||61,UNSUPPORTED,unsupported,reporter,SCC_2018scc4
+SCC,6478,"(2007), N.Z.L. Rev. 27",2007,N.Z.L. Rev.,27,2007||nzlrev||27,UNSUPPORTED,unsupported,reporter,SCC_2020scc28
+SCC,6478,"(2007), N.Z.L. Rev. 27",2007,N.Z.L. Rev.,27,2007||nzlrev||27,UNSUPPORTED,unsupported,reporter,SCC_2020scc28
+SCC,2945,"(1989), Crim. L. Rev. 528",1989,Crim. L. Rev.,528,1989||crimlrev||528,UNSUPPORTED,unsupported,reporter,SCC_2021scc26
+SCC,2945,"(1989), Crim. L. Rev. 528",1989,Crim. L. Rev.,528,1989||crimlrev||528,UNSUPPORTED,unsupported,reporter,SCC_2021scc26
+SCC,2958,"(2021), L.S. 1",2021,L.S.,1,2021||ls||1,UNSUPPORTED,unsupported,reporter,SCC_2021scc29
+SCC,2958,"(2021), L.S. 1",2021,L.S.,1,2021||ls||1,UNSUPPORTED,unsupported,reporter,SCC_2021scc29
+ONCA,6548,(2007) S.C.C. 7,2007,S.C.C.,7,2007||scc||7,UNSUPPORTED,unsupported,reporter,ONCA_2007onca282
+ONCA,6110,(1909) A.C. 615,1909,A.C.,615,1909||ac||615,GB,estimated,reporter,ONCA_2007onca468
+ONCA,6480,"(2006), O.A.C. 368",2006,O.A.C.,368,2006||oac||368,ON,estimated,reporter,ONCA_2007onca578
+ONCA,7519,"(1997) LIMITED, 1220585",1997,LIMITED,1220585,1997||limited||1220585,UNSUPPORTED,unsupported,reporter,ONCA_2007onca627
+ONCA,7099,"(2007), ONCA 712",2007,ONCA,712,2007||onca||712,UNSUPPORTED,unsupported,reporter,ONCA_2008onca101
+ONCA,7097,"(1988), O.S.C.B. 442",1988,O.S.C.B.,442,1988||oscb||442,UNSUPPORTED,unsupported,reporter,ONCA_2008onca111
+ONCA,11239,"(2007), SCC 48",2007,SCC,48,2007||scc||48,UNSUPPORTED,unsupported,reporter,ONCA_2008onca354
+ONCA,11284,"(1892), O.A.R. 56",1892,O.A.R.,56,1892||oar||56,ON,estimated,reporter,ONCA_2008onca395
+ONCA,6875,"(2000), WL 33297166",2000,WL,33297166,2000||wl||33297166,UNSUPPORTED,unsupported,reporter,ONCA_2008onca578
+ONCA,11151,"(2008), S.C.C. 20",2008,S.C.C.,20,2008||scc||20,UNSUPPORTED,unsupported,reporter,ONCA_2008onca663
+ONCA,10705,(2005) Crim. L.R. 614,2005,Crim. L.R.,614,2005||crimlr||614,UNSUPPORTED,unsupported,reporter,ONCA_2008onca716
+ONCA,10705,(2006) Crim. L. Rev. 901,2006,Crim. L. Rev.,901,2006||crimlrev||901,UNSUPPORTED,unsupported,reporter,ONCA_2008onca716
+ONCA,10705,"(2000), S.C.C.R. 460",2000,S.C.C.R.,460,2000||sccr||460,UNSUPPORTED,unsupported,reporter,ONCA_2008onca716
+ONCA,10705,(2005) Crim. L. R. 601,2005,Crim. L. R.,601,2005||crimlr||601,UNSUPPORTED,unsupported,reporter,ONCA_2008onca716
+ONCA,11131,(1993) F.L.C. 92,1993,F.L.C.,92,1993||flc||92,UNSUPPORTED,unsupported,reporter,ONCA_2008onca758
+ONCA,12019,"(2007), ONCA 80",2007,ONCA,80,2007||onca||80,UNSUPPORTED,unsupported,reporter,ONCA_2009onca137
+ONCA,11853,"(1993), O.J. No. 2819",1993,O.J.,2819,1993||oj||2819,ON,estimated,reporter,ONCA_2009onca154
+ONCA,11374,"(2009), ONCA 389",2009,ONCA,389,2009||onca||389,UNSUPPORTED,unsupported,reporter,ONCA_2009onca443
+ONCA,21353,(2008) S.C.J. No. 40,2008,S.C.J.,40,2008||scj||40,CA,estimated,reporter,ONCA_2009onca526
+ONCA,11873,(2006) O.J. No. 3334,2006,O.J.,3334,2006||oj||3334,ON,estimated,reporter,ONCA_2009onca531
+ONCA,11709,"(1893), C.R. 67",1893,C.R.,67,1893||cr||67,CA,estimated,reporter,ONCA_2009onca56
+ONCA,11994,(1902) O.J. No. 155,1902,O.J.,155,1902||oj||155,ON,estimated,reporter,ONCA_2009onca584
+ONCA,11520,"(2009), S.C.C. 23",2009,S.C.C.,23,2009||scc||23,UNSUPPORTED,unsupported,reporter,ONCA_2009onca729
+ONCA,11520,"(2009), S.C.C. 24",2009,S.C.C.,24,2009||scc||24,UNSUPPORTED,unsupported,reporter,ONCA_2009onca729
+ONCA,9690,(1996) O.A.C. 224,1996,O.A.C.,224,1996||oac||224,ON,estimated,reporter,ONCA_2010onca129
+ONCA,9536,"(1982), E.B.O. 64",1982,E.B.O.,64,1982||ebo||64,UNSUPPORTED,unsupported,reporter,ONCA_2010onca248
+ONCA,9536,"(1962), E.B.O. 1",1962,E.B.O.,1,1962||ebo||1,UNSUPPORTED,unsupported,reporter,ONCA_2010onca248
+ONCA,10287,(2009) ONCA 415,2009,ONCA,415,2009||onca||415,UNSUPPORTED,unsupported,reporter,ONCA_2010onca386
+ONCA,9060,(2007) O.A.C. 65,2007,O.A.C.,65,2007||oac||65,ON,estimated,reporter,ONCA_2010onca393
+ONCA,9112,"(2001), A.B.C.A. 114",2001,A.B.C.A.,114,2001||abca||114,UNSUPPORTED,unsupported,reporter,ONCA_2010onca443
+ONCA,9137,(2006) O.J. No. 4749,2006,O.J.,4749,2006||oj||4749,ON,estimated,reporter,ONCA_2010onca491
+ONCA,9137,(2006) O.J. No. 4749,2006,O.J.,4749,2006||oj||4749,ON,estimated,reporter,ONCA_2010onca491
+ONCA,19060,(2010) ONCA 488,2010,ONCA,488,2010||onca||488,UNSUPPORTED,unsupported,reporter,ONCA_2010onca588
+ONCA,19099,(2010) QCCS1052,2010,QCCS,1052,2010||qccs||1052,UNSUPPORTED,unsupported,reporter,ONCA_2010onca594
+ONCA,19030,"(1987), Soc. Forens. Sci. J. 61",1987,Soc. Forens. Sci. J.,61,1987||socforensscij||61,UNSUPPORTED,unsupported,reporter,ONCA_2010onca615
+ONCA,9279,(2005) O.J. No. 4348,2005,O.J.,4348,2005||oj||4348,ON,estimated,reporter,ONCA_2010onca736
+ONCA,18901,"(2010), ONCA 899",2010,ONCA,899,2010||onca||899,UNSUPPORTED,unsupported,reporter,ONCA_2011onca144
+ONCA,18830,(1984) Crim. L. R. 259,1984,Crim. L. R.,259,1984||crimlr||259,UNSUPPORTED,unsupported,reporter,ONCA_2011onca153
+ONCA,19415,"(1964), M.C.C. 147",1964,M.C.C.,147,1964||mcc||147,UNSUPPORTED,unsupported,reporter,ONCA_2011onca373
+ONCA,19212,(2002) BCCA 577,2002,BCCA,577,2002||bcca||577,UNSUPPORTED,unsupported,reporter,ONCA_2011onca483
+ONCA,18653,"(2009), ONCA 280",2009,ONCA,280,2009||onca||280,UNSUPPORTED,unsupported,reporter,ONCA_2012onca167
+ONCA,18757,"(2009), ONCA 150",2009,ONCA,150,2009||onca||150,UNSUPPORTED,unsupported,reporter,ONCA_2012onca280
+ONCA,18564,(2011) ONCA 274,2011,ONCA,274,2011||onca||274,UNSUPPORTED,unsupported,reporter,ONCA_2012onca479
+ONCA,20502,(2007) O.J. No. 468,2007,O.J.,468,2007||oj||468,ON,estimated,reporter,ONCA_2012onca745
+ONCA,20797,"(2004), O.R. 3",2004,O.R.,3,2004||or||3,ON,estimated,reporter,ONCA_2013onca106
+ONCA,20752,(2010) C. Gaz. 11,2010,C. Gaz.,11,2010||cgaz||11,UNSUPPORTED,unsupported,reporter,ONCA_2013onca147
+ONCA,20816,(2000) Wis. L. Rev 31,2000,Wis. L. Rev,31,2000||wislrev||31,UNSUPPORTED,unsupported,reporter,ONCA_2013onca184
+ONCA,21017,(2007) ONCA 79,2007,ONCA,79,2007||onca||79,UNSUPPORTED,unsupported,reporter,ONCA_2013onca23
+ONCA,19654,"(1987), B.L.R. 223",1987,B.L.R.,223,1987||blr||223,CA,estimated,reporter,ONCA_2013onca448
+ONCA,21023,(2001) SCC 92,2001,SCC,92,2001||scc||92,UNSUPPORTED,unsupported,reporter,ONCA_2013onca46
+ONCA,20158,(2009) ONCA 628,2009,ONCA,628,2009||onca||628,UNSUPPORTED,unsupported,reporter,ONCA_2013onca636
+ONCA,20321,(2013) ONCA 375,2013,ONCA,375,2013||onca||375,UNSUPPORTED,unsupported,reporter,ONCA_2013onca730
+ONCA,21076,(1879) Ch. D. 31,1879,Ch. D.,31,1879||chd||31,GB,estimated,reporter,ONCA_2013onca8
+ONCA,3840,(2004) O.J. No. 3177,2004,O.J.,3177,2004||oj||3177,ON,estimated,reporter,ONCA_2014onca367
+ONCA,3940,(2010) ONSC 1528,2010,ONSC,1528,2010||onsc||1528,UNSUPPORTED,unsupported,reporter,ONCA_2014onca458
+ONCA,4491,"(2012), ONCA 894",2012,ONCA,894,2012||onca||894,UNSUPPORTED,unsupported,reporter,ONCA_2014onca602
+ONCA,4188,"(1929), O.J. No. 74",1929,O.J.,74,1929||oj||74,ON,estimated,reporter,ONCA_2014onca709
+ONCA,4236,"(2011), O.L.R.D. No. 3803",2011,O.L.R.D.,3803,2011||olrd||3803,UNSUPPORTED,unsupported,reporter,ONCA_2014onca839
+ONCA,3572,"(2008), O.J. NO. 4734",2008,O.J. NO.,4734,2008||ojno||4734,UNSUPPORTED,unsupported,reporter,ONCA_2015onca568
+ONCA,5373,(2013) U. Ill. L. Rev. 2087,2013,U. Ill. L. Rev.,2087,2013||uilllrev||2087,UNSUPPORTED,unsupported,reporter,ONCA_2016onca11
+ONCA,4876,(2010) Geo. L.J. 189,2010,Geo. L.J.,189,2010||geolj||189,UNSUPPORTED,unsupported,reporter,ONCA_2016onca515
+ONCA,965,"(1894), H.L. 67",1894,H.L.,67,1894||hl||67,GB,estimated,reporter,ONCA_2017onca150
+ONCA,935,(1947) O.W.N. 1053,1947,O.W.N.,1053,1947||own||1053,ON,estimated,reporter,ONCA_2017onca385
+ONCA,1134,"(2012), ONSC 4829",2012,ONSC,4829,2012||onsc||4829,UNSUPPORTED,unsupported,reporter,ONCA_2017onca670
+ONCA,997,(2012) SCC 24,2012,SCC,24,2012||scc||24,UNSUPPORTED,unsupported,reporter,ONCA_2017onca71
+ONCA,1231,(2008) ONCA 497,2008,ONCA,497,2008||onca||497,UNSUPPORTED,unsupported,reporter,ONCA_2017onca762
+ONCA,1024,(2014) SCC 53,2014,SCC,53,2014||scc||53,UNSUPPORTED,unsupported,reporter,ONCA_2017onca98
+ONCA,10106,(2019) ONCA 638,2019,ONCA,638,2019||onca||638,UNSUPPORTED,unsupported,reporter,ONCA_2019onca912
+ONCA,7974,(2011) Am. J. Juris. 17,2011,Am. J. Juris.,17,2011||amjjuris||17,UNSUPPORTED,unsupported,reporter,ONCA_2020onca478
+ONCA,22583,(2012) Sing. J.L.S. 232,2012,Sing. J.L.S.,232,2012||singjls||232,UNSUPPORTED,unsupported,reporter,ONCA_2023onca172
+ONCA,14845,"(2001), A.B.C.A. 114",2001,A.B.C.A.,114,2001||abca||114,UNSUPPORTED,unsupported,reporter,ONCA_2024onca120
+ONCA,13343,"(1997), B.C.A.C. 279",1997,B.C.A.C.,279,1997||bcac||279,BC,estimated,reporter,ONCA_2025onca550
+ONCA,13040,"(2020) C. Gaz. I, 2542",2020,C. Gaz. I,2542,2020||cgazi||2542,UNSUPPORTED,unsupported,reporter,ONCA_2026onca270
+ONCA,15767,"(1991), C.L.R. 843",1991,C.L.R.,843,1991||clr||843,UNSUPPORTED,unsupported,reporter,ONCA_c13175
+ONCA,6792,"(1998), O.J. No. 1583",1998,O.J.,1583,1998||oj||1583,ON,estimated,reporter,ONCA_c26981
+ONCA,1306,(2000) S.C.C. 40,2000,S.C.C.,40,2000||scc||40,UNSUPPORTED,unsupported,reporter,ONCA_c27263
+ONCA,18197,(1996) Can. Bus. L.J. 365,1996,Can. Bus. L.J.,365,1996||canbuslj||365,UNSUPPORTED,unsupported,reporter,ONCA_c27635
+ONCA,10907,"(1947), C.C.C. 148",1947,C.C.C.,148,||ccc||148,CA,estimated,reporter,ONCA_c29243
+ONCA,10907,"(1994), O.J. No. 2086",1994,O.J.,2086,1994||oj||2086,ON,estimated,reporter,ONCA_c29243
+ONCA,18844,"(1998), O.J. No. 137",1998,O.J.,137,1998||oj||137,ON,estimated,reporter,ONCA_c30064c31342
+ONCA,18844,"(1995), O.J. No. 3118",1995,O.J.,3118,1995||oj||3118,ON,estimated,reporter,ONCA_c30064c31342
+ONCA,3413,"(1961), O.R. 413",1961,O.R.,413,1961||or||413,ON,estimated,reporter,ONCA_c30528
+ONCA,137,"(2000), S.C.C. 24",2000,S.C.C.,24,2000||scc||24,UNSUPPORTED,unsupported,reporter,ONCA_c30847
+ONCA,4474,(1996) S.J. No. 496,1996,S.J.,496,1996||sj||496,GB,estimated,reporter,ONCA_c31085
+ONCA,18621,"(1868), L.R. Eq. 394",1868,L.R. Eq.,394,1868||lreq||394,UNSUPPORTED,unsupported,reporter,ONCA_c31402
+ONCA,15977,"(1952), O.R. 621",1952,O.R.,621,1952||or||621,ON,estimated,reporter,ONCA_c31728c32103
+ONCA,288,(1993) O.J. No. 2995,1993,O.J.,2995,1993||oj||2995,ON,estimated,reporter,ONCA_c31860
+ONCA,13226,"(2002), S.C.C. 18",2002,S.C.C.,18,2002||scc||18,UNSUPPORTED,unsupported,reporter,ONCA_c32399
+ONCA,17880,"(1919), O.W.N. 137",1919,O.W.N.,137,1919||own||137,ON,estimated,reporter,ONCA_c32578m29380
+ONCA,8229,"(2000), S.C.C. 55",2000,S.C.C.,55,2000||scc||55,UNSUPPORTED,unsupported,reporter,ONCA_c32616
+ONCA,8229,"(2000), S.C.C. 54",2000,S.C.C.,54,2000||scc||54,UNSUPPORTED,unsupported,reporter,ONCA_c32616
+ONCA,8229,"(2000), S.C.C. 40",2000,S.C.C.,40,2000||scc||40,UNSUPPORTED,unsupported,reporter,ONCA_c32616
+ONCA,15806,"(1993), A.Q. No. 2046",1993,A.Q.,2046,1993||aq||2046,UNSUPPORTED,unsupported,reporter,ONCA_c32686
+ONCA,4430,"(1999), O.J. No. 1667",1999,O.J.,1667,1999||oj||1667,ON,estimated,reporter,ONCA_c32747
+ONCA,2858,"(2001), SCC 42",2001,SCC,42,2001||scc||42,UNSUPPORTED,unsupported,reporter,ONCA_c32988
+ONCA,17917,"(2002), A.J. No. 30",2002,A.J.,30,2002||aj||30,AB,estimated,reporter,ONCA_c33274
+ONCA,3758,"(1992), P.E.I.J. No. 64",1992,P.E.I.J.,64,1992||peij||64,UNSUPPORTED,unsupported,reporter,ONCA_c33294
+ONCA,17167,(2002) S.C.C. 56,2002,S.C.C.,56,2002||scc||56,UNSUPPORTED,unsupported,reporter,ONCA_c33448
+ONCA,17167,(2002) S.C.C. 58,2002,S.C.C.,58,2002||scc||58,UNSUPPORTED,unsupported,reporter,ONCA_c33448
+ONCA,21680,"(1974), A.L.J.R. 161",1974,A.L.J.R.,161,1974||aljr||161,UNSUPPORTED,unsupported,reporter,ONCA_c33887
+ONCA,20883,"(1921), O.W.N. 378",1921,O.W.N.,378,1921||own||378,ON,estimated,reporter,ONCA_c34575
+ONCA,14337,"(1999), O.J. No. 64",1999,O.J.,64,1999||oj||64,ON,estimated,reporter,ONCA_c35199
+ONCA,14337,"(2001), O.J. 651",2001,O.J.,651,2001||oj||651,ON,estimated,reporter,ONCA_c35199
+ONCA,2735,"(1903), O.L.R. 699",1903,O.L.R.,699,1903||olr||699,ON,estimated,reporter,ONCA_c35542
+ONCA,7692,(2004) S.C.C.A. No. 246,2004,S.C.C.A.,246,2004||scca||246,CA,estimated,reporter,ONCA_c35653c35800
+ONCA,13161,"(2002), SCC 73",2002,SCC,73,2002||scc||73,UNSUPPORTED,unsupported,reporter,ONCA_c36071
+ONCA,13161,"(2002), SCC 62",2002,SCC,62,2002||scc||62,UNSUPPORTED,unsupported,reporter,ONCA_c36071
+ONCA,12419,"(1998), S.C.C. File No. 26395",1998,S.C.C. File,26395,1998||sccfile||26395,UNSUPPORTED,unsupported,reporter,ONCA_c36139
+ONCA,16840,"(1997), O.J. No. 453",1997,O.J.,453,1997||oj||453,ON,estimated,reporter,ONCA_c36273
+ONCA,17781,"(1897), A.C. 156",1897,A.C.,156,1897||ac||156,GB,estimated,reporter,ONCA_c37623
+ONCA,16507,(2002) S.C.C. 43,2002,S.C.C.,43,2002||scc||43,UNSUPPORTED,unsupported,reporter,ONCA_c38064
+ONCA,17324,(2002) SCC 33,2002,SCC,33,2002||scc||33,UNSUPPORTED,unsupported,reporter,ONCA_c38408
+ONCA,15348,"(2003), N.S.J. No. 99",2003,N.S.J.,99,2003||nsj||99,NS,estimated,reporter,ONCA_c39094c40014
+ONCA,15569,"(1998), Sask. R. 195",1998,Sask. R.,195,||saskr||195,SK,estimated,reporter,ONCA_c39095
+ONCA,15232,(2001) O.J. No. 2154,2001,O.J.,2154,2001||oj||2154,ON,estimated,reporter,ONCA_c39180m30480
+ONCA,15232,"(1997), O.J. No 852",1997,O.J. No,852,1997||ojno||852,UNSUPPORTED,unsupported,reporter,ONCA_c39180m30480
+ONCA,17481,"(1986), N.S.J. No. 429",1986,N.S.J.,429,1986||nsj||429,NS,estimated,reporter,ONCA_c39710
+ONCA,15078,"(1999), O.J. No. 2354",1999,O.J.,2354,1999||oj||2354,ON,estimated,reporter,ONCA_c39888
+ONCA,15324,(2001) N.S.J. No. 332,2001,N.S.J.,332,2001||nsj||332,NS,estimated,reporter,ONCA_c40291
+ONCA,8425,(1832) Jebb. C.C. 123,1832,Jebb. C.C.,123,1832||jebbcc||123,UNSUPPORTED,unsupported,reporter,ONCA_c40731c41165
+ONCA,16442,"(2003), SCC 33",2003,SCC,33,2003||scc||33,UNSUPPORTED,unsupported,reporter,ONCA_c41238
+ONCA,7850,"(1987), O.J. No. 925",1987,O.J.,925,1987||oj||925,ON,estimated,reporter,ONCA_c41512c41579
+ONCA,14156,(2000) O.J. 849,2000,O.J.,849,2000||oj||849,ON,estimated,reporter,ONCA_c41813
+ONCA,16135,(2000) M.B.C.A. 100,2000,M.B.C.A.,100,2000||mbca||100,UNSUPPORTED,unsupported,reporter,ONCA_c41829
+ONCA,14248,"(1990), I.L.R. 1",1990,I.L.R.,1,1990||ilr||1,UNSUPPORTED,unsupported,reporter,ONCA_c41904
+ONCA,13578,(1999) O.J. No. 4410,1999,O.J.,4410,1999||oj||4410,ON,estimated,reporter,ONCA_c41963
+ONCA,13578,(1996) O.J. No. 439,1996,O.J.,439,1996||oj||439,ON,estimated,reporter,ONCA_c41963
+ONCA,13674,(2000) ABCA 285,2000,ABCA,285,2000||abca||285,UNSUPPORTED,unsupported,reporter,ONCA_c42138
+ONCA,7756,"(1985), S.C. 1986",1985,S.C.,1986,1985||sc||1986,UNSUPPORTED,unsupported,reporter,ONCA_c42979
+ONCA,7771,(2004) BCJ No. 964,2004,BCJ,964,2004||bcj||964,BC,estimated,reporter,ONCA_c44314

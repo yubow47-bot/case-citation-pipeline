@@ -46,7 +46,8 @@ D:\cases data analisis\
 │   └── tests\                      run_regression.py（抽取层）、test_layers.py（第 2–5 层）、golden_layers.json（全量金标）
 ├── implementation\                进 git，会话报告与探针；run_registry.csv + rebuild_run.py 管旧 run 的重建
 ├── data\                          gitignore，派生产物（每个目录是什么、保留规则：data/README.md）
-│   ├── run_20260914_r4c\          ★ 交付 run（唯一交付物，完整保留）
+│   ├── run_20260915_r21a\         ★ 交付 run（2026-09-15 起，#21/债 1 修复，见 implementation/r21_fix_report.md）
+│   ├── run_20260914_r4c\          上一交付 run，保留供对照（切换前的交付物）
 │   ├── run_20260913_r3e\          上一基线（R4 复核读它，完整保留）
 │   ├── run_2026091x_*\            5 个历史 run，只留答案层或敏感性产物（不可重建，旧探针的输入）
 │   ├── extract_out … coverage_out 老路线产出 6 个目录（--golden 金标门与 USAGE §8 的锚）

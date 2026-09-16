@@ -114,7 +114,10 @@ MENTION_FIELDS = ["candidate_id", "corpus_row_index", "source_decision_citation"
 SHAPE_RANK = {name: i for i, name in enumerate([
     "shape_bracket", "shape_vol_page_year", "shape_year_vol_page",
     "shape_nominate", "shape_neutral_bare", "shape_vol_abbr_page",
-    "shape_leading_abbr"])}
+    "shape_leading_abbr", "shape_paren_year_abbr_page"])}
+# 末位 = #21 兜底形状（PROBLEMS #21）：同跨度同键折叠时的代表选取让位给
+# 七个既有形状；它与既有候选不可能重叠（extract 层兜底抑制），此排名只是
+# 确定性的保险。
 
 
 def apply_reporter_identity_fixes(docs, stats):

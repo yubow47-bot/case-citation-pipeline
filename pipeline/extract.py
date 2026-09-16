@@ -54,6 +54,30 @@ import shapes                                       # noqa: E402
 
 SHAPES = [(name, re.compile(rx)) for name, rx in shapes.SHAPES]
 SHAPE_ORDER = list(shapes.SHAPE_ORDER)
+# #21 兜底形状（PROBLEMS #21）：只在七个既有形状都不命中的位置生效。
+# 抑制在生成处做（_suppress_overlapping_fallback）——新候选与既有候选结构上
+# 不可能共存，dedup/仲裁的重叠规则碰不到它，「新匹配挤掉正确匹配」从根上
+# 不可能发生（不变量 K 的证明依赖这一点，见 implementation/r21_fix_report.md）。
+# 该常量必须与 shapes.SHAPES 里兜底形状的名字一致（test_shape_21 钉住）。
+FALLBACK_SHAPE = "shape_paren_year_abbr_page"
+
+
+def _suppress_overlapping_fallback(cands):
+    """#21 §5.1 兜底语义：与任何非兜底候选（区间相交）重叠的兜底候选，生成处
+    抑制（不留痕迹——它们从未成为候选，与 scan_overlapping 的 run 闸同性质）。
+    返回 (kept_cands, suppressed_count)。"""
+    out = []
+    dropped = 0
+    others = [(c["match_start_offset"], c["match_end_offset"])
+              for c in cands if c["shape_name"] != FALLBACK_SHAPE]
+    for c in cands:
+        if c["shape_name"] == FALLBACK_SHAPE:
+            s, e = c["match_start_offset"], c["match_end_offset"]
+            if any(s < oe and os_ < e for os_, oe in others):
+                dropped += 1
+                continue
+        out.append(c)
+    return out, dropped
 
 COLUMNS = ["citation_en", "document_date_en", "unofficial_text_en"]   # §7.5
 COURTS = ("SCC", "ONCA")
@@ -138,6 +162,23 @@ def scan_overlapping(rx, text):
     return out, rejected
 
 
+# ---- #21 兜底形状的行级结构谓词（§5.3，无词表；判据见 shapes.py 末条注释）----
+_N21_SINGLE_SEG = re.compile(r"(?:^|[\s.])[A-Z](?=[\s.]|$)")
+_N21_ALLCAPS = re.compile(r"^[A-Z]{2,8}$")
+
+
+def _n21_structural_ok(mid, page, year):
+    if _N21_ALLCAPS.match(mid):          # SCC/ONCA/QCCS 类全大写中立代码
+        return True
+    if "." not in mid:                   # Chapter/Section/Study Paper 无句点
+        return False
+    if not _N21_SINGLE_SEG.search(mid):  # Sup. Ct. Rev./App. Cas./Sel. Ca. 无单字母段
+        return False
+    if page == year:                     # (1978), S.M. 1978 制定法年份位
+        return False
+    return True
+
+
 def parse_signature(shape_name, groupdict):
     """同跨度不同解析的区分签名：解析字段的「名=值」序列（仅非空字段，固定顺序）。
     同形状同起点在 Python 正则下是确定性单匹配，签名差异只来自不同形状或
@@ -148,11 +189,14 @@ def parse_signature(shape_name, groupdict):
     return "|".join(parts)
 
 
-def extract_candidates(text, sdc, year, row_index, court):
+def extract_candidates(text, sdc, year, row_index, court, stats=None):
     """单份判决的全候选（candidates-2.1：2.0 + 尾括注零宽捕获）。七个形状全部重叠扫描；字段值仍一律取
     自原始 match 的捕获组（§7.3「不得对 raw_string 二次正则解析」不变）；
     偏移量指向**未改动的**语料原文。
-    返回 (cands, blocked_by_guard)。"""
+    #21：第八形状（兜底）扫描后经 _suppress_overlapping_fallback 抑制——
+    与任何既有形状候选重叠者不进入候选集（兜底语义，见 FALLBACK_SHAPE 注）。
+    返回 (cands, blocked_by_guard)。stats 给出时累加
+    stats["candidates_suppressed_by_fallback_overlap"]。"""
     cands = []
     blocked = 0
     for name, rx in SHAPES:
@@ -211,6 +255,33 @@ def extract_candidates(text, sdc, year, row_index, court):
                 "conflict_with_candidate": "",
                 "conflict_note": "",
             })
+    # ---- #21 兜底形状：行级结构谓词 + 兜底语义（重叠抑制）----
+    # 见 FALLBACK_SHAPE 注。抑制掉的兜底匹配**不产生候选行**（与 run 闸同性质，
+    # 生成处不存在即不存在）；计数分开记（结构性拒 / 重叠抑制），不与 run 闸混数。
+    fb = [c for c in cands if c["shape_name"] == FALLBACK_SHAPE]
+    if fb:
+        drop_ids = set()
+        n_struct = n_overlap = 0
+        others = [(c["match_start_offset"], c["match_end_offset"])
+                  for c in cands if c["shape_name"] != FALLBACK_SHAPE]
+        for c in fb:
+            if not _n21_structural_ok((c.get("abbr") or "").strip(),
+                                      (c.get("page") or "").strip(),
+                                      (c.get("year_start") or "").strip()):
+                drop_ids.add(c["candidate_id"])
+                n_struct += 1
+                continue
+            s, e = c["match_start_offset"], c["match_end_offset"]
+            if any(s < oe and os_ < e for os_, oe in others):
+                drop_ids.add(c["candidate_id"])
+                n_overlap += 1
+        if drop_ids:
+            cands = [c for c in cands if c["candidate_id"] not in drop_ids]
+            if stats is not None:
+                stats["fallback_suppressed_structural"] = \
+                    stats.get("fallback_suppressed_structural", 0) + n_struct
+                stats["fallback_suppressed_overlap"] = \
+                    stats.get("fallback_suppressed_overlap", 0) + n_overlap
     return cands, blocked
 
 
@@ -307,10 +378,11 @@ def decision_year(document_date_en):
     return ""
 
 
-def extract_rows(text, sdc, year):
+def extract_rows(text, sdc, year, stats=None):
     """单份判决的全部原始命中（文本外循环、形状内循环，§7.7）。
     字段值取自捕获组；无值的组一律空串——空串与缺失是两回事（§7.3），
-    不用空串以外的哨兵值。"""
+    不用空串以外的哨兵值。#21 兜底形状的行级结构谓词与重叠抑制在本函数内
+    做（与 candidates 路线同一判据，两路线行为一致）。"""
     rows = []
     for name, rx in SHAPES:
         for m in rx.finditer(text):
@@ -340,13 +412,38 @@ def extract_rows(text, sdc, year):
                 "match_end_offset": m.end(),
                 "match_span": m.end() - m.start(),
             })
+    # ---- #21 兜底形状：行级结构谓词 + 兜底语义（与 extract_candidates 同判据）----
+    fb = [r for r in rows if r["shape_name"] == FALLBACK_SHAPE]
+    if fb:
+        keep = []
+        n_struct = n_overlap = 0
+        others = [(r["match_start_offset"], r["match_end_offset"])
+                  for r in rows if r["shape_name"] != FALLBACK_SHAPE]
+        for r in fb:
+            if not _n21_structural_ok((r.get("abbr") or "").strip(),
+                                      (r.get("page") or "").strip(),
+                                      (r.get("year_start") or "").strip()):
+                n_struct += 1
+                continue
+            s, e = r["match_start_offset"], r["match_end_offset"]
+            if any(s < oe and os_ < e for os_, oe in others):
+                n_overlap += 1
+                continue
+            keep.append(r)
+        if len(keep) != len(fb):
+            rows = [r for r in rows if r["shape_name"] != FALLBACK_SHAPE] + keep
+            if stats is not None:
+                stats["fallback_suppressed_structural"] = \
+                    stats.get("fallback_suppressed_structural", 0) + n_struct
+                stats["fallback_suppressed_overlap"] = \
+                    stats.get("fallback_suppressed_overlap", 0) + n_overlap
     return rows
 
 
-def process_text(text, sdc, year):
+def process_text(text, sdc, year, stats=None):
     """抽取 + 去重（不删行）。返回 (kept, superseded)，行含 superseded_by
     （kept 行该键为 None）。"""
-    rows = extract_rows(text, sdc, year)
+    rows = extract_rows(text, sdc, year, stats=stats)
     kept, superseded = normalize.dedup_overlapping(rows, SHAPE_ORDER)
     for r in superseded:
         r["superseded_by"] = "%d:%d:%s" % r["superseded_by"]
@@ -432,7 +529,7 @@ def run_corpus(court, out_root, batch_size=500, year_from=None,
                 continue                                    # §7.6 显式过滤
             stats["docs_extracted"] += 1
             kept, superseded = process_text(
-                text, source_decision_citation(court, cite), year)
+                text, source_decision_citation(court, cite), year, stats=stats)
             stats["raw_rows"] += len(kept) + len(superseded)
             stats["kept_rows"] += len(kept)
             stats["superseded_rows"] += len(superseded)
@@ -443,7 +540,8 @@ def run_corpus(court, out_root, batch_size=500, year_from=None,
             rows_out.extend(superseded)
             # 全候选路线（candidates-2.0）：重叠枚举 + D3 标注
             sdc = source_decision_citation(court, cite)
-            cands, bl = extract_candidates(text, sdc, year, doc_index, court)
+            cands, bl = extract_candidates(text, sdc, year, doc_index, court,
+                                           stats=stats)
             annotate_cross_boundary(cands, text)
             stats["candidates_blocked_by_boundary_guard"] += bl
             if len(cands) > CAND_LIMIT:
@@ -558,7 +656,10 @@ def write_manifest(out_root, run_stats, merge_counts, args):
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
         "git_head": git_head(),
         "shapes_version": "v1.4 (frozen) + D4 capture groups (series_paren/paren_note) "
-                          "+ R4 court_designation zero-width capture (reporter shapes)",
+                          "+ R4 court_designation zero-width capture (reporter shapes) "
+                          "+ #21 fallback shape_paren_year_abbr_page (fallback-only: "
+                          "structural predicate + overlap suppression at generation; "
+                          "guards tested on real typography, see r21_fix_report)",
         "candidates_schema": "candidates-2.2 (candidates-2.1 + court_designation "
                              "zero-width lookahead capture on reporter shapes; "
                              "legacy kept/superseded retained as diagnostic only)",

@@ -1,0 +1,37 @@
+court_code,corpus_rows,status,court_name,jurisdiction,evidence_quote,source_url,notes
+NZCA,32,CONFIRMED,Court of Appeal of New Zealand,NZ,[2026] NZCA 437,https://www.courtsofnz.govt.nz/judgments/court-of-appeal,法院官网判决列表自印（乙级）；上一轮该站两次 300s 超时，本轮浏览器正常
+NZSC,19,CONFIRMED,Supreme Court of New Zealand,NZ,[2026] NZSC 122,https://www.courtsofnz.govt.nz/judgments/supreme-court,法院官网判决列表自印（乙级）
+NZHC,8,CONFIRMED,High Court of New Zealand,NZ,[2026] NZHC 2750,https://www.courtsofnz.govt.nz/judgments/high-court,法院官网判决列表自印（乙级）
+TASSC,2,CONFIRMED,Supreme Court of Tasmania,AU,[2004] TASSC 1,https://www.supremecourt.tas.gov.au/publications/decisions-of-the-court/,法院官网自印（乙级）
+NICA,3,CONFIRMED,Court of Appeal in Northern Ireland,GB,[2026] NICA 37,https://www.judiciaryni.uk/judicial-decisions,法院官网判决列表自印（乙级）
+EWCA,3,CONFIRMED_NOT_PRINTED,Court of Appeal of England and Wales（裸码无分庭词）,GB,TNA 目录页只印带分庭词的形式：[2026] EWCA Civ 1184（Civ）/ 同页无裸 EWCA 行,https://caselaw.nationalarchives.gov.uk/ewca/civ,官方目录（Find Case Law）全部带分庭词；裸 EWCA 是抽取层把分庭词丢进 series 槽的产物（shape_neutral_bare），不属于可入表的印刷码
+FCAFC,15,NOT_FOUND,Full Court of the Federal Court of Australia,AU,,（试过）https://www.fedcourt.gov.au/digital-law-library/judgments；WebFetch 403，浏览器打开为「About the judgments collection」门户页，无自印引用,判决检索器 JS 化；维持空表
+VSCA,15,NOT_FOUND,Supreme Court of Victoria — Court of Appeal,AU,,（试过）supremecourt.vic.gov.au 判决页 404,同上
+VSC,4,NOT_FOUND,Supreme Court of Victoria,AU,,同 VSCA,
+SGCA,9,NOT_FOUND,Court of Appeal of Singapore,SG?,,（试过）elitigation.sg/gd/Home——JS 应用，无服务器端印刷串,新加坡法域码（SG）须先经拍板；维持空表
+SGHC,6,NOT_FOUND,High Court of Singapore,SG?,,同 SGCA,
+WASC,8,NOT_FOUND,Supreme Court of Western Australia,AU,,（试过）supremecourt.wa.gov.au/decisions/ 404,
+QCA,7,NOT_FOUND,Queensland Court of Appeal,AU,,（试过）courts.qld.gov.au/decisions/court-of-appeal-decisions 404,
+EWHCCH,6,NOT_FOUND,High Court of Justice (Chancery Division) 早期形 EWHC Ch n,GB,,（试过）TNA Find Case Law /ewhc——现行形 [2026] EWHC 2360 已在表内；早期形「EWHC Ch」目录不收（TNA 覆盖 2003+，早期形为 2000 年代初写法）,现行形已在表；早期形无官方在案页
+HKCFI,6,NOT_FOUND,Court of First Instance of the High Court of Hong Kong,HK,,（试过）legalref.judiciary.hk 未取得自印串,检索器 JS 化
+HKCA,2,NOT_FOUND,Court of Appeal of the High Court of Hong Kong,HK,,同 HKCFI,
+IEHC,6,NOT_FOUND,High Court of Ireland,IE,,（试过）courts.ie/judgments 两次——列表异步加载，正文无印刷串,
+IESC,5,NOT_FOUND,Supreme Court of Ireland,IE,,同 IEHC,
+ACTSC,4,NOT_FOUND,Supreme Court of the Australian Capital Territory,AU,,（试过）courts.act.gov.au/supreme/judgments——页面无自印引用,
+ECHR,4,NOT_FOUND,European Court of Human Rights,（国际法院，码位法域须拍板）,,（试过）hudoc/echr 官方站未取得自印 [年] ECHR n 串,法域取值（COE/INT?）须拍板，见 notes
+UKIAT,4,NOT_FOUND,United Kingdom Immigration and Asylum Tribunal（2010 并入 UT）,GB,,TNA Find Case Law 未收该机构（历史机构）；本轮未取得官方自印串,
+NIQB,3,NOT_FOUND,High Court of Justice in Northern Ireland (QBD),GB,,（试过）judiciaryni.uk/judicial-decisions 及 /type/judgments-118——列表只见 NICA 形，未取得 NIQB 印刷串,
+SASC,3,NOT_FOUND,Supreme Court of South Australia,AU,,（试过）courts.sa.gov.au 未取得自印串,
+AATA,2,NOT_FOUND,Administrative Appeals Tribunal of Australia（2024 改制 ART）,AU,,（试过）art.gov.au 未取得自印串,
+NSWADT,2,NOT_FOUND,NSW Administrative Decisions Tribunal（2014 并入 NCAT）,AU,,（试过）caselaw.nsw.gov.au 未取得自印串,
+SAIRC,2,NOT_FOUND,South Australian Industrial Relations Court,AU,,同 SASC,
+UKSIAC,2,NOT_FOUND,Special Immigration Appeals Commission (UK),GB,,TNA Find Case Law 目录已列但本轮未取得判决页自印串,
+ZASCA,2,NOT_FOUND,Supreme Court of Appeal of South Africa,ZA,,（试过）supremecourtofappeal.org.za 首页无自印串；判决列表页未定位,
+ZAWCHC,2,NOT_FOUND,Western Cape Division of the High Court of South Africa,ZA,,（试过）judiciary.org.za /index.php/judgments 404,
+SASCFC,1,NOT_FOUND,Full Court of the Supreme Court of South Australia,AU,,同 SASC,
+HCJAC,1,NOT_FOUND,High Court of Justiciary Appeal Court (Scotland),GB,,（试过）scotcourts.gov.uk/judgments 与 judiciary.scot——均为 JS 应用,
+CLLC,3,CONFIRM_NOT_IN_TABLE,n/a（Canadian Labour Law Cases，印刷汇编）,,,（复核）非法院中立码，处置成立：应移交 reporter_jurisdiction 流程（属债 4 范畴，本轮已在该表外提案未列入）,移交建议留人工；本轮未为 C.L.L.C. 做 reporter 核实
+AZ,1,CONFIRM_NOT_IN_TABLE,n/a,,,（复核）[2022] AZ 51826418 八位序号非判决流水号，处置成立（结构性理由，无需新证据）,
+DCSC,1,UNRESOLVED_FOR_HUMAN,n/a（孤例 [2002] DCSC 760，归属不明）,,,（试过）dccourts.gov/decisions 404；维持 UNRESOLVED_FOR_HUMAN,
+OJN,1,CONFIRM_NOT_IN_TABLE,n/a（O.J. No 粘连变体，抽取层产物）,,,（复核）处置成立（结构性理由，无需新证据）,
+UHKL,1,CONFIRM_NOT_IN_TABLE,n/a（UKHL 拼写错）,,,（复核）处置成立（结构性理由，无需新证据）,
