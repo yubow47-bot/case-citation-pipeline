@@ -156,6 +156,47 @@ def test_classifier():
     check("party_initials" not in (r["rejected_reason"] or ""),
           "#37 前文别处出现 R. v. A.B. 不误杀（宽口径会误杀 15,999 行）")
 
+    # ---- PROBLEMS #85：日期形态 date_form（分类层行级拒绝，不删行）
+    r = c.run_row(_row("shape_vol_abbr_page", "1 June 2007", abbr="June", vol="1", page="2007"))
+    check(("date_form" in r["rejected_reason"]) and r["citation_kind"] == "reporter"
+          and r["page"] == "2007",
+          "#85 日期 `1 June 2007`（卷 缩写 页）按 date_form 拒；行不删、字段照填（约束五）")
+    r = c.run_row(_row("shape_vol_abbr_page", "24 November, 1998", abbr="November", vol="24",
+                       page="1998"))
+    check("date_form" in r["rejected_reason"], "#85 全称月份忽略尾逗号（`24 November, 1998`）")
+    r = c.run_row(_row("shape_vol_abbr_page", "25 December, 1990", abbr="December", vol="25",
+                       page="1990"))
+    check("date_form" in r["rejected_reason"], "#85 12 个全称月份都在集合里（December）")
+    r = c.run_row(_row("shape_leading_abbr", "Vancouver, British Columbia 1 June 2007",
+                       leading_abbr="Columbia", abbr="June", vol="1", page="2007"))
+    check("date_form" in r["rejected_reason"],
+          "#85 第二条读法同样拦：`Columbia 1 June 2007` 的前置缩写槽也是月份")
+    for raw, ab, v, p in (("90 March 17", "March", "90", "17"),
+                          ("21 March 45", "March", "21", "45"),
+                          ("29 June 16", "June", "29", "16"),
+                          ("31 December 21", "December", "31", "21"),
+                          ("32 May 2001", "May", "32", "2001"),
+                          ("5 May 2100", "May", "5", "2100")):
+        r = c.run_row(_row("shape_vol_abbr_page", raw, abbr=ab, vol=v, page=p))
+        check("date_form" not in (r["rejected_reason"] or ""),
+              "#85 三条件不齐不拦：%s（卷 1-31 与页 1600-2099 两界都要成立）" % raw)
+    r = c.run_row(_row("shape_vol_abbr_page", "28 Feb. 1995", abbr="Feb.", vol="28", page="1995"))
+    check("date_form" not in (r["rejected_reason"] or ""),
+          "#85 缩写月份刻意不拦（#86：与报告集缩写同形，留第二期）")
+    r = c.run_row(_row("shape_vol_abbr_page", "22 Janvier 1834", abbr="Janvier", vol="22", page="1834"))
+    check("date_form" not in (r["rejected_reason"] or ""),
+          "#85 法文月份刻意不拦（留第二期）")
+    r = c.run_row(_row("shape_vol_abbr_page", "1 S.C.R. 1600", abbr="S.C.R.", vol="1", page="1600"))
+    check("date_form" not in (r["rejected_reason"] or ""),
+          "#85 真汇编引证不受影响（缩写不是月份全称）")
+    r = c.run_row(_row("shape_vol_abbr_page", "15 January 1998", abbr="K.B.", vol="15", page="1998"))
+    check((r["rejected_reason"] or "") == "",
+          "#85 缩写非月份全称（K.B.）不触发 date_form，即使卷/页落在日期区间内")
+    # 注：本函数只测单行分类，测不到跨候选的仲裁结果。归并层的"腾位"效应
+    # （被拒行退出竞争后，同 span 的另一垃圾候选可能从 overlap_undecided 转判
+    # counted）已用干净 A/B 在真实数据上复核，见 PROBLEMS #85 订正记录——
+    # 5 行命中，均 occurrence=1/dd=1/kept=false，不进保留表。
+
 
 def test_disambiguation():
     court = [{"court_code": "SCC", "normalized_key": "SCC", "jurisdiction": "CA"}]
