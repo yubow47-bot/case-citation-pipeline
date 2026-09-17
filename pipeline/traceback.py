@@ -27,6 +27,8 @@ import sys
 
 import pyarrow.parquet as pq
 
+COURTS = tuple(c for c in os.environ.get("PIPELINE_COURTS", "SCC,ONCA").split(",") if c)
+
 PIPE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(PIPE)
 sys.path.insert(0, PIPE)
@@ -49,7 +51,7 @@ def corpus_row(court, row_index):
 
 def find_candidate(run_dir, court, row, start, end, cand_prefix=None):
     """在候选台账里定位（start/end 为 -1 时按 candidate_id 前缀）。"""
-    for court_ in ([court] if court else ("SCC", "ONCA")):
+    for court_ in ([court] if court else COURTS):
         path = os.path.join(run_dir, "merge_out", court_, "mentions_candidates.csv")
         if not os.path.exists(path):
             continue
@@ -69,7 +71,7 @@ def find_candidate(run_dir, court, row, start, end, cand_prefix=None):
 def search_candidates(run_dir, needle):
     """粗搜：mentions 台账里 raw_string / candidate_case_name 含 needle 的前 40 条。"""
     out = []
-    for court in ("SCC", "ONCA"):
+    for court in COURTS:
         path = os.path.join(run_dir, "merge_out", court, "mentions_candidates.csv")
         if not os.path.exists(path):
             continue
@@ -110,7 +112,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--run-dir", required=True)
     ap.add_argument("--candidate-id", default="")
-    ap.add_argument("--court", default="", choices=("", "SCC", "ONCA"))
+    ap.add_argument("--court", default="", choices=("",) + COURTS)
     ap.add_argument("--row", type=int, default=-1)
     ap.add_argument("--start", type=int, default=-1)
     ap.add_argument("--end", type=int, default=-1)

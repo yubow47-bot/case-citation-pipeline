@@ -30,7 +30,7 @@ PIPE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(PIPE)
 sys.path.insert(0, PIPE)
 
-COURTS = ("SCC", "ONCA")
+COURTS = tuple(c for c in os.environ.get("PIPELINE_COURTS", "SCC,ONCA").split(",") if c)  # exp：法院列表可配置，默认不变
 
 # 各层 schema 版本。candidates-2.0 是本轮（D1–D5）的新抽取 schema：旧 kept/superseded
 # 路线仍是 extract v1.4 封版口径（--fixture-check 继续钉它），新全候选路线另发版本号，

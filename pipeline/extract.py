@@ -63,7 +63,7 @@ FALLBACK_SHAPE = "shape_paren_year_abbr_page"
 
 
 COLUMNS = ["citation_en", "document_date_en", "unofficial_text_en"]   # §7.5
-COURTS = ("SCC", "ONCA")
+COURTS = tuple(c for c in os.environ.get("PIPELINE_COURTS", "SCC,ONCA").split(",") if c)  # exp：法院列表可配置，默认不变
 
 # 规格 §7.3 输出字段（封版顺序）
 SCHEMA = [
