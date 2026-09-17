@@ -46,6 +46,10 @@
      见下方常量与注记）。**切不动就原样退回，不判无名**——这是对「切完不像案名就丢弃」
      那一版的收紧，理由是实测丢弃档会丢掉真案名（`Union des employés de commerce,
      local 503 v. Roy`）。须人复核。
+  8. §8.4 补充规则（PROBLEMS #85）：日期形态（`1 June 2007`）与 shape_vol_abbr_page
+     同形，加 `date_form` 行级拒绝（月份全称 + 卷 1-31 + 页 1600-2099 三条同时成立，
+     纯字段判据）。**实现决定（规格未决，须人复核）**，理由与边界见下方常量注记与
+     规格 §8.4 v1.7 注记；缩写月份/法文月份/「年-月-日」形态刻意不拦。
 """
 import argparse
 import csv
@@ -105,6 +109,38 @@ CHAPTER = re.compile(r"\bc\.\s*(?:[A-Z]|\d)")
 PARTY_TAIL = re.compile(r"\bR\.\s*v\.\s*$")        # 前文正好以 R. v. 结尾
 PARTY_HEAD = re.compile(r"^[A-Z]\.\s*[A-Z]\.")     # 本行 raw 以缩写型姓名起头
 
+# PROBLEMS #85：日期形态（判决头/协定日期 `1 June 2007`）与 shape_vol_abbr_page
+#   （「卷 缩写 页」）同形，抽取层把它拆成 卷=1 / 缩写=June / 页=2007，结构上完全
+#   合法——抽取层的设计就是"只看形状、全部抽出来"，判断"这不是引证"是分类层的事
+#   （与 FED_STATUTE 同一处置：结构判据 → rejected_reason，行不删、只不计数，约束五）。
+#   三条判据同时满足才拦，三条都取自抽取层已拆好的字段、**不对原文重跑正则**：
+#     1) 缩写是**英文月份全称**（January..December，忽略大小写与尾逗号/尾点）；
+#     2) 卷号是 1–31 的数字（日）；3) 页码是 1600–2099 的四位数（年）。
+#   实测（run_20260915_r21a，分类层真实输入 candidates.csv 口径）：SCC 832 +
+#   ONCA 987 行命中，全部是 citation_kind=reporter / jurisdiction=UNSUPPORTED /
+#   lookup_mode 空（表支持为 0；但零支持候选无人竞争时仍判 counted，本规则
+#   确实把日期提及从计数里拿掉——同输入 A/B 实测：主线 decided 层月份键
+#   1,337→212、occurrence 1,856→243；既有键无一 occurrence/dd 变大——但**干净 A/B
+#   复核发现**：被拒行退出仲裁池后，与它同 span 竞争、原处于 overlap_undecided
+#   （未决）的另一垃圾候选可能因无人再竞争而转判 counted，命中 5 行（均
+#   occurrence=1/dd=1/kept=false，未进保留表，见 PROBLEMS #85 订正记录）。
+#   实验线 BCCA 43,143 / CITT 26,255 行同形态同状）。
+#   reporter_jurisdiction.csv 与 neutral_court_codes.csv 里没有任何一个
+#   缩写或归一键与月份全称同形，故全称规则不误伤已知报告集。
+#   **刻意不拦**（PROBLEMS #86/#87，留作第二期）：缩写月份（`28 Feb. 1995`，
+#   与报告集缩写同形，且 `Mar.` 类报告集尚未入表）与法文月份（`22 Janvier 1834`）；
+#   亦不拦「年-月-日」形态（`1936 April 21`，年占卷槽、页是日，见 #85 条目的残差栏）。
+#   约束二说明：禁的是**抽取层**用固定缩写清单决定收不收；月份名是封闭的 12 个
+#   日历词、不是报告集缩写，且此处是分类层的结构判据——与 §8.7 #58 已获批的
+#   「只在段首/段尾认闭集标记」同构。**实现决定（规格未决，须人复核）**。
+_MONTH_RE = re.compile(r"^([A-Za-z]+)\.?$")
+MONTH_NAMES = frozenset([
+    "january", "february", "march", "april", "may", "june",
+    "july", "august", "september", "october", "november", "december",
+])
+DATE_FORM_VOL_MIN, DATE_FORM_VOL_MAX = 1, 31
+DATE_FORM_PAGE_MIN, DATE_FORM_PAGE_MAX = 1600, 2099
+
 # ---------------------------------------------------------------- §8.7 Step 5
 V_RE = re.compile(r"\bv\.?(?=\s)")
 _ADMIT_LEAD_CHARS = set("[(«\"'‘“….")
@@ -142,6 +178,8 @@ _ADMIT_CITE_TAIL_RE = re.compile(
 
 # 形状 → 主缩写取自哪个字段（规格 §7.3）
 TOKEN_SHAPES = {"shape_bracket", "shape_neutral_bare"}
+# 形状 → 是否印有独立的前置缩写槽（PROBLEMS #85 的 `date_form` 两条读法都用）
+LEADING_SHAPES = {"shape_leading_abbr", "shape_paren_year_abbr_page"}
 
 
 # --------------------------------------------------- identifier_systems（R2F）
@@ -278,6 +316,50 @@ def lookup_one(key, idx):
 def append_reason(row, field, reason):
     cur = row.get(field) or ""
     row[field] = (cur + "|" + reason) if cur else reason
+
+
+def month_name(raw):
+    """PROBLEMS #85：单槽值是不是英文月份全称。是则返回规范月份名（小写），否则 None。
+
+    只认单槽、单词：多词、含数字、含内部标点一律不认（保守——宁可漏拦）。
+    尾逗号/尾点在月份尺度上是排版噪声（`24 November, 1998` / `April. 23`），剥掉。"""
+    m = _MONTH_RE.match((raw or "").strip())
+    if not m:
+        return None
+    name = m.group(1).lower()
+    return name if name in MONTH_NAMES else None
+
+
+def date_form_hit(row):
+    """PROBLEMS #85：本行是不是高置信的日期形态（三个字段同时成立）。
+
+    三条判据全部取自抽取层已拆好的字段（规格注意：分类层不对原文重跑正则）：
+      1) 缩写槽（或前置缩写槽）是英文月份全称；
+      2) 卷号 1–31（日）；3) 页码 1600–2099 的四位数（年）。
+    **只看结构化槽，不看 raw_string 的印刷形态**——所以 `Cass. 22 March, 1882`
+    （Cassation 判例带判决日期）同样命中，这是规则边界的固有代价，已在
+    PROBLEMS #85 记录为已知行为（宁可少拦、不做形态白名单）。
+
+    返回命中的槽名（"abbr" / "leading_abbr"）或 None。
+      * 主缩写槽：step1 已按形状把 abbreviation 填好（vol_abbr_page/leading_abbr
+        取 abbr，bracket/neutral_bare 取 token）；
+      * 前置缩写槽：`Columbia 1 June 2007` 按 shape_leading_abbr 的读法会落到
+        这个槽（abbr 槽是 Columbia），只查主槽会漏掉第二条读法。#85 的
+        连锁反应检查要求的正是两条读法都被拦。
+    卷/页只在 month_name 命中后才解析——非月份行零开销。"""
+    vol = (row.get("vol") or "").strip()
+    if not (vol.isdigit() and DATE_FORM_VOL_MIN <= int(vol) <= DATE_FORM_VOL_MAX):
+        return None
+    page = (row.get("page") or "").strip()
+    if not (len(page) == 4 and page.isdigit()
+            and DATE_FORM_PAGE_MIN <= int(page) <= DATE_FORM_PAGE_MAX):
+        return None
+    if month_name(row.get("abbreviation")):
+        return "abbr"
+    shape = row.get("shape_name") or ""
+    if shape in LEADING_SHAPES and month_name(row.get("leading_abbr")):
+        return "leading_abbr"
+    return None
 
 
 # --------------------------------------------------------------- §8.7 案名清洗
@@ -797,6 +879,12 @@ class Classifier(object):
             append_reason(row, "rejected_reason", "federal_statute")
         if PARTY_TAIL.search(pre) and PARTY_HEAD.match(raw):
             append_reason(row, "rejected_reason", "party_initials")
+        # PROBLEMS #85：日期形态（`1 June 2007`）——纯字段判据，不看原文。
+        # 与上两条独立：同一条引证同时满足多类拒绝依据时，理由串按序追加
+        # （append_reason 的既有语义），不互相顶掉。
+        if date_form_hit(row):
+            append_reason(row, "rejected_reason", "date_form")
+            self.stats["date_form_rejected"] += 1
         # R2F：secondary_source（CanLIIDocs 等）的拒绝传播到同引证的其他形状
         # 读法（卷读法孪生）——表驱动（identifier_systems），非字符串特例
         ab = (row.get("abbreviation") or "").strip()
