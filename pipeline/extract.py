@@ -462,9 +462,12 @@ CAND_LIMIT = 20000
 
 
 def run_corpus(court, out_root, batch_size=500, year_from=None,
-               limit_batches=None):
+               limit_batches=None, corpus_dir=None):
     """单语料分批抽取（§7.7）。续跑：读 progress.json 从 last_batch+1 开始；
-    目标批次文件已存在则覆盖重跑（上次写了文件未更新进度的情形）。"""
+    目标批次文件已存在则覆盖重跑（上次写了文件未更新进度的情形）。
+
+    `corpus_dir`（#89）：语料所在目录，默认仓库 `corpus/`。实验线要跑
+    BCCA/CITT 时可以指到另一个 checkout 的语料目录——**只读引用，不复制、不移动**。"""
     run_dir = os.path.join(out_root, court)
     os.makedirs(run_dir, exist_ok=True)
     prog_path = os.path.join(run_dir, "progress.json")
@@ -478,7 +481,8 @@ def run_corpus(court, out_root, batch_size=500, year_from=None,
              "candidates": 0, "candidates_flagged_cross_boundary": 0,
              "candidates_blocked_by_boundary_guard": 0,
              "per_shape_kept": {}, "batches": 0}
-    pf = pq.ParquetFile(os.path.join(ROOT, "corpus", court + ".parquet"))
+    pf = pq.ParquetFile(os.path.join(corpus_dir or os.path.join(ROOT, "corpus"),
+                                     court + ".parquet"))
     t0 = time.perf_counter()
     idx = -1
     doc_index = -1
@@ -643,7 +647,9 @@ def write_manifest(out_root, run_stats, merge_counts, args):
                    "limit_batches": args.limit_batches,
                    "courts": args.corpus},
         "corpus": {c: {"sha256": sha256_file(
-            os.path.join(ROOT, "corpus", c + ".parquet"))} for c in args.corpus},
+            os.path.join(getattr(args, "corpus_dir", None)
+                         or os.path.join(ROOT, "corpus"), c + ".parquet"))}
+            for c in args.corpus},
         # run = **本次运行**处理的量；续跑时已完成批次被跳过，此段为 0
         # 属正常。权威行数见 merge.by_court（merge 逐批读过全部文件）。
         "run_this_invocation": run_stats,
@@ -690,8 +696,11 @@ def fixture_check():
 # ---------------------------------------------------------------------- main
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--corpus", action="append", choices=COURTS,
-                    default=None, help="默认两语料都跑")
+    ap.add_argument("--corpus", action="append", default=None,
+                    help="要抽取的语料（可重复；默认 SCC,ONCA）。#89：不再限定 "
+                         "choices——实验线要跑 BCCA/CITT")
+    ap.add_argument("--corpus-dir", default=None,
+                    help="语料目录（默认仓库 corpus/）；只读引用，不复制不移动")
     ap.add_argument("--out",
                     default=os.path.join(ROOT, "data", "extract_out"))
     ap.add_argument("--batch-size", type=int, default=500)
@@ -711,7 +720,8 @@ def main():
     os.makedirs(args.out, exist_ok=True)
     if not args.merge:
         run_stats = [run_corpus(c, args.out, args.batch_size, args.year_from,
-                                args.limit_batches) for c in args.corpus]
+                                args.limit_batches, args.corpus_dir)
+                     for c in args.corpus]
     else:
         run_stats = []
     merge_counts = merge(args.out, args.corpus)

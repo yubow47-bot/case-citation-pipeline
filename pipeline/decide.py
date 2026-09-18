@@ -478,6 +478,37 @@ def load_bilingual():
 _BILINGUAL_CACHE = None
 
 
+def parse_name_classes(raw):
+    """PROBLEMS #88：解析归并层供的 `nk1:4|nk2:2` → {类名: 条数}。
+    容错：空串、缺冒号、计数非数字的分段一律跳过（不造假数据，约束四）。"""
+    out = {}
+    for seg in (raw or "").split("|"):
+        if ":" not in seg:
+            continue
+        n, _, cnt = seg.rpartition(":")
+        if n and cnt.isdigit():
+            out[n] = out.get(n, 0) + int(cnt)
+    return out
+
+
+def mixed_identity(k_classes, big_name):
+    """PROBLEMS #88 三档判据。返回 "fold" / "holdout"。
+
+    键 K 即将以笔误依据并进根 `big` 时，看 K 的提及**印出来的案名**：
+      · 印的都与 big 同类                    → fold：纯笔误，照并（现状正确）
+      · 一个名字都没印，或没有一个与 big 同类 → fold：本期不动（机制 A 与 #89 的地盘）
+      · **既有 big 的名字、又有别的名字**      → holdout：一个印刷串承担两种身份，
+        印刷证据自相矛盾 → 不并；上层再抑制它的案名（无证据不主张，约束四；
+        不抑制会产生同名同年的对手组，把真组的平行引证挂靠打散——第一期实测）
+
+    不引入任何计数阈值：一条反证也算反证（宁可漏，不可错）。"""
+    if not big_name or not k_classes:
+        return "fold"
+    hit_big = big_name in k_classes
+    hit_other = any(n != big_name for n in k_classes)
+    return "holdout" if (hit_big and hit_other) else "fold"
+
+
 def same_decision_kind(ka, ja, dda, kb, jb, ddb):
     """中立引用 ka（较小者）与 kb 是否同一判决；返回匹配依据：
     bilingual（双语代码）/ typo_number / typo_year / None。
@@ -511,6 +542,28 @@ def _self_of(m):
     return {x for x in (m.get("self_citation_of") or "").split("|") if x}
 
 
+def load_registry(path):
+    """全局判决登记簿（PROBLEMS #88/#89）→ {merge_key: (decision_id, source_court)}。
+
+    登记簿是**机器产物、可重建**（`<run>/registry/decision_registry.csv`，
+    由 `pipeline/registry.py` 生成），不是人工判断表——约束八只管
+    `decisions/` 下的人工表（规格 2.1）。多个判决 id 落同一个键时按
+    「;」连接，保持确定性（同键多判决是登记簿要暴露的事实，不是要抹平的噪声）。
+
+    不传 `--registry` → 空表 → 本层行为与改动前逐字节一致。"""
+    idx = defaultdict(set)
+    if path and os.path.exists(path):
+        with open(path, encoding="utf-8", newline="") as f:
+            for r in csv.DictReader(f):
+                k = r.get("merge_key") or ""
+                did = r.get("decision_id") or ""
+                if k and did:
+                    idx[k].add((did, r.get("source_court") or ""))
+    return {k: (";".join(sorted(d for d, _c in v)),
+                ";".join(sorted({c for _d, c in v if c})))
+            for k, v in idx.items()}
+
+
 def neutral_start(rows):
     """各语料法院的中立引用起用界（#56），取自判决自己头部印的引证：
     {法院码: (最早一次自印中立引用的年份, 最晚一次自印非中立引用的年份)}。"""
@@ -537,20 +590,56 @@ def _before_start(k, start):
     return int(p[0]) < first and int(p[0]) <= last
 
 
-def decisions_of(members, did_idx, start=None):
+def decisions_of(members, did_idx, start=None, registry=None,
+                 typo_over=None, gate="literal", holdout=None):
     """把组内的身份锚归并成「判决」。返回 (root, anchor_ids, anchor_jur, own,
     root_kind)。root_kind[k] ∈ {bilingual, typo_number, typo_year}——k 被并进
     root[k] 的显式依据（R2-1：来源地传播只认 bilingual 这一种）。
     锚 = 中立引用，或语料某判决在自己头部印的引证（self_citation_of，#55）。
-    own[k] 为锚 k 是哪件判决自己的引证；anchor_ids 不含它（dd 口径）。"""
+    own[k] 为锚 k 是哪件判决自己的引证；anchor_ids 不含它（dd 口径）。
+
+    `registry`（#88/#89）：**run 级全局登记簿** {merge_key: (decision_id, court)}，
+    覆盖所有已知真判决自印的引证（不限于本法院那一轮）。**只授权笔误闸使用**——
+    `own` 另有三处用途（身份锚资格 `neu[k] or own[k]`、dd 自引排除 `selfd |= own[k]`
+    #54、#56 起始年判据 `neu[k] and not own[k] and _before_start`），一处都不许掺
+    （规格 2.3）。
+
+    `gate` 只影响笔误闸里「登记簿命中」怎么参与判断（**默认 literal = 规格 2.3
+    逐字写法**）：
+
+      literal        in_registry = bool(own[k]) or k in registry
+                     → 与 `and same_name[k]` 合并后恒等价于原条件，见 --registry-gate
+      own_or_registry in_registry = bool(own[k]) or k in registry，且**闸门条件**
+                     改为 `in_registry and same_name[k]` 的等价展开
+                      `(own[k] or k in registry) and same_name[k]`
+                     —— 这是规格 2.3 的**字面意图**（登记簿取代作用域内的 own），
+                     但实测仍不动作：机制 B 那一档的 `same_name[k]` 恒为假。
+      registered_only 闸门条件 = `(own[k] and same_name[k]) or (k in registry and not own[k])`
+                     —— 「登记簿命中、而**本轮/本法院看不见**它是真判决」即挡住笔误。
+                     实测这是唯一能修 #88 的取值（机制 A 的 own[k] 非空，完全不受影响）。
+
+    三者的实测差别只在「本地看不见的登记簿命中」这一档：literal / own_or_registry
+    放行（并组），registered_only 挡住（不并组）。
+
+    `typo_over`（非 None 时收集）：机制 A（键是真判决自己的引证、**但头部案名与
+    本组组名不一致**）在改动前后**都**仍可被当笔误并掉——这一档是既定权衡
+    （decide.py 文件头五：全量 101 对里 88 对名字一致、12 对不一致），本次不动它，
+    但它至今是隐形的。登记簿在场时把每一次这样的判断落进
+    `<scope>/typo_over_registered.csv`，让它可审：每行 = 一个**键**被并进某个
+    身份根的一次判断（键可能还并进了别的组，故行数可多于键数）。"""
     own, neu = defaultdict(set), defaultdict(bool)
     same_name = defaultdict(bool)      # 头部自印案名 == 本组里这个键的名字
+    classes = defaultdict(dict)        # #88：键 → 提及印出的案名类分布
+    kname = defaultdict(str)           # #88：键级案名（modal）
     for m in members:
         k = m["merge_key"]
         own[k] |= _self_of(m)
         neu[k] = neu[k] or m.get("citation_kind") == "neutral"
         sn = nk(m.get("self_case_name") or "")
         same_name[k] = same_name[k] or bool(sn and sn == nk(m.get("case_name_modal") or ""))
+        for n_, c_ in parse_name_classes(m.get("name_classes")).items():
+            classes[k][n_] = classes[k].get(n_, 0) + c_
+        kname[k] = kname[k] or nk(m.get("case_name_modal") or "")
     for k in neu:
         if neu[k] and not own[k] and _before_start(k, start):
             neu[k] = False        # 该院那年还不出中立引用：不是身份锚，当普通单元（#56）
@@ -567,11 +656,55 @@ def decisions_of(members, did_idx, start=None):
         for big in order[:i]:
             if root[big] != big or not (neu[k] and neu[big]):
                 continue          # 汇编锚只与同键合并：same_decision 按中立引用解析、不看卷号
-            if own[k] and same_name[k]:
+            # #88/#89：登记簿命中 = 「这个键是某件真判决自己印的引证」。
+            # own[k] 是本轮/本法院看得见的那一份，registry 是全局那一份；
+            # **绝不回写进 own 本身**（规格 2.3）——own 另有三处用途。
+            registered = bool(registry and k in registry)
+            if gate == "literal":
+                # 规格 2.3 的逐字写法。与 `and same_name[k]` 合并后，
+                # `or k in registry` 这一支被同名闸挡死：key 能否被救只取决于
+                # `own[k]`，而 `own` 正是作用域内那一份——**字面规则与现状等价**
+                # （实测：主线全 run 0 键变化）。
+                in_registry = bool(own[k]) or registered
+                blocked = in_registry and same_name[k]
+            elif gate == "own_or_registry":
+                # 规格 2.3 的字面意图：登记簿**取代**作用域内的 own——闸门条件
+                # 展开为 (own[k] or 登记簿命中) and same_name[k]。
+                # 实测仍不动作：机制 B 那一档的 same_name[k] 恒为假。
+                in_registry = bool(own[k]) or registered
+                blocked = (bool(own[k]) or registered) and same_name[k]
+            elif gate == "registered_only":
+                # 唯一实测能修 #88 的取值：登记簿命中而**本轮/本法院看不见**它是
+                # 真判决（own[k] 空）→ 它不是笔误，是别处的真判决（Chieu/Carlos）。
+                # 机制 A（own[k] 非空）走原来的同名闸，结论逐字不变。
+                in_registry = bool(own[k]) or registered
+                blocked = (bool(own[k]) and same_name[k]) or (registered and not own[k])
+            else:
+                raise SystemExit("未知的 --registry-gate：%r" % gate)
+            if blocked:
                 continue          # 同名的另一件语料判决，不是笔误（见文件头五）
             kind = same_decision_kind(k, ajur[k], len(anc[k]), big, ajur[big],
                                       len(anc[big]))
+            if kind and holdout is not None and mixed_identity(
+                    classes.get(k) or {}, kname.get(big) or "") == "holdout":
+                # PROBLEMS #88：一个印刷串承担两种身份 → 不并，留痕，案名交由
+                # 上层抑制（mixed_identity_keys）。继续找下一个 big 也没有意义——
+                # 证据矛盾是这个键自身的属性，不是它与某个根的关系。
+                holdout.append((k, big, kname.get(big) or "",
+                                "|".join("%s:%d" % kv for kv in
+                                         sorted((classes.get(k) or {}).items(),
+                                                key=lambda kv: (-kv[1], kv[0]))),
+                                sum((classes.get(k) or {}).values()),
+                                len(anc[k]), len(anc[big])))
+                break
             if kind:
+                if registered and not same_name[k]:
+                    # 机制 A：维持现状（仍可当笔误），但留痕（规格 2.3）。
+                    # 只对**登记簿命中**的键留痕——不传 --registry 时这份清单为空、
+                    # 输出与改动前逐字节一致（判据 1）。
+                    if typo_over is not None:
+                        typo_over.append((k, big, in_registry, kind,
+                                          len(anc[k]), len(anc[big])))
                 root[k] = big
                 root_kind[k] = kind
                 break
@@ -601,8 +734,42 @@ def _compatible(a, b):
     return not a or not b or a == b
 
 
-def split_by_decision(members, did_idx, stats, start=None):
-    root, anc, ajur, own, root_kind = decisions_of(members, did_idx, start)
+def _with_held(parts, held):
+    """PROBLEMS #88：把被扣留的混合键接回返回值——按 merge_key 各自成一组，
+    理由 `mixed_identity`。行不删（约束五），只是不与任何身份根同组。"""
+    if not held:
+        return parts
+    bykey = defaultdict(list)
+    for m in held:
+        bykey[m["merge_key"]].append(m)
+    return list(parts) + [(bykey[k], "mixed_identity") for k in sorted(bykey)]
+
+
+def split_by_decision(members, did_idx, stats, start=None, registry=None,
+                      typo_over=None, gate="literal", holdout=None):
+    root, anc, ajur, own, root_kind = decisions_of(members, did_idx, start,
+                                                   registry, typo_over, gate,
+                                                   holdout)
+    # PROBLEMS #88：混合键必须**退出身份根的竞争**，不能只是「不并进对方」。
+    # 只做后者，它就成了本桶里的第二个身份根，桶从「单根搭车」路径掉进「多根共引
+    # 分派」路径，真组的平行引证（无锚的汇编引证）失去搭车资格 → 掉成 singleton。
+    # 第一期的 registered_only 正是栽在这里（Housen 的 211 D.L.R. (4th) 577
+    # 602→21）。把它们整个移出本桶、各自成组，桶内其余成员的判定路径原样不变。
+    held = []
+    if holdout:
+        mixed_here = {h[0] for h in holdout}
+        if mixed_here and any(m["merge_key"] in mixed_here for m in members):
+            keep = []
+            for m in members:
+                (held if m["merge_key"] in mixed_here else keep).append(m)
+            if keep:
+                # 重算：本桶少了被扣留的成员。typo_over/holdout 传 None——这一趟
+                # 只为拿干净的根，留痕上一趟已经记过，不得重复计数。
+                members = keep
+                root, anc, ajur, own, root_kind = decisions_of(
+                    members, did_idx, start, registry, None, gate, None)
+            else:
+                held = []
     stats["anchors_collapsed_as_variant"] += sum(1 for k, r in root.items() if k != r)
     decisions = sorted({root[k] for k in root}, key=lambda k: (-len(anc[k]), k))
     if len(decisions) < 2:
@@ -680,7 +847,7 @@ def split_by_decision(members, did_idx, stats, start=None):
                 merged.append((g_rows, ";".join(reasons)))
             if len(merged) > 1:
                 return merged
-        return parts0 if parts0 else [(members, "")]
+        return _with_held(parts0 if parts0 else [(members, "")], held)
     stats["clusters_split_by_decision"] += 1
 
     dec_ids = defaultdict(set)
@@ -787,12 +954,13 @@ def split_by_decision(members, did_idx, stats, start=None):
                                    key=lambda c: min(pending[i][0][0]["merge_key"] for i in c))]
     stats["rows_unanchored"] += sum(len(p[0]) for p in pending)
     stats["unanchored_groups"] += len(pend_groups)
-    return ([(buckets[d], "decision") for d in decisions] +
-            [(g, "decision;unanchored") for g in pend_groups])
+    return _with_held([(buckets[d], "decision") for d in decisions] +
+                      [(g, "decision;unanchored") for g in pend_groups], held)
 
 
 # ------------------------------------------------------------ §10.3 + §10.4
-def cluster_same_case(rows, did_idx, stats, start=None):
+def cluster_same_case(rows, did_idx, stats, start=None, registry=None,
+                      typo_over=None, gate="literal", holdout=None):
     """返回 [(members, split_reason, split_seq)]；split_reason 为空表示未拆。
     无案名或无年份的行不参与合并（没有判同的依据），各自独立成组。"""
     buckets, out = defaultdict(list), []
@@ -823,7 +991,9 @@ def cluster_same_case(rows, did_idx, stats, start=None):
                 parts = [([r for _, r in p], "span") for p in windows(ch)]
             seq = 0
             for rows_, r0 in parts:
-                for sub, r1 in split_by_decision(rows_, did_idx, stats, start):
+                for sub, r1 in split_by_decision(rows_, did_idx, stats, start,
+                                                 registry, typo_over, gate,
+                                                 holdout):
                     reason = ";".join(x for x in (r0, r1) if x)
                     if reason:
                         out.append((sub, reason, seq))
@@ -1097,11 +1267,28 @@ def load_decision_ids(path, court=None):
 
 
 def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin,
-               scope_idx=None, reporter_idx=None):
+               scope_idx=None, reporter_idx=None, registry=None, typo_over=None,
+               holdout=None,
+               gate="literal"):
     start = neutral_start(rows)
     stats["neutral_rows_before_court_start"] = sum(
         1 for r in rows if r.get("citation_kind") == "neutral" and _before_start(r["merge_key"], start))
-    clusters = cluster_same_case(rows, did_idx, stats, start)
+    clusters = cluster_same_case(rows, did_idx, stats, start, registry, typo_over,
+                                 gate, holdout)
+    # PROBLEMS #88：混合键的案名被自己的提及互相推翻（既印着折叠目标的名字、
+    # 又印着别的名字）→ **不主张案名**（约束四：无证据不填值；约束五：行不删，
+    # 只打标记）。这一步必须在按名挂靠之前做：不抹名，扣留下来的键会变成同名
+    # 同年的对手组，把真组的平行引证挂靠打散（第一期实测 Housen 的
+    # 211 D.L.R. (4th) 577 掉成 singleton）。
+    if holdout:
+        mixed = {h[0] for h in holdout}
+        for r in rows:
+            if r["merge_key"] in mixed and (r.get("case_name_modal") or ""):
+                r["case_name_modal"] = ""
+                prev = r.get("name_rejected_reason") or ""
+                r["name_rejected_reason"] = (prev + "|mixed_identity"
+                                             if prev else "mixed_identity")
+                stats["mixed_identity_names_suppressed"] += 1
     clusters.sort(key=lambda c: min(row_key(m) for m in c[0]))
 
     out, out_ids, eff_rows = [], [], []
@@ -1247,10 +1434,34 @@ def main():
     ap.add_argument("--decision-ids")
     ap.add_argument("--cross-court", action="store_true")
     ap.add_argument("--inputs", nargs="+")
+    ap.add_argument("--registry", default=None,
+                    help="全局判决登记簿（#88/#89）：<run>/registry/"
+                         "decision_registry.csv。不传 = 空登记簿 = 行为不变；"
+                         "**只授权笔误闸使用**（规格 2.3）")
+    ap.add_argument("--mixed-key-holdout", action="store_true",
+                    help="PROBLEMS #88：键的提及既印着折叠目标的案名、又印着别的"
+                         "案名时（一个印刷串承担两种身份），不折叠并抑制其案名。"
+                         "默认关闭；关闭时产物与本参数出现前逐字节一致")
+    ap.add_argument("--registry-gate", default="literal",
+                    choices=("literal", "own_or_registry", "registered_only"),
+                    help="登记簿在笔误闸里怎么参与：literal = 规格 2.3 逐字写法"
+                         "（or k in registry 会被同名闸旁路，实测 0 键变化）；"
+                         "own_or_registry = 规格 2.3 的字面意图；"
+                         "registered_only = 登记簿命中但本地看不见它是真判决即挡住。"
+                         "**三档均不能修 #88**（registered_only 会把真组的平行引证"
+                         "挂靠打散，见 PROBLEMS #88 与 implementation/"
+                         "report_88_89_registry.md）；保留供后续测量。默认 literal，"
+                         "见 manifest.registry_gate")
     ap.add_argument("--output", required=True)
     a = ap.parse_args()
 
     stats = Counter()
+    registry = load_registry(a.registry)
+    stats["registry_keys"] = len(registry)
+    typo_over = []
+    # PROBLEMS #88：混合键留痕。**None = 规则关闭**（默认），传列表才启用——
+    # 关闭时 decisions_of 的判据整段短路，产物与改动前逐字节一致。
+    holdout = [] if a.mixed_key_holdout else None
     origin_idx = load_case_origin()
     # R4 Stage 3：人工核验批次并入同一 case_record 索引（同为案件级直接证据、
     # 最高优先级；两表冲突 → 成员本地 CONFLICT，方向保守）。
@@ -1288,13 +1499,21 @@ def main():
     in_occ_total = sum(key_occ(r) for r in rows)
     out, out_ids, eff_rows = adjudicate(rows, did_idx, origin_idx, folded_idx,
                                         prefix, stats, redo, scope_idx,
-                                        reporter_idx)
+                                        reporter_idx, registry, typo_over,
+                                        holdout,
+                                        a.registry_gate)
     # PROBLEMS #62：同名、年份相差 ≤1 的同级组。只在跨法院轮算——跨院合并跑完才是
     # 最终分组；院内轮该列留空（它不是产品列，选取层读的是跨院产出）
     if a.cross_court:
         add_peer_column(out, stats)
     stats["output_rows"] = len(out)
     stats["decision_id_rows"] = len(out_ids)
+    # #88/#89 机制 A 留痕：键是真判决自己的引证（登记簿命中或本轮 own）、
+    # 但头部案名与本组组名不一致 → 仍被当笔误并掉。每行 = 一次这样的判断。
+    stats["mixed_identity_holdouts"] = len(holdout or [])
+    stats["mixed_identity_keys"] = len({r[0] for r in (holdout or [])})
+    stats["typo_over_registered_decisions"] = len(typo_over)
+    stats["typo_over_registered_keys"] = len({r[0] for r in typo_over})
 
     # ---- 不变量，不过就拒绝写表 ----
     assert len(out) == len(rows), "行数 %d != 输入 %d（约束五）" % (len(out), len(rows))
@@ -1328,14 +1547,43 @@ def main():
     assert not multi, "有组仍含多个不同判决：%r" % multi[:5]
 
     os.makedirs(a.output, exist_ok=True)
-    fields = list(out[0].keys()) if out else []
+    # PROBLEMS #88：`name_classes` 是归并层供给本层判据的**输入**列，不进本层产物
+    # ——留着会把 decided.csv 的列整体后移，判据 1（默认关闭时逐字节一致）就废了。
+    fields = [f for f in (list(out[0].keys()) if out else [])
+              if f != "name_classes"]
+    typo_rows = [{"merge_key": k, "folded_into": big,
+                  "registry_decision_id": (registry.get(k, ("", ""))[0]
+                                           if registry else ""),
+                  "registry_source_court": (registry.get(k, ("", ""))[1]
+                                            if registry else ""),
+                  "typo_kind": kind, "key_anchor_ids": dda,
+                  "folded_into_anchor_ids": ddb}
+                 for k, big, _registered, kind, dda, ddb in typo_over]
     for name, flds, data in (("decided.csv", fields, out),
                              ("decision_ids.csv",
                               ["row_key", "source_decision_citation"], out_ids),
                              ("effective_sources.csv",
                               ["merged_group_id", "source_decision", "status",
                                "exclusion_reason", "identity_status",
-                               "via_member_row_keys"], eff_rows)):
+                               "via_member_row_keys"], eff_rows),
+                             # #88/#89 机制 A 的留痕清单（原先隐形）。不传
+                             # --registry 时为空文件（只有表头），行为不变。
+                             ("typo_over_registered.csv",
+                              ["merge_key", "folded_into", "registry_decision_id",
+                               "registry_source_court", "typo_kind",
+                               "key_anchor_ids", "folded_into_anchor_ids"],
+                              typo_rows),
+                             # #88：混合键（一个印刷串承担两种身份）的扣留清单。
+                             # 不传 --mixed-key-holdout 时为空文件（只有表头）。
+                             ("mixed_identity_holdouts.csv",
+                              ["merge_key", "folded_into", "folded_into_name",
+                               "name_classes", "named_mentions",
+                               "key_anchor_ids", "folded_into_anchor_ids"],
+                              [{"merge_key": k, "folded_into": big,
+                                "folded_into_name": bn, "name_classes": ncs,
+                                "named_mentions": nm, "key_anchor_ids": dda,
+                                "folded_into_anchor_ids": ddb}
+                               for k, big, bn, ncs, nm, dda, ddb in (holdout or [])])):
         path = os.path.join(a.output, name)
         tmp = path + ".tmp"
         with open(tmp, "w", encoding="utf-8", newline="") as f:
@@ -1349,6 +1597,9 @@ def main():
         "mode": "cross_court" if a.cross_court else "in_court",
         "label": label,
         "spec_section": "10",
+        "registry_file": a.registry or "",
+        "registry_gate": a.registry_gate,
+        "mixed_key_holdout": bool(a.mixed_key_holdout),
         "case_origin_table_rows": sum(len(v) for v in origin_idx.values()),
         "occurrence_total": in_occ_total,
         "stats": dict(sorted(stats.items())),

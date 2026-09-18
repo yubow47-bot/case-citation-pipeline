@@ -43,6 +43,8 @@ SCHEMA_VERSIONS = {
     "merge": "9 + in-source arbitration, identity keys v2",
     "decide": "10",
     "select": "11 (threshold semantics unchanged)",
+    # #88/#89：run 级全局判决登记簿（merge 之后、decide 之前生成）
+    "registry": "1 (merge_key | decision_id | source_court | source)",
 }
 
 
@@ -57,7 +59,7 @@ def sha256_file(path):
 # R2-10：输入身份 = 生产代码 + 全部被消费的决策表 + select 配置 + 语料 + 参数/环境。
 # 启动时算一次、**不可变**地写进 manifest（后续 manifest 更新绝不重算覆盖）；
 # 收尾时重算比对，不一致 → status=failed（不是 complete）。
-def input_identity(root=ROOT, courts=COURTS, params=None):
+def input_identity(root=ROOT, courts=COURTS, params=None, corpus_dir=None):
     files = {}
     pipe = os.path.join(root, "pipeline")
     for n in sorted(os.listdir(pipe)):
@@ -75,6 +77,13 @@ def input_identity(root=ROOT, courts=COURTS, params=None):
         p = os.path.join(root, "corpus", c + ".parquet")
         if os.path.exists(p):
             files["corpus/" + c + ".parquet"] = sha256_file(p)
+    # #89：锚语料可能来自仓库外的语料目录（实验线只读引用别人的语料，不复制）。
+    # 它同样进输入身份——收尾验证要能发现「跑的过程中语料变了」。
+    ext = corpus_dir or ""
+    if ext and os.path.abspath(ext) != os.path.abspath(os.path.join(root, "corpus")):
+        for n in sorted(os.listdir(ext)) if os.path.isdir(ext) else []:
+            if n.endswith(".parquet"):
+                files["corpus_dir/" + n] = sha256_file(os.path.join(ext, n))
     total = hashlib.sha256(
         ("".join("%s:%s\n" % (k, files[k]) for k in sorted(files))
          + "params:" + json.dumps(params or {}, sort_keys=True, default=str)
@@ -82,8 +91,10 @@ def input_identity(root=ROOT, courts=COURTS, params=None):
     return {"fingerprint": total, "files": files, "params": params or {}}
 
 
-def verify_unchanged(start_identity, root=ROOT, courts=COURTS, params=None):
-    now = input_identity(root=root, courts=courts, params=params)
+def verify_unchanged(start_identity, root=ROOT, courts=COURTS, params=None,
+                     corpus_dir=None):
+    now = input_identity(root=root, courts=courts, params=params,
+                         corpus_dir=corpus_dir)
     return now["fingerprint"] == start_identity["fingerprint"], now
 
 
@@ -99,19 +110,30 @@ def dep_versions():
 
 
 class Runner(object):
-    def __init__(self, out_root, args):
+    def __init__(self, out_root, args, courts=COURTS, anchor_courts=()):
         self.out = out_root
         self.args = args
+        self.courts = tuple(courts)
+        self.anchor_courts = tuple(anchor_courts)
+        self.corpus_dir = os.path.abspath(args.corpus_dir or
+                                          os.path.join(ROOT, "corpus"))
         self.manifest_path = os.path.join(out_root, "run_manifest.json")
         self.manifest = None
         # R2-10：启动身份，算一次即冻结；params 一起进指纹
         self.params = {"batch_size": args.batch_size,
                        "year_from": args.year_from,
                        "limit_batches": args.limit_batches,
-                       "courts": list(COURTS),
+                       "courts": list(self.courts),
+                       # #89：锚语料只供登记簿，不抽取不计数；它进参数 = 进指纹，
+                       # 不同锚集合的 run 天然不是同一个输入身份
+                       "anchor_corpus": list(self.anchor_courts),
+                       "corpus_dir": self.corpus_dir,
+                       "registry_gate": getattr(args, "registry_gate", "literal"),
+                       "mixed_key_holdout": bool(getattr(args, "mixed_key_holdout", False)),
                        "select_config": "select_config.yaml (verbatim in select manifest)",
                        "threshold_dd_semantics": "unchanged (constraint 6)"}
-        self.start_identity = input_identity(params=self.params)
+        self.start_identity = input_identity(courts=self.courts, params=self.params,
+                                             corpus_dir=self.corpus_dir)
         self.identity_verified = None
 
     def write_manifest(self, status, failed_step=None):
@@ -171,9 +193,31 @@ def main():
     ap.add_argument("--year-from", type=int, default=None)
     ap.add_argument("--limit-batches", type=int, default=None,
                     help="每语料只跑前 N 批（烟雾测试）")
+    ap.add_argument("--court", action="append", default=None,
+                    help="本次实际抽取的法院（可重复）。默认 = 环境变量 "
+                         "PIPELINE_COURTS（逗号分隔），再默认 SCC,ONCA")
+    ap.add_argument("--anchor-corpus", action="append", default=[],
+                    help="#89：锚语料法院码（可重复）。该语料**只生成判决登记簿，"
+                         "不抽取、不分类、不计数**；不传 = 行为与改动前一致")
+    ap.add_argument("--corpus-dir", default=None,
+                    help="语料目录（默认仓库 corpus/）；锚语料只读引用，"
+                         "实验线用它可以不复制语料")
+    ap.add_argument("--mixed-key-holdout", action="store_true",
+                    help="PROBLEMS #88：混合键（提及既印折叠目标的案名、又印别的"
+                         "案名）不折叠、抑制案名、退出身份根竞争。默认关闭")
+    ap.add_argument("--registry-gate", default="literal",
+                    choices=("literal", "own_or_registry", "registered_only"),
+                    help="#88：登记簿在笔误闸里的参与方式（默认 literal = 规格 2.3 "
+                         "逐字写法，实测与现状等价；registered_only = 实测能修 #88 "
+                         "的取值）。只有传了 --anchor-corpus 才会用到登记簿")
     args = ap.parse_args()
 
-    r = Runner(args.out, args)
+    courts = tuple(args.court) if args.court else \
+        tuple(c for c in os.environ.get("PIPELINE_COURTS", "").split(",") if c) or COURTS
+    anchor_courts = tuple(dict.fromkeys(args.anchor_corpus))
+    corpus_dir = os.path.abspath(args.corpus_dir or os.path.join(ROOT, "corpus"))
+
+    r = Runner(args.out, args, courts=courts, anchor_courts=anchor_courts)
     r.check_dir()
     r.write_manifest("running")
 
@@ -184,39 +228,73 @@ def main():
         ex += ["--year-from", str(args.year_from)]
     if args.limit_batches is not None:
         ex += ["--limit-batches", str(args.limit_batches)]
-
+    if args.corpus_dir:
+        ex += ["--corpus-dir", corpus_dir]
+    for c in courts:
+        ex += ["--corpus", c]
     r.run_step("extract", ex)
     # 阶段 1 起：classify/merge 吃 candidates.csv（candidates-2.0 全候选）；
     # extracted.csv / extracted_superseded.csv 降为 v1.4 旧去重路线的诊断产物
     cand_in = os.path.join(args.out, "extract_out", "candidates.csv")
-    for court in COURTS:
+    for court in courts:
         r.run_step("classify_" + court,
                    [os.path.join("pipeline", "classify.py"),
                     "--court", court, "--input", cand_in,
                     "--output", os.path.join(args.out, "classify_out", court)])
-    for court in COURTS:
+    for court in courts:
         r.run_step("merge_" + court,
                    [os.path.join("pipeline", "merge.py"),
                     "--court", court,
                     "--input", os.path.join(args.out, "classify_out", court,
                                             "classified.csv"),
                     "--output", os.path.join(args.out, "merge_out", court)])
-    for court in COURTS:
+
+    # ---- #88/#89：全局判决登记簿 -------------------------------------------
+    # 位置就在「所有合并层跑完之后、第一个裁定层开跑之前」——不打乱层序
+    # （约束六）：登记簿是归并层产物的纯读取 + 锚语料的只读构键，不产生任何
+    # 上游写入，也不参与抽取/计数。
+    reg = [os.path.join("pipeline", "registry.py"),
+           "--run-dir", args.out,
+           "--extracted-courts", ",".join(courts)]
+    if args.corpus_dir:
+        reg += ["--corpus-dir", corpus_dir]
+    for c in anchor_courts:
+        reg += ["--anchor-corpus", c]
+    r.run_step("build_registry", reg)
+    registry_file = os.path.join(args.out, "registry", "decision_registry.csv")
+
+    def decide_cmd(court_args):
+        cmd = [os.path.join("pipeline", "decide.py")] + court_args
+        if anchor_courts:
+            # 不传 --anchor-corpus 时**不加这个参数**：行为与改动前一致
+            cmd += ["--registry", registry_file]
+            if args.registry_gate != "literal":
+                cmd += ["--registry-gate", args.registry_gate]
+        # PROBLEMS #88：与登记簿无关，单独开关；不传时不加参数，行为不变
+        if getattr(args, "mixed_key_holdout", False):
+            cmd += ["--mixed-key-holdout"]
+        return cmd
+
+    for court in courts:
         r.run_step("decide_" + court,
-                   [os.path.join("pipeline", "decide.py"),
-                    "--court", court,
-                    "--input", os.path.join(args.out, "merge_out", court, "merged.csv"),
-                    "--folded-log", os.path.join(args.out, "merge_out", court,
-                                                 "folded_log.csv"),
-                    "--decision-ids", os.path.join(args.out, "merge_out", court,
-                                                   "decision_ids.csv"),
-                    "--output", os.path.join(args.out, "decide_out", court)])
+                   decide_cmd(["--court", court,
+                               "--input", os.path.join(args.out, "merge_out", court,
+                                                       "merged.csv"),
+                               "--folded-log", os.path.join(args.out, "merge_out", court,
+                                                            "folded_log.csv"),
+                               "--decision-ids", os.path.join(args.out, "merge_out", court,
+                                                              "decision_ids.csv"),
+                               "--output", os.path.join(args.out, "decide_out", court)]))
     r.run_step("decide_cross",
-               [os.path.join("pipeline", "decide.py"), "--cross-court",
-                "--inputs"] +
-               [os.path.join(args.out, "decide_out", c, "decided.csv")
-                for c in COURTS] +
-               ["--output", os.path.join(args.out, "decide_out", "cross_court")])
+               decide_cmd(["--cross-court", "--inputs"] +
+                          [os.path.join(args.out, "decide_out", c, "decided.csv")
+                           for c in courts] +
+                          ["--output", os.path.join(args.out, "decide_out", "cross_court")]))
+    # 天花板监测仪（规格 2.4，必做）：foreign 计数是「登记簿这条数据驱动路径
+    # 的边界指示器」——外国法院判决原文在语料里不存在，补语料补不出来。
+    r.run_step("registry_report",
+               [os.path.join("pipeline", "registry_report.py"),
+                "--run-dir", args.out])
     r.run_step("select",
                [os.path.join("pipeline", "select.py"),
                 "--input", os.path.join(args.out, "decide_out", "cross_court",
@@ -235,7 +313,8 @@ def main():
 
     # R2-10：收尾验证——被消费的代码/决策表/配置/语料在运行期间不得变更
     r.identity_verified, _now = verify_unchanged(
-        r.start_identity, params=r.params)
+        r.start_identity, courts=courts, params=r.params,
+        corpus_dir=r.corpus_dir)
     if not r.identity_verified:
         r.write_manifest("failed", failed_step="input_identity_changed")
         raise SystemExit("输入身份在运行期间发生变化（R2-10）：run 标记 failed，"
