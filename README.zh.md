@@ -4,7 +4,7 @@
 
 从加拿大法院判决全文语料中，结构化抽取判决引用的**全部案例引证**——外国与国内、中立与汇编、数据库与厂商标识符均在范围内——整理成带案名、法域、来源地、引用频次的统计表格。用途是学术研究：对法庭历史中被引案件的完整图景做可审计的统计。
 
-**语料来源：[`a2aj/canadian-case-law`](https://huggingface.co/datasets/a2aj/canadian-case-law)**（HuggingFace 数据集，Parquet），**不是本项目自行采集的语料**。本仓库只含两个法院：加拿大最高法院（SCC，10,891 份，1877–2026）与安大略上诉法院（ONCA，24,089 份，1998–2026）；省高等法院、除 ONCA 外的上诉法院、联邦法院与行政裁判所均不在语料内（详见 [`USAGE.md`](USAGE.md) 第 1 节）。
+**语料来源：[`a2aj/canadian-case-law`](https://huggingface.co/datasets/a2aj/canadian-case-law)**（HuggingFace 数据集，Parquet），**不是本项目自行采集的语料**。截至 2026-09-18 含三个法院（BCCA 在 `exp/bcca-citt` 分支验证后并入——它在验证跑上达到的法域可判定率与 ONCA 持平，见 `implementation/exp_bcca_citt_findings.md`）：加拿大最高法院（SCC，10,891 份，1877–2026）、安大略上诉法院（ONCA，24,089 份，1998–2026）与卑诗上诉法院（BCCA，14,703 份，1999–2026）；省高等法院、除 ONCA/BCCA 外的上诉法院、联邦法院与行政裁判所均不在语料内（详见 [`USAGE.md`](USAGE.md) 第 1 节）。法院范围可配置（`PIPELINE_COURTS`，见 `pipeline/run_all.py --help`）；同一实验分支上还验证过一个联邦裁判所（CITT），但尚未并入默认范围——它的法域可判定率（28.4%）反映的是这类机构本身的结构差异（关税表格数据、专门报告集尚未入表），不是管线缺陷。
 
 **读数据之前先读 [`USAGE.md`](USAGE.md)**：它写清了「被引 N 次」到底量的是什么、`dd` 与
 `occurrence_count` 的区别、门槛值未校准、法域与来源地是两件事，以及一份完整的少算清单。
@@ -29,7 +29,8 @@ D:\cases data analisis\
 ├── download_corpus.sh             语料快照下载脚本（HF 枚举、断点续传、SHA256 校验；bash/WSL）
 ├── corpus\                        gitignore，只读快照；下载日期与指纹登记于技术规格 §1.3
 │   ├── SCC.parquet
-│   └── ONCA.parquet
+│   ├── ONCA.parquet
+│   └── BCCA.parquet
 ├── decisions\                     进 git，唯一事实源
 │   ├── README.md
 │   ├── reporter_jurisdiction.csv

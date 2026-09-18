@@ -30,7 +30,7 @@ PIPE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(PIPE)
 sys.path.insert(0, PIPE)
 
-COURTS = tuple(c for c in os.environ.get("PIPELINE_COURTS", "SCC,ONCA").split(",") if c)  # exp：法院列表可配置，默认不变
+COURTS = tuple(c for c in os.environ.get("PIPELINE_COURTS", "SCC,ONCA,BCCA").split(",") if c)  # 2026-09-18 用户裁定 BCCA 并入主线语料范围；PIPELINE_COURTS 仍可覆盖（临时/实验用）
 
 # 各层 schema 版本。candidates-2.0 是本轮（D1–D5）的新抽取 schema：旧 kept/superseded
 # 路线仍是 extract v1.4 封版口径（--fixture-check 继续钉它），新全候选路线另发版本号，
@@ -195,7 +195,7 @@ def main():
                     help="每语料只跑前 N 批（烟雾测试）")
     ap.add_argument("--court", action="append", default=None,
                     help="本次实际抽取的法院（可重复）。默认 = 环境变量 "
-                         "PIPELINE_COURTS（逗号分隔），再默认 SCC,ONCA")
+                         "PIPELINE_COURTS（逗号分隔），再默认 SCC,ONCA,BCCA")
     ap.add_argument("--anchor-corpus", action="append", default=[],
                     help="#89：锚语料法院码（可重复）。该语料**只生成判决登记簿，"
                          "不抽取、不分类、不计数**；不传 = 行为与改动前一致")

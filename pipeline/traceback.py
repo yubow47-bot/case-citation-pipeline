@@ -27,7 +27,7 @@ import sys
 
 import pyarrow.parquet as pq
 
-COURTS = tuple(c for c in os.environ.get("PIPELINE_COURTS", "SCC,ONCA").split(",") if c)
+COURTS = tuple(c for c in os.environ.get("PIPELINE_COURTS", "SCC,ONCA,BCCA").split(",") if c)
 
 PIPE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(PIPE)

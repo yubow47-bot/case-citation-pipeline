@@ -1,25 +1,26 @@
 # 使用说明：这份数据是什么、能回答什么、不能回答什么
 
-**一句话。** 这是从加拿大两个法院（SCC、ONCA）的判决全文里抽出来的**全部被引案件统计表**
+**一句话。** 这是从加拿大三个法院（SCC、ONCA、BCCA）的判决全文里抽出来的**全部被引案件统计表**
 ——外国与国内引证均在范围内，每条带案名、法域、来源地、引用频次。用途是学术研究：对
-法庭历史中被引案件的完整图景做可审计的统计。数据只来自两个语料，**不是全加拿大法院**；
+法庭历史中被引案件的完整图景做可审计的统计。数据只来自三份语料，**不是全加拿大法院**；
 下面每一条限制都请先读完再用数字。
 
 ---
 
 ## 1. 「被引 N 次」量的是什么
 
-只量**两份语料里那些判决**对某个判例的提及：
+只量**三份语料里那些判决**对某个判例的提及：
 
 | 语料 | 判决数 | 判决年份范围 | 文件 |
 |---|---:|---|---|
 | 加拿大最高法院（SCC） | 10,891 | **1877–2026** | `corpus/SCC.parquet` |
 | 安大略上诉法院（ONCA） | 24,089 | **1998–2026** | `corpus/ONCA.parquet` |
+| 卑诗上诉法院（BCCA） | 14,703 | **1999–2026** | `corpus/BCCA.parquet` |
 
-也就是说：**地方法院（省高等法院、上诉法院除 ONCA 之外、联邦法院、行政裁判所）的引证
+也就是说：**地方法院（省高等法院、上诉法院除 ONCA/BCCA 之外、联邦法院、行政裁判所）的引证
 完全不在内**。一个案子在安省高等法院被引 200 次、在 SCC 里被引 3 次，这张表只会显示 3。
-年份范围同样是硬边界：1877 年前的 SCC 判决与 1998 年前的 ONCA 判决不在语料里，那里面的
-引证再重要也不会出现。
+年份范围同样是硬边界：1877 年前的 SCC 判决、1998 年前的 ONCA 判决、1999 年前的 BCCA 判决
+不在语料里，那里面的引证再重要也不会出现。
 
 「被引 N 次」的 N 是**判决份数**（`distinct_decisions_count`，见下），不是提及次数。
 
@@ -146,7 +147,7 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
   到达的边标 edge_support=heuristic_only、foreign_status=UNDETERMINED，进
   `edges/tentative_edges.csv`——不冒充确证外国边）；`edges/self_excluded_edges.csv`
   留被剔自引供审计。
-- **逐候选台账**：`merge_out/{SCC,ONCA}/mentions_candidates.csv`——每个候选的仲裁状态
+- **逐候选台账**：`merge_out/{SCC,ONCA,BCCA}/mentions_candidates.csv`——每个候选的仲裁状态
   （counted / 让位 / 弃权 / 跨界作废…）与让位对象，是「为什么这个串不在结果里」的答案；
   `key_mapping.csv` 给出旧键→新键（系列/罗马页拆分）的映射。
 - **案名投票口径**（R2 闭环 §8 敏感性参数，默认=生产行为不变）：
@@ -181,7 +182,7 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
   到达的边标 edge_support=heuristic_only、foreign_status=UNDETERMINED，进
   `edges/tentative_edges.csv`——不冒充确证外国边）；`edges/self_excluded_edges.csv`
   留被剔自引供审计。
-- **逐候选台账**：`merge_out/{SCC,ONCA}/mentions_candidates.csv`——每个候选的仲裁状态
+- **逐候选台账**：`merge_out/{SCC,ONCA,BCCA}/mentions_candidates.csv`——每个候选的仲裁状态
   （counted / 让位 / 弃权 / 跨界作废…）与让位对象，是「为什么这个串不在结果里」的答案；
   `key_mapping.csv` 给出旧键→新键（系列/罗马页拆分）的映射。
 - **案名投票口径**（R2 闭环 §8 敏感性参数，默认=生产行为不变）：
@@ -196,7 +197,7 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
 
 ## 7. 语料许可（原文照录）
 
-两份 parquet 的 `upstream_license` 列逐字如下（**两院不同**）：
+三份 parquet 的 `upstream_license` 列逐字如下（**三院不同**）：
 
 **SCC**（10,891 行，全部同一段）：
 
@@ -206,8 +207,12 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
 
 > See upstream license, including non-commercial use and other restrictions: https://perma.cc/55T7-3UEX. Note: This is an unofficial reproduction of an Ontario Court of Appeal decision, without endorsement or affiliation by the Ontario courts.
 
-两段都明写 **non-commercial use and other restrictions**。**任何下游产品（包括商业用途）的
-授权是否成立，是使用者的决定，这份文档解决不了、也不构成法律意见**；请自行打开上面两个
+**BCCA**（14,703 行，全部同一段，2026-09-18 核实）：
+
+> See upstream license, including non-commercial use and other restrictions: https://perma.cc/EA5C-R5DK. Note: This is an unofficial reproduction of a British Columbia Court of Appeal decision, without endorsement or affiliation by the British Columbia courts.
+
+三段都明写 **non-commercial use and other restrictions**。**任何下游产品（包括商业用途）的
+授权是否成立，是使用者的决定，这份文档解决不了、也不构成法律意见**；请自行打开上面三个
 `perma.cc` 链接核对当时的许可条款。本项目对语料只做只读使用，不复制、不再分发判决全文；
 **产出表里只保留引证串、案名、频次这些事实性数据**。
 

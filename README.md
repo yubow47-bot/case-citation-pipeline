@@ -4,14 +4,15 @@
 
 A citation-extraction pipeline over Canadian case law. From full-text judgments it structurally extracts **every case citation** — foreign and domestic, neutral and reprinted, database and vendor identifiers alike — and assembles them into an auditable statistical table carrying case name, jurisdiction, case origin, and citation frequency. The purpose is academic research: an auditable census of the cited-case landscape in the history of these courts.
 
-**Corpus — [`a2aj/canadian-case-law`](https://huggingface.co/datasets/a2aj/canadian-case-law).** The source is that dataset on HuggingFace (Parquet), **not** a corpus collected by this project. Two courts only:
+**Corpus — [`a2aj/canadian-case-law`](https://huggingface.co/datasets/a2aj/canadian-case-law).** The source is that dataset on HuggingFace (Parquet), **not** a corpus collected by this project. Three courts as of 2026-09-18 (BCCA added after a validation run on the `exp/bcca-citt` branch — see `implementation/exp_bcca_citt_findings.md` — reached a jurisdiction-resolved rate matching ONCA's):
 
 | Court | Judgments | Year range |
 |---|---:|---|
 | Supreme Court of Canada (SCC) | 10,891 | 1877–2026 |
 | Court of Appeal for Ontario (ONCA) | 24,089 | 1998–2026 |
+| Court of Appeal for British Columbia (BCCA) | 14,703 | 1999–2026 |
 
-Provincial superior courts, appellate courts other than ONCA, federal courts and tribunals are **not** in the corpus — see §1 of [`USAGE.md`](USAGE.md).
+Provincial superior courts, appellate courts other than ONCA/BCCA, federal courts and tribunals are **not** in the corpus — see §1 of [`USAGE.md`](USAGE.md). The set of courts is configurable (`PIPELINE_COURTS`, see `pipeline/run_all.py --help`); a federal tribunal (CITT) was also validated on the same experiment branch but is not yet in the default scope — its jurisdiction-resolved rate (28.4%) reflects a structurally different institution (tariff-schedule line items and specialist reporters not yet in the decision tables), not a pipeline defect.
 
 **Read [`USAGE.md`](USAGE.md) before reading any number** (Chinese): it states exactly what "cited N times" measures, the difference between `dd` and `occurrence_count`, that the `kept` threshold is an uncalibrated placeholder, that jurisdiction and case origin are two different things, and a complete list of what this table under-counts.
 
@@ -37,7 +38,8 @@ Provincial superior courts, appellate courts other than ONCA, federal courts and
 ├── download_corpus.sh              corpus snapshot downloader (HF enumeration, resume, SHA256; bash/WSL)
 ├── corpus/                         gitignored, read-only snapshot; download dates and fingerprints in spec §1.3
 │   ├── SCC.parquet
-│   └── ONCA.parquet
+│   ├── ONCA.parquet
+│   └── BCCA.parquet
 ├── decisions/                      tracked; the single source of truth
 │   ├── README.md
 │   ├── reporter_jurisdiction.csv
