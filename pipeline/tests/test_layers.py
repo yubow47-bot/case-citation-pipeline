@@ -363,6 +363,24 @@ def test_decide_units():
           "#49 号码掉一位且罕见 -> 笔误并入（Housen）")
     check(not decide.same_decision(_k(2005, "scc", 79), "CA", 3, _k(2005, "scc", 75), "CA", 4),
           "#49 规模闸：引用量相近不当笔误（MacKay）")
+    # ---- PROBLEMS #88：混合键三档判据（一个印刷串承担两种身份）
+    check(decide.parse_name_classes("a:4|b:2") == {"a": 4, "b": 2}
+          and decide.parse_name_classes("") == {}
+          and decide.parse_name_classes("坏数据|c:x|d:3") == {"d": 3},
+          "#88 name_classes 解析：坏分段跳过、不造假数据")
+    check(decide.mixed_identity({"housenvnikolaisen": 1}, "housenvnikolaisen") == "fold",
+          "#88 第一档：提及只印折叠目标的名字 → 纯笔误，照并（2002 SCC 35 实测如此）")
+    check(decide.mixed_identity({}, "housenvnikolaisen") == "fold"
+          and decide.mixed_identity({"rvsmith": 3}, "housenvnikolaisen") == "fold",
+          "#88 第二档：无名、或没有一个与目标同名 → 本期不动（机制 A 与 #89 的地盘）")
+    check(decide.mixed_identity({"housenvnikolaisen": 4, "chieuvcanada": 2},
+                                "housenvnikolaisen") == "holdout",
+          "#88 第三档：既印 Housen 又印 Chieu → 扣留（2002 SCC 3 实测 4:2）")
+    check(decide.mixed_identity({"housenvnikolaisen": 4, "chieuvcanada": 1},
+                                "housenvnikolaisen") == "holdout",
+          "#88 不设计数阈值：一条反证也算反证（宁可漏，不可错）")
+    check(decide.mixed_identity({"a": 1}, "") == "fold",
+          "#88 折叠目标无案名时不触发（没有可比对的证据）")
     check(decide.same_decision(_k(2014, "scc", 7), "CA", 3, _k(2014, "csc", 7), "CA", 5),
           "#49 双语代码同一判决，不看规模（SCC/CSC）")
     check(decide.same_decision(_k(2005, "scc", 20), "CA", 1, _k(2006, "scc", 20), "CA", 18),
@@ -396,6 +414,43 @@ def test_decide_units():
                                did)[0]
     check(len(set(root.values())) == 1,
           "#55 键是另一件判决的自引、但它头部印的名字对不上本组：组里的是笔误，照旧并入 Housen")
+    # #88/#89：run 级登记簿只授权笔误闸。真实矩阵（实测主线 run_20260916_85date）：
+    #   * `2002||scc||3` 在 **SCC 轮**带着自引与自己的案名（Chieu v. Canada）；
+    #   * 但在 **ONCA 轮**（以及跨院轮里 ONCA 那一侧）那一行的 self_case_name 是空的，
+    #     而组名是 Housen v. Nikolaisen → same_name 恒为假。
+    # 于是规格 2.3 的闸门 `if in_registry and same_name[k]` 对这一档**永远放行**，
+    # 无论 in_registry 怎么算：登记簿里补上 k 也救不了它（--registry-gate 两种取值
+    # 都验在下面）。
+    g = [neu("2002||scc||33", "SCC_2002scc33", "Housen v. Nikolaisen",
+             "Housen v. Nikolaisen"),
+         neu("2002||scc||3", "", "", "Housen v. Nikolaisen")]
+    reg = {"2002||scc||3": ("SCC_2002scc3", "SCC")}
+    root = decide.decisions_of(g, did)[0]
+    check(len(set(root.values())) == 1,
+          "#88 无登记簿：本地看不见的自引键照旧被当号码笔误并掉（跨院失明的形态）")
+    for gate in ("literal", "own_or_registry"):
+        root = decide.decisions_of(g, did, None, reg, None, gate)[0]
+        check(len(set(root.values())) == 1,
+              "#88 登记簿命中仍救不了（%s）：same_name 为假，闸门不动作" % gate)
+    # 闸门真正生效的那一档：**登记簿那件判决自己印的案名 == 本组组名**，而本组
+    # 那一行没有 self_case_name（真实形态：2008 ONCA 36 / R. v. Maciel 那一类）。
+    # 注意 self_case_name ≠ case_name_modal 的写法不生效——那正是机制 A。
+    g2 = [neu("2002||scc||33", "SCC_2002scc33", "Housen v. Nikolaisen",
+              "Housen v. Nikolaisen"),
+          neu("2002||scc||3", "", "Housen v. Nikolaisen", "Housen v. Nikolaisen")]
+    root = decide.decisions_of(g2, did, None, reg, None, "literal")[0]
+    check(len(set(root.values())) == 2,
+          "#88 闸门生效档：登记簿那件判决自印案名 == 组名 → 不再被并")
+    _r, anc, _j, own, _kk = decide.decisions_of(g2, did, None, reg, None, "literal")
+    check(own["2002||scc||3"] == set() and anc["2002||scc||3"] == {"h5"},
+          "#88 登记簿不掺 own：锚资格与 dd 仍按本层自己的证据算")
+    # 机制 A：登记簿命中但头部案名与本组组名不一致 → 仍可当笔误（两种 gate 同结论）
+    g3 = [neu("2002||scc||33", "", "", "R. v. Conway"),
+          neu("2002||scc||3", "SCC_2002scc3", "Mickle v. Mickle", "R. v. Conway")]
+    for gate in ("literal", "own_or_registry"):
+        root = decide.decisions_of(g3, did, None, reg, None, gate)[0]
+        check(len(set(root.values())) == 1,
+              "#88 机制 A 不动（%s）：登记簿命中但头部名对不上，仍按笔误并入" % gate)
 
     mohan = [{"merge_key": "1994|2|scr||9", "citation_kind": "reporter", "court": "SCC",
               "jurisdiction": "CA", "self_citation_of": "SCC_19942scr9"},
@@ -418,8 +473,9 @@ def test_decide_units():
 # ============================================================ 迷你全链
 MINI_FIELDS = ["raw_string", "source_decision_citation", "source_decision_year",
                "rejected_reason", "name_rejected_reason", "candidate_case_name",
-               "abbreviation", "citation_kind", "jurisdiction", "jurisdiction_confidence",
-               "year_start", "vol", "series", "page", "self_citation"]
+               "self_case_name", "abbreviation", "citation_kind", "jurisdiction",
+               "jurisdiction_confidence",
+               "year_start", "year_printed", "vol", "series", "page", "self_citation"]
 
 
 def _m(court, did, raw, kind, abbr, jur, year, page, vol="", name="", rej="", own=False):
@@ -428,11 +484,32 @@ def _m(court, did, raw, kind, abbr, jur, year, page, vol="", name="", rej="", ow
             "source_decision_year": "2020", "rejected_reason": rej, "name_rejected_reason": "",
             "candidate_case_name": name, "abbreviation": abbr, "citation_kind": kind,
             "jurisdiction": jur, "jurisdiction_confidence": "confirmed" if kind == "neutral" else "estimated",
-            "year_start": str(year), "vol": vol, "series": "", "page": str(page)}
+            "year_start": str(year), "vol": vol, "series": "", "page": str(page),
+            # 裁定层按**印出来的年份**聚类（R3：连续编卷的键首槽已零化），
+            # 故这一列必须给；缺列会让该键落进「无年份」桶、永不参与案名/笔误判定。
+            "year_printed": str(year)}
 
 
 def _neu(court, did, year, code, num, jur, name):
     return _m(court, did, "%s %s %s" % (year, code, num), "neutral", code, jur, year, num, name=name)
+
+
+def _write(path, rows):
+    """写 classified.csv。
+
+    `self_case_name` 在真实管线里**不是输入列**——归并层从**自引行**的
+    `candidate_case_name` 现算（merge.py 的 `own_names`：只有 self_citation=true
+    的行出自己头部印的案名）。本测试用具类此口径：`_case_name` 记「这件判决自己
+    印的案名」，自引行才落到 `self_case_name` 列。"""
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=MINI_FIELDS, extrasaction="ignore")
+        w.writeheader()
+        for r in rows:
+            r = dict(r)
+            r["self_case_name"] = (r.pop("_case_name", r["candidate_case_name"])
+                                   if r.get("self_citation") == "true" else "")
+            w.writerow(r)
 
 
 def _rep(court, did, year, vol, abbr, page, jur, name):
@@ -511,14 +588,6 @@ def _run(script, *args):
                        capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
     if p.returncode != 0:
         raise AssertionError("%s 退出码 %d：\n%s" % (script, p.returncode, p.stderr[-3000:]))
-
-
-def _write(path, rows):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=MINI_FIELDS)
-        w.writeheader()
-        w.writerows(rows)
 
 
 def _read(path):
@@ -616,6 +685,128 @@ def test_mini_chain():
           "选取层：dd 过门槛才 kept，不删行")
 
 
+# ============================================================ #88/#89 全局登记簿
+def _mini_rows_registry():
+    """#88 的院内形态（实测主线 ONCA 轮的字面复刻）：
+
+      * `2002||onca||3` —— 被印错的那件（Housen 位）：6 行**引它**的提及
+        （occ=6、dd=6，自引行不计）；
+      * `2002||onca||4` —— 机制 B 的键：只有自己头部那一处自引，本地
+        `own[k]` 非空但它自己就是被当笔误并掉的那一件；
+      * `2002||onca||5` —— 机制 A 的键：自引行的 `_case_name`（R. v. Cyr）与
+        本组组名不一致，真实先例 2008 ONCA 36 落在 R. v. Conway 组。
+        （它另有 2 行**引它**的提及：没有正证据的键不算锚——设这个键是为了让
+        「机制 A 仍可当笔误」这条断言真的走到闸门里，而不是被假阴性放过。）"""
+    onca = [_neu("ONCA", "O%d" % i, 2002, "ONCA", 3, "ON", "Housen v. Nikolaisen")
+            for i in range(1, 7)]
+    onca.append(_neu("ONCA", "O7", 2002, "ONCA", 4, "ON", "Housen v. Nikolaisen"))
+    o8 = _neu("ONCA", "O8", 2002, "ONCA", 5, "ON", "Housen v. Nikolaisen")
+    o8["self_citation"] = "true"
+    o8["_case_name"] = "R. v. Cyr"
+    onca.append(o8)
+    for i in (9, 10):
+        onca.append(_neu("ONCA", "O%d" % i, 2005, "ONCA", 5, "ON",
+                         "Housen v. Nikolaisen"))
+    scc = [_neu("SCC", "2002scc33", 2002, "SCC", 33, "CA", "Housen v. Nikolaisen"),
+           _neu("SCC", "2002scc3", 2002, "SCC", 3, "CA",
+                "Chieu v. Canada (Minister of Citizenship and Immigration)"),
+           _neu("SCC", "2002scc35", 2002, "SCC", 35, "CA", "R. v. Carlos")]
+    for r in scc:
+        r["self_citation"] = "true"
+    return scc, onca
+
+
+def test_registry_gate():
+    """#88/#89 的**闸门语义**（单元级，用真实矩阵搭）：
+
+      * 机制 B 的键（本地那一轮看不见它的自引、且 `same_name` 为假）**救不了**——
+        规格 2.3 的 `if in_registry and same_name[k]` 对它永远放行，`--registry-gate`
+        两种取值都验过（见 check 标签）；
+      * 闸门真正生效的是「登记簿那件判决自印案名 == 本组组名」那一档；
+      * 机制 A（登记簿命中但头部名对不上）**不动**，仍可当笔误；
+      * 登记簿不掺 `own`（另有三处用途只看 own，规格 2.3）。"""
+    g = [{"merge_key": "2002||scc||33", "citation_kind": "neutral", "court": "ONCA",
+          "jurisdiction": "CA", "self_citation_of": "SCC_2002scc33",
+          "self_case_name": "Housen v. Nikolaisen",
+          "case_name_modal": "Housen v. Nikolaisen"},
+         {"merge_key": "2002||scc||3", "citation_kind": "neutral", "court": "ONCA",
+          "jurisdiction": "CA", "self_citation_of": "", "self_case_name": "",
+          "case_name_modal": "Housen v. Nikolaisen"}]
+    did = {"ONCA|2002||scc||33": {"h1", "h2", "h3", "h4"},
+           "ONCA|2002||scc||3": {"h5"}}
+    reg = {"2002||scc||3": ("SCC_2002scc3", "SCC")}
+    check(decide.load_registry(os.path.join(tempfile.gettempdir(), "不存在.csv")) == {},
+          "#88 登记簿缺文件 = 空表（不传 --registry 时行为不变）")
+    root = decide.decisions_of(g, did)[0]
+    check(len(set(root.values())) == 1,
+          "#88 无登记簿：本地看不见的自引键照旧被当号码笔误并掉（跨院失明的形态）")
+    for gate in ("literal", "own_or_registry"):
+        root = decide.decisions_of(g, did, None, reg, None, gate)[0]
+        check(len(set(root.values())) == 1,
+              "#89 登记簿命中仍救不了（%s）：same_name 为假，闸门不动作" % gate)
+    # 闸门生效档：登记簿那件判决自印案名 == 本组组名（本组那一行 self_case_name 为空）
+    g2 = [dict(g[0]), dict(g[1], self_case_name="Housen v. Nikolaisen")]
+    root = decide.decisions_of(g2, did, None, reg, None, "literal")[0]
+    check(len(set(root.values())) == 2,
+          "#88 闸门生效档：登记簿那件判决自印案名 == 组名 → 不再被并")
+    # registered_only：登记簿命中、本轮看不见它是真判决 → 挡住（唯一能修 #88 的取值）
+    root = decide.decisions_of(g, did, None, reg, None, "registered_only")[0]
+    check(len(set(root.values())) == 2,
+          "#88 registered_only：本地看不见的登记簿命中被挡住（Chieu 不再并进 Housen）")
+    _r, anc, _j, own, _kk = decide.decisions_of(g, did, None, reg, None,
+                                                "registered_only")
+    check(own["2002||scc||3"] == set() and anc["2002||scc||3"] == {"h5"},
+          "#88 登记簿不掺 own：锚资格与 dd 仍按本层自己的证据算")
+    # registered_only 不动机制 A：own 非空时走原来的同名闸
+    g3 = [{"merge_key": "2002||scc||33", "citation_kind": "neutral", "court": "ONCA",
+           "jurisdiction": "CA", "self_citation_of": "", "self_case_name": "",
+           "case_name_modal": "R. v. Conway"},
+          {"merge_key": "2002||scc||3", "citation_kind": "neutral", "court": "ONCA",
+           "jurisdiction": "CA", "self_citation_of": "SCC_2002scc3",
+           "self_case_name": "Mickle v. Mickle", "case_name_modal": "R. v. Conway"}]
+    for gate in ("literal", "own_or_registry", "registered_only"):
+        root = decide.decisions_of(g3, did, None, reg, None, gate)[0]
+        check(len(set(root.values())) == 1,
+              "#88 机制 A 不动（%s）：登记簿命中但头部名对不上，仍按笔误并入" % gate)
+
+
+def test_registry_audit():
+    """#88：机制 A 的留痕清单（原先隐形）——`decisions_of` 在把「登记簿命中、
+    但头部案名与组名不一致」的键当笔误并掉时，必须留下可审的一行。
+
+    这里直接喂一组**手搭的成员行**（真实形态：键 `2008 ONCA 36` 真判决
+    Mickle v. Mickle 落在 R. v. Conway 组），绕开抽取/归并两层——
+    与 `test_decide_units` 的既有做法一致。"""
+    rows = [{"merge_key": "2008||onca||326", "citation_kind": "neutral",
+             "court": "ONCA", "jurisdiction": "ON",
+             "self_citation_of": "", "self_case_name": "",
+             "case_name_modal": "R. v. Conway"},
+            {"merge_key": "2008||onca||36", "citation_kind": "neutral",
+             "court": "ONCA", "jurisdiction": "ON",
+             "self_citation_of": "ONCA_2008onca36",
+             "self_case_name": "Mickle v. Mickle",
+             "case_name_modal": "R. v. Conway"}]
+    did = {"ONCA|2008||onca||326": {"a", "b", "c", "d"},
+           "ONCA|2008||onca||36": {"e"}}
+    registry = {"2008||onca||36": ("ONCA_2008onca36", "ONCA")}
+
+    audit = []
+    root, _anc, _j, own, kind = decide.decisions_of(rows, did, None, registry, audit)
+    check(root["2008||onca||36"] == "2008||onca||326"
+          and kind["2008||onca||36"] == "typo_number",
+          "#88 机制 A：登记簿命中但头部案名与组名不一致 → 仍按笔误并入（不动）")
+    check(own["2008||onca||36"] == {"ONCA_2008onca36"},
+          "#88 留痕用例的 own 非空（机制 A 的定义性特征）")
+    check(len(audit) == 1 and audit[0][0] == "2008||onca||36"
+          and audit[0][1] == "2008||onca||326",
+          "#88 机制 A 从隐形变可审：每一次「登记簿命中却仍当笔误」进 audit_rows")
+    # 不传登记簿：同一对被并掉但不留痕（改动前行为）
+    audit2 = []
+    decide.decisions_of(rows, did, None, None, audit2)
+    check(audit2 == [],
+          "#88 无登记簿时 audit_rows 为空（无登记簿 = 行为不变）")
+
+
 
 # ============================================================ 金标（全量差分）
 def _stats(path):
@@ -690,7 +881,8 @@ def main():
     if a.golden or a.golden_write:
         sys.exit(golden(a.golden_write))
     for t in (test_admit_candidate, test_classifier, test_disambiguation,
-              test_case_name_markers, test_decide_units, test_mini_chain):
+              test_case_name_markers, test_decide_units, test_registry_gate,
+              test_registry_audit, test_mini_chain):
         t()
     print("全部通过：%d 条断言" % len(PASSED))
 

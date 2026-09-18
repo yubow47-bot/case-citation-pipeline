@@ -80,6 +80,11 @@ MERGED_FIELDS = ["merge_key", "canonical_string", "abbreviation", "citation_kind
                  "case_name_agreement", "case_name_support", "variants_count",
                  "candidates_admitted", "candidates_rejected", "self_citation_of",
                  "self_case_name",
+                 # PROBLEMS #88：本键 counted 提及印出的案名类分布（nk 归一，空名不计，
+                 # 形如 `nk1:4|nk2:2`，条数降序、不截断）。**纯信息列**——归并层自己
+                 # 不用它做任何判断；裁定层的混合键判据（--mixed-key-holdout）需要
+                 # 提及级案名证据，而裁定层只拿得到键级产物，故在此供数。
+                 "name_classes",
                  # R4（D1/D2）：法院标注——键级聚合。observed_deciding_court 只在
                  # counted 成员的识别结果**唯一**时写出；≥2 个不同法院 → conflict、
                  # 不写法院（D1 负测试：H.L. 与 P.C. 同键 → 冲突、无法院）。
@@ -260,6 +265,29 @@ def build_merge_key_v2(row):
     else:
         page = row.get("page") or ""
     return "%s|%s|%s|%s|%s" % (year, vol, abbr, _series_component(row), page)
+
+
+# run_legacy（v1.4 旧链）的成员元组里案名的下标，见该函数的 groups[...].append
+_TUP_NAME = 5
+
+
+def _name_classes(rows):
+    """PROBLEMS #88：counted 提及印出的案名类分布，`nk1:4|nk2:2`（条数降序，
+    同数按类名字典序，空名不计，不截断）。裁定层据此分辨「纯笔误」与「混合键」。"""
+    return _fmt_classes(nk(r.get("candidate_case_name") or "") for r in rows
+                        if (r.get("candidate_case_name") or "").strip())
+
+
+def _name_classes_tuples(rows):
+    """同上，元组路线（成员是定长元组，案名在下标 8 之后由 _TUP_NAME 指定）。"""
+    return _fmt_classes(nk(r[_TUP_NAME] or "") for r in rows
+                        if (r[_TUP_NAME] or "").strip())
+
+
+def _fmt_classes(names):
+    c = Counter(names)
+    return "|".join("%s:%d" % (n, k) for n, k in
+                    sorted(c.items(), key=lambda kv: (-kv[1], kv[0])))
 
 
 def modal(values, tiebreak):
@@ -934,6 +962,7 @@ def _emit(args, stats, per_key_counted, per_key_members, mentions,
                                        if m.get("name_rejected_reason")),
             "self_citation_of": "|".join(own),
             "self_case_name": own_name,
+            "name_classes": _name_classes(counted),
         })
 
         per_raw = Counter(m["raw_string"] for m in counted)
@@ -1130,6 +1159,7 @@ def run_legacy(args, stats):
             "candidates_rejected": rejected,
             "self_citation_of": "|".join(own),
             "self_case_name": own_name,
+            "name_classes": _name_classes_tuples(pick),
         })
 
         # 折叠日志：**全部**印刷变体都登记（含计数为 0 的）
