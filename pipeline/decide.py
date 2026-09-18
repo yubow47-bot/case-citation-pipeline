@@ -1438,10 +1438,13 @@ def main():
                     help="全局判决登记簿（#88/#89）：<run>/registry/"
                          "decision_registry.csv。不传 = 空登记簿 = 行为不变；"
                          "**只授权笔误闸使用**（规格 2.3）")
-    ap.add_argument("--mixed-key-holdout", action="store_true",
+    # 2026-09-17：用户裁定设为默认开启（PROBLEMS #88 销账）。--no-mixed-key-holdout
+    # 关闭以复现关闭前逐字节一致的产物（判据 1 的对照仍可重放）。
+    ap.add_argument("--mixed-key-holdout", action=argparse.BooleanOptionalAction,
+                    default=True,
                     help="PROBLEMS #88：键的提及既印着折叠目标的案名、又印着别的"
                          "案名时（一个印刷串承担两种身份），不折叠并抑制其案名。"
-                         "默认关闭；关闭时产物与本参数出现前逐字节一致")
+                         "默认开启；--no-mixed-key-holdout 关闭以复现旧行为")
     ap.add_argument("--registry-gate", default="literal",
                     choices=("literal", "own_or_registry", "registered_only"),
                     help="登记簿在笔误闸里怎么参与：literal = 规格 2.3 逐字写法"
