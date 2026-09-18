@@ -98,7 +98,8 @@ def main():
     # 逐候选提及（counted）→ (source, group) 提及数；提及细节经 mention_detail_key 回连
     mention_edges = defaultdict(list)
     stats = Counter()
-    for court in ("SCC", "ONCA"):
+    for court in sorted(d for d in os.listdir(a.merge_out)
+                        if os.path.isdir(os.path.join(a.merge_out, d))):
         path = os.path.join(a.merge_out, court, "mentions_candidates.csv")
         if not os.path.exists(path):
             continue
