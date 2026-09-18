@@ -202,9 +202,12 @@ def main():
     ap.add_argument("--corpus-dir", default=None,
                     help="语料目录（默认仓库 corpus/）；锚语料只读引用，"
                          "实验线用它可以不复制语料")
-    ap.add_argument("--mixed-key-holdout", action="store_true",
+    # 2026-09-17：用户裁定设为默认开启，与 decide.py 一致（PROBLEMS #88 销账）
+    ap.add_argument("--mixed-key-holdout", action=argparse.BooleanOptionalAction,
+                    default=True,
                     help="PROBLEMS #88：混合键（提及既印折叠目标的案名、又印别的"
-                         "案名）不折叠、抑制案名、退出身份根竞争。默认关闭")
+                         "案名）不折叠、抑制案名、退出身份根竞争。默认开启；"
+                         "--no-mixed-key-holdout 关闭以复现旧行为")
     ap.add_argument("--registry-gate", default="literal",
                     choices=("literal", "own_or_registry", "registered_only"),
                     help="#88：登记簿在笔误闸里的参与方式（默认 literal = 规格 2.3 "
@@ -270,9 +273,10 @@ def main():
             cmd += ["--registry", registry_file]
             if args.registry_gate != "literal":
                 cmd += ["--registry-gate", args.registry_gate]
-        # PROBLEMS #88：与登记簿无关，单独开关；不传时不加参数，行为不变
-        if getattr(args, "mixed_key_holdout", False):
-            cmd += ["--mixed-key-holdout"]
+        # PROBLEMS #88：与登记簿无关，单独开关；默认开启（decide.py 同默认），
+        # 只在用户显式 --no-mixed-key-holdout 时才需要透传关闭
+        if not getattr(args, "mixed_key_holdout", True):
+            cmd += ["--no-mixed-key-holdout"]
         return cmd
 
     for court in courts:
