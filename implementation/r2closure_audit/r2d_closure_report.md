@@ -6,7 +6,7 @@ Run: `data/run_20260913_r2d_b/`（manifest status=complete，input_identity_veri
 
 ## 本轮修复（对应两个已确认反例问题）
 
-1. **身份授权**（commit 3d3104f）：显式双语代码表（`decisions/bilingual_neutral_codes.csv`，
+1. **身份授权**（commit 43be6b5）：显式双语代码表（`decisions/bilingual_neutral_codes.csv`，
    生成器 `decisions/tools/build_bilingual_neutral_codes.py`，verified_explicit_equivalence
    白名单——仅 SCC/CSC）；`same_citation` 仅限全组单键；ELIGIBLE_BASES 由 decide/edges
    共享；反例先行失败后转绿。

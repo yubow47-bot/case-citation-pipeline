@@ -248,7 +248,7 @@ python pipeline/run_all.py --out data/run_<新目录名>
 
 ## 8. 不要做的事
 
-- **不要 `git add -A`**（本项目历史上因此误纳过临时文件，见提交 `ed30689`）。
+- **不要 `git add -A`**（本项目历史上因此误纳过临时文件，见提交 `3a0dfce`）。
 - **不要删除或修改 `data/` 里已登记的 run**；不要动 `corpus/*.parquet`。
 - 不要修改 `decisions/` 决策表（本任务与决策表无关）。
 - 不要顺手改 `shapes.py` 里其他形状，不要"顺便清理"。

@@ -12,10 +12,10 @@
 
 | 步骤 | 内容 | 提交 |
 |---|---|---|
-| 1 | R2-10 输入指纹闸 + 候选爆炸 fail-closed | 60081fd |
-| 2 | R2-2/3/5/6 仲裁支持分级、终集合定点收敛、nominate 序数括注、run 级边界闸 | 60081fd |
-| 3 | R2-1/9 成员/组/边溯源 + 有效来源关联 | 2f587bb |
-| 4 | R2-4 scope 表官方化 + 分辑行 + 标识符年代闸 | 82c456a |
+| 1 | R2-10 输入指纹闸 + 候选爆炸 fail-closed | fb06cda |
+| 2 | R2-2/3/5/6 仲裁支持分级、终集合定点收敛、nominate 序数括注、run 级边界闸 | fb06cda |
+| 3 | R2-1/9 成员/组/边溯源 + 有效来源关联 | 448b43c |
+| 4 | R2-4 scope 表官方化 + 分辑行 + 标识符年代闸 | 0adf58e |
 | 5 | 全量 run + 3.2 核查 + 报告 | （本笔） |
 
 ### 实现要点（按缺陷）
@@ -159,11 +159,11 @@ heuristic_only 16,687（tentative 台账 1,522 条）。
 
 ### 起点（按任务书第二节记录）
 
-- 起始 commit：`e4eadf4`；r2c manifest：status=complete，input_identity_verified_unchanged=true，10 步。
+- 起始 commit：`061d781`；r2c manifest：status=complete，input_identity_verified_unchanged=true，10 步。
 - 修改前基线实测：test_candidates **111**、test_layers **120**、selftest exit 0、
   fixture A18/B15/C27/D6/E0/F0 pass——与任务书所报一致。
 
-### 任务一：身份授权（commit 3d3104f）
+### 任务一：身份授权（commit 43be6b5）
 
 - 新表 `decisions/bilingual_neutral_codes.csv`（40 对）由确定性离线脚本
   `decisions/tools/build_bilingual_neutral_codes.py` 生成：从 neutral_court_codes 的
@@ -187,7 +187,7 @@ heuristic_only 16,687（tentative 台账 1,522 条）。
   弱键×2 不升 same_citation 且组不 FOREIGN / 单键组 same_citation 合格 /
   typo×2 保持变体 / 顺序不变）全部先行失败后转绿。
 
-### 任务二：仲裁终态（commit 3d3104f + 冲突类补丁）
+### 任务二：仲裁终态（commit 43be6b5 + 冲突类补丁）
 
 `arbitrate_document` 重写为**等价类 + 攻击图 + grounded 终态**：
 - 5.2 同跨度同键先折叠成类（成员全保留；类档=成员最高档；代表按 档→形状序→id）；
@@ -276,7 +276,7 @@ tentative 4,119；supported 304,527 / heuristic_only 25,599。
   三口径敏感性输出 ✓；能力表述与代码一致（本轮第 7 节订正）✓。
 - **标记：demo 候选版，待独立审计。**
 
-### 评审收尾（2026-09-13 晚，commit 97ce123 + 本笔）
+### 评审收尾（2026-09-13 晚，commit 5ecddf3 + 本笔）
 
 **回归修复（评审定位，先测后修）**：r2d_b 里 369 条候选从 cross_boundary_invalid
 变成 counted——全是「8377278 Canada Inc., 2019」类数字公司名碎片，其 D3 配对者全部
@@ -328,7 +328,7 @@ counted 或自引配对者）。先写失败测试（156→158 断言）再修�
 
 ## Round 2 Blocked 增补（续）
 
-### B10 相容包含放过「年份复写」长误析 —— **已修复**（2026-09-13，commit 75c519f + r2e）
+### B10 相容包含放过「年份复写」长误析 —— **已修复**（2026-09-13，commit 8d8b008 + r2e）
 
 - 层/位置：merge.py `arbitrate_document`（contained 攻击的 `_fields_compatible`）
 - 触发输入：`R. v. Rose (2001), 2001 CanLII 24079 (ON CA)`——真中立引证
@@ -426,7 +426,7 @@ decide 管身份与来源 → select 保持原 dd 门槛语义。
 
 ## 起始状态（2026-09-12）
 
-- 起始提交：`cde643ec8c17a97662da13f44860b9611af5a974`（master）
+- 起始提交：`4a19fbfcbb36354e267ffdb261a019124e8a4b84`（master）
 - 工作区：5 个用户未提交文件，本轮不碰、不提交：
   `audit/glm_prep.py`、`audit/glm_verify.py`、`audit/zcode_recheck.py`、`audit/zcode_recheck2.py`、`audit/zcode_recheck3.py`
 - 未找到 AGENTS.md；适用说明为 README.md、USAGE.md、decisions/README.md、技术规格 §12
@@ -447,7 +447,7 @@ decide 管身份与来源 → select 保持原 dd 门槛语义。
 
 | 阶段 | 内容 | 状态 |
 |---|---|---|
-| 0 | 隔离运行入口 + run manifest | **完成**（commit c66d51e） |
+| 0 | 隔离运行入口 + run manifest | **完成**（commit a6de05a） |
 | 1 | 候选全量枚举、逐候选分类、判决内重叠仲裁（D1/D2/D3） | **完成**（见「阶段 1」三节） |
 | 2 | 系列与页码身份字段（D4/D5），全量重跑 + 新旧差分 | **完成**（见「阶段 2」） |
 | 3 | 来源地最小闭环（D6） | **完成**（见「阶段 3」） |
@@ -523,10 +523,10 @@ FileNotFoundError 暴露）；修后全过。失败目录两次均已删除重�
 
 | 阶段 | 状态 |
 |---|---|
-| 0 隔离运行入口 + manifest | 完成（c66d51e） |
-| 1 候选全枚举 + 逐候选分类 + 判决内仲裁（D1/D2/D3） | 完成（8823274） |
-| 2 键 v2 系列/页码身份（D4/D5）+ 全量重跑 + 差分 | 完成（3978fa3） |
-| 3 来源地最小闭环（D6） | 完成（8cf6c60） |
+| 0 隔离运行入口 + manifest | 完成（a6de05a） |
+| 1 候选全枚举 + 逐候选分类 + 判决内仲裁（D1/D2/D3） | 完成（a1546e2） |
+| 2 键 v2 系列/页码身份（D4/D5）+ 全量重跑 + 差分 | 完成（6123697） |
+| 3 来源地最小闭环（D6） | 完成（1456c9c） |
 | 4 边输出 + 追溯 + 演示 + 交接 | 完成（见 git log 最后一笔） |
 
 ### 2. 关键契约变更
@@ -569,10 +569,10 @@ python pipeline/run_all.py --out <新的空目录>
 
 ### 6. 提交历史（本轮）
 
-- c66d51e 阶段0：run_all + run manifest
-- 8823274 阶段1：candidates-2.0 全候选 + 仲裁
-- 3978fa3 阶段2：键 v2（D4/D5）+ 差分
-- 8cf6c60 阶段3：来源地闭环（D6）
+- a6de05a 阶段0：run_all + run manifest
+- a1546e2 阶段1：candidates-2.0 全候选 + 仲裁
+- 6123697 阶段2：键 v2（D4/D5）+ 差分
+- 1456c9c 阶段3：来源地闭环（D6）
 - （本笔）阶段4：edges + traceback + 演示 + 交接
 
 ## Blocked（§5 账本）
@@ -856,18 +856,18 @@ DTC 引证已按年读法 counted，r2g lost_by_token 中 dtc 已消失）。r2g
 old-supported lost = **27**（较红线 61 大幅下降）。
 
 
-## R2F 收尾（2026-09-13，评审四项发现全修，commit 6c69ff6 + r2i）
+## R2F 收尾（2026-09-13，评审四项发现全修，commit c3a7d85 + r2i）
 
 ### 评审发现与实测确认
 
-1. **(a) r2g 用了 8a8e324 的 classify.py**：实测确认——r2g manifest 的 classify sha =
-   977fee06（= 8a8e324 版本），HEAD 的 b9f53b33（含 CanLIIDocs 拒绝传播到卷孪生）
+1. **(a) r2g 用了 c455f48 的 classify.py**：实测确认——r2g manifest 的 classify sha =
+   977fee06（= c455f48 版本），HEAD 的 b9f53b33（含 CanLIIDocs 拒绝传播到卷孪生）
    **未进入 r2g**。后果：r2g 里 10 条 CanLIIDocs 卷/年读法孪生仍被 counted
    （vol_abbr_page 9 + year_vol_page 1）。原报告「指纹一致 / r2g 已验证孪生传播」
    对 HEAD 而言不成立——**已收回**。
 2. **(b) USAGE.md 少算清单损坏**：identifier 段出现两次（item 0 与 3b），3b 的第二份
    覆盖了 item 4 的标题「抽取层的 1.2% 少算（PROBLEMS #63）」→ 98.80% 段落成了无头段。
-   **已修**：96b3665 的 items 1–5 逐字节恢复、identifier 只保留一条（item 6，附评审
+   **已修**：f516f16 的 items 1–5 逐字节恢复、identifier 只保留一条（item 6，附评审
    订正数字）、98.80% 口径警示段完整保留。
 3. **(c) WL 弃权根因**：identifier_systems 表行 verified 但 jurisdiction_scope 为空
    → classify 写 jurisdiction="" → merge.support_grade 把空法域当「无表支持」降为
@@ -901,7 +901,7 @@ old-supported lost = **27**（较红线 61 大幅下降）。
 
 ### B10(b)/(c) 断言替换的来源记录
 
-commit 8a8e324 替换了 test_b10_year_reread_as_vol 中 (b)(c) 两段断言（从
+commit c455f48 替换了 test_b10_year_reread_as_vol 中 (b)(c) 两段断言（从
 span_alternative_undecided 弃权改为中性 counted + 卷读法让位）。这不是隐蔽改动：
 R2F 任务书明确要求 identifier 表落地后「the contained pair then follows existing
 rules; assert whatever those rules produce」——identifier 表使中性读法获得 exact

@@ -1,5 +1,5 @@
 # shapes_v1_frozen.py — v1 形状定义的冻结副本，仅供回归对照（pipeline/tests/）
-# 来源：git 719a8b4 (v1.1) 的 pipeline/shapes.py，逐字符照抄，不得在本仓库其他
+# 来源：git 3d2f7b5 (v1.1) 的 pipeline/shapes.py，逐字符照抄，不得在本仓库其他
 # 任何地方 import。v1 的正式实现只存在于 git 历史；本文件是测试夹具，不是
 # 平行实现。改正则时本文件永不修改——它必须永远是 v1 的原样。
 
