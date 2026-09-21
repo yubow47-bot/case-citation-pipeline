@@ -11,9 +11,9 @@
 #         具体清单以 HF API 枚举实测为准，list 模式先列出供人工确认。
 #
 # 用法:
-#   bash download_corpus.sh list       # 只枚举清单，不下载
-#   bash download_corpus.sh download   # 下载全部目标到 corpus\
-#   bash download_corpus.sh verify     # 只校验 corpus\ 已有文件（不改写任何文件）
+#   bash scripts/download_corpus.sh list       # 只枚举清单，不下载
+#   bash scripts/download_corpus.sh download   # 下载全部目标到 corpus\
+#   bash scripts/download_corpus.sh verify     # 只校验 corpus\ 已有文件（不改写任何文件）
 #
 # 只读保证（规格 §1.3）:
 #   - corpus\ 内已存在的最终文件绝不改写、绝不覆盖:
@@ -33,7 +33,7 @@ REPO="a2aj/canadian-case-law"
 REV="main"
 UA="citations-corpus-downloader"
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CORPUS="$ROOT/corpus"
 DATA="$ROOT/data"
 MANIFEST="$DATA/corpus_manifest.json"

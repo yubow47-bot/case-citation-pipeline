@@ -19,7 +19,7 @@
 | `extract_out` `classify_out` `merge_out` `decide_out` `select_out` `coverage_out` | 老路线（candidates-1.x）产出 | `test_layers.py --golden` 与 USAGE §8 数字读的就是这里——**别动** |
 | `audit/` | 改前快照（`before_task2/3/4`）与测量输出；`scratch_2026-09/` 是 09-09～09-14 的一次性探针 | 审计脚本的输入 |
 | `canlii_cache/` | CanLII 列表缓存 | `decisions/tools/build_case_origin.py --offline` 依赖 |
-| 根目录 5 个文件 | `corpus_manifest.json`、`.corpus_records.tsv`、`.tree_targets.tsv`、`neutral_triage.json`、`table_coverage.json` | `download_corpus.sh` 与 audit 脚本按这个路径读写 |
+| 根目录 5 个文件 | `corpus_manifest.json`、`.corpus_records.tsv`、`.tree_targets.tsv`、`neutral_triage.json`、`table_coverage.json` | `scripts/download_corpus.sh` 与 audit 脚本按这个路径读写 |
 
 ## 被删的 run 怎么找回
 

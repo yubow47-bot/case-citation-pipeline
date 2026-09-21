@@ -2,21 +2,54 @@ corpus/
 data/
 *.parquet
 __pycache__/
-# 建表工具的 API 抓取缓存（机器产物；每行 source_locator 自带可重放端点，缓存无需入库）
+
+# API harvest cache of the table-building tools (machine output; every row's
+# source_locator carries a replayable endpoint, so the cache is not committed)
 decisions/tools/cache/
 decisions/tools/*.json
 
-# ---- 密钥防线（仓库自带，不依赖本机全局 gitignore）----
-# 背景：建表工具走 --key-file / CANLII_API_KEY 取 key（见 decisions/tools/build_*.py），
-# 把 key 文件放在仓库旁边是自然操作，故在此拦住，避免 git add -A 误收。
+# ---- Secret-key defenses (kept in the repo, not relying on a machine-global gitignore) ----
+# The table-building tools read the key from --key-file / CANLII_API_KEY
+# (see decisions/tools/build_*.py). Putting a key file next to the repo is a
+# natural thing to do, so it is blocked here to keep `git add -A` from picking it up.
 .env
 .env.*
 *.key
 canlii*.txt
 
-# ---- 本机 AI 工具目录 ----
-# .zcode/（会话计划）与 .claude/settings.local.json（本地权限）此前只由本机全局
-# gitignore（~/.config/git/ignore）保护，克隆到别处即失效，故在仓库内再钉一道。
-# 注：.claude/ 只挡 settings.local.json——其余 .claude/ 内容若要入库，须逐个过目。
+# ---- Local AI-tool directories ----
+# .zcode/ (session plans) and .claude/ local state were previously protected only by a
+# machine-global gitignore, which does not survive a fresh clone.
+# Note: .claude/ only blocks settings.local.json and worktrees; anything else in it
+# that is to be committed must be reviewed one by one.
 .zcode/
 .claude/settings.local.json
+.claude/worktrees/
+
+# ---- Working notes, probes and drafts (not published) ----
+# implementation/ is the working directory of the repair rounds: task briefs for the
+# executing agent, one-off probes (_probe_*.py), session reports and progress logs.
+# Only the run-rebuild tooling and the few reports that README / USAGE / data/README
+# point to are published; everything else stays on disk but out of git.
+implementation/*
+!implementation/rebuild_run.py
+!implementation/run_registry.csv
+!implementation/run_registry_inputs.json
+!implementation/exp_bcca_citt_findings.md
+!implementation/coverage_metric.py
+!implementation/r4_verify_stage4.py
+!implementation/demo_examples.md
+!implementation/diff_report.md
+
+# ---- Report drafts and exported data (external deliverables, not project assets) ----
+# citation_pipeline_report*.docx and top_cited_cases*.csv are reports and data exports
+# for the author / advisor, not traceable decision tables like those in decisions/.
+/citation_pipeline_report*.docx
+/top_cited_cases*.csv
+
+# ---- Architecture atlas (Claude Artifact export, goes stale) ----
+# architecture_atlas*.html check the code snapshot of one particular run and become
+# outdated as decide.py etc. change; the published Artifact link is the reference,
+# local copies are for personal reference only and are not versioned.
+/architecture_atlas.html
+/architecture_atlas.zh.html

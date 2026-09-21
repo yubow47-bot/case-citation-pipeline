@@ -45,7 +45,7 @@ family), not substance.
    empty when the non-empty side matches the other record's corresponding side.
    Prefer the former; it is narrower.
 3. **The only copy of `ukpc_list.json` lives in a volatile Claude scratchpad**
-   (`C:\Users\hp\AppData\Local\Temp\claude\...\ukpc_cache\`), while
+   (`<session temp dir>\ukpc_cache\`), while
    `data/canlii_cache/` is empty. Copy it into the repo's cache dir before
    anything else; `--offline` rebuilds die without it.
 4. **Ledger hygiene:** `build_case_origin.py` cites "PROBLEMS #59", which does

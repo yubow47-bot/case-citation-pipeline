@@ -20,13 +20,18 @@
 ## 目录结构
 
 ```
-D:\cases data analisis\
+.
 ├── .gitignore
-├── README.md
-├── USAGE.md                       使用与解读说明（读数据前先读）
+├── README.md                      英文入口
 ├── PROBLEMS.md                    进 git，纯记录，不得被脚本读取
-├── select_config.yaml
-├── download_corpus.sh             语料快照下载脚本（HF 枚举、断点续传、SHA256 校验；bash/WSL）
+├── DEBT_LEDGER.md                 技术债台账
+├── select_config.yaml             选取层配置（被纳入 run 指纹，故留在根目录）
+├── docs\
+│   ├── README.zh.md               本文件
+│   ├── USAGE.md                   使用与解读说明（读数据前先读）
+│   └── 外国引证数据整理抽取管线项目技术规格.md
+├── scripts\
+│   └── download_corpus.sh         语料快照下载脚本（HF 枚举、断点续传、SHA256 校验；bash/WSL）
 ├── corpus\                        gitignore，只读快照；下载日期与指纹登记于技术规格 §1.3
 │   ├── SCC.parquet
 │   ├── ONCA.parquet
@@ -58,7 +63,6 @@ D:\cases data analisis\
 │   ├── extract_out … coverage_out 老路线产出 6 个目录（--golden 金标门与 USAGE §8 的锚）
 │   ├── audit\                     改前快照与测量输出
 │   └── canlii_cache\              build_case_origin.py --offline 依赖
-└── _legacy\                       旧管线产物，仅供人工对照
     └── README.md
 ```
 
