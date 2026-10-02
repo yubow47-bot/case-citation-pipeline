@@ -1,0 +1,55 @@
+{'groups_with_court': 28856, 'keys_hard': 8590, 'keys_hard_pre1999': 8445, 'keys_heur': 7390, 'keys_heur_pre1999': 1694, 'groups_conflict': 1}
+
+==== hard 档（单位：不同汇编键）
+   all  pre99  abbr             表        分布
+  8533   8445  S.C.R.           CA       ✓ CA 8533
+    52      0  B.C.C.A.         —         BC 52
+{'ge10': 2, 'in_table': 1, 'agree': 1, 'NOT_in_table': 1, 'lt10': 1}
+
+==== heur 档（单位：不同汇编键）
+   all  pre99  abbr             表        分布
+  2068    314  S.C.R.           CA       ✓ CA 1951, BC 43, ON 33, AB 14, SK 7, QC 6
+  1074    588  C.C.C.           CA       ✓ CA 716, BC 173, ON 91, AB 29, NS 21, MB 21
+   731      9  S.C.C.A.         CA       ✓ ON 424, BC 181, AB 32, CA 27, MB 20, NS 17
+   424     10  O.J.             ON       ✗ ON 369, BC 28, CA 15, AB 5, NS 4, MB 2
+   349    216  D.L.R.           CA       ✓ CA 261, BC 52, ON 12, AB 10, MB 6, NL 3
+   280     12  B.C.J.           BC       ✓ BC 266, CA 13, AB 1
+   207     54  O.R.             ON       ✗ ON 119, CA 69, BC 13, NS 3, AB 2, NL 1
+   178     16  B.C.L.R.         BC       ✓ BC 162, CA 16
+   173     16  B.C.A.C.         BC       ✓ BC 158, CA 14, AB 1
+   159      0  F.C.R.           CA       ✓ CA 159
+   140     44  W.W.R.           CA       ✓ CA 43, SK 29, AB 27, BC 19, MB 18, NT 4
+   138     60  S.C.J.           CA       ✓ CA 137, AB 1
+   114     32  A.C.             GB       ✗ GB 96, CA 18
+   102      6  R.J.Q.           QC       ✓ QC 96, CA 6
+    82     13  O.A.C.           ON       ✗ ON 41, CA 19, BC 17, NS 2, AB 2, NB 1
+    81     25  A.R.             AB       ✗ AB 69, CA 10, BC 1, PE 1
+    62      4  All E.R.         GB       ✓ GB 62
+    53     53  Can. S.C.R.      CA       ✓ CA 53
+    51      8  R.F.L.           CA       ✓ BC 23, CA 11, ON 10, AB 3, SK 2, NB 1
+    50     24  C.R.             CA       ✓ CA 26, ON 8, BC 7, AB 3, NS 1, NL 1
+    48     12  N.S.R.           NS       ✗ NS 37, CA 8, BC 2, AB 1
+    46     12  F.C.             CA       ✓ CA 46
+    44      2  C.T.C.           CA       ✓ CA 35, BC 7, AB 1, ON 1
+    40      4  C.N.L.R.         CA       ✓ CA 13, BC 13, QC 7, ON 3, MB 1, AB 1
+    31      5  A.J.             AB       ✗ AB 26, BC 3, CA 2
+    29      3  W.L.R.           CA,GB    ✓ GB 29
+    29      3  Sask. R.         SK       ✗ SK 25, CA 3, BC 1
+    27      6  Man. R.          MB       ✗ MB 19, CA 6, BC 2
+    26      8  Alta. L.R.       AB       ✓ AB 24, CA 2
+    19      0  C.P.C.           CA       ✓ ON 10, BC 9
+    18      0  D.C.R.T.Q.       —         QC 18
+    17     10  R.C.S.           —         CA 17
+    16      4  N.B.R.           NB       ✗ NB 12, CA 4
+    16      3  N.R.             CA       ✓ CA 12, ON 3, MB 1
+    14      3  Nfld. & P.E.I.R. NL,PE    ✗ NL 6, CA 5, PE 3
+    14      1  F.T.R.           CA       ✓ CA 14
+    13      4  M.V.R.           CA       ✓ CA 4, BC 4, AB 3, ON 2
+    13      1  N.B.J.           —         NB 11, CA 1, BC 1
+    12      0  J.Q.             QC       ✓ QC 11, CA 1
+    12      0  O.R.B.D.         —         ON 12
+    11      2  C.P.R.           CA       ✓ CA 11
+    11      0  R.R.A.           QC       ✓ QC 11
+    10      3  C.L.R.           AU,CA    ✓ AU 7, CA 1, BC 1, ON 1
+    10      0  B.L.R.           CA       ✓ BC 3, ON 3, AB 3, SK 1
+{'ge10': 44, 'in_table': 40, 'agree': 29, 'DISAGREE': 11, 'NOT_in_table': 4, 'lt10': 113}

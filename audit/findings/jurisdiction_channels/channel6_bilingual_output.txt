@@ -1,0 +1,531 @@
+{'docs_with_fr': 4960, 'reporter_tried': 158676, 'reporter_ambiguous': 10987, 'reporter_aligned': 118094, 'neutral_tried': 53042, 'neutral_aligned': 52112, 'neutral_ambiguous': 210} | index check on 200 docs
+
+==== 汇编缩写 英→法（对齐 ≥5 次；★=法文写法与英文写法去标点后不同）
+   n  docs  英文            法文主写法（次数）                          表(英) / 表(法)
+79663 3249 ★ SCR             R.C.S. 79580, RCS 66, S.C.R. 5                CA / —
+ 3099 1182   W.W.R.          W.W.R. 3037, W.W.R. (N.S.) 49, WWR 8          CA / CA
+ 2392  674   All E.R.        All E.R. 2342, All E.R. (Comm.) 19, All. E.R. 12 GB / GB
+ 2196  510 ★ F.C.            C.F. 2193, C.F. à la p. 2, C.F., aux pp. 1    CA / —
+ 1613  404   C.C.C.          C.C.C. 1608, C.C.C 4, CGC. 1                  CA / CA
+ 1103  431   D.L.R.          D.L.R. 1103                                   CA / CA
+ 1019  407   O.R.            O.R. 1011, O.R. (d) 6, Gr. 1                  ON / ON
+  867  349   Q.B.            Q.B. 851, B.R. 15, Q. B. 1                    GB,QC / GB,QC
+  864  329 ★ Can. Bar Rev.   R. du B. can. 801, R. du B. Can. 31, Rev. Bar. Can. 10 — / —
+  826  288   A.R.            A.R. 826                                      AB / AB
+  816  320   K.B.            K.B. 777, B.R. 37, K.B. p. 1                  GB,QC / GB,QC
+  786  292   A.C.            A.C. 784, App. Cas. 1, AC 1                   GB / GB
+  681  288   O.A.C.          O.A.C. 681                                    ON / ON
+  678  145 ★ F.C.R.          R.C.F. 666, F.C.R. 12                         CA / —
+  598  241   W.L.R.          W.L.R. 593, W.L.R. (U.K.) 4, WLR 1            CA,GB / CA,GB
+  559  177   Sask. R.        Sask. R. 559                                  SK / SK
+  487  197   Nfld. & P.E.I.R. Nfld. & P.E.I.R. 485, Nfld. & P.E.I..R. 2     NL,PE / NL,PE
+  444  144   Cr. App. R.     Cr. App. R. 432, Cr. App. R. (S.) 6, Cr.App.R. 4 GB / GB
+  443  174 ★ McGill L.J.     R.D. McGill 371, McGill L.J. 63, R. de d. McGill 3 — / —
+  432  171   App. Cas.       App. Cas. 429, App Cas 2, A.C. 1              GB / GB
+  426  170   O.L.R.          O.L.R. 423, D.L.R. 1, O.L.R. p. 1             ON / ON
+  417  192   B.C.A.C.        B.C.A.C. 416, B.C.C.A. 1                      BC / BC
+  409  151   C.L.R.          C.L.R. 407, CLR 2                             AU,CA / AU,CA
+  361   98   C.N.L.R.        C.N.L.R. 361                                  CA / CA
+  332  129   Ch.             Ch. 330, ch. 1, Ch 1                          GB / GB
+  299   85   C.T.C.          C.T.C. 299                                    CA / CA
+  283  116   C.R.N.S.        C.R.N.S. 281, C.R. N.S. 2                     CA / CA
+  274  105   C.R.            C.R. 274                                      CA / CA
+  274   43 ★ C.B.R.          C.B.R. (N.S.) 204, C.B.R. 68, Rev. du Bar. Can. 1 CA / —
+  270  106   R. du B.        R. du B. 270                                  — / —
+  263  107   B.C.L.R.        B.C.L.R. 263                                  BC / BC
+  260  111   Queen’s L.J.    Queen’s L.J. 219, Queen's L.J. 38, Queens L.J. 3 — / —
+  258  110   Alta. L. Rev.   Alta. L. Rev. 255, Alta L. Rev. 3             — / —
+  256  115   Q.B.D.          Q.B.D. 256                                    GB / GB
+  253  113   N.R.            N.R. 253                                      CA / CA
+  252  106   U.T.L.J.        U.T.L.J. 252                                  — / —
+  249   90   Crim. L.Q.      Crim. L.Q. 249                                — / —
+  227  101   Ch. D.          Ch. D. 202, Ch.D. 24, ch. D. 1                GB / GB
+  213   51   Lloyd's Rep.    Lloyd’s Rep. 108, Lloyd's Rep. 104, Lloyds R. 1 GB / GB
+  211   65   U.S.            U.S. 200, US 11                               US / US
+  210   69 ★ Can. Bus. L.J.  Rev. can. dr. comm. 171, Can. Bus. L.J. 35, Rev. can. d. comm. 4 — / —
+  204   91   Osgoode Hall L.J. Osgoode Hall L.J. 204                         — / —
+  204   78   F.T.R.          F.T.R. 204                                    CA / CA
+  203   70   N.Z.L.R.        N.Z.L.R. 198, NZLR 5                          NZ / NZ
+  187   64 ★ Que. K.B.       B.R. 185, Que. K.B. 1, K.B. 1                 QC / QC
+  186   75   C. de D.        C. de D. 186                                  — / —
+  161   76   U.B.C. L. Rev.  U.B.C. L. Rev. 157, U.B.C.L. Rev. 4           — / —
+  155   71   Q.A.C.          Q.A.C. 146, C.A.Q. 8, C.A. 1                  QC / QC
+  142   63   A.L.R.          A.L.R. 137, ALR 5                             AU,US / AU,US
+  133   57 ★ Ottawa L. Rev.  R.D. Ottawa 94, Ottawa L. Rev. 35, R. de D. d'Ottawa 3 — / —
+  131   65 ★ Ex. C.R.        R.C. de l’É. 87, R.C. de l'É. 24, R.C.É. 12   CA / —
+  127   32   R.P.C.          R.P.C. 125, RPC 2                             GB / GB
+  122   24   C.F.L.Q.        C.F.L.Q. 122                                  — / —
+  120   49   Man. L. J.      Man. L.J. 96, R.D. Man. 20, Man. L. J. 4      — / —
+  119   49   R.G.D.          R.G.D. 119                                    — / —
+  117   64   Harv. L. Rev.   Harv. L. Rev. 114, Harv. L.Rev. 2, Har. L. Rev. 1 — / —
+  108   29 ★ Can. Tax J.     Rev. fisc. can. 78, Can. Tax J. 26, Rev. fiscale can. 4 — / —
+  105   16   C.C.E.L.        C.C.E.L. 105                                  CA / CA
+   99   45   R.J.T.          R.J.T. 99                                     — / —
+   98   44   L.Q.R.          L.Q.R. 96, LQR 1, L.Q.Rev. 1                  — / —
+   97   42   Cox C.C.        Cox C.C. 96, Cox. C.C. 1                      GB / GB
+   97   28   C.R.R.          C.R.R. 97                                     CA / CA
+   91   31   C.S.            C.S. 91                                       QC / QC
+   90   47   Ex.             Ex. 88, Exch. 2                               GB / GB
+   89   21   R. du N.        R. du N. 89                                   — / —
+   87   36   Sask. L. Rev.   Sask. L. Rev. 87                              — / —
+   84   27   C.J.A.L.P.      C.J.A.L.P. 42, R.C.D.A.P. 42                  — / —
+   83   23   C.C.L.T.        C.C.L.T. 83                                   CA / CA
+   83   41   Yale L.J.       Yale L.J. 81, Yale L. J. 2                    — / —
+   80   27 ★ Can. J. Fam. L. Rev. can. d. fam. 62, Rev. Can. D. Fam. 8, Can. J. Fam. L. 6 — / —
+   78   35   R.D.U.S.        R.D.U.S. 78                                   — / —
+   78   24   C.C.L.I.        C.C.L.I. 78                                   CA / CA
+   78   31   B.C.R.          B.C.R. 75, B.C.R. (Pt. II) 3                  BC / BC
+   78   14   R.F.L.          R.F.L. 78                                     CA / CA
+   77   32 ★ Can. Crim. L.R. Rev. can. D.P. 73, R.C.D.P. 4                 — / —
+   75   36   O.A.R.          O.A.R. 75                                     ON / ON
+   74   37   L.T.            L.T. 68, L.T. (O.S.) 5, LT 1                  GB / GB
+   72   37   H.L.            H.L. 72                                       GB / GB
+   71   19   Can. L.R.B.R.   Can LRBR 40, Can. L.R.B.R. 30, Can. LRBR 1    — / —
+   68   22   F.L.R.          F.L.R. 68                                     — / —
+   67   28   Advocates' Q.   Advocates’ Q. 49, Advocates' Q. 18            — / —
+   66   26   N.S. W.L.R.     N.S.W.L.R. 66                                 — / —
+   66   29   N.J.C.L.        N.J.C.L. 34, R.N.D.C. 32                      — / —
+   62   31   Dal.L.J.        Dal. L.J. 59, Dal.L.J. 1, Dal. Li. 1          — / —
+   61   39   T.L.R.          T.L.R. 59, TLR 1, L.T.R. 1                    GB / GB
+   60   26   Adv. Q.         Adv. Q. 60                                    — / —
+   58   20   L.C.R.          L.C.R. 58                                     CA / CA
+   57   27   U.T. Fac. L. Rev. U.T. Fac. L. Rev. 45, R.D.U.T. 12             — / —
+   56   17   C.P.R.          C.P.R. 56                                     CA / CA
+   55   22 ★ U.N.B.L.J.      R.D. U.N.‑B. 24, R.D. U.N.-B. 16, U.N.B.L.J. 11 — / —
+   55   12   C.C.P.B.        C.C.P.B. 55                                   CA / CA
+   55   24 ★ C.J.W.L.        R.F.D. 45, R.J.F.D. 6, C.J.W.L. 4             — / —
+   50   29   Mod. L. Rev.    Mod. L. Rev. 50                               — / —
+   50   24   H.L.C.          H.L.C. 50                                     GB / GB
+   50   19   T.C.            T.C. 50                                       — / —
+   50   26   D.T.C.          D.T.C. 46, DTC 4                              CA / CA
+   50   24   C.P.            C.P. 35, C. & P. 15                           GB,QC / GB,QC
+   50    7   OSCB            OSCB 31, O.S.C.B. 19                          — / —
+   49   17   Lewin           Lewin 49                                      — / —
+   48   23   Colum. L. Rev.  Colum. L. Rev. 48                             — / —
+   48   22 ★ C.B.            C.B. (N.S.) 29, C.B. 19                       GB / GB
+   47   22 ★ Que. Q.B.       B.R. 47                                       QC / QC
+   47   26   Burr.           Burr. 46, Burr 1                              GB / GB
+   46   23   W.C.B.          W.C.B. 46                                     CA / CA
+   46   15 ★ C.L.R.B.R.      C.L.R.B.R. (N.S.) 16, CLRBR (NS) 15, C.L.R.B.R. 11 — / —
+   45   20   Mich. L. Rev.   Mich. L. Rev. 45                              — / —
+   45   16   B.L.R.          B.L.R. 45                                     CA / CA
+   44   15   Car. & P.       Car. & P. 44                                  — / —
+   44   15   M.P.L.R.        M.P.L.R. 44                                   CA / CA
+   43   19   Stan. L. Rev.   Stan. L. Rev. 43                              — / —
+   43   19   O.W.N.          O.W.N. 43                                     ON / ON
+   42   21   Dalhousie L.J.  Dalhousie L.J. 42                             — / —
+   42   11   L.A.C.          L.A.C. 42                                     CA / CA
+   41   17   S.A.S.R.        S.A.S.R. 41                                   — / —
+   41   19   East            East 29, East. 12                             GB / GB
+   41   21   N.S.R.          N.S.R. 40, N.S.R. p. 1                        NS / NS
+   40   19   M. & W.         M. & W. 39, M.&W. 1                           GB / GB
+   39   15   Admin. L.R.     Admin. L.R. 39                                CA / CA
+   39   14   Ad. & E.        Ad. & E. 35, AD. & E. 4                       — / —
+   39   18   St. Tr.         St. Tr. 36, St. Tr. (N.S.) 2, St.Tr. 1        — / —
+   39   14 ★ Rev. Const. Stud. R. études const. 35, Rev. Const. Stud. 4      — / —
+   38   15   L.Q. Rev.       L.Q. Rev. 35, L.Q.Rev. 3                      — / —
+   38   18   E.R.            E.R. 38                                       GB / GB
+   38   20   Ch. App.        Ch. App. 37, Ch App 1                         GB / GB
+   37   19   N.B.R.          N.B.R. 34, R.N.‑B. 2, N.B.R. p. 1             NB / NB
+   37   18   P.C.            P.C. 36, P.C. p. 1                            GB / GB
+   37   20   Man R.          Man. R. 36, Man R 1                           MB / MB
+   37   20   U.C.Q.B.        U.C.Q.B. 37                                   ON / ON
+   37   17   B.R.            B.R. 37                                       QC / QC
+   36   19   B. & S.         B. & S. 33, B.S. 2, B & S 1                   GB / GB
+   36   18   Co. Rep.        Co. Rep. 36                                   — / —
+   36   13   C.L.E.L.J.      C.L.E.L.J. 36                                 — / —
+   35    8 ★ C.I.P.R.        R.C.P.I. 31, C.I.P.R. 4                       — / —
+   34   12   A. Crim. R.     A. Crim. R. 34                                — / —
+   33   14   M.V.R.          M.V.R. 33                                     CA / CA
+   32    9   R.P.R.          R.P.R. 32                                     CA / CA
+   32   17   Cowp.           Cowp. 30, Cowp 2                              — / —
+   32   11   B.F.L.R.        B.F.L.R. 32                                   — / —
+   31   11   Ves. Jun.       Ves. Jun. 31                                  — / —
+   31   14   Crim. L.J.      Crim. L.J. 31                                 — / —
+   31   14   Va. L. Rev.     Va. L. Rev. 31                                — / —
+   31   13   U. Pa. L. Rev.  U. Pa. L. Rev. 31                             — / —
+   31   15   Beav.           Beav. 31                                      GB / GB
+   31   16   Eq.             Eq. 31                                        GB / GB
+   31   14   Windsor Y.B. Access Just. Windsor Y.B. Access Just. 31                  — / —
+   31   12   C.L.Q.          C.L.Q. 31                                     — / —
+   30   15   F. & F.         F. & F. 30                                    — / —
+   30   14   P.D.            P.D. 26, P. & D. 4                            GB / GB
+   30   11 ★ C.E.L.R.        C.E.L.R. (N.S.) 26, C.E.L.R. 4                CA / —
+   29   14   Leach           Leach 29                                      — / —
+   29   17   Alta. L.R.      Alta. L.R. 28, Alta L.R. 1                    AB / AB
+   29    9   Gr.             Gr. 29                                        ON / ON
+   29    9   E.T.R.          E.T.R. 29                                     CA / CA
+   29   13   H. & N.         H. & N. 29                                    GB / GB
+   28   13   Oxford J. Legal Stud. Oxford J. Legal Stud. 28                      — / —
+   27   11 ★ Can. Crim. L. Rev. Rev. can. D.P. 21, R.C.D.P. 6                 — / —
+   27   13   A.L.J.R.        A.L.J.R. 27                                   — / —
+   27   16   A.P.R.          A.P.R. 27                                     CA / CA
+   27    8   J.L. & Equality J.L. & Equality 27                            — / —
+   26   13   G.O. II         G.O. II 26                                    — / —
+   26   10   C.P.C.          C.P.C. 26                                     CA / CA
+   25   13   Cal.L.Rev.      Cal. L. Rev. 24, Cal.L.Rev. 1                 — / —
+   25   14   B. & C.         B. & C. 25                                    GB / GB
+   25   10   R. de J.        R. de J. 25                                   — / —
+   25    9   Law & Hum. Behav. Law & Hum. Behav. 25                          — / —
+   24   13   Cambridge L.J.  Cambridge L.J. 24                             — / —
+   24   14   Ld. Raym.       Ld. Raym. 24                                  — / —
+   24   11   L.J. Ch.        L.J. Ch. 18, L.J. Ch. (N.S.) 4, L.J.Ch. 2     GB / GB
+   24   12   Am. J. Comp. L. Am. J. Comp. L. 24                            — / —
+   23   12   Minn. L. Rev.   Minn. L. Rev. 23                              — / —
+   23    4 ★ C.M.A.R.        C.A.C.M. 23                                   — / —
+   23   11   L.C.J.          L.C.J. 23                                     QC / QC
+   23    8   F.Supp.         F. Supp. 20, F.Supp. 3                        US / US
+   23   11   I.R.            I.R. 17, R.I. 6                               — / —
+   23    9   Law Q. Rev.     Law Q. Rev. 23                                — / —
+   23   14   L.J. K.B.       L.J.K.B. 23                                   GB / GB
+   23   12   O.W.R.          O.W.R. 23                                     — / —
+   22   11   N.Y.U.L.Rev.    N.Y.U. L. Rev. 17, N.Y.U.L. Rev. 3, N.Y.U.L.Rev. 2 — / —
+   22   11   How. St. Tr.    How. St. Tr. 22                               — / —
+   22   16   R.C.S.          R.C.S. 20, S.C.R. 2                           — / —
+   22   13   T.R.            T.R. 22                                       GB / GB
+   22   12   Bing.           Bing. 16, Bing. (N.C.) 6                      GB / GB
+   22    9   R.J.T.U.M.      R.J.T.U.M. 22                                 — / —
+   21    9   Sup. Ct. L. Rev. Sup. Ct. L. Rev. 21                           — / —
+   21    8   I.P.J.          I.P.J. 21                                     — / —
+   21   10   Curr. Legal Probs. Curr. Legal Probs. 21                         — / —
+   20    9   R.L.            R.L. 20                                       QC / QC
+   20    7   G.O.            G.O. 20                                       — / —
+   20   11   Supreme Court L.R. Supreme Court L.R. 16, Supreme Court L. R. 4  — / —
+   20   10   Advocate        Advocate 14, Advocate (B.C.) 4, Advocate (Idaho) 2 — / —
+   20    6   J.P.P.L.        J.P.P.L. 14, R.D.P.P. 6                       — / —
+   20    9 ★ Constitutional Forum Forum constitutionnel 12, Forum Constitutionnel 8 — / —
+   19    9   Notre Dame L. Rev. Notre Dame L. Rev. 19                         — / —
+   19    7   I.L.R.          I.L.R. 19                                     — / —
+   19    9   N.Y.            N.Y. 19                                       US / US
+   19   10   M.P.R.          M.P.R. 19                                     CA / CA
+   19    5   Fox Pat. C.     Fox Pat. C. 19                                — / —
+   19   10   Sc. L.R.        S.C.L.R. 19                                   — / —
+   18   10   El. & Bl.       El. & Bl. 18                                  — / —
+   18    9   U. Chi. L. Rev. U. Chi. L. Rev. 18                            — / —
+   18    8 ★ C.J.L.S.        R.C.D.S. 18                                   — / —
+   18    7   Comp. Lab. L. & Pol’y J. Comp. Lab. L. & Pol’y J. 18                   — / —
+   17    7   C.C.R.          C.C.R. 17                                     — / —
+   17    9   Ohio St. L.J.   Ohio St. L.J. 17                              — / —
+   17    9   B. & Ald.       B. & Ald. 17                                  — / —
+   17    7   Hare            Hare 17                                       GB / GB
+   17    4 ★ Can. Y.B. Int’l L. A. can. D. int. 13, Can. Y.B. Int’l L. 2, Can. Y.B. Int'l L. 2 — / —
+   17   10   E.H.R.R.        E.H.R.R. 17                                   — / —
+   16    7   U. Mich. J.L. Ref. U. Mich. J.L. Ref. 10, U. Mich. J. L. Ref. 4, U. Mich. J.L. Reform 2 — / —
+   16    8   Ex. D.          Ex. D. 16                                     GB / GB
+   16    6   Cl. & Fin.      Cl. & Fin. 16                                 — / —
+   16    8   Vand. L. Rev.   Vand. L. Rev. 16                              — / —
+   16    6   Fam. L.Q.       Fam. L.Q. 16                                  — / —
+   16    6   N.W.U.L. Rev.   Nw. U. L. Rev. 8, Nw. U.L. Rev. 4, N.W.U. L. Rev. 2 — / —
+   16    5   Lloyds L.R.     Lloyd’s L.R. 12, Lloyds L.R. 2, Lloyd's L.R. 2 — / —
+   16    8   Iowa L. Rev.    Iowa L. Rev. 16                               — / —
+   16    6 ★ Const. Forum    Forum const. 10, Forum Const. 4, Const. Forum 2 — / —
+   16    5   Cr. App. Rep.   Cr. App. Rep. 16                              — / —
+   15    7   L.J. Ex.        L.J. Ex. 15                                   — / —
+   15    7   Cornell L. Rev. Cornell L. Rev. 15                            — / —
+   15    9   M.L.R.          M.L.R. 14, MLR 1                              — / —
+   15    8   Wils. K.B.      Wils. K.B. 15                                 — / —
+   15    8   J.P.            J.P. 15                                       — / —
+   15    6   Law & Contemp. Probs. Law & Contemp. Probs. 15                      — / —
+   14    8   Camp.           Camp. 14                                      — / —
+   14    6   L.J. P.C.       L.J.P.C. 12, L.J.P.C. (N.S.) 2                GB / GB
+   14    7   Geo. L.J.       Geo. L.J. 14                                  — / —
+   14    7   Oxford J. Leg. Stud. Oxford J. Leg. Stud. 14                       — / —
+   14    7   U.C.L.A. L. Rev. U.C.L.A. L. Rev. 9, UCLA L. Rev. 5            — / —
+   14    6   J. Crim. L. & Criminology J. Crim. L. & Criminology 14                  — / —
+   14    4   Hum. Rts. Q.    Hum. Rts. Q. 14                               — / —
+   14    5   E.G.L.R.        E.G.L.R. 14                                   — / —
+   14    9 ★ S.C.            C.S. 9, S.C. 5                                GB,QC / QC  ← 英法两种写法在表里法域不同
+   14    8   A.L.J.          A.L.J. 13, ALJ 1                              — / —
+   13    7   Calif. L. Rev.  Calif. L. Rev. 13                             — / —
+   13    6   Cardozo L. Rev. Cardozo L. Rev. 13                            — / —
+   13    6   U.W.O. L. Rev.  U.W.O. L. Rev. 13                             — / —
+   13    3   J.E.L.P.        J.E.L.P. 11, J. Env. Law & Prac. 2            — / —
+   13    7   Windsor Rev. Legal Soc. Issues Windsor Rev. Legal Soc. Issues 13             — / —
+   13    6   San Diego L. Rev. San Diego L. Rev. 13                          — / —
+   13    3 ★ Que. P.R.       R.P. 13                                       — / —
+   12    7   Alb. L. Rev.    Alb. L. Rev. 12                               — / —
+   12    6   Atk.            Atk. 12                                       — / —
+   12    6   Sim.            Sim. 12                                       — / —
+   12    7   F.              F. 12                                         US / US
+   12    5   C.A.R.          C.A.R. 12                                     GB / GB
+   12    6   Ves.            Ves. 12                                       GB / GB
+   12    4   Y.R.            Y.R. 12                                       — / —
+   12    6   Sask. L.R.      Sask. L.R. 12                                 SK / SK
+   12    5 ★ C.J.C.C.J.      R.C.C.J.P. 8, RCCJP 4                         — / —
+   12    6   Current Legal Problems Current Legal Problems 12                     — / —
+   12    4   P. & C.R.       P. & C.R. 12                                  — / —
+   12    5   Wash. L. Rev.   Wash. L. Rev. 12                              — / —
+   12    5   Rutgers L. Rev. Rutgers L. Rev. 12                            — / —
+   12    3   Fam. L.R.       Fam. L.R. 12                                  — / —
+   12    3   C.B.L.J.        C.B.L.J. 12                                   — / —
+   12    2   J.I.C.J.        J.I.C.J. 12                                   — / —
+   12    1   Avi.            Avi. 12                                       — / —
+   11    6   S. Cal. L. Rev. S. Cal. L. Rev. 11                            — / —
+   11    5   Ll. L. Rep.     Ll. L. Rep. 10, Ll.L.Rep. 1                   — / —
+   11    6   J.M.V.L.        J.M.V.L. 11                                   — / —
+   11    6   L J. Q.B.       L.J.Q.B. 10, L.J.Q.B. (N.S.) 1                GB / GB
+   11    5   Can. J. L. & Jur. Can. J.L. & Jur. 7, Can. J. L. & Jur. 4       — / —
+   11    3   Violence Against Women Violence Against Women 11                     — / —
+   11    5   U. Chicago L. Rev. U. Chicago L. Rev. 11                         — / —
+   11    6   DeG.M. & G.     De G.M. & G. 8, De G. M. & G. 2, DeG. M. & G. 1 GB / GB
+   11    4   Int'l & Comp. L.Q. Int'l & Comp. L.Q. 9, Int’l & Comp. L.Q. 2    — / —
+   10    5   Harv. Women's L.J. Harv. Women's L.J. 10                         — / —
+   10    5   Melbourne U.L.Rev. Melbourne U.L.Rev. 4, Melbourne U.L. Rev. 4, Melbourne U. L. Rev. 2 — / —
+   10    5   M. & Rob.       M. & Rob. 10                                  — / —
+   10    5   U.B.C. Law Rev. U.B.C. Law Rev. 10                            — / —
+   10    5   Vand. J. Transnat'l L. Vand. J. Transnat’l L. 6, Vand. J. Transnat'l L. 2, Vand. J. Transnatl. L. 2 — / —
+   10    4 ★ W.N.            W.N. (N.S.W.) 9, W.N. (N.S.W) 1               — / —
+   10    2   Can. Lab. L.J.  Can. Lab. L.J. 10                             — / —
+   10    5   Dougl.          Dougl. 10                                     — / —
+   10    6   L.T.R.          L.T.R. 8, L.T.R. (N.S.) 2                     — / —
+   10    3   Q.L.R.          Q.L.R. 6, R.J.Q. 4                            QC / QC
+   10    5   S.C. L. Rev.    S.C. L. Rev. 10                               — / —
+   10    5   Dal. J. Leg. Stud. Dal. J. Leg. Stud. 10                         — / —
+   10    4   Legal Theory    Legal Theory 10                               — / —
+   10    5   Fed. L. Rev.    Fed. L. Rev. 10                               — / —
+   10    7   H. & C.         H. & C. 9, H. & C 1                           — / —
+   10    6   Moo. P.C.       Moo. P.C. 9, Moo P.C. 1                       GB / GB
+   10    6   Den.            Den. 10                                       — / —
+   10    4   J.C.L.          J.C.L. 10                                     — / —
+   10    5   Tex. L. Rev.    Tex. L. Rev. 10                               — / —
+   10    2   Int’l. J. Refugee L. Int’l J. Refugee L. 6, Int’l. J. Refugee L. 4 — / —
+    9    3   Law Teacher     Law Teacher 9                                 — / —
+    9    5   L.J.C.P.        L.J.C.P. 7, L.J. C.P. 2                       — / —
+    9    4   M & S.          M. & S. 6, M.&S. 3                            — / —
+    9    6   Crim. App. R.   Crim. App. R. 9                               — / —
+    9    5   H.L. Cas.       H.L. Cas. 7, H.L.Cas. 2                       GB / GB
+    9    4   C.J.L.T.        C.J.L.T. 9                                    — / —
+    9    5   S.Ct.           S. Ct. 6, S.Ct. 3                             US / US
+    9    4   Tex. Int’l L.J. Tex. Int’l L.J. 9                             — / —
+    9    6 ★ S.R.            S.R. (N.S.W.) 7, S.R. 2                       — / —
+    9    5   C.P. du N.      C.P. du N. 9                                  — / —
+    9    4   L.J.M.C.        L.J.M.C. 9                                    — / —
+    9    5   Sydney L. Rev.  Sydney L. Rev. 9                              — / —
+    9    5   Sc. & Div.      Sc. & Div. 9                                  — / —
+    9    5   P.R.            P.R. 6, P.R. (Ont.) 2, R.P. 1                 — / —
+    9    4   C.L.L.C.        C.L.L.C. 8, CLLC 1                            — / —
+    9    6 ★ Que. S.C.       C.S. 8, C.S. Qué. 1                           — / QC
+    8    4   Am. J. Crim. L. Am. J. Crim. L. 8                             — / —
+    8    4   U.C. Davis L. Rev. U.C. Davis L. Rev. 8                          — / —
+    8    4   U. Pitt. L. Rev. U. Pitt. L. Rev. 8                            — / —
+    8    4   Chitty's L.J.   Chitty's L.J. 5, Chitty’s L.J. 2, Chitty’s Li. 1 — / —
+    8    3   Macq.           Macq. 8                                       — / —
+    8    3   Amer. J. Orthopsychiat. Amer. J. Orthopsychiat. 8                     — / —
+    8    3   Swans.          Swans. 8                                      — / —
+    8    4   Colum. Hum. Rts. L. Rev. Colum. Hum. Rts. L. Rev. 8                    — / —
+    8    4   Am. Crim. L. Rev. Am. Crim. L. Rev. 8                           — / —
+    8    4   Car. & K.       Car. & K. 8                                   — / —
+    8    1   U.S.L.W.        U.S. LW 8                                     — / —
+    8    4   E.T.P.J.        E.T.P.J. 8                                    — / —
+    8    4   B. & Ad.        B. & Ad. 8                                    — / —
+    8    5   Modern L. Rev.  Modern L. Rev. 7, Modem L. Rev. 1             — / —
+    8    1   Jewish L. Ann.  Jewish L. Ann. 8                              — / —
+    8    4   Legal Stud.     Legal Stud. 8                                 — / —
+    8    3   R.              R. 8                                          — / —
+    8    4   Wm. & Mary L. Rev. Wm. & Mary L. Rev. 8                          — / —
+    8    4   Est. & Tr. J.   Est. & Tr. J. 8                               — / —
+    8    5   C.P.D.          C.P.D. 8                                      GB / GB
+    8    1   J.P.T.O.S.      J.P.T.O.S. 8                                  — / —
+    8    4   Indus. L.J.     Indus. L.J. 8                                 — / —
+    8    2 ★ C.M.A.J.        J.A.M.C. 8                                    — / —
+    8    3   B.C.L.C.        B.C.L.C. 8                                    — / —
+    8    4   L.R.C.          L.R.C. 8                                      — / —
+    8    4   W.A.C.          W.A.C. 8                                      CA / CA
+    8    4   Esp.            Esp. 8                                        — / —
+    8    4   Wms. Saund.     Wms. Saund. 8                                 — / —
+    8    4   La. L. Rev.     La. L. Rev. 8                                 — / —
+    8    2   Brit. Y.B. Int'l L. Brit. Y.B. Int'l L. 7, Brit. Y.B. Int’l L. 1  — / —
+    8    4   Assurances      Assurances 8                                  — / —
+    8    3   Geo. Wash. L. Rev. Geo. Wash. L. Rev. 8                          — / —
+    8    4   P.              P. 8                                          GB,US / GB,US
+    8    4   USPQ            U.S.P.Q. 5, USPQ 2, U.S. P.Q. 1               — / —
+    7    4   L.R. Ir.        L.R. Ir. 6, LR Ir 1                           — / —
+    7    4   E. & B.         E. & B. 5, E & B 2                            GB / GB
+    7    4   De G.F. & J.    De G. F. & J. 7                               — / —
+    7    4   W.R.            W.R. 7                                        — / —
+    7    4   C.L.P.          C.L.P. 7                                      — / —
+    7    3   Kan. L. Rev.    Kan. L. Rev. 7                                — / —
+    7    4   Neb. L. Rev.    Neb. L. Rev. 7                                — / —
+    7    6 ★ S.R.C.          R.C.S. 7                                      — / —
+    7    3 ★ Q.P.R.          R.P. 6, R.P.Q. 1                              — / —
+    7    4   R.. du D.       R. du D. 7                                    — / —
+    7    5   N.E.            N.E. 7                                        US / US
+    7    4   Taunt.          Taunt. 6, Taunt 1                             — / —
+    7    4   N.S.W.R.        N.S.W.R. 7                                    — / —
+    7    4   Mood.           Mood. 7                                       — / —
+    7    3   Am. J. Int’l L. Am. J. Int’l L. 5, Am. J. Intl L. 2           — / —
+    7    3   R.C.L.F.        R.C.L.F. 7                                    — / —
+    7    3   Theor. Inq. L.  Theor. Inq. L. 7                              — / —
+    7    3 ★ Bos. & Pul.     Bos. & Pul. (N.R.) 6, Bos. & Pul. 1           — / —
+    7    2   Air & Space L.  Air & Space L. 7                              — / —
+    7    4   N.C. L. Rev.    N.C. L. Rev. 6, N.C.L. Rev. 1                 — / —
+    7    1 ★ Can. Y.B. Intl Law A.C.D.I. 7                                    — / —
+    7    2 ★ Can. Gaz. II    Gaz. Can. II 7                                — / —
+    6    3   Aust. L.J.      Aust. L.J. 6                                  — / —
+    6    3   Okla. L. Rev.   Okla. L. Rev. 6                               — / —
+    6    2   Tul. L. Rev.    Tul. L. Rev. 6                                — / —
+    6    3   Jac. & W.       Jac. & W. 6                                   — / —
+    6    3   New Eng. L. Rev. New Eng. L. Rev. 6                            — / —
+    6    1   Otago L. Rev.   Otago L. Rev. 6                               — / —
+    6    2   Int'l J. L. & Fam. Int’l J.L. & Fam. 4, Int'l J. L. & Fam. 2     — / —
+    6    3   Legal Studies   Legal Studies 6                               — / —
+    6    3   L.C. Jur.       L.C. Jur. 6                                   QC / QC
+    6    4   L.G.R.          L.G.R. 6                                      — / —
+    6    3   Tax Cas.        Tax Cas. 6                                    — / —
+    6    4   Com. Cas.       Com. Cas. 6                                   — / —
+    6    3   Buff. L. Rev.   Buff. L. Rev. 6                               — / —
+    6    3   Mod.            Mod. 6                                        — / —
+    6    4   Salk.           Salk. 6                                       — / —
+    6    3   J. Int’l Arb.   J. Int’l Arb. 6                               — / —
+    6    4   Bli. NS         Bli. N.S. 6                                   — / —
+    6    3   Cath. U.L. Rev. Cath. U. L. Rev. 6                            — / —
+    6    3   De G. & Sm.     De G. & Sm. 6                                 — / —
+    6    3 ★ O.G.            G.O. 6                                        — / —
+    6    3   R.Q.D.I.        R.Q.D.I. 6                                    — / —
+    6    3   Moo.            Moo. 6                                        — / —
+    6    3   Hastings L.J.   Hastings L.J. 6                               — / —
+    6    3   Monash U.L. Rev. Monash U.L. Rev. 6                            — / —
+    6    3   R.I.D.C.        R.I.D.C. 6                                    — / —
+    6    3   B.U.L. Rev.     B.U.L. Rev. 6                                 — / —
+    6    3   New Crim. L. Rev. New Crim. L. Rev. 6                           — / —
+    6    2   C.J.C.C.L.      C.J.C.C.L. 6                                  — / —
+    6    3   V.R.            V.R. 6                                        — / —
+    6    2   The Table       The Table 6                                   — / —
+    6    3   Sim. & St.      Sim. & St. 6                                  — / —
+    6    3   C.M. & R.       C.M. & R. 6                                   — / —
+    6    3   U.C.R.          U.C.R. 6                                      — / —
+    6    3   Va. J. Int’l L. Va. J. Int’l L. 4, Va. J. Int'l L. 2          — / —
+    6    3   Emory L.J.      Emory L.J. 6                                  — / —
+    6    3   U.C.C.P.        U.C.C.P. 6                                    ON / ON
+    6    3   Otago L.R.      Otago L.R. 6                                  — / —
+    6    3   Fordham Int’l L.J. Fordham Int’l L.J. 6                          — / —
+    6    2   Med. Sci. & L.  Med. Sci. & L. 6                              — / —
+    6    2   Man. L.R.       Man. L.R. 6                                   — / —
+    6    2   Sol. Jo.        Sol. Jo. 6                                    — / —
+    6    1   O.P.R.          O.P.R. 6                                      — / —
+    6    3   Val. U.L. Rev.  Val. U. L. Rev. 4, Val. U.L. Rev. 2           — / —
+    6    3   O.U.C.L.J.      O.U.C.L.J. 6                                  — / —
+    6    3 ★ Int’l Lab. Rev. Rev. int. trav. 2, Int’l Lab. Rev. 2, R. int. Trav. 2 — / —
+    6    3   Harv. J. on Legis. Harv. J. on Legis. 6                          — / —
+    6    2   C.I.L.R.        C.I.L.R. 6                                    — / —
+    6    3   West. Ont. L. Rev. West. Ont. L. Rev. 6                          — / —
+    6    3   Berkeley Tech. L.J. Berkeley Tech. L.J. 6                         — / —
+    6    3   Vern.           Vern. 6                                       — / —
+    6    3   Indigenous L.J. Indigenous L.J. 6                             — / —
+    6    2   J. Contemp. Health L. & Pol’y J. Contemp. Health L. & Pol’y 6               — / —
+    6    1   I CON           I CON 6                                       — / —
+    6    3   Fordham L. Rev. Fordham L. Rev. 6                             — / —
+    6    3   A. & E.         A. & E. 6                                     GB / GB
+    5    3 ★ O.G. II         G.O. II 5                                     — / —
+    5    3   Can. J. Crim.   Can. J. Crim. 3, Rev. can. crim. 2            — / —
+    5    3 ★ L.J.            L.J. (K.B.) 5                                 — / GB
+    5    1   Oxf. J. Legal Studies Oxf. J. Legal Studies 5                       — / —
+    5    3   I.B.F.D. Bulletin I.B.F.D. Bulletin 5                           — / —
+    5    3   V.L.R.          V.L.R. 5                                      — / —
+    5    2 ★ Intern’l Lab. Rev. Int’l Lab. Rev. 3, Intern’l Lab. Rev. 2       — / —
+    5    3   U.N.S.W.L.J.    U.N.S.W.L.J. 5                                — / —
+    5    3   Arb. Int’l      Arb. Int’l 3, Arb. Intl. 2                    — / —
+    5    3   Conn. L. Rev.   Conn. L. Rev. 5                               — / —
+    5    3   Ph.             Ph. 5                                         — / —
+    5    2   Geo. J. Int’l L. Geo. J. Int’l L. 5                            — / —
+    5    2   Brook. J. Int’l L. Brook. J. Int’l L. 3, Brook. J. Int’l. L. 2   — / —
+    5    2   J. App. Prac. & Process J. App. Prac. & Process 5                     — / —
+    5    3 ★ Can. Pub. Admin. Admin. pub. Can. 2, Admin. Pub. Can. 2, Can. Pub. Admin. 1 — / —
+    5    2   Miss. L.J.      Miss. L.J. 5                                  — / —
+    5    1   Fam. Ct. Rev.   Fam. Ct. Rev. 5                               — / —
+    5    2   J. Med. Ethics  J. Med. Ethics 5                              — / —
+    5    3   Ottawa L.R.     Ottawa L.R. 4, Ottawa L. Rev. 1               — / —
+    5    3   W.R.L.S.I.      W.R.L.S.I. 5                                  — / —
+    5    3   U. Colo. L. Rev. U. Colo. L. Rev. 5                            — / —
+    5    2   Show. K.B.      Show. K.B. 5                                  — / —
+    5    2   C.E.R.          C.E.R. 5                                      — / —
+    5    3   Cox             Cox 5                                         — / —
+    5    3   Doug. K.B.      Doug. K.B. 5                                  — / —
+    5    3   O.T.C.          O.T.C. 5                                      — / —
+    5    2   Md. L. Rev.     Md. L. Rev. 5                                 — / —
+    5    2   Temp. L. Rev.   Temp. L. Rev. 5                               — / —
+    5    3   L. Soc. Gaz.    L. Soc. Gaz. 5                                — / —
+    5    2 ★ Can. Gaz. I     Gaz. Can. I 5                                 — / —
+    5    3 ★ Can. Class Action Rev. Rev. can. recours collectifs 3, Rev. Can. R. C. 2 — / —
+    5    2   Ves. Sen.       Ves. Sen. 5                                   — / —
+    5    2   R.P.F.S.        R.P.F.S. 5                                    — / —
+    5    3   My. & Cr.       My. & Cr. 5                                   — / —
+    5    2   Ves. Jr.        Ves. Jr. 5                                    — / —
+    5    2   Philosophy & Public Affairs Philosophy & Public Affairs 5                 — / —
+    5    2   Wheaton         Wheaton 5                                     — / —
+英法写法不同的缩写: 47
+
+==== 中立码 英→法（对齐 ≥3 次），对照 bilingual_neutral_codes.csv
+31792  SCC      → CSC      verified_explicit_equivalence            
+ 3382  ONCA     → ONCA     同码                                       
+ 2520  QCCA     → QCCA     同码                                       
+ 2155  BCCA     → BCCA     同码                                       
+ 1497  ABCA     → ABCA     同码                                       
+ 1304  FCA      → CAF      candidate_endpoint_pair                  FCA 8
+ 1248  ONSC     → ONSC     同码                                       
+ 1148  BCSC     → BCSC     同码                                       
+  979  QCCS     → QCCS     同码                                       
+  727  ABQB     → ABQB     同码                                       
+  706  FC       → CF       unverified_same_db_en_only               FC 1
+  545  SKCA     → SKCA     同码                                       
+  469  NSCA     → NSCA     同码                                       
+  436  MBCA     → MBCA     同码                                       
+  351  QCCQ     → QCCQ     同码                                       
+  342  ONCJ     → ONCJ     同码                                       
+  222  NLCA     → NLCA     同码                                       
+  203  NBCA     → NBCA     同码                                       
+  185  SKQB     → SKQB     同码                                       
+  175  ABPC     → ABPC     同码                                       
+  158  MBQB     → MBQB     同码                                       
+  131  NSSC     → NSSC     同码                                       
+  125  TCC      → CCI      candidate_endpoint_pair                  TCC 2
+  107  BCPC     → BCPC     同码                                       
+   89  FCT      → CFPI     （表里没有这一对）                                FCPI 1
+   82  NBQB     → NBBR     unverified_same_db_en_only               NBQB 27
+   78  CM       → CM       同码                                       
+   69  CMAC     → CACM     candidate_endpoint_pair                  
+   68  QCCRT    → QCCRT    同码                                       
+   65  YKCA     → YKCA     同码                                       
+   49  NSPC     → NSPC     同码                                       
+   49  NFCA     → NFCA     同码                                       
+   46  QCTDP    → QCTDP    同码                                       
+   42  YKSC     → YKSC     同码                                       
+   42  SKPC     → SKPC     同码                                       
+   35  BCHRT    → BCHRT    同码                                       
+   34  NWTSC    → NWTSC    同码                                       TNOCS 6
+   32  NUCA     → NUCA     同码                                       
+   31  CHRT     → TCDP     candidate_endpoint_pair                  
+   31  QCTAQ    → QCTAQ    同码                                       
+   27  NLSC     → NLSC     同码                                       
+   25  PECA     → PECA     同码                                       
+   23  YKTC     → YKTC     同码                                       
+   23  NWTCA    → NWTCA    同码                                       TNOCA 5
+   22  MBPC     → MBPC     同码                                       
+   18  PESCAD   → PESCAD   同码                                       
+   16  NUCJ     → NUCJ     同码                                       
+   16  BCSECCOM → BCSECCOM 同码                                       
+   16  SCTC     → TRPC     （表里没有这一对）                                
+   13  NLTD     → NLTD     同码                                       
+   12  NBPC     → NBCP     unverified_same_db_en_only               NBPC 4
+   12  QCCM     → QCCM     同码                                       
+   12  ABKB     → ABKB     同码                                       
+   10  HRTO     → HRTO     同码                                       
+    9  CSC      → CSC      同码                                       
+    8  OHSTC    → TSSTC    （表里没有这一对）                                
+    7  PESC     → PESC     同码                                       
+    7  NBKB     → NBBR     rejected_renamed_code                    NBKB 2
+    7  SKKB     → SKKB     同码                                       
+    7  PSLRB    → CRTFP    （表里没有这一对）                                
+    6  PESCTD   → PESCTD   同码                                       
+    6  MBHR     → MBHR     同码                                       
+    6  CIRB     → CCRI     （表里没有这一对）                                
+    6  NWTTC    → NWTTC    同码                                       
+    5  ONLSAP   → ONLSAP   同码                                       
+    5  QCTA     → QCTA     同码                                       
+    4  QCTAT    → QCTAT    同码                                       
+    4  QCBDR    → QCBDR    同码                                       
+    4  AHRC     → AHRC     同码                                       
+    4  NSUARB   → NSUARB   同码                                       
+    3  SKLSS    → SKLSS    同码                                       
+    3  QCCLP    → QCCLP    同码                                       
+    3  ONLSHP   → ONLSHP   同码                                       

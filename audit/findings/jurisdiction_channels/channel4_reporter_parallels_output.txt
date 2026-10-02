@@ -1,0 +1,121 @@
+{'chains_with_reporter': 500937, 'chains_2plus_reporters': 20337, 'chains_2plus_no_direct': 17953, 'chains_2plus_no_direct_pre1999': 14785}
+hop-0 seeds (渠道 1/2 直接证据): 83
+hop-1 新种子: 40
+{'chains_with_reporter': 500937, 'chains_2plus_reporters': 20337, 'chains_2plus_no_direct': 17953, 'chains_2plus_no_direct_pre1999': 14785, 'hop1_conflict_chains': 296, 'hop2_conflict_chains': 301}
+
+==== 第 1 跳（第 2 跳的种子＝直接种子＋第 1 跳新种子，目标重复出现属正常；单位：串）
+   all  pre99  abbr                 直接证据  表        分布 | 经由种子
+   259    258  Ex. C.R.             0        CA       ✓ CA 259 | C.T.C. 156, D.L.R. 37, C.P.R. 35
+   138    138  O.W.N.               13       ON       ✓ CA 136, ON 2 | D.L.R. 77, C.C.C. 25, C.R. 13
+   111    110  Q.A.C.               0        QC       ✓ QC 82, CA 29 | R.J.Q. 79, C.C.C. 18, L.C.R. 5
+    90     83  O.L.R.               12       ON       ✓ CA 81, ON 9 | D.L.R. 58, C.C.C. 20, O.J. 8
+    85     79  Fox Pat. C.          0        —         CA 84, ON 1 | C.P.R. 52, SCR 31, O.R. 1
+    80     80  C.A.                 0        QC       ✓ CA 79, BC 1 | D.L.R. 38, C.C.C. 25, C.R.N.S. 5
+    71     56  C.R.T.C.             2        —         CA 69, BC 2 | SCR 27, D.L.R. 22, W.W.R. 17
+    68     33  C.L.R.               384      AU,CA    ✓ CA 19, BC 18, ON 11, AB 7, SK 4 | B.C.L.R. 13, D.L.R. 7, A.R. 6
+    63     63  Lewin                0        —         GB 63 | E.R. 63
+    58     58  Hare                 3        GB       ✓ GB 58 | E.R. 58
+    56     50  M.P.R.               0        CA       ✓ CA 56 | D.L.R. 31, C.R. 14, C.C.C. 9
+    55     54  I.L.R.               6        —         CA 21, ON 16, BC 13, MB 2, SK 2 | O.R. 16, B.C.L.R. 13, D.L.R. 10
+    55     55  Que. Q.B.            0        QC       ✓ CA 55 | C.C.C. 16, C.R. 14, D.L.R. 9
+    55     55  Ex.                  1        GB       ✓ GB 55 | E.R. 55
+    49     49  Ch.                  4        GB       ✓ GB 49 | All E.R. 46, W.L.R. 3
+    47     46  L.J.P.C.             5        GB       ✓ GB 45, CA 2 | A.C. 36, App. Cas. 7, W.W.R. 1
+    46     46  Burr.                0        GB       ✓ GB 46 | E.R. 46
+    46     46  Car. & P.            0        —         GB 46 | E.R. 46
+    45     45  H.L.C.               2        GB       ✓ GB 45 | E.R. 45
+    39     39  K.B.                 5        GB,QC    ✓ GB 39 | All E.R. 27, Cr. App. R. 10, A.C. 2
+    39     38  Cowp.                0        —         GB 39 | E.R. 39
+    37     36  Beav.                0        GB       ✓ GB 37 | E.R. 37
+    37      0  S.C.C.               5        —         CA 37 | SCR 30, C.C.C. 5, D.L.R. 2
+    36     36  C.B.                 1        GB       ✓ GB 36 | E.R. 36
+    35     35  F. & F.              0        —         GB 35 | E.R. 35
+    35     35  Ad. & E.             0        —         GB 35 | E.R. 35
+    34     32  East                 0        GB       ✓ GB 34 | E.R. 34
+    34     34  C.S.                 0        QC       ✓ CA 34 | D.L.R. 22, C.C.L.I. 4, C.C.C. 3
+    34     34  H. & N.              0        GB       ✓ GB 34 | E.R. 34
+    32     31  Ves. Jun.            0        —         GB 32 | E.R. 32
+    32     32  Leach                0        —         GB 32 | E.R. 32
+    32     32  B. & S.              0        GB       ✓ GB 32 | E.R. 32
+    31     31  M. & W.              0        GB       ✓ GB 31 | E.R. 31
+    30     30  L.J. K.B.            3        GB       ✓ GB 30 | A.C. 30
+    29     28  Ld. Raym.            1        —         GB 29 | E.R. 29
+    29     10  O.T.C.               0        —         CA 16, ON 13 | O.J. 12, C.P.C. 4, C.C.L.I. 2
+    27     26  Bing.                0        GB       ✓ GB 27 | E.R. 27
+    26     26  Que. K.B.            0        QC       ✓ CA 17, GB 9 | A.C. 9, C.B.R. 7, C.C.C. 6
+    25     19  C.R.C.               0        —         CA 20, GB 4, MB 1 | D.L.R. 12, SCR 6, A.C. 3
+    24     24  T.R.                 0        GB       ✓ GB 24 | E.R. 24
+    24     22  B. & C.              0        GB       ✓ GB 24 | E.R. 24
+    21     20  L.T.                 10       GB       ✓ GB 21 | A.C. 11, Q.B. 5, App. Cas. 3
+    20      8  Y. & J.              13       —         CA 11, BC 5, GB 4 | B.C.A.C. 5, C.R. 4, E.R. 4
+    18     18  El. & Bl.            0        —         GB 18 | E.R. 18
+    18     18  B. & Ald.            0        —         GB 18 | E.R. 17, All E.R. 1
+    18     18  Ves.                 0        GB       ✓ GB 18 | E.R. 18
+    17     17  Wils. K.B.           0        —         GB 17 | E.R. 17
+    16     12  Sask. L.R.           0        SK       ✓ CA 12, GB 4 | W.W.R. 7, D.L.R. 4, W.L.R. 4
+    16     16  R.C.S.               16       —         CA 16 | D.L.R. 12, C.C.C. 2, C.R. 1
+    16     11  P.E.I.J.             6        —         CA 16 | Nfld. & P.E.I.R. 15, C.C.C. 1
+    16     16  Cl. & Fin.           4        —         GB 16 | E.R. 16
+    16     12  Moo. P.C.            0        GB       ✓ GB 14, CA 2 | E.R. 13, L.C.R. 2, App. Cas. 1
+    16     16  DeG.M. & G.          0        GB       ✓ GB 16 | E.R. 16
+    15     15  C.P.                 0        GB,QC    ✓ GB 15 | E.R. 15
+    15     13  T.L.R.               7        GB       ✓ GB 14, CA 1 | A.C. 6, All E.R. 4, Cr. App. R. 3
+    15     15  Wms. Saund.          0        —         GB 15 | E.R. 15
+    15      1  B.C.C.A.             5        —         BC 13, CA 2 | B.C.J. 6, B.C.L.R. 5, B.C.A.C. 2
+    13     12  B. & Ad.             0        —         GB 13 | E.R. 13
+    13     12  L J. Q.B.            2        GB       ✓ GB 13 | Q.B. 9, App. Cas. 3, A.C. 1
+    13     13  Exch.                0        —         GB 13 | E.R. 13
+    13      0  ONCA                 1        —         ON 8, CA 5 | O.R. 5, C.C.C. 5, O.A.C. 2
+    12     12  Atk.                 0        —         GB 12 | E.R. 12
+    12     12  Car. & K.            0        —         GB 12 | E.R. 12
+    12      3  C.L.R.B.R.           14       —         BC 5, AB 4, SK 2, CA 1 | B.C.L.R. 4, Sask. R. 2, A.R. 2
+    11      3  G.T.C.               14       —         CA 7, ON 1, NB 1, BC 1, QC 1 | N.R. 3, G.S.T.C. 3, D.L.R. 1
+    11     11  M. & Rob.            0        —         GB 11 | E.R. 11
+    11     10  Can. C.C.            0        CA       ✓ CA 10, NS 1 | D.L.R. 8, SCR 2, N.S.R. 1
+    10     10  Camp.                0        —         GB 10 | E.R. 10
+    10      8  Co. Rep.             0        —         GB 10 | E.R. 10
+    10     10  Lewin C.C.           0        —         GB 10 | E.R. 10
+    10     10  Mer.                 0        —         GB 10 | E.R. 10
+    10      8  Cox C.C.             0        GB       ✓ GB 10 | E.R. 6, Cr. App. R. 2, Q.B. 1
+{'ge10': 72, 'in_table': 37, 'country_agree': 37, 'NOT_in_table': 35, 'lt10': 349}
+
+==== 第 2 跳（第 2 跳的种子＝直接种子＋第 1 跳新种子，目标重复出现属正常；单位：串）
+   all  pre99  abbr                 直接证据  表        分布 | 经由种子
+    27     27  Que. K.B.            0        QC       ✓ CA 18, GB 9 | A.C. 9, C.B.R. 7, C.C.C. 6
+    25     20  C.R.C.               0        —         CA 20, GB 4, MB 1 | D.L.R. 10, SCR 6, A.C. 3
+    20      8  Y. & J.              13       —         CA 11, BC 5, GB 4 | B.C.A.C. 5, C.R. 4, E.R. 4
+    18     18  El. & Bl.            0        —         GB 18 | E.R. 18
+    18     18  B. & Ald.            0        —         GB 18 | E.R. 17, All E.R. 1
+    18     16  Cox C.C.             0        GB       ✓ GB 18 | K.B. 7, E.R. 5, L.T. 3
+    18     18  Ves.                 0        GB       ✓ GB 18 | E.R. 18
+    18     16  T.L.R.               7        GB       ✓ GB 17, CA 1 | A.C. 6, Cr. App. R. 3, All E.R. 3
+    17     17  Wils. K.B.           0        —         GB 17 | E.R. 17
+    17     14  L.J. Ch.             4        GB       ✓ GB 17 | Ch. 8, A.C. 5, L.T. 3
+    16     12  Sask. L.R.           0        SK       ✓ CA 12, GB 4 | W.W.R. 7, D.L.R. 4, W.L.R. 4
+    16     16  C.P.                 0        GB,QC    ✓ GB 16 | E.R. 15, L.T. 1
+    16     16  R.C.S.               16       —         CA 16 | D.L.R. 12, C.C.C. 2, C.R. 1
+    16     11  P.E.I.J.             6        —         CA 16 | Nfld. & P.E.I.R. 15, C.C.C. 1
+    16     16  Cl. & Fin.           4        —         GB 16 | E.R. 16
+    16     12  Moo. P.C.            0        GB       ✓ GB 14, CA 2 | E.R. 13, L.C.R. 2, App. Cas. 1
+    16     16  DeG.M. & G.          0        GB       ✓ GB 16 | E.R. 16
+    15     14  L J. Q.B.            2        GB       ✓ GB 15 | Q.B. 9, App. Cas. 3, L.T. 2
+    15     15  Wms. Saund.          0        —         GB 15 | E.R. 15
+    15      1  B.C.C.A.             5        —         BC 13, CA 2 | B.C.J. 6, B.C.L.R. 5, B.C.A.C. 2
+    13     12  B. & Ad.             0        —         GB 13 | E.R. 13
+    13     12  Can. C.C.            0        CA       ✓ CA 12, NS 1 | D.L.R. 8, SCR 2, O.L.R. 1
+    13     13  Exch.                0        —         GB 13 | E.R. 13
+    13      0  ONCA                 1        —         ON 8, CA 5 | O.R. 5, C.C.C. 5, O.A.C. 2
+    12     12  Atk.                 0        —         GB 12 | E.R. 12
+    12     12  Car. & K.            0        —         GB 12 | E.R. 12
+    12      3  C.L.R.B.R.           14       —         BC 5, AB 4, SK 2, CA 1 | B.C.L.R. 4, Sask. R. 2, A.R. 2
+    11      3  G.T.C.               14       —         CA 7, ON 1, NB 1, BC 1, QC 1 | N.R. 3, G.S.T.C. 3, D.L.R. 1
+    11     11  M. & Rob.            0        —         GB 11 | E.R. 11
+    11     10  R.L.                 2        QC       ✓ CA 11 | Q.A.C. 9, D.L.R. 1, C.C.C. 1
+    10     10  R.D.J.               0        QC       ✓ CA 10 | L.C.R. 4, C.A. 3, Q.A.C. 3
+    10     10  Camp.                0        —         GB 10 | E.R. 10
+    10      8  Co. Rep.             0        —         GB 10 | E.R. 10
+    10     10  Lewin C.C.           0        —         GB 10 | E.R. 10
+    10     10  Mer.                 0        —         GB 10 | E.R. 10
+    10      9  Tax Cas.             0        —         GB 10 | A.C. 4, All E.R. 3, K.B. 1
+    10     10  All E.R. Rep.        8        —         GB 10 | K.B. 7, A.C. 2, Cr. App. R. 1
+{'ge10': 37, 'in_table': 13, 'country_agree': 13, 'NOT_in_table': 24, 'lt10': 367}

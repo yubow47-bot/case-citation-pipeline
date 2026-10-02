@@ -1,0 +1,90 @@
+proposal rows used: True | recognized keys: 14
+{'contained_dropped': 594729, 'designations_seen': 81806, 'chains_with_court': 25120, 'chains_used_pre1999': 19129, 'chains_used_1999plus_or_noyear': 5991}
+印刷形核查（识别键 → 前几种写法）：
+  ontca    Ontario Court of Appeal                  Ont. C.A. 9406, Ont.C.A. 136, Ont. C.A 29, Ont. CA 23, Ont C.A. 16, Ont CA 10
+  bcca     British Columbia Court of Appeal         B.C.C.A. 4601, B.C. C.A. 137, B.C.C.A 96, BCCA 85, BC CA 45, B.C. C.A 2
+  scc      Supreme Court of Canada                  S.C.C. 4207, SCC 65, S.C.C 22, SC.C. 2, S. C. C. 1, S.C.C . 1
+  hl       House of Lords                           H.L. 2273, H.L 20, HL 10, H. L. 4, H.L, 1
+  bcsc     British Columbia Supreme Court           B.C.S.C. 2030, B.C. S.C. 53, B.C.S.C 30, BCSC 20, BC SC 10, B.C. S.C 1
+  pc       Judicial Committee of the Privy Council  P.C. 976, P.C 4, PC 3
+  fca      Federal Court of Appeal                  F.C.A. 357, FCA 2, F.C.A 1
+  jcpc     Judicial Committee of the Privy Council  J.C.P.C. 94, J.C.P.C 2, J.C. P.C. 2, JCPC 2
+  ukhl     House of Lords                           U.K. H.L. 53, U.K.H.L. 39, U.K.H.L 2, UK HL 2, UKHL 2, U.K. H. L. 1
+  tcc      Tax Court of Canada                      T.C.C. 80, TCC 1
+  austhc   High Court of Australia                  Aust. H.C. 67, Aust.H.C. 1, Aust HC 1
+  hca      High Court of Australia                  H.C.A. 43, H.C.A 3, HCA 1
+  austlhc  High Court of Australia                  Austl. H.C. 16, Austl. H. C. 1
+{'abbr_ge10': 58, 'abbr_ge10_pre1999': 54, 'in_table': 55, 'agree': 46, 'DISAGREE': 9, 'NOT_in_table': 3, 'abbr_lt10': 121} | table rows: 161
+   all  pre99  abbr           verdict     表       | 法院分布 | 引用方
+ 11331   7933  C.C.C.         multi       表=CA     ✓ | ONCA 6508, SCC 2982, BCCA 1693, BCSC 135, FCA 13 | BCCA/ONCA/SCC
+  3881   3046  D.L.R.         multi       表=CA     ✓ | ONCA 1348, BCCA 1151, SCC 703, BCSC 492, JCPC 131 | BCCA/ONCA/SCC
+  2114   2054  A.C.           multi       表=GB     ✗ | HL 1384, JCPC 730 | BCCA/ONCA/SCC
+   941    849  B.C.L.R.       single:BC   表=BC     ✓ | BCCA 669, BCSC 252, SCC 20 | BCCA/ONCA/SCC
+   868    819  W.W.R.         single:BC   表=CA     ✗ | BCCA 517, BCSC 280, SCC 37, JCPC 33, FCA 1 | BCCA/ONCA/SCC
+   657    617  All E.R.       single:GB   表=GB     ✓ | HL 611, JCPC 46 | BCCA/ONCA/SCC
+   588    483  R.F.L.         multi       表=CA     ✓ | BCCA 241, ONCA 176, BCSC 136, SCC 34, TCC 1 | BCCA/ONCA/SCC
+   569    362  O.R.           single:ON   表=ON     ✓ | ONCA 549, SCC 19, JCPC 1 | BCCA/ONCA/SCC
+   545    414  C.R.           multi       表=CA     ✓ | ONCA 336, BCCA 129, SCC 50, BCSC 30 | BCCA/ONCA/SCC
+   411    305  B.C.J.         single:BC   表=BC     ✓ | BCCA 223, BCSC 179, JCPC 9 | BCCA/ONCA
+   389    312  S.C.R.         single:CA   表=CA     ✓ | SCC 388, HL 1 | BCCA/ONCA/SCC
+   373    301  C.P.C.         multi       表=CA     ✓ | ONCA 136, BCCA 135, BCSC 100, SCC 2 | BCCA/ONCA/SCC
+   249    178  C.B.R.         multi       表=CA     ✓ | ONCA 102, BCSC 74, BCCA 66, SCC 5, FCA 1 | BCCA/ONCA/SCC
+   188     80  O.J.           single:ON   表=ON     ✓ | ONCA 185, JCPC 2, SCC 1 | BCCA/ONCA
+   171    167  App. Cas.      multi       表=GB     ✗ | HL 89, JCPC 82 | BCCA/ONCA/SCC
+   162    137  C.L.R.         multi       表=AU,CA  ✓ | HCA 111, BCSC 25, BCCA 17, ONCA 8, JCPC 1 | BCCA/ONCA/SCC
+   146    121  W.L.R.         multi       表=CA,GB  ✓ | HL 116, JCPC 27, BCSC 2, BCCA 1 | BCCA/ONCA/SCC
+   143    109  N.R.           single:CA   表=CA     ✓ | FCA 106, SCC 31, BCCA 5, ONCA 1 | BCCA/ONCA/SCC
+   137    133  R.             single:GB   表=—       | HL 137 | BCCA/ONCA/SCC
+   124     48  O.A.C.         single:ON   表=ON     ✓ | ONCA 112, SCC 12 | BCCA/ONCA/SCC
+   121     98  M.P.L.R.       multi       表=CA     ✓ | BCSC 65, BCCA 35, ONCA 20, SCC 1 | BCCA/ONCA/SCC
+   116     22  DTC            single:CA   表=CA     ✓ | FCA 55, TCC 52, SCC 5, ONCA 2, BCSC 1 | BCCA/ONCA/SCC
+   115     87  C.C.E.L.       multi       表=CA     ✓ | BCSC 48, ONCA 46, BCCA 19, SCC 2 | BCCA/ONCA/SCC
+    96     50  B.L.R.         multi       表=CA     ✓ | BCSC 44, ONCA 41, BCCA 11 | BCCA/ONCA/SCC
+    95     71  C.C.L.I.       multi       表=CA     ✓ | BCSC 48, ONCA 25, BCCA 17, SCC 5 | BCCA/ONCA/SCC
+    95     84  B.C.A.C.       single:BC   表=BC     ✓ | BCCA 92, SCC 2, BCSC 1 | BCCA/ONCA
+    91     69  C.P.R.         multi       表=CA     ✓ | FCA 58, BCSC 18, ONCA 10, SCC 3, BCCA 2 | BCCA/ONCA/SCC
+    84     79  CanLII         multi       表=—       | BCCA 57, BCSC 14, ONCA 6, SCC 6, HL 1 | BCCA/ONCA
+    81     63  R.P.R.         multi       表=CA     ✓ | BCSC 54, ONCA 18, BCCA 8, SCC 1 | BCCA/ONCA/SCC
+    79     53  M.V.R.         multi       表=CA     ✓ | ONCA 46, BCCA 19, BCSC 14 | BCCA/ONCA/SCC
+    76     68  C.C.L.T.       multi       表=CA     ✓ | BCSC 46, BCCA 15, ONCA 12, SCC 3 | BCCA/ONCA/SCC
+    67     41  A.C.W.S.       multi       表=CA     ✓ | BCSC 38, ONCA 22, BCCA 6, FCA 1 | BCCA/ONCA/SCC
+    66     50  E.T.R.         multi       表=CA     ✓ | BCSC 41, BCCA 13, ONCA 11, SCC 1 | BCCA/ONCA/SCC
+    58      9  S.C.C.A.       single:CA   表=CA     ✓ | SCC 57, ONCA 1 | BCCA/ONCA
+    55     53  C.R.N.S.       multi       表=CA     ✓ | ONCA 32, BCCA 16, BCSC 6, SCC 1 | BCCA/ONCA/SCC
+    52     31  C.R.R.         multi       表=CA     ✓ | ONCA 29, BCSC 12, BCCA 9, SCC 1, FCA 1 | BCCA/ONCA/SCC
+    50     32  C.T.C.         multi       表=CA     ✓ | FCA 24, TCC 20, BCSC 5, ONCA 1 | BCCA/ONCA/SCC
+    46     24  W.C.B.         multi       表=CA     ✓ | ONCA 26, BCCA 17, BCSC 3 | BCCA/ONCA/SCC
+    45     30  C.N.L.R.       multi       表=CA     ✓ | BCSC 22, BCCA 10, ONCA 5, SCC 4, FCA 3 | BCCA/ONCA/SCC
+    40     36  E.R.           single:GB   表=GB     ✓ | HL 36, JCPC 4 | BCCA/ONCA/SCC
+    28     17  W.A.C.         single:BC   表=CA     ✗ | BCCA 27, SCC 1 | BCCA/ONCA/SCC
+    26     22  Admin. L.R.    multi       表=CA     ✓ | BCSC 13, FCA 7, ONCA 4, SCC 1, BCCA 1 | BCCA/ONCA/SCC
+    24     23  B.C.R.         single:BC   表=BC     ✓ | BCCA 16, BCSC 8 | BCCA/ONCA/SCC
+    24     11  S.C.J.         single:CA   表=CA     ✓ | SCC 24 | BCCA/ONCA
+    22     19  F.C.           single:CA   表=CA     ✓ | FCA 22 | BCCA/ONCA/SCC
+    20     20  R.P.C.         single:GB   表=GB     ✓ | HL 19, HCA 1 | BCCA/SCC
+    20     18  Cr. App. R.    multi       表=GB     ✗ | HL 16, JCPC 4 | BCCA/ONCA/SCC
+    20     15  L.C.R.         multi       表=CA     ✓ | BCCA 13, BCSC 4, ONCA 2, SCC 1 | BCCA/ONCA/SCC
+    16      2  C.C.P.B.       multi       表=CA     ✓ | ONCA 11, BCSC 3, FCA 1, SCC 1 | BCCA/ONCA
+    15     13  A.L.R.         multi       表=AU,US  ✗ | HCA 9, FCA 3, JCPC 3 | BCCA/ONCA/SCC
+    13     13  Lloyd's Rep.   multi       表=GB     ✗ | HL 10, JCPC 2, HCA 1 | BCCA/SCC
+    13     13  O.W.N.         single:ON   表=ON     ✓ | ONCA 13 | BCCA/ONCA/SCC
+    13     12  O.L.R.         single:ON   表=ON     ✓ | ONCA 12, JCPC 1 | BCCA/ONCA
+    12     11  L.T.           multi       表=GB     ✗ | HL 10, JCPC 2 | BCCA/ONCA/SCC
+    11     11  O.A.R.         single:ON   表=ON     ✓ | ONCA 11 | BCCA/ONCA/SCC
+    10      7  G.S.T.C.       multi       表=—       | TCC 4, BCSC 3, ONCA 2, FCA 1 | ONCA/SCC
+    10      7  C.H.R.R.       multi       表=CA     ✓ | BCSC 5, FCA 3, ONCA 1, SCC 1 | BCCA/ONCA/SCC
+    10     10  T.L.R.         multi       表=GB     ✗ | HL 7, JCPC 3 | BCCA/ONCA/SCC
+... 不一致的：
+  2114   2054  A.C.           multi       表=GB     | HL 1384, JCPC 730 | BCCA/ONCA/SCC
+   868    819  W.W.R.         single:BC   表=CA     | BCCA 517, BCSC 280, SCC 37, JCPC 33, FCA 1 | BCCA/ONCA/SCC
+   171    167  App. Cas.      multi       表=GB     | HL 89, JCPC 82 | BCCA/ONCA/SCC
+    28     17  W.A.C.         single:BC   表=CA     | BCCA 27, SCC 1 | BCCA/ONCA/SCC
+    20     18  Cr. App. R.    multi       表=GB     | HL 16, JCPC 4 | BCCA/ONCA/SCC
+    15     13  A.L.R.         multi       表=AU,US  | HCA 9, FCA 3, JCPC 3 | BCCA/ONCA/SCC
+    13     13  Lloyd's Rep.   multi       表=GB     | HL 10, JCPC 2, HCA 1 | BCCA/SCC
+    12     11  L.T.           multi       表=GB     | HL 10, JCPC 2 | BCCA/ONCA/SCC
+    10     10  T.L.R.         multi       表=GB     | HL 7, JCPC 3 | BCCA/ONCA/SCC
+... 人工表里没有、证据 >=10 的：
+   137    133  R.             single:GB   | HL 137 | BCCA/ONCA/SCC
+    84     79  CanLII         multi       | BCCA 57, BCSC 14, ONCA 6, SCC 6, HL 1 | BCCA/ONCA
+    10      7  G.S.T.C.       multi       | TCC 4, BCSC 3, ONCA 2, FCA 1 | ONCA/SCC
