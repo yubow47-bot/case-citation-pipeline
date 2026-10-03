@@ -1,0 +1,948 @@
+{
+  "metadata_only": true,
+  "changed_rows": 39,
+  "changed_fields": [
+    "notes",
+    "source",
+    "source_locator",
+    "verification_level"
+  ],
+  "rows": [
+    {
+      "row_number": 7,
+      "normalized_key": "canscr",
+      "abbreviation": "Can. S.C.R.",
+      "jurisdiction": "CA",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Canada Supreme Court Reports 的另一印刷形（归一族 canscr）",
+          "after": "Canada Supreme Court Reports 的另一印刷形（归一族 canscr）；2026-10-02 agent review: Reporter identity and Canada metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 canscr：7039 行 / 1888 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 canscr：7039 行 / 1888 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/page/379/?paged=379 ; Supreme Court Reports, Canada; lines 903–907"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 15,
+      "normalized_key": "us",
+      "abbreviation": "U.S.",
+      "jurisdiction": "US",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "United States Reports",
+          "after": "United States Reports；2026-10-02 agent review: United States Reports identity and US reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 us：3152 行 / 719 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 us：3152 行 / 719 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://www.supremecourt.gov/opinions/USReports.aspx | https://saclaw.org/resource_library/federal-primary-law/ ; U.S. Reports, About; Sacramento guide U.S. citation explanation"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 21,
+      "normalized_key": "chd",
+      "abbreviation": "Ch. D.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Chancery Division（英国 Law Reports 1875-1890）",
+          "after": "Chancery Division（英国 Law Reports 1875-1890）；2026-10-02 agent review: Chancery Division identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 chd：2004 行 / 832 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 chd：2004 行 / 832 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Appendix 4; Chancery rows 17–21"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 27,
+      "normalized_key": "qbd",
+      "abbreviation": "Q.B.D.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Queen's Bench Division（英国 Law Reports 1875-1890）。与裸 Q.B. 不同，本形只指英国系列，故单行",
+          "after": "Queen's Bench Division（英国 Law Reports 1875-1890）。与裸 Q.B. 不同，本形只指英国系列，故单行；2026-10-02 agent review: Queen's Bench Division identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 qbd：1639 行 / 798 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 qbd：1639 行 / 798 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Appendix 4; Queen's Bench rows 36–38"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 31,
+      "normalized_key": "f",
+      "abbreviation": "F.",
+      "jurisdiction": "US",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Federal Reporter（F./F.2d/F.3d，序数在 series 槽）",
+          "after": "Federal Reporter（F./F.2d/F.3d，序数在 series 槽）；2026-10-02 agent review: Federal Reporter identity and US reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 f：1434 行 / 361 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 f：1434 行 / 361 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://saclaw.org/resource_library/federal-primary-law/ | https://law.ucdavis.edu/library/course-support/common-abbreviations ; Federal Reporter heading, lines 311–312"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 50,
+      "normalized_key": "ucqb",
+      "abbreviation": "U.C.Q.B.",
+      "jurisdiction": "ON",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Upper Canada Queen's Bench（上加拿大，今安大略）",
+          "after": "Upper Canada Queen's Bench（上加拿大，今安大略）；2026-10-02 agent review: Upper Canada Queen's Bench identity and exact Ontario metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ucqb：802 行 / 342 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ucqb：802 行 / 342 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/record/upper-canada-queens-bench-reports-new-series/ ; Alternative abbreviations lines 33–37; jurisdiction lines 56–60"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 67,
+      "normalized_key": "lcjur",
+      "abbreviation": "L. C. Jur.",
+      "jurisdiction": "QC",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Lower Canada Jurist",
+          "after": "Lower Canada Jurist；2026-10-02 agent review: Lower Canada Jurist identity and exact Quebec metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 lcjur：505 行 / 221 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 lcjur：505 行 / 221 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/page/254/?paged=254 ; Lower Canada Jurist lines 845–849"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 70,
+      "normalized_key": "uccp",
+      "abbreviation": "U.C.C.P.",
+      "jurisdiction": "ON",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Upper Canada Common Pleas",
+          "after": "Upper Canada Common Pleas；2026-10-02 agent review: Upper Canada Common Pleas identity and exact Ontario metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 uccp：480 行 / 229 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 uccp：480 行 / 229 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/page/403/?paged=403 ; Upper Canada Common Pleas Reports lines 760–764"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 72,
+      "normalized_key": "chapp",
+      "abbreviation": "Ch. App.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Chancery Appeals（英国 Law Reports 1865-1875）",
+          "after": "Chancery Appeals（英国 Law Reports 1865-1875）；2026-10-02 agent review: Chancery Appeal Cases identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 chapp：459 行 / 239 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 chapp：459 行 / 239 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Appendix 4 Chancery; NSW Chancery Appeals"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 82,
+      "normalized_key": "qlr",
+      "abbreviation": "Q.L.R.",
+      "jurisdiction": "QC",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Quebec Law Reports",
+          "after": "Quebec Law Reports；2026-10-02 agent review: Quebec Law Reports identity and exact Quebec metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 qlr：385 行 / 190 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 qlr：385 行 / 190 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/page/325/?paged=325 ; Quebec Law Reports lines 712–716"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 90,
+      "normalized_key": "hlcas",
+      "abbreviation": "H.L. Cas.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "House of Lords Cases（Clark）",
+          "after": "House of Lords Cases（Clark）；2026-10-02 agent review: Clark and Finnelly House of Lords Cases identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 hlcas：347 行 / 212 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 hlcas：347 行 / 212 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://www.justcite.com/kb/search-technology/english-reports-reference-formats/ ; Clark & Finnelly new series lines 381–386"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 92,
+      "normalized_key": "ny",
+      "abbreviation": "N.Y.",
+      "jurisdiction": "US",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "New York Reports",
+          "after": "New York Reports；2026-10-02 agent review: New York Reports identity and US reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ny：325 行 / 192 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ny：325 行 / 192 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/page/287/?paged=287 ; New York Reports lines 891–895"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 93,
+      "normalized_key": "cbns",
+      "abbreviation": "C.B.N.S.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Common Bench New Series（英国）",
+          "after": "Common Bench New Series（英国）；2026-10-02 agent review: Common Bench Reports New Series identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cbns：321 行 / 208 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cbns：321 行 / 208 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://www.justcite.com/kb/search-technology/english-reports-reference-formats/ ; Common Bench Reports, New Series lines 412–420"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 94,
+      "normalized_key": "pd",
+      "abbreviation": "P.D.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Probate Division（英国 Law Reports 1875-1890）",
+          "after": "Probate Division（英国 Law Reports 1875-1890）；2026-10-02 agent review: Probate Division identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 pd：313 行 / 149 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 pd：313 行 / 149 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Appendix 4; Probate rows 32–35"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 198,
+      "normalized_key": "pd",
+      "abbreviation": "P.D.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Probate Division（L.R. P.D.，1875–1890）；P. & D.（1865–1875）归一后同族",
+          "after": "Probate Division（L.R. P.D.，1875–1890）；P. & D.（1865–1875）归一后同族；2026-10-02 agent review: Probate Division identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；为 L.R. 前缀行的分辑补行（PROBLEMS #52）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；为 L.R. 前缀行的分辑补行（PROBLEMS #52）；2026-10-02 代理审批依据：https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Appendix 4; Probate rows 32–35"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 97,
+      "normalized_key": "a",
+      "abbreviation": "A.",
+      "jurisdiction": "US",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "authority_identity_only"
+        },
+        "notes": {
+          "before": "Atlantic Reporter（美国）",
+          "after": "Atlantic Reporter（美国）；2026-10-02 agent review: Atlantic Reporter abbreviation/title identity only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 a：303 行 / 119 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 a：303 行 / 119 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://law.ucdavis.edu/library/course-support/common-abbreviations | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; UC Davis A row; NSW Atlantic Reporter"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 98,
+      "normalized_key": "ne",
+      "abbreviation": "N.E.",
+      "jurisdiction": "US",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "North Eastern Reporter（美国）",
+          "after": "North Eastern Reporter（美国）；2026-10-02 agent review: North Eastern Reporter identity and US metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ne：296 行 / 132 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ne：296 行 / 132 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/record/north-eastern-reporter/ ; Preferred abbreviation and jurisdiction"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 101,
+      "normalized_key": "fsupp",
+      "abbreviation": "F. Supp.",
+      "jurisdiction": "US",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Federal Supplement（美国联邦地区法院）",
+          "after": "Federal Supplement（美国联邦地区法院）；2026-10-02 agent review: Federal Supplement identity and US reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 fsupp：288 行 / 116 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 fsupp：288 行 / 116 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://saclaw.org/resource_library/federal-primary-law/ | https://law.ucdavis.edu/library/course-support/common-abbreviations ; United States District Courts; Federal Supplement lines 331–340"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 110,
+      "normalized_key": "eb",
+      "abbreviation": "E. & B.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Ellis & Blackburn（英国 nominate reports）",
+          "after": "Ellis & Blackburn（英国 nominate reports）；2026-10-02 agent review: Ellis & Blackburn Queen's Bench Reports identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 eb：250 行 / 157 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 eb：250 行 / 157 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://www.justcite.com/kb/search-technology/english-reports-reference-formats/ ; Ellis & Blackburn lines 698–703"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 117,
+      "normalized_key": "ljch",
+      "abbreviation": "L.J. Ch.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Law Journal Reports, Chancery（英国）",
+          "after": "Law Journal Reports, Chancery（英国）；2026-10-02 agent review: Law Journal Reports Chancery identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ljch：229 行 / 159 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ljch：229 行 / 159 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://www.lawsociety.sk.ca/wp-content/uploads/KBRA2022-STUDENTS.pdf | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; KBRA PDF page 6, Law Reports (England), LJCh"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 120,
+      "normalized_key": "sct",
+      "abbreviation": "S.Ct.",
+      "jurisdiction": "US",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Supreme Court Reporter（美国）",
+          "after": "Supreme Court Reporter（美国）；2026-10-02 agent review: Supreme Court Reporter identity and US reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 sct：206 行 / 107 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 sct：206 行 / 107 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/page/379/?paged=379 ; Supreme Court Reporter lines 897–901"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 121,
+      "normalized_key": "cpd",
+      "abbreviation": "C.P.D.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Common Pleas Division（英国 Law Reports 1875-1890）",
+          "after": "Common Pleas Division（英国 Law Reports 1875-1890）；2026-10-02 agent review: Common Pleas Division identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cpd：205 行 / 130 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 cpd：205 行 / 130 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Appendix 4; Common Pleas rows 22–24"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 128,
+      "normalized_key": "br",
+      "abbreviation": "B.R.",
+      "jurisdiction": "QC",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "authority_identity_only"
+        },
+        "notes": {
+          "before": "Banc de la Reine / du Roi（魁北克）",
+          "after": "Banc de la Reine / du Roi（魁北克）；2026-10-02 agent review: B.R. Quebec Official Reports King's Bench identity and Quebec reporter scope; token role unresolved. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 br：180 行 / 78 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 br：180 行 / 78 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/page/325/?paged=325 ; Quebec Official Reports, King's Bench lines 724–728"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 132,
+      "normalized_key": "lcj",
+      "abbreviation": "L.C.J.",
+      "jurisdiction": "QC",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Lower Canada Jurist 的另一印刷形",
+          "after": "Lower Canada Jurist 的另一印刷形；2026-10-02 agent review: Lower Canada Jurist identity and exact Quebec metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 lcj：173 行 / 78 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 lcj：173 行 / 78 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/page/254/?paged=254 ; Lower Canada Jurist lines 845–849"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 135,
+      "normalized_key": "ltns",
+      "abbreviation": "L. T. N. S.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "authority_identity_only"
+        },
+        "notes": {
+          "before": "Law Times Reports, New Series（英国）",
+          "after": "Law Times Reports, New Series（英国）；2026-10-02 agent review: Law Times Reports New Series abbreviation/title identity only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ltns：169 行 / 105 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ltns：169 行 / 105 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Law Times Reports lines 710–714"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 136,
+      "normalized_key": "nw",
+      "abbreviation": "N.W.",
+      "jurisdiction": "US",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "authority_identity_only"
+        },
+        "notes": {
+          "before": "North Western Reporter（美国）",
+          "after": "North Western Reporter（美国）；2026-10-02 agent review: Northwestern Reporter abbreviation/title identity only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nw：168 行 / 74 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nw：168 行 / 74 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://law.ucdavis.edu/library/course-support/common-abbreviations ; UC Davis N.W. row"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 139,
+      "normalized_key": "ontwn",
+      "abbreviation": "Ont. W.N.",
+      "jurisdiction": "ON",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Ontario Weekly Notes 的另一印刷形",
+          "after": "Ontario Weekly Notes 的另一印刷形；2026-10-02 agent review: Ontario Weekly Notes identity and exact Ontario metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ontwn：166 行 / 85 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 ontwn：166 行 / 85 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/page/303/?paged=303 ; Ontario Weekly Notes lines 851–855"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 144,
+      "normalized_key": "omh",
+      "abbreviation": "O'M. & H.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "O'Malley & Hardcastle（英国选举诉讼汇编）",
+          "after": "O'Malley & Hardcastle（英国选举诉讼汇编）；2026-10-02 agent review: O'Malley & Hardcastle Election Cases identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 omh：156 行 / 19 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 omh：156 行 / 19 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/record/omalley-hardcastle-election-cases/ ; Preferred abbreviation lines 27–37; jurisdiction lines 57–61"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 151,
+      "normalized_key": "exd",
+      "abbreviation": "Ex. D.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Exchequer Division（英国 Law Reports 1875-1890）",
+          "after": "Exchequer Division（英国 Law Reports 1875-1890）；2026-10-02 agent review: Exchequer Division identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 exd：138 行 / 104 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 exd：138 行 / 104 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Appendix 4; Exchequer rows 27–29"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 182,
+      "normalized_key": "p",
+      "abbreviation": "P.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Probate（英国 Law Reports 1891–1971，以 [年] P. 引、不印卷号；语料旁证 1940–50 年代 All E.R./A.C.）",
+          "after": "Probate（英国 Law Reports 1891–1971，以 [年] P. 引、不印卷号；语料旁证 1940–50 年代 All E.R./A.C.）；2026-10-02 agent review: GB Probate row metadata and US Pacific Reporter identity only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "区间据语料印刷结构实测（前缀标注行与各形状的卷号/年份分布，仪器 audit/disambiguation_audit.py）与该系列出版史推定，未核对权威源",
+          "after": "区间据语料印刷结构实测（前缀标注行与各形状的卷号/年份分布，仪器 audit/disambiguation_audit.py）与该系列出版史推定，未核对权威源；2026-10-02 代理审批依据：https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html | https://law.ucdavis.edu/library/course-support/common-abbreviations ; Appendix 4 Probate; UC Davis P row"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 183,
+      "normalized_key": "p",
+      "abbreviation": "P.",
+      "jurisdiction": "US",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "authority_identity_only"
+        },
+        "notes": {
+          "before": "Pacific Reporter（美国，P./P.2d/P.3d，恒印卷号）",
+          "after": "Pacific Reporter（美国，P./P.2d/P.3d，恒印卷号）；2026-10-02 agent review: GB Probate row metadata and US Pacific Reporter identity only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "区间据语料印刷结构实测（前缀标注行与各形状的卷号/年份分布，仪器 audit/disambiguation_audit.py）与该系列出版史推定，未核对权威源",
+          "after": "区间据语料印刷结构实测（前缀标注行与各形状的卷号/年份分布，仪器 audit/disambiguation_audit.py）与该系列出版史推定，未核对权威源；2026-10-02 代理审批依据：https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html | https://law.ucdavis.edu/library/course-support/common-abbreviations ; Appendix 4 Probate; UC Davis P row"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 195,
+      "normalized_key": "hl",
+      "abbreviation": "H.L.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "authority_identity_only"
+        },
+        "notes": {
+          "before": "House of Lords（L.R. H.L. 1866–1875 与 Clark 的 H.L. 1847–1866）",
+          "after": "House of Lords（L.R. H.L. 1866–1875 与 Clark 的 H.L. 1847–1866）；2026-10-02 agent review: Law Reports House of Lords identity and GB scope for that series only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；为 L.R. 前缀行的分辑补行（PROBLEMS #52）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；为 L.R. 前缀行的分辑补行（PROBLEMS #52）；2026-10-02 代理审批依据：https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html | https://lawfoundation.org.nz/style-guide2018/appendix-4.html ; NSW House of Lords; Appendix 4 LR HL"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 196,
+      "normalized_key": "eq",
+      "abbreviation": "Eq.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Law Reports, Equity Cases（L.R. Eq.，1865–1875）",
+          "after": "Law Reports, Equity Cases（L.R. Eq.，1865–1875）；2026-10-02 agent review: Law Reports Equity Cases reporter identity and GB metadata only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；为 L.R. 前缀行的分辑补行（PROBLEMS #52）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；为 L.R. 前缀行的分辑补行（PROBLEMS #52）；2026-10-02 代理审批依据：https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html | https://lawfoundation.org.nz/style-guide2018/appendix-4.html ; NSW Equity Cases; Appendix 4 Equity"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 197,
+      "normalized_key": "pc",
+      "abbreviation": "P.C.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "authority_identity_only"
+        },
+        "notes": {
+          "before": "Law Reports, Privy Council Appeals（L.R. P.C.，1865–1875）。枢密院案件的来源地属 case_origin.csv 辖区",
+          "after": "Law Reports, Privy Council Appeals（L.R. P.C.，1865–1875）。枢密院案件的来源地属 case_origin.csv 辖区；2026-10-02 agent review: Law Reports Privy Council Appeals identity and GB reporter-series metadata; token role unresolved. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；为 L.R. 前缀行的分辑补行（PROBLEMS #52）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；为 L.R. 前缀行的分辑补行（PROBLEMS #52）；2026-10-02 代理审批依据：https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html | https://lawfoundation.org.nz/style-guide2018/appendix-4.html ; NSW Law Reports Privy Council; Appendix 4 LR PC"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 46,
+      "normalized_key": "nfldpeir",
+      "abbreviation": "Nfld. & P.E.I.R.",
+      "jurisdiction": "NL",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "authority_identity_only"
+        },
+        "notes": {
+          "before": "Newfoundland & Prince Edward Island Reports —— **横跨两省**，并列两行交 §8.6 判",
+          "after": "Newfoundland & Prince Edward Island Reports —— **横跨两省**，并列两行交 §8.6 判；2026-10-02 agent review: External title identity supported; NL scope retained from sample evidence but complete territorial scope not authority-verified. Metadata only; no case_origin/exclusivity certification. Keep confidence, jurisdiction and ranges unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nfldpeir：871 行 / 401 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nfldpeir：871 行 / 401 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://lawsocietypei.ca/media/files/Law%20Library%20Catalogue%20Print%20Serials%20April%2028,%202016.pdf ; PDF page 10, title/holdings; channel1 parallels lines31,49"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 47,
+      "normalized_key": "nfldpeir",
+      "abbreviation": "Nfld. & P.E.I.R.",
+      "jurisdiction": "PE",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "authority_identity_only"
+        },
+        "notes": {
+          "before": "同上一行，横跨 NL 与 PE",
+          "after": "同上一行，横跨 NL 与 PE；2026-10-02 agent review: External title identity supported; PE scope retained from sample evidence but complete territorial scope not authority-verified. Metadata only; no case_origin/exclusivity certification. Keep confidence, jurisdiction and ranges unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nfldpeir：871 行 / 401 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 nfldpeir：871 行 / 401 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://lawsocietypei.ca/media/files/Law%20Library%20Catalogue%20Print%20Serials%20April%2028,%202016.pdf ; PDF page 10, title/holdings; channel1 parallels lines31,49"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 83,
+      "normalized_key": "quekb",
+      "abbreviation": "Que. K.B.",
+      "jurisdiction": "QC",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Quebec King's Bench",
+          "after": "Quebec King's Bench；2026-10-02 agent review: Exact abbreviation/title and Quebec jurisdiction supported; propagated GB signal does not revise reporter jurisdiction. Metadata only; no case_origin/exclusivity certification. Keep confidence, jurisdiction and ranges unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 quekb：382 行 / 146 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 quekb：382 行 / 146 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/page/325/?paged=325 ; Quebec Official Reports King's Bench lines724–728"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 126,
+      "normalized_key": "sasklr",
+      "abbreviation": "Sask. L.R.",
+      "jurisdiction": "SK",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "authority_country_only"
+        },
+        "notes": {
+          "before": "Saskatchewan Law Reports",
+          "after": "Saskatchewan Law Reports；2026-10-02 agent review: Title/Canadian reporter identity supported; exact SK geographic scope not independently established by opened jurisdiction record. Metadata only; no case_origin/exclusivity certification. Keep confidence, jurisdiction and ranges unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 sasklr：182 行 / 82 份判决印此缩写（约束七的键锚）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 sasklr：182 行 / 82 份判决印此缩写（约束七的键锚）；2026-10-02 代理审批依据：https://www.lawsociety.sk.ca/wp-content/uploads/KBRA2022-STUDENTS.pdf ; PDF pages5–6, Law Reports (Canada), Sask LR"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    },
+    {
+      "row_number": 137,
+      "normalized_key": "sj",
+      "abbreviation": "S.J.",
+      "jurisdiction": "GB",
+      "changes": {
+        "verification_level": {
+          "before": "name_inference",
+          "after": "verified_authority"
+        },
+        "notes": {
+          "before": "Solicitors' Journal（英国）。2026-10-02 PROBLEMS #100：S.J. 两国同形，按卷号拆行——有卷号归本行，无卷号的 [YYYY] S.J. No. N 归萨斯喀彻温行。本行法域仍为名字推断，未核权威源",
+          "after": "Solicitors' Journal（英国）。2026-10-02 PROBLEMS #100：S.J. 两国同形，按卷号拆行——有卷号归本行，无卷号的 [YYYY] S.J. No. N 归萨斯喀彻温行。本行法域仍为名字推断，未核权威源；2026-10-02 agent review: British journal metadata supported. Existing 1–999 is technical guard, not a verified historical ceiling. Metadata only; no case_origin/exclusivity certification. Keep confidence, jurisdiction and ranges unchanged."
+        },
+        "source_locator": {
+          "before": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 sj：167 行 / 111 份判决印此缩写（约束七的键锚）；2026-10-02 加卷号区间：语料实测本读法恒印卷号（38 S.J. 234、(1894), 38 S.J. 234 式 20 行，年份 1894–1976），区间从 1 起即不接无卷号行（PROBLEMS #52 口径）",
+          "after": "本轮填表者据缩写全称推断，未核对任何权威源；语料实测归一族 sj：167 行 / 111 份判决印此缩写（约束七的键锚）；2026-10-02 加卷号区间：语料实测本读法恒印卷号（38 S.J. 234、(1894), 38 S.J. 234 式 20 行，年份 1894–1976），区间从 1 起即不接无卷号行（PROBLEMS #52 口径）；2026-10-02 代理审批依据：https://legalabbrevs.cardiff.ac.uk/page/368/?paged=368 | https://portal.issn.org/resource/ISSN/0038-1047 ; Solicitors' Journal lines805–809; ISSN titles/archived volumes"
+        },
+        "source": {
+          "before": "临时推断（未核实）",
+          "after": "Authoritative metadata; gpt-6.1-sol medium agent review; not human-reviewed"
+        }
+      }
+    }
+  ]
+}

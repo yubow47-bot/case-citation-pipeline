@@ -1,0 +1,96 @@
+{
+  "status": "passed",
+  "table_rows": 197,
+  "changed_metadata_rows": 39,
+  "changed_row_numbers": [
+    7,
+    15,
+    21,
+    27,
+    31,
+    46,
+    47,
+    50,
+    67,
+    70,
+    72,
+    82,
+    83,
+    90,
+    92,
+    93,
+    94,
+    97,
+    98,
+    101,
+    110,
+    117,
+    120,
+    121,
+    126,
+    128,
+    132,
+    135,
+    136,
+    137,
+    139,
+    144,
+    151,
+    182,
+    183,
+    195,
+    196,
+    197,
+    198
+  ],
+  "semantic_fields_unchanged": [
+    "abbreviation",
+    "normalized_key",
+    "jurisdiction",
+    "vol_range_start",
+    "vol_range_end",
+    "year_range_start",
+    "year_range_end",
+    "confidence",
+    "added_date"
+  ],
+  "semantic_sha256_before": "68c7515f66135eb316135123e46ada25788fc8857ec9a1bd9683a215a4af2170",
+  "semantic_sha256_after": "68c7515f66135eb316135123e46ada25788fc8857ec9a1bd9683a215a4af2170",
+  "classifier_probes_identical": 3888,
+  "sj_existing_split_checks": [
+    {
+      "input": "[2006] S.J. No. 802",
+      "expected": "SK",
+      "actual": "SK",
+      "confidence": "estimated"
+    },
+    {
+      "input": "(1894) 38 S.J. 234",
+      "expected": "GB",
+      "actual": "GB",
+      "confidence": "estimated"
+    },
+    {
+      "input": "2006 S.J. No. 456 (year misparsed as volume)",
+      "expected": "UNSUPPORTED",
+      "actual": "UNSUPPORTED",
+      "confidence": "unsupported"
+    }
+  ],
+  "unit_assertions_passed": 124,
+  "full_mini_chain": "not verified: baseline select.py lacks PyYAML; see environment_check.json",
+  "no_full_production_run_performed": true,
+  "approval_counts": {
+    "approved": 25,
+    "withheld": 18,
+    "partial": 7
+  },
+  "original_registered_weight_by_status": {
+    "approved": 21312,
+    "withheld": 6188,
+    "partial": 820
+  },
+  "original_no_evidence_weight_total": 28320,
+  "table_sha256_before": "2b624131b4563cff5543ca81f254b02dd0368c97ab7cca599e2c8290187c49a3",
+  "table_sha256_after": "91c03ca32756ba9e193c92e7b9f26ea44c12b197ba69bad6c7ed75ce0b4ade5d"
+}

@@ -1,0 +1,1339 @@
+{
+  "reviewer_model": "gpt-6.1-sol",
+  "reasoning_effort": "medium",
+  "date": "2026-10-02",
+  "summary": {
+    "approved": 25,
+    "withheld": 18,
+    "partial": 7,
+    "total": 50,
+    "head_incorporated": 25,
+    "tail_incorporated": 25,
+    "approval_basis": "User-authorized agent-reviewed evidence; not human-reviewed",
+    "meaning": "approved = stated reporter metadata scope only; partial = limited evidence; withheld = no approved update, not table falsification",
+    "production_changes_performed": false,
+    "eligible_metadata_intents": 33,
+    "special_metadata_intents": 5
+  },
+  "direction_decisions": [
+    {
+      "direction": 1,
+      "status": "partial",
+      "decision": "All 50 targets reviewed individually: 25 approved reporter metadata, 7 partial, 18 withheld.",
+      "evidence": [
+        "Both complete 25-row collections incorporated.",
+        "Independent opened exact authorities repair several collector gaps.",
+        "25 full approvals are bibliographic/jurisdiction metadata only."
+      ],
+      "limitations": [
+        "Some authorities were blocked; related-title substitutions rejected.",
+        "No numeric ranges or case_origin verified."
+      ],
+      "approved_actions": [
+        "Only listed eligible metadata updates; retain estimated confidence and semantic fields."
+      ],
+      "rejected_actions": [
+        "Blanket upgrade of 50.",
+        "Use source summaries as opened evidence.",
+        "Automatic reporter-to-case_origin inheritance."
+      ]
+    },
+    {
+      "direction": 2,
+      "status": "partial",
+      "decision": "Retain existing NL and PE rows as two-province candidate reporting scope, backed by direct corpus samples. Approve external title identity only; full authoritative geographic coverage still unverified.",
+      "evidence": [
+        "Channel 1 directly records NL 227 and PE 52, with distinct provincial courts.",
+        "Law Society PEI catalogue confirms series title and holdings on PDF page 10."
+      ],
+      "limitations": [
+        "Catalogue does not describe territorial contents; title and publishing location alone cannot establish exclusivity.",
+        "Lawi transcription failed to open in independent review and is not official publisher-hosted.",
+        "No attribution of an individual case to NL or PE from reporter alone."
+      ],
+      "approved_actions": [
+        "Keep NL/PE rows unchanged; attach authority_identity_only evidence with explicit scope restriction."
+      ],
+      "rejected_actions": [
+        "Mark exact NL or PE full metadata verified using folded CA.",
+        "Choose a case's province from this shared reporter.",
+        "Certify full/exclusive reporter coverage."
+      ]
+    },
+    {
+      "direction": 3,
+      "status": "partial",
+      "decision": "Retain QC and SK reporter rows. Approve exact Que.K.B. metadata; Saskatchewan title/Canada identity is partially supported. Reject propagated GB as evidence that either reporter is British, and reject a universal contamination explanation.",
+      "evidence": [
+        "Cardiff exact Que.K.B. -> Quebec Official Reports King's Bench -> Canada, Quebec.",
+        "Law Society Saskatchewan guide lists Sask LR under Law Reports (Canada).",
+        "Channel 4: Que.K.B. CA17/GB9 (hop1), CA18/GB9 (hop2); Sask.L.R. CA12/GB4.",
+        "Que.K.B. aggregate A.C.9 source linkage supports a plausible Privy Council route; Saskatchewan sources are WWR/DLR/WLR, not a proven AC chain."
+      ],
+      "limitations": [
+        "No underlying individual nine/four records traced.",
+        "No proof all mixed records are Privy Council appeals.",
+        "Saskatchewan exact province scope is not independently authority-confirmed by a jurisdiction field; country/title support is partial."
+      ],
+      "approved_actions": [
+        "Que.K.B. exact QC metadata update.",
+        "Sask.L.R. authority_country_only evidence, keep SK unchanged and explicitly unverified at province scope.",
+        "Preserve hop distributions; seek raw citation chains."
+      ],
+      "rejected_actions": [
+        "Change QC/SK to GB.",
+        "Declare all 13 mixed items explained.",
+        "Use heuristic identity merging or two-hop inheritance as case_origin evidence."
+      ]
+    },
+    {
+      "direction": 4,
+      "status": "partial",
+      "decision": "Independently retain today's existing S.J. structural split as a corpus-supported rule: no-volume [year] S.J. No. -> SK; genuine volume -> GB. Approve GB journal metadata, qualify bounds and SK external-title verification.",
+      "evidence": [
+        "Opened Cardiff S.J./SJ maps Solicitors' Journal to United Kingdom.",
+        "ISSN record independently identifies SJ journal and archived numbered volumes.",
+        "Opened Law Society SK guide prints no-volume SJ No. alongside explicit Sask QB/CA parentheticals.",
+        "Channel 1: 81 SK parallels; existing mainline fix reported 211 SK, 19 GB and 3 unsupported year-as-volume cases in collection_special."
+      ],
+      "limitations": [
+        "Emond authoritative SJ expansion could not be reopened independently (502); its collected title claim is not independently certified here.",
+        "No proof 999 is a historical maximum.",
+        "Guide examples plus corpus are not proof every no-volume token in all data is SK, nor every volume token GB.",
+        "Collection counts refer to different corpus slices."
+      ],
+      "approved_actions": [
+        "Keep present split and ranges unchanged in this task.",
+        "Upgrade GB journal metadata only.",
+        "Keep three year-as-volume rows unsupported.",
+        "Any later confidence/structure change needs separate production tests with wrong-year/No./volume regression cases."
+      ],
+      "rejected_actions": [
+        "Treat 1–999 as historical range.",
+        "Use dotted/undotted normalization to invent new identity inference.",
+        "Change estimated confidence now.",
+        "Report today's baseline S.J. fix as newly implemented here."
+      ]
+    }
+  ],
+  "abbreviation_decisions": [
+    {
+      "normalized_key": "canscr",
+      "abbreviation": "Can. S.C.R.",
+      "status": "approved",
+      "approved_scope": "Reporter identity and Canada metadata",
+      "source_urls": [
+        "https://legalabbrevs.cardiff.ac.uk/page/379/?paged=379"
+      ],
+      "reason": "Exact Can.S.C.R. alternative and Canada jurisdiction are present; missing collector URL repaired independently.",
+      "limitations": [
+        "Justice Canada expands S.C.R. as Supreme Court Reports; Cardiff maps Can.S.C.R. to Canada.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "CA",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://legalabbrevs.cardiff.ac.uk/page/379/?paged=379 ; Supreme Court Reports, Canada; lines 903–907",
+          "notes_append": "2026-10-02 agent review: Reporter identity and Canada metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "us",
+      "abbreviation": "U.S.",
+      "status": "approved",
+      "approved_scope": "United States Reports identity and US reporter metadata",
+      "source_urls": [
+        "https://www.supremecourt.gov/opinions/USReports.aspx",
+        "https://saclaw.org/resource_library/federal-primary-law/"
+      ],
+      "reason": "Court confirms official series; library explicitly identifies U.S. form.",
+      "limitations": [
+        "The U.S. Supreme Court says opinions are officially published in United States Reports.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "US",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://www.supremecourt.gov/opinions/USReports.aspx | https://saclaw.org/resource_library/federal-primary-law/ ; U.S. Reports, About; Sacramento guide U.S. citation explanation",
+          "notes_append": "2026-10-02 agent review: United States Reports identity and US reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "chd",
+      "abbreviation": "Ch. D.",
+      "status": "approved",
+      "approved_scope": "Chancery Division identity and GB reporter metadata",
+      "source_urls": [
+        "https://lawfoundation.org.nz/style-guide2018/appendix-4.html",
+        "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html"
+      ],
+      "reason": "Official England and Wales report guide and court library agree on form.",
+      "limitations": [
+        "NSW courts library lists Chancery Division, dates 1875–1890 and 1891+, with Ch D.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Appendix 4; Chancery rows 17–21",
+          "notes_append": "2026-10-02 agent review: Chancery Division identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "qbd",
+      "abbreviation": "Q.B.D.",
+      "status": "approved",
+      "approved_scope": "Queen's Bench Division identity and GB reporter metadata",
+      "source_urls": [
+        "https://lawfoundation.org.nz/style-guide2018/appendix-4.html",
+        "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html"
+      ],
+      "reason": "Official England and Wales report guide and court library agree on form.",
+      "limitations": [
+        "NSW courts library lists Queen's Bench series with QBD; 1875–1890 comprises 25 volumes.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Appendix 4; Queen's Bench rows 36–38",
+          "notes_append": "2026-10-02 agent review: Queen's Bench Division identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "f",
+      "abbreviation": "F.",
+      "status": "approved",
+      "approved_scope": "Federal Reporter identity and US reporter metadata",
+      "source_urls": [
+        "https://saclaw.org/resource_library/federal-primary-law/",
+        "https://law.ucdavis.edu/library/course-support/common-abbreviations"
+      ],
+      "reason": "Supplemental opened library source expressly maps F. and US federal appellate coverage; repairs collector gap.",
+      "limitations": [
+        "Existing local table calls this Federal Reporter; no exact opened publisher/library record in this pass.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "US",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://saclaw.org/resource_library/federal-primary-law/ | https://law.ucdavis.edu/library/course-support/common-abbreviations ; Federal Reporter heading, lines 311–312",
+          "notes_append": "2026-10-02 agent review: Federal Reporter identity and US reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "ontlr",
+      "abbreviation": "Ont. L.R.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "Head collector cites O.R., a different abbreviation; OLR in Law Society guide also does not establish exact Ont.L.R.",
+      "limitations": [
+        "Local table records Ontario Law Reports; Justice Canada supports related but distinct O.R. form.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "ontappr",
+      "abbreviation": "Ont. App. R.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "No exact Ont.App.R. authoritative record opened.",
+      "limitations": [
+        "Local table records Ontario Appeal Reports; no exact catalog page opened.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "ucqb",
+      "abbreviation": "U.C.Q.B.",
+      "status": "approved",
+      "approved_scope": "Upper Canada Queen's Bench identity and exact Ontario metadata",
+      "source_urls": [
+        "https://legalabbrevs.cardiff.ac.uk/record/upper-canada-queens-bench-reports-new-series/"
+      ],
+      "reason": "Exact U.C.Q.B. and Canada, Ontario jurisdiction fields.",
+      "limitations": [
+        "Cardiff record lists U.C.Q.B., period 1844–1882, jurisdiction Canada, Ontario.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "ON",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://legalabbrevs.cardiff.ac.uk/record/upper-canada-queens-bench-reports-new-series/ ; Alternative abbreviations lines 33–37; jurisdiction lines 56–60",
+          "notes_append": "2026-10-02 agent review: Upper Canada Queen's Bench identity and exact Ontario metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "lcjur",
+      "abbreviation": "L. C. Jur.",
+      "status": "approved",
+      "approved_scope": "Lower Canada Jurist identity and exact Quebec metadata",
+      "source_urls": [
+        "https://legalabbrevs.cardiff.ac.uk/page/254/?paged=254"
+      ],
+      "reason": "Exact L.C.Jur. alternative supports normalized printed form; repairs head collection gap.",
+      "limitations": [
+        "No exact source confirming expansion opened.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "QC",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://legalabbrevs.cardiff.ac.uk/page/254/?paged=254 ; Lower Canada Jurist lines 845–849",
+          "notes_append": "2026-10-02 agent review: Lower Canada Jurist identity and exact Quebec metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "uccp",
+      "abbreviation": "U.C.C.P.",
+      "status": "approved",
+      "approved_scope": "Upper Canada Common Pleas identity and exact Ontario metadata",
+      "source_urls": [
+        "https://legalabbrevs.cardiff.ac.uk/page/403/?paged=403"
+      ],
+      "reason": "Exact U.C.C.P. mapped with Canada, Ontario.",
+      "limitations": [
+        "Cardiff index lists Upper Canada Common Pleas Reports with U.C.C.P.; Ontario jurisdiction.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "ON",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://legalabbrevs.cardiff.ac.uk/page/403/?paged=403 ; Upper Canada Common Pleas Reports lines 760–764",
+          "notes_append": "2026-10-02 agent review: Upper Canada Common Pleas identity and exact Ontario metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "bcrep",
+      "abbreviation": "B.C. Rep.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "Exact B.C.Rep. remains unverified; BCR/BCLR cannot substitute. Cardiff also lists B.C.Rep. for Lowndes & Maxwell in England, so initials are ambiguous.",
+      "limitations": [
+        "No exact source opened; B.C.L.R. is a different form.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "chapp",
+      "abbreviation": "Ch. App.",
+      "status": "approved",
+      "approved_scope": "Chancery Appeal Cases identity and GB reporter metadata",
+      "source_urls": [
+        "https://lawfoundation.org.nz/style-guide2018/appendix-4.html",
+        "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html"
+      ],
+      "reason": "Court library gives Ch App and style guide gives England and Wales series.",
+      "limitations": [
+        "NSW library lists Chancery Appeals, 1865–1875, Ch App; Courthouse Libraries BC catalog dates it 1866–1875, cites 1–10 Ch App.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Appendix 4 Chancery; NSW Chancery Appeals",
+          "notes_append": "2026-10-02 agent review: Chancery Appeal Cases identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "gr",
+      "abbreviation": "Gr.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "Bare Gr. is unresolved; baseline Grant's Chancery attribution lacks an exact opened match.",
+      "limitations": [
+        "No exact source found.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "qlr",
+      "abbreviation": "Q.L.R.",
+      "status": "approved",
+      "approved_scope": "Quebec Law Reports identity and exact Quebec metadata",
+      "source_urls": [
+        "https://legalabbrevs.cardiff.ac.uk/page/325/?paged=325"
+      ],
+      "reason": "Exact Q.L.R. with Canada, Quebec.",
+      "limitations": [
+        "Cardiff index lists Q.L.R. among forms for Quebec Law Reports; Canada, Quebec.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "QC",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://legalabbrevs.cardiff.ac.uk/page/325/?paged=325 ; Quebec Law Reports lines 712–716",
+          "notes_append": "2026-10-02 agent review: Quebec Law Reports identity and exact Quebec metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "nzlr",
+      "abbreviation": "N.Z.L.R.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "No exact N.Z.L.R. authority opened in the collection or independent review.",
+      "limitations": [
+        "No exact source opened.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "rl",
+      "abbreviation": "R.L.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "Exact R.L. unresolved; baseline Revue légale is not verified by a related source.",
+      "limitations": [
+        "No exact source; initials non-unique.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "hlcas",
+      "abbreviation": "H.L. Cas.",
+      "status": "approved",
+      "approved_scope": "Clark and Finnelly House of Lords Cases identity and GB reporter metadata",
+      "source_urls": [
+        "https://www.justcite.com/kb/search-technology/english-reports-reference-formats/"
+      ],
+      "reason": "Publisher's English Reports formats lists exact H.L.Cas.; repairs collector's unrelated bare H.L. source.",
+      "limitations": [
+        "Justice Canada defines H.L. as House of Lords, but not exact reporter title H.L. Cas.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://www.justcite.com/kb/search-technology/english-reports-reference-formats/ ; Clark & Finnelly new series lines 381–386",
+          "notes_append": "2026-10-02 agent review: Clark and Finnelly House of Lords Cases identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "ny",
+      "abbreviation": "N.Y.",
+      "status": "approved",
+      "approved_scope": "New York Reports identity and US reporter metadata",
+      "source_urls": [
+        "https://legalabbrevs.cardiff.ac.uk/page/287/?paged=287"
+      ],
+      "reason": "Exact N.Y. and United States, New York field supports existing country row.",
+      "limitations": [
+        "Cardiff record lists N.Y. as New York Reports, United States, New York.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "US",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://legalabbrevs.cardiff.ac.uk/page/287/?paged=287 ; New York Reports lines 891–895",
+          "notes_append": "2026-10-02 agent review: New York Reports identity and US reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "cbns",
+      "abbreviation": "C.B.N.S.",
+      "status": "approved",
+      "approved_scope": "Common Bench Reports New Series identity and GB reporter metadata",
+      "source_urls": [
+        "https://www.justcite.com/kb/search-technology/english-reports-reference-formats/"
+      ],
+      "reason": "Exact C.B. N.S. appears in publisher English Reports formats. Collector's Canadian Bankruptcy Reports substitution is rejected.",
+      "limitations": [
+        "Justice Canada expands C.B.R. (n.s.), not exact C.B.N.S.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://www.justcite.com/kb/search-technology/english-reports-reference-formats/ ; Common Bench Reports, New Series lines 412–420",
+          "notes_append": "2026-10-02 agent review: Common Bench Reports New Series identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "pd",
+      "abbreviation": "P.D.",
+      "status": "approved",
+      "approved_scope": "Probate Division identity and GB reporter metadata",
+      "source_urls": [
+        "https://lawfoundation.org.nz/style-guide2018/appendix-4.html",
+        "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html"
+      ],
+      "reason": "Official England and Wales report guide and court library agree on form.",
+      "limitations": [
+        "NSW library lists Probate & Divorce, PD; dates include 1875–1890 and 1891–1971.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Appendix 4; Probate rows 32–35",
+          "notes_append": "2026-10-02 agent review: Probate Division identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "timeslr",
+      "abbreviation": "Times L.R.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "TLR in an opened England guide identifies a related abbreviation, not exact Times L.R.",
+      "limitations": [
+        "No exact source opened.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "nsrep",
+      "abbreviation": "N.S. Rep.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "Exact N.S.Rep. unresolved; Nova Scotia title catalogue cannot establish an alias also resembling new-series notation.",
+      "limitations": [
+        "Could be Nova Scotia Reports or New Series; no exact evidence.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "a",
+      "abbreviation": "A.",
+      "status": "partial",
+      "approved_scope": "Atlantic Reporter abbreviation/title identity only",
+      "source_urls": [
+        "https://law.ucdavis.edu/library/course-support/common-abbreviations",
+        "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html"
+      ],
+      "reason": "Exact A form identifies reporter, but opened evidence does not directly establish its US territory.",
+      "limitations": [
+        "Could be Atlantic Reporter or other A. series; no context/source.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "US",
+          "verification_level": "authority_identity_only",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://law.ucdavis.edu/library/course-support/common-abbreviations | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; UC Davis A row; NSW Atlantic Reporter",
+          "notes_append": "2026-10-02 agent review: Atlantic Reporter abbreviation/title identity only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "ne",
+      "abbreviation": "N.E.",
+      "status": "approved",
+      "approved_scope": "North Eastern Reporter identity and US metadata",
+      "source_urls": [
+        "https://legalabbrevs.cardiff.ac.uk/record/north-eastern-reporter/"
+      ],
+      "reason": "Exact N.E. and United States jurisdiction fields.",
+      "limitations": [
+        "No authoritative exact source opened.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "US",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://legalabbrevs.cardiff.ac.uk/record/north-eastern-reporter/ ; Preferred abbreviation and jurisdiction",
+          "notes_append": "2026-10-02 agent review: North Eastern Reporter identity and US metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "usr",
+      "abbreviation": "U.S.R.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "Official U.S. page does not establish exact U.S.R. alias.",
+      "limitations": [
+        "Official source supports U.S., not U.S.R.; no evidence this is a valid alias.",
+        "Reporter jurisdiction does not establish every citing case's origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "fsupp",
+      "abbreviation": "F. Supp.",
+      "status": "approved",
+      "approved_scope": "Federal Supplement identity and US reporter metadata",
+      "source_urls": [
+        "https://saclaw.org/resource_library/federal-primary-law/",
+        "https://law.ucdavis.edu/library/course-support/common-abbreviations"
+      ],
+      "reason": "Opened public law library explicitly supports bare F. Supp. and US district court coverage; second-series-only inference is not used.",
+      "limitations": [
+        "Second-series evidence does not independently establish volume/year span for unqualified F. Supp.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "US",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://saclaw.org/resource_library/federal-primary-law/ | https://law.ucdavis.edu/library/course-support/common-abbreviations ; United States District Courts; Federal Supplement lines 331–340",
+          "notes_append": "2026-10-02 agent review: Federal Supplement identity and US reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "rdj",
+      "abbreviation": "R.D.J.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "Collector substitutes Revue de jurisprudence for baseline Revue de droit judiciaire. These are distinct titles; exact R.D.J. evidence missing.",
+      "limitations": [
+        "Target is R.D.J., while source lists R.deJ.; could be a different series or local short form. No dates or volumes established.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "eb",
+      "abbreviation": "E. & B.",
+      "status": "approved",
+      "approved_scope": "Ellis & Blackburn Queen's Bench Reports identity and GB reporter metadata",
+      "source_urls": [
+        "https://www.justcite.com/kb/search-technology/english-reports-reference-formats/"
+      ],
+      "reason": "Exact E. & B. in publisher English Reports formats.",
+      "limitations": [
+        "Secondary/reference sources; no official publisher catalog page opened.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://www.justcite.com/kb/search-technology/english-reports-reference-formats/ ; Ellis & Blackburn lines 698–703",
+          "notes_append": "2026-10-02 agent review: Ellis & Blackburn Queen's Bench Reports identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "tt",
+      "abbreviation": "T.T.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "No exact authoritative Tribunal du travail/reporting-role record opened.",
+      "limitations": [
+        "Search results surfaced a modern Tribunal administratif du travail case, but that does not identify T.T. as a reporter. Do not infer from court name.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "ljch",
+      "abbreviation": "L.J. Ch.",
+      "status": "approved",
+      "approved_scope": "Law Journal Reports Chancery identity and GB reporter metadata",
+      "source_urls": [
+        "https://www.lawsociety.sk.ca/wp-content/uploads/KBRA2022-STUDENTS.pdf",
+        "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html"
+      ],
+      "reason": "Law Society guide places LJCh explicitly under Law Reports (England).",
+      "limitations": [
+        "Bulk series entry dates are given for Law Journal Reports generally, not an exact date range for Chancery subset.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://www.lawsociety.sk.ca/wp-content/uploads/KBRA2022-STUDENTS.pdf | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; KBRA PDF page 6, Law Reports (England), LJCh",
+          "notes_append": "2026-10-02 agent review: Law Journal Reports Chancery identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "sct",
+      "abbreviation": "S.Ct.",
+      "status": "approved",
+      "approved_scope": "Supreme Court Reporter identity and US reporter metadata",
+      "source_urls": [
+        "https://legalabbrevs.cardiff.ac.uk/page/379/?paged=379"
+      ],
+      "reason": "Exact S.Ct. and United States jurisdiction.",
+      "limitations": [
+        "Secondary style guide only; dates and volumes not checked.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "US",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://legalabbrevs.cardiff.ac.uk/page/379/?paged=379 ; Supreme Court Reporter lines 897–901",
+          "notes_append": "2026-10-02 agent review: Supreme Court Reporter identity and US reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "cpd",
+      "abbreviation": "C.P.D.",
+      "status": "approved",
+      "approved_scope": "Common Pleas Division identity and GB reporter metadata",
+      "source_urls": [
+        "https://lawfoundation.org.nz/style-guide2018/appendix-4.html",
+        "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html"
+      ],
+      "reason": "Official England and Wales report guide and court library agree on form.",
+      "limitations": [
+        "The division ceased as a distinct division in 1880; individual cited cases may have multiple parallel reports.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Appendix 4; Common Pleas rows 22–24",
+          "notes_append": "2026-10-02 agent review: Common Pleas Division identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "mass",
+      "abbreviation": "Mass.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "Massachusetts official page was blocked (403); exact title/form and territory remain independently unverified.",
+      "limitations": [
+        "Older volumes preceding volume 97 appeared under individual reporters' names; this supports the series but not every normalized corpus citation.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "br",
+      "abbreviation": "B.R.",
+      "status": "partial",
+      "approved_scope": "B.R. Quebec Official Reports King's Bench identity and Quebec reporter scope; token role unresolved",
+      "source_urls": [
+        "https://legalabbrevs.cardiff.ac.uk/page/325/?paged=325"
+      ],
+      "reason": "Opened Cardiff resolves B.R. reporter title, unlike collector's court-only source. Court designation usage still needs context.",
+      "limitations": [
+        "B.R. can denote multiple reporters elsewhere; source supports court shorthand, not unequivocally this report series or date span.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "QC",
+          "verification_level": "authority_identity_only",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://legalabbrevs.cardiff.ac.uk/page/325/?paged=325 ; Quebec Official Reports, King's Bench lines 724–728",
+          "notes_append": "2026-10-02 agent review: B.R. Quebec Official Reports King's Bench identity and Quebec reporter scope; token role unresolved. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "nbrep",
+      "abbreviation": "N.B. Rep.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "Exact Cardiff record fetch failed; source summary alone is insufficient.",
+      "limitations": [
+        "Index lists title identity but this collection did not capture period/volume data or a catalog record.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "lcj",
+      "abbreviation": "L.C.J.",
+      "status": "approved",
+      "approved_scope": "Lower Canada Jurist identity and exact Quebec metadata",
+      "source_urls": [
+        "https://legalabbrevs.cardiff.ac.uk/page/254/?paged=254"
+      ],
+      "reason": "Exact L.C.J. alternative and Quebec jurisdiction.",
+      "limitations": [
+        "No publication period/volumes confirmed here.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "QC",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://legalabbrevs.cardiff.ac.uk/page/254/?paged=254 ; Lower Canada Jurist lines 845–849",
+          "notes_append": "2026-10-02 agent review: Lower Canada Jurist identity and exact Quebec metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "ae",
+      "abbreviation": "A. & E.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "Collector proposes Admiralty and Ecclesiastical Cases but baseline is Adolphus & Ellis. Opened JustCite only Ad.&E.; exact A.&E. attribution remains unresolved.",
+      "limitations": [
+        "The exact abbreviation A. & E. is not established by opened source and may refer to Adolphus & Ellis Queen's Bench reports.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "ltns",
+      "abbreviation": "L. T. N. S.",
+      "status": "partial",
+      "approved_scope": "Law Times Reports New Series abbreviation/title identity only",
+      "source_urls": [
+        "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html"
+      ],
+      "reason": "LTNS supports the title family; geographic scope not separately established on opened exact entry.",
+      "limitations": [
+        "Abbreviation is unpunctuated in source; exact expansion 'New Series' is inferred from target form.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "authority_identity_only",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Law Times Reports lines 710–714",
+          "notes_append": "2026-10-02 agent review: Law Times Reports New Series abbreviation/title identity only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "nw",
+      "abbreviation": "N.W.",
+      "status": "partial",
+      "approved_scope": "Northwestern Reporter abbreviation/title identity only",
+      "source_urls": [
+        "https://law.ucdavis.edu/library/course-support/common-abbreviations"
+      ],
+      "reason": "Exact N.W. reporter identity; collector's secondary territorial claim is not authority-reviewed.",
+      "limitations": [
+        "Secondary source; years/volume run not independently checked.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "US",
+          "verification_level": "authority_identity_only",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://law.ucdavis.edu/library/course-support/common-abbreviations ; UC Davis N.W. row",
+          "notes_append": "2026-10-02 agent review: Northwestern Reporter abbreviation/title identity only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "ontwn",
+      "abbreviation": "Ont. W.N.",
+      "status": "approved",
+      "approved_scope": "Ontario Weekly Notes identity and exact Ontario metadata",
+      "source_urls": [
+        "https://legalabbrevs.cardiff.ac.uk/page/303/?paged=303"
+      ],
+      "reason": "Exact Ont.W.N. with Canada, Ontario.",
+      "limitations": [
+        "Corpus-form Ont. W.N. punctuation is a direct variant; individual reported appellate cases may have broader appeal origins.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "ON",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://legalabbrevs.cardiff.ac.uk/page/303/?paged=303 ; Ontario Weekly Notes lines 851–855",
+          "notes_append": "2026-10-02 agent review: Ontario Weekly Notes identity and exact Ontario metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "car",
+      "abbreviation": "C.A.R.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "Collector proposes Court of Appeal Reports but baseline is Criminal Appeal Reports. Exact C.A.R. remains unverified; other CAR uses exist.",
+      "limitations": [
+        "C.A.R. is a highly collision-prone abbreviation and could refer to unrelated jurisdictions/series.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "omh",
+      "abbreviation": "O'M. & H.",
+      "status": "approved",
+      "approved_scope": "O'Malley & Hardcastle Election Cases identity and GB reporter metadata",
+      "source_urls": [
+        "https://legalabbrevs.cardiff.ac.uk/record/omalley-hardcastle-election-cases/"
+      ],
+      "reason": "Exact abbreviation and England & Wales jurisdiction fields.",
+      "limitations": [
+        "This is a specialist election petition report series; reporter venue does not identify a case's broader political origin.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://legalabbrevs.cardiff.ac.uk/record/omalley-hardcastle-election-cases/ ; Preferred abbreviation lines 27–37; jurisdiction lines 57–61",
+          "notes_append": "2026-10-02 agent review: O'Malley & Hardcastle Election Cases identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "cancrcas",
+      "abbreviation": "Can. Cr. Cas.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "CCC source is a different form; exact Can.Cr.Cas. alias is unsupported.",
+      "limitations": [
+        "Can. Cr. Cas. may be an older variant or distinct title; no direct exact-match bibliographic record captured.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "grant",
+      "abbreviation": "Grant",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "Bare Grant not verified; unrelated Russell election report source must not substitute.",
+      "limitations": [
+        "Grant is non-distinctive; could be a reporter surname or series label in several jurisdictions.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "exd",
+      "abbreviation": "Ex. D.",
+      "status": "approved",
+      "approved_scope": "Exchequer Division identity and GB reporter metadata",
+      "source_urls": [
+        "https://lawfoundation.org.nz/style-guide2018/appendix-4.html",
+        "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html"
+      ],
+      "reason": "Official England and Wales report guide and court library agree on form.",
+      "limitations": [
+        "Series title is tied to English court structure; it does not establish origin of every dispute reported.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html ; Appendix 4; Exchequer rows 27–29",
+          "notes_append": "2026-10-02 agent review: Exchequer Division identity and GB reporter metadata. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "sc",
+      "abbreviation": "S.C.",
+      "status": "withheld",
+      "approved_scope": "None; retain baseline pending exact evidence",
+      "source_urls": [],
+      "reason": "Normalized S.C. has Quebec and Scotland rows. No independently opened exact series evidence resolves each row; preserve ambiguity.",
+      "limitations": [
+        "S.C. is a homonym. Reported court abbreviation/title and citation date/format are necessary for disambiguation.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged.",
+        "Evidence deficit is not a finding that the existing table is erroneous."
+      ],
+      "eligible_table_updates": []
+    },
+    {
+      "normalized_key": "p",
+      "abbreviation": "P.",
+      "status": "partial",
+      "approved_scope": "GB Probate row metadata and US Pacific Reporter identity only",
+      "source_urls": [
+        "https://lawfoundation.org.nz/style-guide2018/appendix-4.html",
+        "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html",
+        "https://law.ucdavis.edu/library/course-support/common-abbreviations"
+      ],
+      "reason": "Opened guide verifies P Probate GB. UC Davis verifies P Pacific identity but does not give territory. Preserve both rows and guards.",
+      "limitations": [
+        "Pacific Reporter citations typically carry numbered volumes; UK Probate citations are year-bracketed, but individual citation shape is required.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html | https://law.ucdavis.edu/library/course-support/common-abbreviations ; Appendix 4 Probate; UC Davis P row",
+          "notes_append": "2026-10-02 agent review: GB Probate row metadata and US Pacific Reporter identity only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        },
+        {
+          "jurisdiction": "US",
+          "verification_level": "authority_identity_only",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://lawfoundation.org.nz/style-guide2018/appendix-4.html | https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html | https://law.ucdavis.edu/library/course-support/common-abbreviations ; Appendix 4 Probate; UC Davis P row",
+          "notes_append": "2026-10-02 agent review: GB Probate row metadata and US Pacific Reporter identity only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "hl",
+      "abbreviation": "H.L.",
+      "status": "partial",
+      "approved_scope": "Law Reports House of Lords identity and GB scope for that series only",
+      "source_urls": [
+        "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html",
+        "https://lawfoundation.org.nz/style-guide2018/appendix-4.html"
+      ],
+      "reason": "Baseline also covers Clark H.L.; collected LR HL evidence does not verify all meanings. Court marker role remains ambiguous.",
+      "limitations": [
+        "Abbreviation can identify court in parentheses, not the reporter. Never infer reporter jurisdiction solely from H.L. token.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "authority_identity_only",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html | https://lawfoundation.org.nz/style-guide2018/appendix-4.html ; NSW House of Lords; Appendix 4 LR HL",
+          "notes_append": "2026-10-02 agent review: Law Reports House of Lords identity and GB scope for that series only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "eq",
+      "abbreviation": "Eq.",
+      "status": "approved",
+      "approved_scope": "Law Reports Equity Cases reporter identity and GB metadata only",
+      "source_urls": [
+        "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html",
+        "https://lawfoundation.org.nz/style-guide2018/appendix-4.html"
+      ],
+      "reason": "Eq mapped by court library; LR Eq territorial context supplied by England and Wales guide.",
+      "limitations": [
+        "Eq. is also a generic legal subject/court shorthand in citations; context must establish reporter function.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "verified_authority",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html | https://lawfoundation.org.nz/style-guide2018/appendix-4.html ; NSW Equity Cases; Appendix 4 Equity",
+          "notes_append": "2026-10-02 agent review: Law Reports Equity Cases reporter identity and GB metadata only. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    },
+    {
+      "normalized_key": "pc",
+      "abbreviation": "P.C.",
+      "status": "partial",
+      "approved_scope": "Law Reports Privy Council Appeals identity and GB reporter-series metadata; token role unresolved",
+      "source_urls": [
+        "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html",
+        "https://lawfoundation.org.nz/style-guide2018/appendix-4.html"
+      ],
+      "reason": "Both guides support reporter series; parenthetical P.C. may name tribunal. No case-origin or bare-token exclusivity approval.",
+      "limitations": [
+        "P.C. can be a court parenthetical, not a reporter. Council appeals may originate in Canada or other jurisdictions.",
+        "Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+      ],
+      "eligible_table_updates": [
+        {
+          "jurisdiction": "GB",
+          "verification_level": "authority_identity_only",
+          "source": "Authoritative reporter metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+          "source_locator": "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html | https://lawfoundation.org.nz/style-guide2018/appendix-4.html ; NSW Law Reports Privy Council; Appendix 4 LR PC",
+          "notes_append": "2026-10-02 agent review: Law Reports Privy Council Appeals identity and GB reporter-series metadata; token role unresolved. Approval is user-authorized agent review, not human review. Metadata does not certify case_origin, exclusivity, every case, historical bounds, or token role. Confidence, jurisdiction and ranges remain unchanged."
+        }
+      ]
+    }
+  ],
+  "special_table_updates": [
+    {
+      "abbreviation": "Nfld. & P.E.I.R.",
+      "normalized_key": "nfldpeir",
+      "jurisdiction": "NL",
+      "verification_level": "authority_identity_only",
+      "source": "Authoritative metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+      "source_locator": "https://lawsocietypei.ca/media/files/Law%20Library%20Catalogue%20Print%20Serials%20April%2028,%202016.pdf ; PDF page 10, title/holdings; channel1 parallels lines31,49",
+      "notes_append": "2026-10-02 agent review: External title identity supported; NL scope retained from sample evidence but complete territorial scope not authority-verified. Metadata only; no case_origin/exclusivity certification. Keep confidence, jurisdiction and ranges unchanged."
+    },
+    {
+      "abbreviation": "Nfld. & P.E.I.R.",
+      "normalized_key": "nfldpeir",
+      "jurisdiction": "PE",
+      "verification_level": "authority_identity_only",
+      "source": "Authoritative metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+      "source_locator": "https://lawsocietypei.ca/media/files/Law%20Library%20Catalogue%20Print%20Serials%20April%2028,%202016.pdf ; PDF page 10, title/holdings; channel1 parallels lines31,49",
+      "notes_append": "2026-10-02 agent review: External title identity supported; PE scope retained from sample evidence but complete territorial scope not authority-verified. Metadata only; no case_origin/exclusivity certification. Keep confidence, jurisdiction and ranges unchanged."
+    },
+    {
+      "abbreviation": "Que. K.B.",
+      "normalized_key": "quekb",
+      "jurisdiction": "QC",
+      "verification_level": "verified_authority",
+      "source": "Authoritative metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+      "source_locator": "https://legalabbrevs.cardiff.ac.uk/page/325/?paged=325 ; Quebec Official Reports King's Bench lines724–728",
+      "notes_append": "2026-10-02 agent review: Exact abbreviation/title and Quebec jurisdiction supported; propagated GB signal does not revise reporter jurisdiction. Metadata only; no case_origin/exclusivity certification. Keep confidence, jurisdiction and ranges unchanged."
+    },
+    {
+      "abbreviation": "Sask. L.R.",
+      "normalized_key": "sasklr",
+      "jurisdiction": "SK",
+      "verification_level": "authority_country_only",
+      "source": "Authoritative metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+      "source_locator": "https://www.lawsociety.sk.ca/wp-content/uploads/KBRA2022-STUDENTS.pdf ; PDF pages5–6, Law Reports (Canada), Sask LR",
+      "notes_append": "2026-10-02 agent review: Title/Canadian reporter identity supported; exact SK geographic scope not independently established by opened jurisdiction record. Metadata only; no case_origin/exclusivity certification. Keep confidence, jurisdiction and ranges unchanged."
+    },
+    {
+      "abbreviation": "S.J.",
+      "normalized_key": "sj",
+      "jurisdiction": "GB",
+      "vol_range_start": "1",
+      "vol_range_end": "999",
+      "verification_level": "verified_authority",
+      "source": "Authoritative metadata; gpt-6.1-sol medium agent review; not human-reviewed",
+      "source_locator": "https://legalabbrevs.cardiff.ac.uk/page/368/?paged=368 | https://portal.issn.org/resource/ISSN/0038-1047 ; Solicitors' Journal lines805–809; ISSN titles/archived volumes",
+      "notes_append": "2026-10-02 agent review: British journal metadata supported. Existing 1–999 is technical guard, not a verified historical ceiling. Metadata only; no case_origin/exclusivity certification. Keep confidence, jurisdiction and ranges unchanged."
+    }
+  ],
+  "reviewer_checks": [
+    {
+      "url": "https://legalabbrevs.cardiff.ac.uk/page/379/?paged=379",
+      "claim_checked": "Exact Can.S.C.R. and S.Ct. title/jurisdiction",
+      "result": "Opened; both explicit mappings confirmed."
+    },
+    {
+      "url": "https://legalabbrevs.cardiff.ac.uk/page/254/?paged=254",
+      "claim_checked": "L.C.J./L.C.Jur. exact aliases and Quebec",
+      "result": "Opened; confirmed. Also B.C.Rep. is a Lowndes & Maxwell alternative, challenging unqualified BC attribution."
+    },
+    {
+      "url": "https://legalabbrevs.cardiff.ac.uk/page/325/?paged=325",
+      "claim_checked": "QLR, Que.K.B., B.R. metadata",
+      "result": "Opened; Quebec jurisdiction explicit."
+    },
+    {
+      "url": "https://legalabbrevs.cardiff.ac.uk/page/403/?paged=403",
+      "claim_checked": "UCCP provincial metadata",
+      "result": "Opened; Ontario explicit."
+    },
+    {
+      "url": "https://legalabbrevs.cardiff.ac.uk/record/upper-canada-queens-bench-reports-new-series/",
+      "claim_checked": "UCQB provincial metadata",
+      "result": "Opened; Ontario explicit."
+    },
+    {
+      "url": "https://legalabbrevs.cardiff.ac.uk/page/287/?paged=287",
+      "claim_checked": "NY country metadata",
+      "result": "Opened; United States, New York explicit."
+    },
+    {
+      "url": "https://legalabbrevs.cardiff.ac.uk/page/303/?paged=303",
+      "claim_checked": "OntWN exact alias/province",
+      "result": "Opened; confirmed."
+    },
+    {
+      "url": "https://legalabbrevs.cardiff.ac.uk/record/omalley-hardcastle-election-cases/",
+      "claim_checked": "OMH exact identity/territory",
+      "result": "Opened; England & Wales explicit."
+    },
+    {
+      "url": "https://lawfoundation.org.nz/style-guide2018/appendix-4.html",
+      "claim_checked": "English LR forms and territory",
+      "result": "Opened; ChD/QBD/CPD/PD/ExD/P/LR Eq/LR ChApp/LR HL/LR PC supported. No range changes authorized."
+    },
+    {
+      "url": "https://dcj.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html",
+      "claim_checked": "Forms for historic series and contextual roles",
+      "result": "Opened; forms confirmed. Bare H.L./P.C. still require reporter/court-role distinction."
+    },
+    {
+      "url": "https://www.justcite.com/kb/search-technology/english-reports-reference-formats/",
+      "claim_checked": "CBNS/E&B/HLcas; AE mismatch",
+      "result": "Opened publisher format documentation; first three confirmed, exact AE unconfirmed. Collector bankruptcy substitution rejected."
+    },
+    {
+      "url": "https://saclaw.org/resource_library/federal-primary-law/",
+      "claim_checked": "F./F.Supp. country and base-series evidence",
+      "result": "Opened; exact forms with US federal court coverage, resolving second-series-only deficit."
+    },
+    {
+      "url": "https://law.ucdavis.edu/library/course-support/common-abbreviations",
+      "claim_checked": "A/NW/P identity",
+      "result": "Opened; title identities confirmed; territorial claims not established by exact entries alone."
+    },
+    {
+      "url": "https://legalabbrevs.cardiff.ac.uk/record/north-eastern-reporter/",
+      "claim_checked": "NE exact form and country",
+      "result": "Opened; United States explicit."
+    },
+    {
+      "url": "https://www.lawsociety.sk.ca/wp-content/uploads/KBRA2022-STUDENTS.pdf",
+      "claim_checked": "LJCh England, SaskLR Canada, SJ citation structure",
+      "result": "Opened; confirms mappings and no-volume SJ No. alongside provincial court labels. No exact SJ expansion field."
+    },
+    {
+      "url": "https://lawsocietypei.ca/media/files/Law%20Library%20Catalogue%20Print%20Serials%20April%2028,%202016.pdf",
+      "claim_checked": "Nfld PEI series identity and scope",
+      "result": "Opened PDF; title/holdings confirmed; complete territorial coverage not described."
+    },
+    {
+      "url": "https://legalabbrevs.cardiff.ac.uk/page/368/?paged=368",
+      "claim_checked": "SJ journal exact form and jurisdiction",
+      "result": "Opened; S.J./SJ -> Solicitors' Journal -> United Kingdom."
+    },
+    {
+      "url": "https://portal.issn.org/resource/ISSN/0038-1047",
+      "claim_checked": "SJ numbered-volume history",
+      "result": "Opened; bibliographic identity and numbered archive entries; no 999 ceiling."
+    },
+    {
+      "url": "https://jcpc.uk/cases",
+      "claim_checked": "Exact mixed nine/four records",
+      "result": "Opened official case portal; lacks matching case identifiers, no exact corpus trace established."
+    },
+    {
+      "url": "https://style.emond.ca/references/mcgill-examples-applications-10",
+      "claim_checked": "SJ Saskatchewan title expansion",
+      "result": "Independent opens failed (502/internal error); collector claim not independently authority-certified."
+    },
+    {
+      "url": "https://www.mass.gov/info-details/about-the-reporters-office",
+      "claim_checked": "Mass identity and scope",
+      "result": "Blocked 403; no independent full approval."
+    },
+    {
+      "url": "https://legalabbrevs.cardiff.ac.uk/page/282/?paged=282",
+      "claim_checked": "NBRep exact form and province",
+      "result": "Independent fetch failed; full approval withheld."
+    },
+    {
+      "url": "https://books.lawi.ca/how-to-use-our-indexes/",
+      "claim_checked": "NfldPEI full territory description",
+      "result": "Independent fetch failed; publisher-description transcription not authority confirmation."
+    },
+    {
+      "url": "https://www.mcgill.ca/library/files/library/Legal_Abbreviations.pdf",
+      "claim_checked": "P homonyms",
+      "result": "404; independent Probate mapping from other source, Pacific identity only."
+    },
+    {
+      "url": "https://www.bibl.ulaval.ca/disciplines/droit/je-veux/trouver-des-abreviations-juridiques",
+      "claim_checked": "Various exact forms",
+      "result": "502; search snippets not accepted as opened source."
+    }
+  ],
+  "execution_restrictions": [
+    "Apply only eligible metadata source/source_locator/verification_level/notes_append records to exact existing abbreviation+jursidiction rows; preserve row count, confidence, jurisdiction, ranges and keys.",
+    "Use special volume guards to select SJ GB row; no SK SJ verification downgrade or replacement is approved.",
+    "No new identity inference, case_origin writes, exclusive_scope_rule, heuristic identity merging, reporter seed propagation, semantic pipeline changes or new bounds.",
+    "Metadata-only application must verify semantic fields byte-equivalent and row count/unique row selectors unchanged. A later production confidence change deserves separate testing."
+  ]
+}

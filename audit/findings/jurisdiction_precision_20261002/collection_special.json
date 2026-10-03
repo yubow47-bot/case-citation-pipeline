@@ -1,0 +1,113 @@
+{
+  "date": "2026-10-02",
+  "scope": "Independent evidence collection for directions 2–4; no production edits or runs.",
+  "directions": {
+    "2_nfld_peir": {
+      "proposed_decision": "Retain two exact province rows, NL and PE, for the Nfld. & P.E.I.R. reporter. Interpret these as the geographic/reporting scope of the series. Do not infer an individual case's originating court or province from the reporter alone.",
+      "internal_evidence": {
+        "channel1": "279 direct parallel strings: Newfoundland 227, Prince Edward Island 52; identified court-code counts include NLCA 172, NFCA 33, PECA 26, NLTD 22.",
+        "source": "audit/findings/jurisdiction_channels/channel1_parallels_output.txt lines 31 and 49; README channel 1 methodology.",
+        "caveat": "Channel reports are print-parallel distributions; they are not a census of every reporter item or case provenance."
+      },
+      "external_sources": [
+        {
+          "url": "https://books.lawi.ca/how-to-use-our-indexes/",
+          "type": "publisher/index description (Maritime Law Book, third-party bibliographic transcription)",
+          "supports": "Says series began in 1970 and includes all Newfoundland Court of Appeal and Prince Edward Island Court of Appeal decisions, selected trial decisions, and SCC decisions originating in either province. Directly confirms two-province reporting scope and shows why reporter scope differs from case origin.",
+          "limitation": "Not an official publisher-hosted page; bibliographic page reproduces publisher description."
+        },
+        {
+          "url": "https://lawsocietypei.ca/media/files/Law%20Library%20Catalogue%20Print%20Serials%20April%2028%2C%202016.pdf",
+          "type": "Law Society of Prince Edward Island law-library serials catalogue",
+          "supports": "Lists Newfoundland & Prince Edward Island Reports (Maritime Law Book), vol. 1 (1971) through vol. 373 (2016), independently confirming title and publisher and library holdings.",
+          "limitation": "Catalogue establishes bibliographic identity/holdings, not which courts each volume covers. Its start year (1971) differs by one year from the publisher-description transcription (1970)."
+        },
+        {
+          "url": "https://www.canlii.org/w/canlii/2017CanLIIDocs2.pdf",
+          "type": "CanLII-hosted judicial/academic document with case citations",
+          "supports": "Contains examples of NLCA decisions cited in Nfld. & P.E.I.R. (e.g., Druken) and a PEI Supreme Court decision in the same reporter. This is consistent with both provinces appearing in one series.",
+          "limitation": "Secondary document, not official reporter metadata."
+        },
+        {
+          "url": "https://laws.justice.gc.ca/eng/Court/",
+          "type": "Department of Justice Canada court-links directory",
+          "supports": "Links to provincial court websites, supporting independent authoritative lookup of jurisdiction codes when checking individual cases.",
+          "limitation": "Does not define reporter scope or the reporter abbreviation."
+        }
+      ],
+      "unresolved": "No independently located publisher-hosted archival guide or official court/library catalog record defining series contents beyond the transcribed publisher description and Law Society catalogue. Preserve the two-row scope; do not assign individual origin solely from the series."
+    },
+    "3_que_kb_sask_lr": {
+      "proposed_decision": "The mixed CA/GB signal is plausibly contamination from parallel-report propagation through A.C. (Appeal Cases), because A.C. reports Privy Council appeals from Canadian courts. The current evidence supports that mechanism, but does not establish that every one of the 9 GB-tagged items is such an appeal. Keep reporter-jurisdiction rows QC and SK as their intended scope; do not use propagated GB as evidence of reporter mismatch.",
+      "internal_evidence": {
+        "ch4_schema": "ch4_evidence.json has hop1, hop2, hop1_old, label. hop1/hop2 are normalized reporter key -> propagated country counts; label maps key to original printed reporter. This is aggregate evidence, not raw case-level evidence.",
+        "counts": "Que. K.B.: hop1 CA 17 / GB 9; hop2 CA 18 / GB 9. Sask. L.R.: hop1 CA 12 / GB 4; hop2 CA 12 / GB 4. Channel 4 output names A.C. as one of the parallel reporters contributing all 9 GB-tagged Que. K.B. chains; Sask. L.R. GB 4 chain sources include A.C. only indirectly if at all—the output lists W.W.R. 7, D.L.R. 4, W.L.R. 4, and no per-case chain.",
+        "files": "audit/findings/jurisdiction_channels/ch4_evidence.json; audit/findings/jurisdiction_channels/channel4_reporter_parallels_output.txt lines 45, 55, 84, 94.",
+        "raw_examples": "No case-level chain or raw citation rows are embedded in ch4_evidence.json; representative individual items cannot be traced from this artifact alone. The README says ch4 passes reporter scope from seed evidence for at most two hops and cautions to keep distributions rather than labels; it explicitly flags Que. K.B.'s 9 A.C.-transmitted GB chains."
+      },
+      "external_sources": [
+        {
+          "url": "https://www.canlii.org/w/canlii/1964CanLIIDocs13.pdf",
+          "type": "McGill Law Journal article hosted by CanLII; cites primary cases and parallel reports",
+          "supports": "Discusses Hirsch v Protestant Board of School Commissioners: 31 Rev. de J. 440 (Que. K.B. in banc), affirmed [1926] S.C.R. 246, affirmed [1928] A.C. 200. This is a concrete Quebec King’s Bench matter later reported in A.C., demonstrating the exact route by which a Canadian case can carry a GB reporter signal.",
+          "limitation": "Secondary citation discussion, though its cited case chain is explicit; not one of the specific nine channel-4 records."
+        },
+        {
+          "url": "https://www.canlii.org/w/canlii/1964CanLIIDocs13.pdf",
+          "type": "same source; Saskatchewan primary-case history cited therein",
+          "supports": "Identifies Re Farm Security Act (Sask.), [1947] S.C.R. 394, affirmed sub nom. A.-G. Sask. v A.-G. Can., [1949] A.C. 110. This independently illustrates Saskatchewan-origin litigation reaching A.C. at the Judicial Committee stage.",
+          "limitation": "Does not identify a Sask. L.R. parallel citation or prove any of the four specific propagated GB records."
+        },
+        {
+          "url": "https://jcpc.uk/cases",
+          "type": "Judicial Committee of the Privy Council official case search portal",
+          "supports": "Primary official repository suitable for tracing specific historic appeals by party/case name and confirming tribunal provenance.",
+          "limitation": "The collected channel artifact lacks party names/case citations needed to query the exact nine/four records. No exact case-level match was therefore established in this collection."
+        },
+        {
+          "url": "https://www.lawsociety.org.uk/contact-or-visit-us/law-society-library/research-guides/how-to-find-law-reports",
+          "type": "Law Society of England and Wales library guide",
+          "supports": "Explains that citation parts can include year, volume (if any), report abbreviation, and page; identifies Privy Council citations as neutral identifiers rather than printed-source references. Supports treating A.C. as a report-series signal distinct from court/case origin.",
+          "limitation": "General citation guidance; not A.C. title scope."
+        }
+      ],
+      "unresolved": "Need the underlying citation strings for the 9 Que. K.B. and 4 Sask. L.R. mixed items and trace each hop. Do not generalize the A.C. explanation to every mixed instance."
+    },
+    "4_sj": {
+      "proposed_decision": "Keep separate S.J. interpretations: Saskatchewan Judgments (SK) with no volume number, and Solicitors' Journal (GB) when the citation has a true volume number. The Emond guide explicitly expands Quicklaw SJ as Saskatchewan judgments. Treat year-as-volume parsing cases as unresolved/unsupported rather than as evidence for either interpretation. The GB 1–999 interval is operationally broad; 999 is not established as a historical ceiling by the evidence collected.",
+      "internal_evidence": {
+        "prior_fix": "PROBLEMS.md item 100 records the previous table-only fix: 211 mainline no-volume [YYYY] S.J. No. forms (1978–2025) mapped to SK; 19 true-volume cases remain GB; 3 forms where extraction read the year as a volume fail both ranges and become UNSUPPORTED. It separately reports channel-1 81 direct parallels, all SK (SKCA 54, SKQB 24, SKPC 2, SKKB 1). Summary.csv describes a narrower 167-row corpus subset, so counts are not interchangeable.",
+        "meaning": "Original SJ is the Quicklaw abbreviation. Emond uses the no-period style; mapping dotted corpus S.J. to it relies on the guide's punctuation/normalization convention, rather than exact dotted form in the guide.",
+        "files": "PROBLEMS.md item 100; decisions/reporter_jurisdiction.csv S.J. rows; audit/findings/jurisdiction_channels/channel1_parallels_output.txt line 50."
+      },
+      "external_sources": [
+        {
+          "url": "https://style.emond.ca/references/mcgill-examples-applications-10",
+          "type": "Emond Style Guide, McGill: Examples & Applications (10th ed), original online guide",
+          "supports": "Under Quicklaw Citations, explicitly lists SJ = Saskatchewan judgments, alongside BCJ, AJ, OJ, etc. This is direct authoritative publisher evidence for the SK interpretation.",
+          "limitation": "Uses undotted SJ; supports identifier meaning, not punctuation variant or volume semantics by itself."
+        },
+        {
+          "url": "https://portal.issn.org/resource/ISSN/0038-1047",
+          "type": "ISSN International Centre serial record",
+          "supports": "Independently identifies the British Solicitors' Journal serial and gives its latest consulted issue as volume 162, issue 1 (2019). Confirms the GB journal has genuine numbered volumes, not a Quicklaw-style no-volume case number form.",
+          "limitation": "Does not validate all GB citations in this corpus or an upper limit of 999."
+        },
+        {
+          "url": "https://onlinebooks.library.upenn.edu/webbin/serial?id=solicitorsjnl",
+          "type": "University of Pennsylvania library serial archive guide",
+          "supports": "Records publication history and preserved numbered volumes, corroborating the numbered-volume journal interpretation and historical title variants.",
+          "limitation": "Library archive overview; not a formal citation rule."
+        },
+        {
+          "url": "https://www.lawsociety.org.uk/contact-or-visit-us/law-society-library/research-guides/how-to-find-law-reports",
+          "type": "Law Society of England and Wales library guide",
+          "supports": "States that case citation elements may include a volume number, and distinguishes it from title abbreviation and page; supports interpreting a real volume position structurally.",
+          "limitation": "General guide does not define S.J. format specifically."
+        }
+      ],
+      "unresolved": "The 1–999 GB bound is only a broad table guard and has no verified upper endpoint. The corpus evidence supports typical historic volume citations (20 in the structural sample, 19 in the fixed mainline); it does not prove that every numbered S.J. belongs to Solicitors' Journal or that no future/higher volume exists. Revisit if exact citation validation can replace the artificial ceiling."
+    }
+  },
+  "sources_copyright_note": "Summaries/paraphrases only; no extended quotations included."
+}

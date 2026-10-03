@@ -1,0 +1,20 @@
+{
+  "native_validator": "passed",
+  "native_renderer": "passed",
+  "ui_checked": true,
+  "visible_title": "汇编法域四方向审批",
+  "visible_generated_time_local": "2026年10月2日 20:36",
+  "summary_counts": {
+    "approved": 25,
+    "partial": 7,
+    "withheld": 18
+  },
+  "table": {
+    "directions": 4,
+    "ledger_results": 50,
+    "pages": 4,
+    "horizontal_scroll_supported": true
+  },
+  "screenshot_inspected": true,
+  "notes": "最终报告正文及日期已在原生面板核对；长表提供横向滚动和分页。"
+}

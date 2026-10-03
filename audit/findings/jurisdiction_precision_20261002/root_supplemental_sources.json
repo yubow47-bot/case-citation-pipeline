@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-02",
+  "sources": [
+    {
+      "url": "https://legalabbrevs.cardiff.ac.uk/page/379/?paged=379",
+      "opened": true,
+      "locator": "Supreme Court Reports, Canada; Supreme Court Reporter entries",
+      "supports": "Can.S.C.R. is an alternative abbreviation of the Canadian Supreme Court Reports; S.Ct. is a listed abbreviation of the United States Supreme Court Reporter.",
+      "limitations": "Bibliographic mapping; no new individual case-origin or exclusive-scope inference."
+    },
+    {
+      "url": "https://law.ucdavis.edu/library/course-support/common-abbreviations",
+      "opened": true,
+      "locator": "Common Abbreviations table, F./F.Supp./A/N.E./N.W./P entries",
+      "supports": "University law library maps these forms to named US reporter families and distinguishes series.",
+      "limitations": "The S.Ct. expansion is imprecise (Supreme Court Reports); prefer Cardiff's specific Supreme Court Reporter record. Territorial coverage needs corroboration; exact regional coverage is not established by the abbreviation expansion alone."
+    },
+    {
+      "url": "https://saclaw.org/resource_library/federal-primary-law/",
+      "opened": true,
+      "locator": "United States Courts of Appeal / Federal Reporter; United States District Courts / Federal Supplement",
+      "supports": "Explicit F., F.2d, F.3d mapping to Federal Reporter with United States appellate coverage; F. Supp. and later series map to Federal Supplement with United States district-court coverage.",
+      "limitations": "Use stable title and reporter-level coverage only; historical first-series dates and other dynamic statements on this guide were not adopted."
+    },
+    {
+      "url": "https://support.thomsonreuters.com.au/sites/default/files/2017-09/AU-WLAU-Guide-FirstPoint-Table-of-Abbreviations.pdf",
+      "opened": false,
+      "failure": "Opening redirected to an empty Product Training page; indexed PDF snippet is not treated as verified source."
+    }
+  ],
+  "collection_errors_flagged_to_reviewer": [
+    "C.B.N.S. was mistaken for Canadian Bankruptcy Reports C.B.R.(n.s.) in the raw head collection; these are different abbreviations. Source substitution rejected.",
+    "DOJ S.C.R. alone does not prove the Can.S.C.R. alternative; exact Cardiff evidence supplied.",
+    "DOJ O.R. is not exact Ont.L.R. alias evidence; no upgrade from that source alone."
+  ]
+}

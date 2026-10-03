@@ -1,0 +1,11 @@
+{
+  "checked_before_table_updates": true,
+  "command": "C:/Users/hp/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe pipeline/tests/test_layers.py",
+  "exit_code": 1,
+  "result": "Reached test_mini_chain; its select.py subprocess could not import yaml.",
+  "error": "ModuleNotFoundError: No module named 'yaml'",
+  "interpretation": "Baseline environment dependency failure before this round's edits, not evidence of a table-change regression. Full mini-chain not verified in this environment.",
+  "python_launcher": "py -0p reported no registered installed Pythons",
+  "alternative_runtime": "LibreOffice Python also lacks yaml",
+  "next_verification": "Use field invariants, before/after classifier replay and available unit checks; keep full-chain limitation explicit. No production code or test expectation changes."
+}

@@ -1,0 +1,471 @@
+{
+  "collector_model": "gpt-6-luna",
+  "reasoning_effort": "medium",
+  "rows": [
+    {
+      "normalized_key": "canscr",
+      "abbreviation": "Can. S.C.R.",
+      "full_title": "Supreme Court Reports (Canada)",
+      "proposed_jurisdictions": [
+        "CA"
+      ],
+      "evidence_scope": "reporter identity/jurisdiction supported",
+      "sources": [
+        {
+          "url": "https://justice.canada.ca/eng/rp-pr/csj-sjc/harmonization/denau/abbrevia.html",
+          "title": "Department of Justice Canada, List of Abbreviations",
+          "locator": "Law Journals and Law Reports; S.C.R. lines 337–341; C.B.R.(n.s.) lines 224–225; H.L. lines 109–112",
+          "paraphrase": "Maps S.C.R. to Supreme Court Reports, C.B.R.(n.s.) to Canadian Bankruptcy Reports (new series), and H.L. to House of Lords."
+        }
+      ],
+      "limitations": [
+        "Justice Canada expands S.C.R. as Supreme Court Reports; Cardiff maps Can.S.C.R. to Canada.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "us",
+      "abbreviation": "U.S.",
+      "full_title": "United States Reports",
+      "proposed_jurisdictions": [
+        "US"
+      ],
+      "evidence_scope": "official series supported",
+      "sources": [
+        {
+          "url": "https://www.supremecourt.gov/opinions/USReports.aspx",
+          "title": "U.S. Reports, Supreme Court of the United States",
+          "locator": "About U.S. Reports",
+          "paraphrase": "The Court states opinions are officially published in United States Reports."
+        }
+      ],
+      "limitations": [
+        "The U.S. Supreme Court says opinions are officially published in United States Reports.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "chd",
+      "abbreviation": "Ch. D.",
+      "full_title": "Law Reports, Chancery Division",
+      "proposed_jurisdictions": [
+        "GB"
+      ],
+      "evidence_scope": "series and dates supported",
+      "sources": [
+        {
+          "url": "https://lpab.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html",
+          "title": "NSW Courts and Tribunals, Law Reports online",
+          "locator": "Entries at lines 647–695",
+          "paraphrase": "Lists Ch D, QBD, PD and series coverage."
+        }
+      ],
+      "limitations": [
+        "NSW courts library lists Chancery Division, dates 1875–1890 and 1891+, with Ch D.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "qbd",
+      "abbreviation": "Q.B.D.",
+      "full_title": "Law Reports, Queen's Bench Division",
+      "proposed_jurisdictions": [
+        "GB"
+      ],
+      "evidence_scope": "series and dates supported",
+      "sources": [
+        {
+          "url": "https://lpab.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html",
+          "title": "NSW Courts and Tribunals, Law Reports online",
+          "locator": "Entries at lines 647–695",
+          "paraphrase": "Lists Ch D, QBD, PD and series coverage."
+        }
+      ],
+      "limitations": [
+        "NSW courts library lists Queen's Bench series with QBD; 1875–1890 comprises 25 volumes.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "f",
+      "abbreviation": "F.",
+      "full_title": "Federal Reporter",
+      "proposed_jurisdictions": [
+        "US"
+      ],
+      "evidence_scope": "candidate title; no direct source obtained",
+      "sources": [],
+      "limitations": [
+        "Existing local table calls this Federal Reporter; no exact opened publisher/library record in this pass.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "ontlr",
+      "abbreviation": "Ont. L.R.",
+      "full_title": "Ontario Law Reports",
+      "proposed_jurisdictions": [
+        "ON"
+      ],
+      "evidence_scope": "inferred title only",
+      "sources": [
+        {
+          "url": "https://justice.canada.ca/eng/rp-pr/csj-sjc/harmonization/denau/abbrevia.html",
+          "title": "Department of Justice Canada, List of Abbreviations",
+          "locator": "Law Journals and Law Reports; S.C.R. lines 337–341; C.B.R.(n.s.) lines 224–225; H.L. lines 109–112",
+          "paraphrase": "Maps S.C.R. to Supreme Court Reports, C.B.R.(n.s.) to Canadian Bankruptcy Reports (new series), and H.L. to House of Lords."
+        }
+      ],
+      "limitations": [
+        "Local table records Ontario Law Reports; Justice Canada supports related but distinct O.R. form.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "ontappr",
+      "abbreviation": "Ont. App. R.",
+      "full_title": "Ontario Appeal Reports",
+      "proposed_jurisdictions": [
+        "ON"
+      ],
+      "evidence_scope": "inferred title only",
+      "sources": [],
+      "limitations": [
+        "Local table records Ontario Appeal Reports; no exact catalog page opened.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "ucqb",
+      "abbreviation": "U.C.Q.B.",
+      "full_title": "Upper Canada Queen's Bench Reports, New Series",
+      "proposed_jurisdictions": [
+        "ON"
+      ],
+      "evidence_scope": "title, abbreviation, dates, jurisdiction supported",
+      "sources": [
+        {
+          "url": "https://legalabbrevs.cardiff.ac.uk/record/upper-canada-queens-bench-reports-new-series/",
+          "title": "Upper Canada Queen's Bench Reports, New Series",
+          "locator": "Period, alternative abbreviations, continued-by, and jurisdiction fields",
+          "paraphrase": "Lists U.C.Q.B., period 1844–1882, and jurisdiction Canada, Ontario."
+        }
+      ],
+      "limitations": [
+        "Cardiff record lists U.C.Q.B., period 1844–1882, jurisdiction Canada, Ontario.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "lcjur",
+      "abbreviation": "L. C. Jur.",
+      "full_title": "unresolved",
+      "proposed_jurisdictions": [],
+      "evidence_scope": "unverified",
+      "sources": [],
+      "limitations": [
+        "No exact source confirming expansion opened.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "No jurisdiction upgrade until exact series and ambiguity are resolved."
+    },
+    {
+      "normalized_key": "uccp",
+      "abbreviation": "U.C.C.P.",
+      "full_title": "Upper Canada Common Pleas Reports",
+      "proposed_jurisdictions": [
+        "ON"
+      ],
+      "evidence_scope": "title, abbreviation, jurisdiction supported",
+      "sources": [
+        {
+          "url": "https://legalabbrevs.cardiff.ac.uk/page/403/?paged=403",
+          "title": "Cardiff Index to Legal Abbreviations, page 403",
+          "locator": "Upper Canada Common Pleas Reports record",
+          "paraphrase": "Lists Upper Canada Common Pleas Reports with U.C.C.P. and jurisdiction Canada, Ontario."
+        }
+      ],
+      "limitations": [
+        "Cardiff index lists Upper Canada Common Pleas Reports with U.C.C.P.; Ontario jurisdiction.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "bcrep",
+      "abbreviation": "B.C. Rep.",
+      "full_title": "unresolved",
+      "proposed_jurisdictions": [],
+      "evidence_scope": "unverified exact form",
+      "sources": [],
+      "limitations": [
+        "No exact source opened; B.C.L.R. is a different form.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "No jurisdiction upgrade until exact series and ambiguity are resolved."
+    },
+    {
+      "normalized_key": "chapp",
+      "abbreviation": "Ch. App.",
+      "full_title": "Law Reports, Chancery Appeals / Chancery Appeal Cases",
+      "proposed_jurisdictions": [
+        "GB"
+      ],
+      "evidence_scope": "title and dates supported",
+      "sources": [
+        {
+          "url": "https://lpab.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html",
+          "title": "NSW Courts and Tribunals, Law Reports online",
+          "locator": "Law Reports entries, lines 641–695",
+          "paraphrase": "Lists Chancery Appeals (1865–1875) as Ch App; Chancery Division, Queen's Bench, and Probate series with dates and forms."
+        },
+        {
+          "url": "https://www.courthouselibrary.ca/catalogue-item?cid=10559",
+          "title": "Courthouse Libraries BC catalog: Law Reports, Chancery Appeal Cases",
+          "locator": "Catalog notes",
+          "paraphrase": "Catalog item dates 1866–1875 and says cited 1 Ch App–10 Ch App."
+        }
+      ],
+      "limitations": [
+        "NSW library lists Chancery Appeals, 1865–1875, Ch App; Courthouse Libraries BC catalog dates it 1866–1875, cites 1–10 Ch App.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "gr",
+      "abbreviation": "Gr.",
+      "full_title": "unresolved",
+      "proposed_jurisdictions": [],
+      "evidence_scope": "unverified",
+      "sources": [],
+      "limitations": [
+        "No exact source found.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "No jurisdiction upgrade until exact series and ambiguity are resolved."
+    },
+    {
+      "normalized_key": "qlr",
+      "abbreviation": "Q.L.R.",
+      "full_title": "Quebec Law Reports",
+      "proposed_jurisdictions": [
+        "QC"
+      ],
+      "evidence_scope": "title/form/jurisdiction supported",
+      "sources": [
+        {
+          "url": "https://legalabbrevs.cardiff.ac.uk/page/325/?paged=325",
+          "title": "Cardiff Index to Legal Abbreviations, page 325",
+          "locator": "Quebec Law Reports record",
+          "paraphrase": "Lists Q.L.R. among abbreviations and jurisdiction Canada, Quebec."
+        }
+      ],
+      "limitations": [
+        "Cardiff index lists Q.L.R. among forms for Quebec Law Reports; Canada, Quebec.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "nzlr",
+      "abbreviation": "N.Z.L.R.",
+      "full_title": "New Zealand Law Reports",
+      "proposed_jurisdictions": [
+        "NZ"
+      ],
+      "evidence_scope": "candidate expansion only",
+      "sources": [],
+      "limitations": [
+        "No exact source opened.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "rl",
+      "abbreviation": "R.L.",
+      "full_title": "unresolved",
+      "proposed_jurisdictions": [],
+      "evidence_scope": "ambiguous",
+      "sources": [],
+      "limitations": [
+        "No exact source; initials non-unique.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "No jurisdiction upgrade until exact series and ambiguity are resolved."
+    },
+    {
+      "normalized_key": "hlcas",
+      "abbreviation": "H.L. Cas.",
+      "full_title": "House of Lords Cases",
+      "proposed_jurisdictions": [
+        "GB"
+      ],
+      "evidence_scope": "candidate identity; exact title evidence incomplete",
+      "sources": [
+        {
+          "url": "https://justice.canada.ca/eng/rp-pr/csj-sjc/harmonization/denau/abbrevia.html",
+          "title": "Department of Justice Canada, List of Abbreviations",
+          "locator": "H.L. entry lines 109–112",
+          "paraphrase": "Defines H.L. as House of Lords; does not establish H.L. Cas. as exact series form."
+        }
+      ],
+      "limitations": [
+        "Justice Canada defines H.L. as House of Lords, but not exact reporter title H.L. Cas.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "ny",
+      "abbreviation": "N.Y.",
+      "full_title": "New York Reports",
+      "proposed_jurisdictions": [
+        "US"
+      ],
+      "evidence_scope": "abbreviation and jurisdiction supported",
+      "sources": [
+        {
+          "url": "https://legalabbrevs.cardiff.ac.uk/page/287/?paged=287",
+          "title": "Cardiff Index to Legal Abbreviations, page 287",
+          "locator": "New York Reports lines 891–895",
+          "paraphrase": "Lists N.Y. as New York Reports and jurisdiction United States, New York."
+        }
+      ],
+      "limitations": [
+        "Cardiff record lists N.Y. as New York Reports, United States, New York.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "cbns",
+      "abbreviation": "C.B.N.S.",
+      "full_title": "Canadian Bankruptcy Reports, New Series",
+      "proposed_jurisdictions": [
+        "CA"
+      ],
+      "evidence_scope": "near-form only",
+      "sources": [
+        {
+          "url": "https://justice.canada.ca/eng/rp-pr/csj-sjc/harmonization/denau/abbrevia.html",
+          "title": "Department of Justice Canada, List of Abbreviations",
+          "locator": "Law Journals and Law Reports; S.C.R. lines 337–341; C.B.R.(n.s.) lines 224–225; H.L. lines 109–112",
+          "paraphrase": "Maps S.C.R. to Supreme Court Reports, C.B.R.(n.s.) to Canadian Bankruptcy Reports (new series), and H.L. to House of Lords."
+        }
+      ],
+      "limitations": [
+        "Justice Canada expands C.B.R. (n.s.), not exact C.B.N.S.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "pd",
+      "abbreviation": "P.D.",
+      "full_title": "Law Reports, Probate Division",
+      "proposed_jurisdictions": [
+        "GB"
+      ],
+      "evidence_scope": "series and date span supported",
+      "sources": [
+        {
+          "url": "https://lpab.nsw.gov.au/content/dcj/ctsd/courtsandtribunals/courts-and-tribunals/resources/law-courts-library/law-reports-online.html",
+          "title": "NSW Courts and Tribunals, Law Reports online",
+          "locator": "Probate & Divorce and Probate entries, lines 684–695",
+          "paraphrase": "Lists P, P&D, PD with 1875–1890 and 1891–1971 coverage."
+        }
+      ],
+      "limitations": [
+        "NSW library lists Probate & Divorce, PD; dates include 1875–1890 and 1891–1971.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "timeslr",
+      "abbreviation": "Times L.R.",
+      "full_title": "Times Law Reports",
+      "proposed_jurisdictions": [
+        "GB"
+      ],
+      "evidence_scope": "candidate title only",
+      "sources": [],
+      "limitations": [
+        "No exact source opened.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "nsrep",
+      "abbreviation": "N.S. Rep.",
+      "full_title": "unresolved",
+      "proposed_jurisdictions": [],
+      "evidence_scope": "ambiguous",
+      "sources": [],
+      "limitations": [
+        "Could be Nova Scotia Reports or New Series; no exact evidence.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "No jurisdiction upgrade until exact series and ambiguity are resolved."
+    },
+    {
+      "normalized_key": "a",
+      "abbreviation": "A.",
+      "full_title": "unresolved",
+      "proposed_jurisdictions": [],
+      "evidence_scope": "ambiguous",
+      "sources": [],
+      "limitations": [
+        "Could be Atlantic Reporter or other A. series; no context/source.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "No jurisdiction upgrade until exact series and ambiguity are resolved."
+    },
+    {
+      "normalized_key": "ne",
+      "abbreviation": "N.E.",
+      "full_title": "Northeastern Reporter",
+      "proposed_jurisdictions": [
+        "US"
+      ],
+      "evidence_scope": "candidate title only",
+      "sources": [],
+      "limitations": [
+        "No authoritative exact source opened.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "Candidate evidence-only upgrade to reporter identity/jurisdiction, retaining title/date uncertainty and separating case origin."
+    },
+    {
+      "normalized_key": "usr",
+      "abbreviation": "U.S.R.",
+      "full_title": "unresolved",
+      "proposed_jurisdictions": [],
+      "evidence_scope": "exact alias unsupported",
+      "sources": [
+        {
+          "url": "https://www.supremecourt.gov/opinions/USReports.aspx",
+          "title": "U.S. Reports, Supreme Court of the United States",
+          "locator": "About U.S. Reports",
+          "paraphrase": "The Court states opinions are officially published in United States Reports."
+        }
+      ],
+      "limitations": [
+        "Official source supports U.S., not U.S.R.; no evidence this is a valid alias.",
+        "Reporter jurisdiction does not establish every citing case's origin."
+      ],
+      "recommendation": "No jurisdiction upgrade until exact series and ambiguity are resolved."
+    }
+  ]
+}

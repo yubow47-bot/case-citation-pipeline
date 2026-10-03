@@ -1,0 +1,13 @@
+{
+  "approved": 25,
+  "withheld": 18,
+  "partial": 7,
+  "weighted_rows": {
+    "approved": 21312,
+    "withheld": 6188,
+    "partial": 820
+  },
+  "all_target_registered_rows": 28320,
+  "approved_share_of_target_weight": 0.752542372881356,
+  "changed_metadata_rows": 39
+}
