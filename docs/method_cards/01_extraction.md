@@ -10,9 +10,9 @@
   - `extract_out/extracted.csv` 与 `extracted_superseded.csv`：旧“去重”路线，**降级为诊断产物**；金标（`--golden`）读的是它，不要和全候选路线的数字混用。
 - 候选行关键字段【已核实：`candidates.csv` 表头】：`candidate_id`、`source_decision_citation`（`{法院}_{nk(citation_en)}`）、`raw_string`、`shape_name`、`match_start_offset`/`match_end_offset`、`token`/`leading_abbr`/`abbr`、`serial_marker`、`vol`、`page`（`page_prefix`/`page_roman`/`page_suffix`）、`series`（`series_paren`/`paren_note`）、`year_raw`/`year_start`、`trailing_paren`、`court_designation_raw`、`preceding_text`（引证前 120 字符）、`structural_conflict`、`parse_signature`。
 
-## 形状（代码里现在是八个，不是规格写的七个）【已核实：`pipeline/shapes.py`，`SHAPE_ORDER`】
+## 形状（代码里现在是十一个，不是规格写的七个）【已核实：`pipeline/shapes.py`，`SHAPE_ORDER`】
 
-顺序：`shape_bracket`、`shape_vol_page_year`、`shape_year_vol_page`、`shape_nominate`、`shape_neutral_bare`、`shape_vol_abbr_page`、`shape_leading_abbr`，第八个是 **`shape_paren_year_abbr_page`**（2026-09-15，PROBLEMS #21 债 1 的修复）。
+顺序：`shape_bracket`、`shape_vol_page_year`、`shape_year_vol_page`、`shape_nominate`、`shape_neutral_bare`、`shape_vol_abbr_page`、`shape_leading_abbr`，然后是 v1.6（2026-10-03，PROBLEMS #107）新增的三个：**`shape_bracket_range`**、**`shape_registered_id`**、**`shape_neutral_glued`**，最后（恒在末位）是 **`shape_paren_year_abbr_page`**（2026-09-15，PROBLEMS #21 债 1 的修复，兜底形状）。
 
 | 形状 | 结构 | 例子 |
 |---|---|---|
@@ -23,8 +23,12 @@
 | `shape_neutral_bare` | `年 代码 (分辑词) 编号` | `2019 SCC 65`、`2003 EWCA Civ 1746` |
 | `shape_vol_abbr_page` | `卷 词 (序数) 页`，无年份 | `93 E.R. 664`、`34 D.L.R. (2d) 451` |
 | `shape_leading_abbr` | `(年)? 前缀 卷 词 页` | `L.R. 3 H.L. 330` |
-| `shape_paren_year_abbr_page` | `(年) 缩写 页`，无卷号 | `(1924) A.C. 222` |
+| `shape_bracket_range` | `[年-年] (卷) 词 页`，年份取起始年 | `[1938-39] C.T.C. 138` |
+| `shape_registered_id` | **已登记前缀 + 编号**，无年份槽；正则由 `decisions/id_prefixes.csv` 生成，token=规范前缀、page=编号体 | `A-675-94`、`CP 20466`、`PSSRB File No. 168-02-37`、`WT/DS135`、`AZ-50234567`、`50 di 197` |
+| `shape_neutral_glued` | `年代码序号` 无空格粘连，代码取自 `neutral_court_codes.csv` | `2005TCC640` |
+| `shape_paren_year_abbr_page` | `(年) 缩写 页`，无卷号（兜底，恒在末位） | `(1924) A.C. 222` |
 
+- **`shape_registered_id` 是表驱动的**：加一个前缀只加 `id_prefixes.csv` 的一行，不动正则。第一层「登记即抽」，不判断真引用还是页眉；`identifies=docket`（案卷号，对不上唯一一份判决）由分类层标 `docket_not_decision` 保留不计数，`decision` 型未核实前标 `unverified_id_prefix` 也不计数。证据页码（`GD2-11`）、证物号、招标号不在表里，所以结构上抽不到。表行自检在 `pipeline/tests/test_registered_id.py`。
 - 共享子式（`_ABBR`、`_YEAR`、`_SEP_COMMA`/`_SEP_TIGHT`、`_ORD`、`_SERP_SLOT`、`_SERIAL_SLOT`、`_PAGE`）集中在 `shapes.py`。
 - 第八个是**兜底形状**：只允许在其他形状都不命中的位置生效，重叠抑制在 `extract._apply_fallback_semantics`（`extract.py:165`）做，不在去重里做。这是上次（v1.4）实施又回滚的原因的对症处理（守卫对真实排版失效，误解析压掉正确匹配）。规格正文 §7.1 仍写着“已回滚”，**以代码为准**。
 - 形状顺序参与同跨度的最后决胜：`shape_neutral_bare` 必须排在 `shape_vol_abbr_page` 之前（否则 `2019 SCC 65` 被降级成自由缩写）。改顺序要连同回归基线一起重跑。
@@ -45,7 +49,7 @@
 
 ## 加新法院时
 
-- **通常不用改抽取层。** 七（八）个形状按结构匹配，对没见过的法院也成立。新法院的引证写法落在已有形状里，缺的是分类层的表。
+- **通常不用改抽取层。** 七（八）个通用形状按结构匹配，对没见过的法院也成立。新法院的引证写法落在已有形状里，缺的是分类层的表。**抽不到的是「前缀+编号」型标识（案卷号、出版社编号）时，也不用写新正则：往 `decisions/id_prefixes.csv` 加行**（先过残差挖掘与锚点对账，见下），再跑 `test_registered_id.py`。
 - **只有“抽不到某种写法”才动抽取层**。找缺口用 `python audit/residual_mining.py --court <码> --out audit/findings/<目录>`（找像引证但没被候选覆盖的字符串，按模板归类，例如 `AZ-50234567`、`J.E. 2004-1234`、`WT/DS58`、`CUB 12345` 这类标识符体系）。
 - 新形状的准入判据（PROBLEMS #16 加规格 §4.3）：
   1. 审计环发现缺口，写死判据；

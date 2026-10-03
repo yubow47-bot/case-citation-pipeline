@@ -101,6 +101,34 @@ rows = [
      "被本行 body 的纯数字约束结构性排除，不必另设排除表"],
 ]
 
+# 约束八：每行必须有 source_locator。这里的定位是「在哪份测量结果里看到这个前缀」——
+# 观测出处，不是发行方官方出处；发行方含义仍未核实，故状态仍是 unverified_*。
+_RES = "audit/findings/residual_20261003_edge4/%s_residual.csv"
+_ANC = "audit/findings/anchor_20261003_edge4/anchor_reconcile.json"
+_MAIN = "data/run_20261003_v16/merge_out/%s/merged.csv（citation_kind=identifier 的 %s 键）"
+LOCATORS = {
+    "FCA_A": _ANC + " families.fed_docket（SST 13,530 / FPSLREB 653 / TCC 210 / CITT 308）",
+    "FC_T": _ANC + " families.fed_docket（与 A- 同家族计数）；" + _RES % "FPSLREB" + " 模板 T-9-9（278 次）",
+    "FC_IMM": "语料残差挖掘未见；按联邦法院移民案卷格式预登记（无观测出处，核实前不计数）",
+    "PAB_CP": _ANC + " families.cp_pab（SST 1,546）",
+    "PAB_CP_YEARLIKE": _ANC + " families.cp_pab 复查（SST 漏抓样例 CP 1916/CP 1971/CP2046）",
+    "CLRB_DI": _ANC + " families.di_cite（FPSLREB 219）",
+    "PSSRB_FILE": _ANC + " families.pssrb_file（FPSLREB 3,097）",
+    "WTO_DS": _ANC + " families.wto_ds（CITT 609）",
+    "CITT_FILE": _ANC + " families.citt_number（CITT 35,844）；" + _RES % "CITT",
+    "SST_FILE": _ANC + " families.sst_decision（SST 37,661）；" + _RES % "SST",
+    "QC_AZ": _MAIN % ("SCC", "AZ") + " 445 个",
+    "QC_JE": _MAIN % ("SCC", "J.E.") + " 14 个；ONCA 1、BCCA 1",
+    "QC_DTE": _MAIN % ("SCC", "D.T.E.") + " 4 个；ONCA 2",
+    "QC_REJB": _MAIN % ("SCC", "REJB") + " 1 个",
+    "QC_EYB": _MAIN % ("ONCA", "EYB") + " 3 个",
+}
+for r in rows:
+    if not r[9]:
+        r[9] = LOCATORS[r[0]]
+    if r[0].startswith("QC_"):
+        r[8] = "语料实测（SCC/ONCA/BCCA 判决正文）；发行方含义为通用知识，未对官方来源核实"
+
 with open(OUT, "w", encoding="utf-8", newline="") as f:
     w = csv.writer(f)
     w.writerow(FIELDS)
