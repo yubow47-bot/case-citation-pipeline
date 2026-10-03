@@ -1,0 +1,536 @@
+item,kind,stratum,source_decision,printed_or_canlii_id,name,verdict,reason,note
+Q001,Q,ONCA_2007-2015,ONCA_2009onca536,1999canlii12238,Chaban v. Chaban Estate (Trustee of),ours_has_edge,,"auto; printed=(1999), 172 D.L.R. (4th) 312"
+Q002,Q,SCC_2000-2026,SCC_2005scc71,1999canlii2688,"R.  v.  C., D.",not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q003,Q,SCC_2000-2026,SCC_2004scc38,1989canlii5281,Dykuizen v. Saanich (District),ours_has_edge,,"auto; printed=(1989), 63 D.L.R. (4th) 211"
+Q004,Q,SCC_1950-1999,SCC_19991scr652,1997canlii979,R. v. Monney,header_or_history,,auto; printed=
+Q005,Q,ONCA_1998-2006,ONCA_c30872,1998canlii19422,Whiting v. Winnipeg River Brokenhead Community Futures Development Corp.,ours_has_edge,,auto; printed=(1998) 159 D.L.R. (4th) 18
+Q006,Q,SCC_1875-1949,SCC_1924scr612,1924canlii545,Lew v. Wing Lee,header_or_history,,auto; printed=
+Q007,Q,BCCA_2017-2026,BCCA_2019bcca258,1994canlii2614,Johnston v. Matheson,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q008,Q,SCC_1950-1999,SCC_19972scr290,1995canlii1383,Martin v. Artyork Investment Ltd.,header_or_history,,auto; printed=
+Q009,Q,SCC_1950-1999,SCC_1966scr238,1953canlii466,Loiselle v. The Queen,ours_has_edge,,"auto; printed=(1953), 17 C.R. 323"
+Q010,Q,SCC_1950-1999,SCC_1958scr499,1941canlii77,Re Perry,ours_has_edge,,auto; printed=[1951] O.R. 153
+Q011,Q,BCCA_1999-2007,BCCA_2000bcca639,1994canlii7232,Colour Your World Corp. v. Canadian Broadcasting Corp.,ours_has_edge,,"auto; printed=(1994), 17 O.R. (3d) 308"
+Q012,Q,SCC_2000-2026,SCC_2004scc38,1997canlii14978,Barrow v. 1874000 Nova scotia Limited,ours_has_edge,,"auto; printed=(1997), 146 D.L.R. (4th) 466"
+Q013,Q,SCC_1950-1999,SCC_19831scr312,1957canlii359,Koechlin v. Waugh and Hamilton,ours_has_edge,,"auto; printed=(1957), 118 C.C.C. 24"
+Q014,Q,ONCA_1998-2006,ONCA_c32644,1978canlii3682,Lemyre v. Sergeant Trudel,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q015,Q,BCCA_2017-2026,BCCA_2019bcca258,1985canlii450,"Vancouver Lot 1, Re",ours_has_edge,,auto; printed=[1985] B.C.J. 1178
+Q016,Q,BCCA_2017-2026,BCCA_2022bcca48,1995canlii1803,Fuller (Re) (Trustee of),ours_has_edge,,"auto; printed=(1995), 59 B.C.A.C. 303"
+Q017,Q,BCCA_2008-2016,BCCA_2008bcca455,1977canlii336,Freeman v. Spectacular Productions Ltd.,ours_has_edge,,auto; printed=(1977) 3 B.C.L.R. 19
+Q018,Q,BCCA_2017-2026,BCCA_2018bcca256,2002canlii78089,Kobe v. Kobe,ours_has_edge,,"auto; printed=(2002), 30 R.F.L. (5th) 135"
+Q019,Q,SCC_1875-1949,SCC_1935scr212,1931canlii46,"British Columbia Electric Railway Co., Ltd. v. Key",not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q020,Q,BCCA_1999-2007,BCCA_2001bcca363,1996canlii11788,Watkin v. Open Window Bakery Ltd.,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q021,Q,BCCA_2017-2026,BCCA_2022bcca48,1997canlii3775,Van Mol v. Ashmore,ours_has_edge,,"auto; printed=(1997), 86 B.C.A.C. 60"
+Q022,Q,SCC_1950-1999,SCC_19812scr64,1900canlii107,The Queen v. St. Clair,ours_has_edge,,"auto; printed=(1900), 27 O.A.R. 308"
+Q023,Q,BCCA_2017-2026,BCCA_2018bcca118,1994abca275,R.F. v. M.F.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q024,Q,SCC_1875-1949,SCC_1931scr141,1929canlii21,Wilkinson v. Harwood and Cooper,header_or_history,,auto; printed=
+Q025,Q,SCC_1875-1949,SCC_1933scr44,1932canlii75,Lady Davis v. The Royal Trust Co. Et al.,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q026,Q,ONCA_1998-2006,ONCA_c39173,1995canlii6247,MacMinn v. MacMinn,ours_has_edge,,"auto; printed=(1995), 17 R.F.L. (4th) 88"
+Q027,Q,SCC_1875-1949,SCC_1948scr37,1903canlii114,The King v. Venot,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q028,Q,ONCA_2007-2015,ONCA_2008onca440,1929canlii220,Partridge v. Langenburg (Rural Municipality),ours_has_edge,,auto; printed=[1929] 3 W.W.R. 555
+Q029,Q,ONCA_2007-2015,ONCA_2009onca614,2008onca855,R. v. Gould,ours_has_edge,,"auto; printed=(2008), 244 O.A.C. 176"
+Q030,Q,ONCA_1998-2006,ONCA_c33445,1984canlii3063,Mealey v. Broadbent,ours_has_edge,,"auto; printed=(1984), 47 O.R. (2d) 161"
+Q031,Q,BCCA_1999-2007,BCCA_2001bcca65,1985canlii510,Fredrickson v. Ins. Corp. of B.C.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q032,Q,SCC_1875-1949,SCC_1935scr572,1935canlii420,Murray v. McMillan,header_or_history,,auto; printed=
+Q033,Q,BCCA_2008-2016,BCCA_2012bcca27,1998canlii2174,R. v. Terceira,ours_has_edge,,"auto; printed=(1998), 38 O.R. (3d) 175"
+Q034,Q,ONCA_2007-2015,ONCA_2011onca95,2010onsc2055,Abou-Elmaati v. Attorney General,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q035,Q,SCC_1950-1999,SCC_19812scr64,1970canlii1000,Regina v. Monroe,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q036,Q,BCCA_1999-2007,BCCA_2000bcca639,1982canlii801,Vogel v. Canadian Broadcasting Corporation,ours_has_edge,,"auto; printed=(1994), 17 O.R. (3d) 308"
+Q037,Q,ONCA_2007-2015,ONCA_2009onca847,1993canlii3386,Prete v. Ontario (Attorney-General),ours_has_edge,,auto; printed=[1993] O.J. No. 2794
+Q038,Q,SCC_1950-1999,SCC_1968scr452,1966canlii19,Alkok v. Grymek et al.,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q039,Q,SCC_1950-1999,SCC_1956scr273,1921canlii57,Ship M. F. Whalen v. Pointe Anne Quarries Ltd.,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q040,Q,SCC_2000-2026,SCC_2001scc2,1957canlii119,Regina v. American News Company Limited,ours_has_edge,,"auto; printed=(1957), 118 C.C.C. 152"
+Q041,Q,SCC_1875-1949,SCC_1931scr141,1929canlii356,Harwood & Cooper v. Wilkinson,header_or_history,,auto; printed=
+Q042,Q,SCC_2000-2026,SCC_2012scc28,2000canlii19596,R. v. T. (S.D.),not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q043,Q,SCC_1875-1949,SCC_1934scr230,1933canlii133,Re Tod,header_or_history,,auto; printed=
+Q044,Q,ONCA_2016-2026,ONCA_2017onca544,1994canlii7334,"ABN Amro Bank Canada v. Gowling, Strathy & Henderson",ours_has_edge,,"auto; printed=(1995), 20 O.R. (3d) 779"
+Q045,Q,SCC_1875-1949,SCC_1948scr37,1901canlii111,The King v. Morgan,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q046,Q,SCC_1950-1999,SCC_19932scr230,1990canlii6619,"Dayco (Canada) Ltd. v. National Automobile, Aerospace & Agricultural Workers Union of Canada (C.A.)",header_or_history,,auto; printed=
+Q047,Q,SCC_2000-2026,SCC_2008scc58,1991canlii945,Noel & Lewis Holdings Ltd. (Trustee of) v. Bank of Montreal,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q048,Q,SCC_1875-1949,SCC_1926scr194,1908canlii44,Tanguay v. Canadian Electric Light Co.,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q049,Q,ONCA_2016-2026,ONCA_2017onca544,1999canlii3788,Wong v. 407527 Ontario Ltd.,ours_has_edge,,"auto; printed=(1999), 125 O.A.C. 101"
+Q050,Q,SCC_1875-1949,SCC_1926scr163,1919canlii418,Atty-Gen'L for Canada v. Ritchie Contracting and Supply Co.,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q051,Q,SCC_1950-1999,SCC_19831scr312,1979canlii1658,Regina v. Parrot,ours_has_edge,,auto; printed=(1979) 51 C.C.C. (2d) 539
+Q052,Q,SCC_1875-1949,SCC_1934scr324,1931canlii182,Re Moore,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q053,Q,BCCA_1999-2007,BCCA_1999bcca84,1998canlii5691,R. v. George,ours_has_edge,,"auto; printed=(1998), 126 C.C.C. (3d) 384"
+Q054,Q,SCC_1875-1949,SCC_1934scr230,1933canlii359,Re Tod,header_or_history,,auto; printed=
+Q055,Q,BCCA_2008-2016,BCCA_2014bcca494,2002nbca27,United Brotherhood of Carpenters and Joiners of America v. Bransen Construction Ltd.,ours_has_edge,,auto; printed=[2002] N.B.J. No. 114
+Q056,Q,SCC_1950-1999,SCC_19981scr769,1997canlii3607,R. v. Reitsma,header_or_history,,auto; printed=
+Q057,Q,SCC_1875-1949,SCC_1933scr44,1922canlii580,Dreifus v. Royds,ours_has_edge,,auto; printed=(1922) 64 Can. S.C.R. 346
+Q058,Q,ONCA_2007-2015,ONCA_2011onca95,1998canlii7133,Clark v. Peterborough Utilities Commission,ours_has_edge,,"auto; printed=(1998), 40 O.R. (3d) 409"
+Q059,Q,SCC_1950-1999,SCC_19952scr876,1974canlii492,Eady et al. v. Waring,ours_has_edge,,"auto; printed=(1974), 2 O.R. (2d) 627"
+Q060,Q,SCC_1875-1949,SCC_1943scr37,1941canlii420,Vulcan-Brown Petroleums Limited v. Mercury Oils Limited,header_or_history,,auto; printed=
+Q061,Q,SCC_2000-2026,SCC_2013scc9,2000canlii16820,"R. v. B., G., et al.",name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q062,Q,ONCA_1998-2006,ONCA_c31276,1999canlii664,Guarantee Co. of North America v. Gordon Capital Corp.,ours_has_edge,,auto; printed=[1999] S.C.J. No. 60
+Q063,Q,SCC_1950-1999,SCC_19911scr48,1988canlii5680,Caron v. Canada (Employment & Immigration Commission),name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q064,Q,ONCA_2007-2015,ONCA_2014onca785,2006canlii18984,R. v. G. C.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q065,Q,BCCA_1999-2007,BCCA_1999bcca412,1992canlii15456,Cyanamid Canada Inc. v. Canada (Minister of Health and Welfare),ours_has_edge,,"auto; printed=(1992), 9 Admin. L.R. 161"
+Q066,Q,BCCA_2008-2016,BCCA_2010bcca493,1995canlii47,R. v. Shropshire,ours_missing_edge,"原文 ""[1995] 4 S.C.R. 227after"" 引证与下一词粘连，抽取漏",auto; printed=[1995] 4 S.C.R. 227
+Q067,Q,BCCA_1999-2007,BCCA_2002bcca279,1996canlii2930,Malloch v. Moenke,ours_has_edge,,"auto; printed=(1996), 20 B.C.L.R. (3d) 359"
+Q068,Q,SCC_1875-1949,SCC_1927scr595,1926canlii237,Berry v. Confederation Life Association,header_or_history,,auto; printed=
+Q069,Q,SCC_1950-1999,SCC_19933scr327,1967canlii637,"Regina v. Picard et al., Ex Parte International Longshoremen's Association, Local 375",ours_has_edge,,"auto; printed=(1967), 65 D.L.R. (2d) 658"
+Q070,Q,SCC_1950-1999,SCC_1969scr865,1965canlii499,R. v. Channing,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q071,Q,SCC_2000-2026,SCC_2025scc26,1946canlii113,Rex v. Gibbons,ours_has_edge,,auto; printed=[1946] O.R. 464
+Q072,Q,BCCA_2008-2016,BCCA_2008bcca455,1971canlii1025,"Wood, Wire & Metal Lathers' International Union et al. v. United Brotherhood of Carpenters and Joiners of America of America",ours_has_edge,,"auto; printed=(1971), 18 D.L.R. (3d) 623"
+Q073,Q,ONCA_1998-2006,ONCA_c39173,1999bcca393,S.  (L.)  v. P. (E.),not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q074,Q,ONCA_1998-2006,ONCA_c39173,1992canlii4668,Mannett v. Mannett,ours_missing_edge,"原文 ""(2d)327"" 缺空格，抽取漏","auto; printed=(1992), 111 N.S.R. (2d)327"
+Q075,Q,SCC_1875-1949,SCC_1926scr371,1913canlii557,Dallontania v. McCormick,ours_has_edge,,auto; printed=14 D.L.R. 613
+Q076,Q,BCCA_1999-2007,BCCA_2006bcca64,1986canlii1182,R. v. Thompson,ours_has_edge,,"auto; printed=(1986), 30 C.C.C. (3d) 125"
+Q077,Q,BCCA_1999-2007,BCCA_1999bcca84,1995canlii4205,R. v. J.H.B.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q078,Q,ONCA_2016-2026,ONCA_2019onca220,1956canlii34,Sylvester v. Crits et al.,ours_has_edge,,auto; printed=[1956] O.R. 132
+Q079,Q,BCCA_2017-2026,BCCA_2018bcca472,1990canlii358,Simeonoff v. Arbleben,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q080,Q,ONCA_2007-2015,ONCA_2008onca440,1992canlii7711,Mero v. Waterloo (Regional Municipality),ours_has_edge,,"auto; printed=(1992), 7 O.R. (3d) 102"
+Q081,Q,SCC_1950-1999,SCC_19812scr64,1947canlii276,Rex v. Melnyk,ours_has_edge,,"auto; printed=(1947), 90 C.C.C. 257"
+Q082,Q,SCC_1950-1999,SCC_1964scr69,1960canlii406,"Kennedy, Ross and Velanoff v. Canadian General Insurance Co.",name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q083,Q,SCC_1950-1999,SCC_1962scr729,1961canlii137,Canadian Bank of Commerce v. Attorney-General (Canada),name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q084,Q,SCC_1950-1999,SCC_19911scr64,1987canlii4524,R. v. Nipawin and District Satellite T.V. Inc. and Zanyk,header_or_history,,auto; printed=
+Q085,Q,BCCA_2017-2026,BCCA_2018bcca256,1994abca119,J.T. v. M.T.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q086,Q,ONCA_1998-2006,ONCA_c32644,1979canlii3029,Haines and Haines v. Commissioner of the Royal Canadian Mounted Police,ours_has_edge,,"auto; printed=(1979), 49 C.C.C. (2d) 193"
+Q087,Q,SCC_1875-1949,SCC_1948scr183,1937canlii295,Laverdure v. Du Tremblay et al.,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q088,Q,BCCA_1999-2007,BCCA_2000bcca639,1921canlii457,Moorcroft v. Simpson,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q089,Q,SCC_1875-1949,SCC_1925scr422,1895canlii61,Rolland v. La Caisse d'Économie Notre-Dame de Québec,ours_has_edge,,auto; printed=24 Can. S.C.R. 405
+Q090,Q,SCC_2000-2026,SCC_2008scc58,2002canlii37699,Townsend (Re) (Trustee of),ours_has_edge,,"auto; printed=(2002), 32 C.B.R. (4th) 318"
+Q091,Q,SCC_1950-1999,SCC_19934scr371,1991canlii5738,Allard Contractors Ltd. v. Coquitlam (District),ours_has_edge,,"auto; printed=(1980), 119 D.L.R. (3d) 598"
+Q092,Q,SCC_1875-1949,SCC_1933scr44,1928canlii83,Gatineau Power Co. v. Cross,ours_has_edge,,auto; printed=[1929] Can. S.C.R. 35
+Q093,Q,ONCA_1998-2006,ONCA_c39173,2003canlii64332,Brownstein v. Hanson,ours_has_edge,,"auto; printed=(2003), 45 R.F.L. (5th) 67"
+Q094,Q,BCCA_2008-2016,BCCA_2010bcca531,1974canlii143,Attorney-General for British Columbia v. Miller,ours_has_edge,,auto; printed=2009 BCSC 1198
+Q095,Q,ONCA_1998-2006,ONCA_c32644,1976canlii789,Ramsay v. Ramsay et al.,ours_has_edge,,"auto; printed=(1977), 13 O.R. (2d) 85"
+Q096,Q,SCC_1950-1999,SCC_19962scr463,1995canlii1860,R. v. Goldhart,ours_has_edge,,"auto; printed=(1995), 25 O.R. (3d) 72"
+Q097,Q,SCC_1875-1949,SCC_1934scr230,1928canlii479,Re Rung,ours_has_edge,,auto; printed=(1928) 62 Ont. L.R. 557
+Q098,Q,SCC_1950-1999,SCC_19901scr114,1988canlii1278,R. c. Delafosse,header_or_history,,auto; printed=
+Q099,Q,ONCA_1998-2006,ONCA_c43997,2005canlii27144,994814 Ontario Inc. v. RSL Canada Inc.,ours_has_edge,,"auto; printed=(2005), 14 C.B.R. (5th) 134"
+Q100,Q,SCC_1950-1999,SCC_19934scr371,1989canlii2712,Allard Contr. Ltd. v. Coquitlam (Dist.),ours_has_edge,,"auto; printed=(1989), 35 B.C.L.R. (2d) 386"
+Q101,Q,BCCA_2008-2016,BCCA_2014bcca494,2001canlii24151,Duong v. NN Life Insurance Company of Canada,ours_has_edge,,"auto; printed=(2001), 141 O.A.C. 307"
+Q102,Q,ONCA_2016-2026,ONCA_2016onca299,1993canlii5484,Denison v. M. Loeb Ltd.,ours_has_edge,,"auto; printed=(1993), 16 O.R. (3d) 130"
+Q103,Q,SCC_1950-1999,SCC_19932scr230,1972canlii1022,Manitoba Teachers' Society (Red River Division Association No. 17) v. Red River School Division No. 17,ours_has_edge,,"auto; printed=(1972), 25 D.L.R. (3d) 106"
+Q104,Q,SCC_1950-1999,SCC_19812scr64,1974canlii1427,Regina v. Sweezey,ours_has_edge,,"auto; printed=(1974), 20 C.C.C. (2d) 400"
+Q105,Q,SCC_1875-1949,SCC_1927scr595,1909canlii406,Wilson v. Gallagher,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q106,Q,SCC_1875-1949,SCC_1926scr371,1904canlii177,Grant v. The C. P. R. Co.,ours_has_edge,,auto; printed=36 N.B.R. 528
+Q107,Q,SCC_2000-2026,SCC_2005scc6,1981canlii1642,Regina v. Goulis,ours_has_edge,,"auto; printed=(1981), 33 O.R. (2d) 55"
+Q108,Q,SCC_2000-2026,SCC_2008scc58,2008nbqb44,New Brunswick (Minister of Family and Community Services) v. T.M. and S.S.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q109,Q,BCCA_2008-2016,BCCA_2016bcca258,1983canlii424,Little Billy's Restaurant (1977) Ltd. (Re),not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q110,Q,BCCA_1999-2007,BCCA_2003bcca55,1996canlii2695,"The Owners, Strata Plan Nw3341 v. Royal Insurance Co. Of Canada",ours_has_edge,,"auto; printed=(1996), 37 C.C.L.I. (2d) 21"
+Q111,Q,SCC_1875-1949,SCC_1924scr612,1889canlii62,White v. Parker,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q112,Q,SCC_1950-1999,SCC_19771scr441,1951canlii449,Re Rex v. Shepherd,ours_has_edge,,"auto; printed=(1951), 100 C.C.C. 95"
+Q113,Q,SCC_2000-2026,SCC_2012scc38,2009canlii101413,"NRCC - Tariff 7 (Motion Picture Theatres and Drive-Ins), 2009-2011; Tariff 9 (Commercial Television), 2009-2013 [Preliminary Issue]",header_or_history,印刷引证 [2012] 2 S.C.R. 376 是本判决自身,auto; printed=[2012] 2 S.C.R. 376
+Q114,Q,SCC_1875-1949,SCC_1926scr163,1896canlii76,In Re Provincial Fisheries,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q115,Q,ONCA_2007-2015,ONCA_2013onca449,1981canlii2612,Dowson v. Canada,ours_has_edge,,"auto; printed=(1981), 124 D.L.R. (3d) 260"
+Q116,Q,BCCA_1999-2007,BCCA_2006bcca70,1999canlii5599,McKay v. CDI Career Development Institutes ltd.,ours_has_edge,,"auto; printed=(1999), 64 B.C.L.R. (3d) 386"
+Q117,Q,SCC_1875-1949,SCC_1933scr44,1926canlii74,Dominion Textile Co. v. Skaife,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q118,Q,ONCA_2007-2015,ONCA_2007onca853,2006canlii40497,R. v. Wilding,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q119,Q,ONCA_2007-2015,ONCA_2009onca843,2005canlii39872,1218897 Ontario Ltd. v. Toronto (City),ours_has_edge,,auto; printed=2008 ONCA 617
+Q120,Q,SCC_1950-1999,SCC_19832scr173,1982canlii3984,W. v. R.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q121,Q,SCC_1950-1999,SCC_1966scr238,1965canlii21,Mann v. R.,header_or_history,,auto; printed=
+Q122,Q,ONCA_2007-2015,ONCA_2013onca449,1998canlii1983,Canadian Broadcasting Corp. v. Color your world Corp.,ours_has_edge,,"auto; printed=(1998), 156 D.L.R. (4th) 27"
+Q123,Q,ONCA_2016-2026,ONCA_2018onca699,2002canlii16887,Ontario College of Pharmacists v. Katzman,ours_has_edge,,auto; printed=2016 ONCPDC 21
+Q124,Q,BCCA_1999-2007,BCCA_1999bcca418,1980canlii317,R. v. Lloyd,ours_has_edge,,"auto; printed=(1980), 53 C.C.C. (2d) 121"
+Q125,Q,SCC_1875-1949,SCC_1944scr292,1931canlii301,Dame Lalumiere et vir v Durocher et al.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q126,Q,SCC_1875-1949,SCC_1933scr81,1913canlii1066,Re Applications to Close Highways at Various Railway Crossings,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q127,Q,SCC_1875-1949,SCC_1939scr271,1879canlii25,Danjou v. Marquis,ours_has_edge,,auto; printed=(1879) 3 Can. S.C.R. 251
+Q128,Q,ONCA_1998-2006,ONCA_c34750,2000canlii30142,Apartment and Housing Services Queen's University v. Clandfield,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q129,Q,ONCA_2007-2015,ONCA_2008onca663,2003abca251,R. v. Hoang,ours_has_edge,,"auto; printed=(2003), 182 C.C.C. (3d) 69"
+Q130,Q,SCC_1950-1999,SCC_1968scr834,1966canlii403,Stern v. Sheps,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q131,Q,SCC_2000-2026,SCC_2020scc14,1999canlii13903,R. v. R. (D),not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q132,Q,SCC_2000-2026,SCC_2001scc62,1993canlii17130,Ludmer (D.) v. M.N.R.,ours_has_edge,,auto; printed=11 Between September 1977
+Q133,Q,BCCA_2008-2016,BCCA_2014bcca494,1988canlii2812,British Columbia Government Employees' Union v. Industrial Relations Council,ours_has_edge,,auto; printed=2013 BCSC 539
+Q134,Q,BCCA_2017-2026,BCCA_2018bcca118,1984canlii795,R. v. Erickson,ours_has_edge,,"auto; printed=(1984), 13 C.C.C. (3d) 269"
+Q135,Q,SCC_2000-2026,SCC_2001scc62,1997canlii6356,Mohammad v. Canada (C.A.),ours_has_edge,,auto; printed=97 D.T.C. 5503
+Q136,Q,SCC_1950-1999,SCC_19934scr371,1972canlii1481,LaFarge Concrete Ltd. v. Coquitlam (District),ours_has_edge,,auto; printed=[1973] 1 W.W.R. 681
+Q137,Q,SCC_1875-1949,SCC_1926scr194,1885canlii77,"E. A. King et al., Défendeurs en Cour inférieure; Appelants et Cyprien Ouellet, Demandeur en Cour Inférieure; Intimé.",not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q138,Q,SCC_1950-1999,SCC_19971scr314,1978canlii1269,Regina v. Reynolds,ours_has_edge,,"auto; printed=(1978), 22 O.R. (2d) 353"
+Q139,Q,SCC_1950-1999,SCC_19933scr327,1991canlii6037,Ontario Hydro v. Ontario Labour Relations Board,ours_has_edge,,auto; printed=[1988] 1 S.C.R. 749
+Q140,Q,BCCA_2017-2026,BCCA_2022bcca263,1990canlii1996,Bank of Montreal v. Ricketts,ours_has_edge,,"auto; printed=(1990), 44 B.C.L.R. (2d) 95"
+Q141,Q,BCCA_2017-2026,BCCA_2022bcca263,1989canlii185,William E. Thomson Associates Inc. v. Carpenter,ours_has_edge,,"auto; printed=(1989), 61 D.L.R. (4th) 1"
+Q142,Q,BCCA_1999-2007,BCCA_2000bcca639,1976canlii1147,Neeld et al. v. Western Broadcasting Co. Ltd. et al.,ours_has_edge,,"auto; printed=(1976), 65 D.L.R. (3d) 574"
+Q143,Q,ONCA_1998-2006,ONCA_c39173,2003canlii2028,Sh. É. C. v. G. P.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q144,Q,BCCA_1999-2007,BCCA_2006bcca70,1998canlii3957,R.(L.) v. R.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q145,Q,BCCA_1999-2007,BCCA_2002bcca127,1989canlii5217,Quadra Ventures Industrial Lodge (Tumbler Ridge) Ltd. v. British Columbia (Assessor of Area #27 - Peace River),ours_has_edge,,auto; printed=[1988] Stated Case 262
+Q146,Q,ONCA_1998-2006,ONCA_c32644,1980canlii1644,Re Rai,ours_has_edge,,"auto; printed=(1980), 27 O.R. (2d) 425"
+Q147,Q,BCCA_1999-2007,BCCA_2003bcca401,1991canlii3956,Regina v. C.W.H.,header_or_history,,auto; printed=
+Q148,Q,BCCA_2017-2026,BCCA_2023bcca290,1994canlii534,Toronto-Dominion Bank v. Shnier,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q149,Q,BCCA_2008-2016,BCCA_2009bcca223,1984canlii3510,"United States of America and Smith, Re",ours_has_edge,,auto; printed=2006 SCC 33
+Q150,Q,ONCA_1998-2006,ONCA_c41451,2003canlii30327,Contino v. Leonelli-Contino,ours_has_edge,,auto; printed=[2003]O.J. No. 4128
+Q151,Q,BCCA_2017-2026,BCCA_2020bcca355,2002canlii41803,R. v. Carrière,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q152,Q,SCC_1875-1949,SCC_1926scr194,1911canlii69,Club de chasse et de pêche Ste. Anne v. Rivière-Ouelle Pulp and Lumber Co.,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q153,Q,SCC_1875-1949,SCC_1926scr194,1911canlii73,Gale v. Bureau,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q154,Q,ONCA_2007-2015,ONCA_2009onca536,2008canlii40226,Enernorth Industries Inc. (Re),ours_has_edge,,"auto; printed=(2005), 76 O.R. (3d) 528"
+Q155,Q,SCC_1950-1999,SCC_19902scr254,1903canlii121,Attorney-General (Ont.) v. Hamilton Street Railway,ours_has_edge,,auto; printed=[1903] A.C. 524
+Q156,Q,ONCA_2007-2015,ONCA_2007onca322,1965canlii32,Posluns v. Toronto Stock Exchange et al.,ours_has_edge,,auto; printed=[1964] 2 O.R. 547
+Q157,Q,ONCA_1998-2006,ONCA_c32644,1978canlii2375,Haines and Haines v. Commissioner of the Royal Canadian Mounted Police,ours_has_edge,,"auto; printed=(1979), 49 C.C.C. (2d) 193"
+Q158,Q,BCCA_2017-2026,BCCA_2023bcca290,1997canlii2995,Coughlin v. Kuntz,ours_has_edge,,"auto; printed=(1997), 43 B.C.L.R. (3d) 360"
+Q159,Q,ONCA_1998-2006,ONCA_c32143m24334,1985canlii3576,R. v. Morris,ours_has_edge,,"auto; printed=(1985), 21 C.C.C. (3d) 242"
+Q160,Q,SCC_1875-1949,SCC_1938scr25,1937canlii262,"Re Land Registry Act, Re Baird",name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q161,Q,SCC_2000-2026,SCC_2000scc13,1998canlii6119,Nanaimo (City of) v. Rascal Trucking Ltd.,ours_has_edge,,auto; printed=[1994] 1 S.C.R. 231
+Q162,Q,SCC_2000-2026,SCC_2020scc14,1976canlii1456,Regina v. Santeramo,ours_has_edge,,"auto; printed=(1976), 32 C.C.C. (2d) 35"
+Q163,Q,BCCA_1999-2007,BCCA_2002bcca279,1990canlii7773,Junek v. Ede,ours_has_edge,,auto; printed=[1991] 1 W.W.R. 60
+Q164,Q,ONCA_1998-2006,ONCA_c39173,2002bcca216,M.(K.M.) v. D.(L.),not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q165,Q,SCC_1950-1999,SCC_19812scr64,1906canlii106,The King v. Brooks,ours_has_edge,,"auto; printed=(1906), 11 C.C.C. 188"
+Q166,Q,BCCA_2008-2016,BCCA_2016bcca258,2000canlii22676,C.I. Covington Fund Inc. v. White,ours_has_edge,,auto; printed=[2000] O.J. No. 4589
+Q167,Q,SCC_2000-2026,SCC_2012scc28,1995canlii4253,R. v. E.F.D.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q168,Q,BCCA_1999-2007,BCCA_2000bcca639,1992canlii5954,Westbank Indian Band v. Tomat,ours_has_edge,,"auto; printed=(1992), 63 B.C.L.R. (2d) 273"
+Q169,Q,SCC_1950-1999,SCC_1968scr834,1937canlii211,Williams v. Moody Bible Institute of Chicago,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q170,Q,SCC_1950-1999,SCC_1966scr238,1950canlii144,R. v. Karasick,ours_has_edge,,auto; printed=(1950) 2 W.W.R. 399
+Q171,Q,SCC_1875-1949,SCC_1934scr230,1933canlii354,Re Tod,header_or_history,,auto; printed=
+Q172,Q,SCC_1950-1999,SCC_19831scr312,1980canlii3178,R. v. Roberge,ours_has_edge,,auto; printed=[1976] 2 S.C.R. 56
+Q173,Q,BCCA_1999-2007,BCCA_1999bcca84,1985canlii1971,Regina v. Moore,ours_has_edge,,auto; printed=(1985) 16 C.C.C. (3d) 328
+Q174,Q,BCCA_2008-2016,BCCA_2016bcca258,2001canlii28007,Thomson v. Quality Mechanical Service Inc.,ours_has_edge,,auto; printed=(2001) 56 O.R. (3d) 234
+Q175,Q,BCCA_2008-2016,BCCA_2010bcca313,2001canlii4447,R. v. Gayle,ours_has_edge,,"auto; printed=(2001),145 O.A.C. 115"
+Q176,Q,ONCA_1998-2006,ONCA_c35833,1994canlii3447,R. v. A. J. R.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q177,Q,BCCA_2017-2026,BCCA_2018bcca100,2014canlii2646,R. v. D.P.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q178,Q,BCCA_2008-2016,BCCA_2008bcca105,1997canlii3740,Pemberton v. Schreiber,ours_has_edge,,"auto; printed=(1997), 32 B.C.L.R. (3d) 187"
+Q179,Q,ONCA_2007-2015,ONCA_2009onca847,2007mbca142,Zadworny v. Manitoba (Attorney General) et al.,ours_has_edge,,auto; printed=[2007] M.J. No. 413
+Q180,Q,ONCA_2016-2026,ONCA_2023onca674,1979canlii1927,Regina v. Buzzanga and Durocher,ours_has_edge,,"auto; printed=(1979), 25 O.R. (2d) 705"
+Q181,Q,BCCA_1999-2007,BCCA_1999bcca84,1997abca49,R. v. Oliver,ours_has_edge,,"auto; printed=(1997), 114 C.C.C. (3d) 50"
+Q182,Q,SCC_1950-1999,SCC_19831scr312,1981canlii3331,R. v. Roberge,ours_has_edge,,auto; printed=[1976] 2 S.C.R. 56
+Q183,Q,BCCA_1999-2007,BCCA_2001bcca11,1997canlii12498,R. v. Bertrand,name_only,附表中案名在括号里，无引证,auto; printed=12 April 1997
+Q184,Q,SCC_2000-2026,SCC_2008scc58,1997canlii808,"Jenkins (Bankruptcy),Re",ours_has_edge,,"auto; printed=(1997), 32 C.B.R. (4th) 262"
+Q185,Q,SCC_1950-1999,SCC_19933scr327,1991canlii8237,"Shur Gain Division, Canada Packers Inc. v. C.Q.W.",ours_has_edge,,auto; printed=[1992] 2 F.C. 3
+Q186,Q,SCC_2000-2026,SCC_2001scc2,1973canlii1467,Regina v. Delorme,ours_has_edge,,"auto; printed=(1973), 15 C.C.C. (2d) 350"
+Q187,Q,SCC_1950-1999,SCC_1957scr643,1925canlii271,"Gauthier v L'Hon. M. Wilson et al. et Antigna, m. en c.",name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q188,Q,BCCA_1999-2007,BCCA_2002bcca127,1997canlii2009,Haida Nation v. British Columbia (Forests),ours_has_edge,,auto; printed=2001 BCSC 172
+Q189,Q,ONCA_1998-2006,ONCA_c32644,1978canlii2448,Haines and Haines v. Commissioner of the Royal Canadian Mounted Police,ours_has_edge,,"auto; printed=(1979), 49 C.C.C. (2d) 193"
+Q190,Q,ONCA_2007-2015,ONCA_2010onca437,2009canlii28204,Everding v. Skrijel,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q191,Q,SCC_1950-1999,SCC_19812scr64,1973canlii1499,Regina v. Spencer,ours_has_edge,,"auto; printed=(1973), 16 C.C.C. (2d) 29"
+Q192,Q,SCC_1875-1949,SCC_1939scr271,1899canlii78,Farquharson v. Imperial Oil Co.,ours_has_edge,,auto; printed=(1899) 30 Can. S.C.R. 188
+Q193,Q,BCCA_2008-2016,BCCA_2016bcca85,2006scc4,ATCO Gas & Pipelines Ltd. v. Alberta (Energy & Utilities Board),ours_missing_edge,"原文 ""2006, SCC 4"" 中立引证中间多逗号，抽取漏","auto; printed=2006, SCC 4"
+Q194,Q,BCCA_2017-2026,BCCA_2023bcca290,1992canlii1419,C.A.C. v. J.R.H.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q195,Q,SCC_2000-2026,SCC_2020scc14,1979canlii1927,Regina v. Buzzanga and Durocher,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q196,Q,SCC_1950-1999,SCC_19931scr167,1990abca337,Canada Mortgage and Housing Corporation v. Hong Kong Bank of Canada,header_or_history,,auto; printed=
+Q197,Q,BCCA_2008-2016,BCCA_2008bcca455,2003nwtsc70,Kátlodééche First Nation v H.M.T.Q.,ours_has_edge,,auto; printed=[2003] N.W.T.J. No. 85
+Q198,Q,SCC_1875-1949,SCC_1933scr44,1929canlii7,Jack v. Cranston,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q199,Q,ONCA_2016-2026,ONCA_2016onca79,2006canlii14,Lowndes v. Summit Ford Sales Ltd.,ours_has_edge,,auto; printed=[2006] O.J. No 13
+Q200,Q,BCCA_2008-2016,BCCA_2015bcca358,1993canlii8547,R. v. Dunn,ours_has_edge,,"auto; printed=(1993), 82 C.C.C. (3d) 1"
+Q201,Q,BCCA_2017-2026,BCCA_2022bcca31,1998canlii6429,Takacs v. Gallo,ours_has_edge,,"auto; printed=(1998), 48 B.C.L.R. (3d) 265"
+Q202,Q,SCC_1950-1999,SCC_19971scr314,1995canlii4332,R. v. Jacquard,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q203,Q,SCC_1875-1949,SCC_1929scr52,1928canlii587,Rattenbury v. Land Settlement Board,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q204,Q,ONCA_1998-2006,ONCA_c32644,1979canlii4069,Lemyre v. Trudel,ours_has_edge,,auto; printed=[1979] 2 F.C. 362
+Q205,Q,SCC_1875-1949,SCC_1926scr163,1912canlii407,"Attorneys-General For the Provinces of Ontario, Quebec, Nova Scotia, New Brunswick, Manitoba, Prince Edward Island, and Alberta, v. Attorney-General For the Dominion of Canada and the Attorney-General For the Province of British Columbia",name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q206,Q,SCC_1950-1999,SCC_1961scr655,1952canlii1,Parent v. Lapointe,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q207,Q,BCCA_2008-2016,BCCA_2016bcca85,1994canlii2621,Ainsley Financial Corp. v. Ontario (Securities Commission),ours_has_edge,,"auto; printed=(1994), 21 O.R. (3d) 104"
+Q208,Q,SCC_1875-1949,SCC_1935scr212,1934canlii288,Brown v. Canada Biscuit Co. Ltd.,header_or_history,,auto; printed=
+Q209,Q,BCCA_2017-2026,BCCA_2020bcca355,1999canlii3717,R. v. McKnight,ours_has_edge,,"auto; printed=(1999), 135 C.C.C. (3d) 41"
+Q210,Q,ONCA_1998-2006,ONCA_c32594,1994canlii8721,R. v. G.F.P.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q211,Q,SCC_2000-2026,SCC_2001scc2,1999canlii3796,R. v. B.E.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q212,Q,ONCA_1998-2006,ONCA_c33445,1999canlii14963,Scheel v. Henkelman,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q213,Q,ONCA_2016-2026,ONCA_2026onca610,2004canlii12037,Bhimji Khimji v. Dhanani,ours_has_edge,,auto; printed=69 O.R. (3d) 790
+Q214,Q,SCC_1950-1999,SCC_19933scr327,1963canlii46,"Minister of National Revenue v. Hollinger North Shore Exploration Co., Ltd.",not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q215,Q,BCCA_2008-2016,BCCA_2016bcca86,1992canlii2751,Scott v. College of Physicians and Surgeons,ours_has_edge,,"auto; printed=9920, 95 D.L.R. (4th) 706"
+Q216,Q,SCC_1950-1999,SCC_19791scr684,1976altascad207,Edmonton (City) v. Alberta (Public Utilities Board),ours_has_edge,,"auto; printed=(1976), 2 A.R. 453"
+Q217,Q,SCC_1950-1999,SCC_19934scr371,1980canlii268,Kirkpatrick v. District of Maple Ridge,ours_has_edge,,auto; printed=[1986] 2 S.C.R. 124
+Q218,Q,BCCA_2017-2026,BCCA_2020bcca103,1982canlii2540,R. v. Malboeuf,ours_has_edge,,"auto; printed=(1982), 68 CCC (2d) 544"
+Q219,Q,ONCA_1998-2006,ONCA_c32644,1975canlii4,Gustavson Drilling (1964) Ltd. v. Minister of National Revenue,ours_has_edge,,"auto; printed=(1975), 66 D.L.R. (3d) 449"
+Q220,Q,SCC_1950-1999,SCC_1966scr238,1965canlii724,Regina v. Jeffers,ours_has_edge,,"auto; printed=(1965), 45 C.R. 177"
+Q221,Q,SCC_2000-2026,SCC_2008scc58,1987canlii4910,Canadian Imperial Bank of Commerce v. Marathon Realty Co. Ltd.,ours_has_edge,,"auto; printed=(1990), 69 D.L.R. (4th) 449"
+Q222,Q,ONCA_2007-2015,ONCA_2015onca533,2005canlii46384,Newcastle Recycling Ltd. v. Clarington (Municipality),ours_has_edge,,auto; printed=[2005] O.J. No. 5344
+Q223,Q,BCCA_1999-2007,BCCA_1999bcca412,1983canlii403,Narain (Re),ours_has_edge,,"auto; printed=(1983), 45 B.C.L.R. 191"
+Q224,Q,SCC_1875-1949,SCC_1933scr44,1927canlii44,Bulger v. Home Insurance Co.,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q225,Q,BCCA_2017-2026,BCCA_2018bcca118,1982abca97,R. v. Jahn,ours_has_edge,,"auto; printed=(1982), 35 A.R. 583"
+Q226,Q,ONCA_2007-2015,ONCA_2009onca536,2003bcsc41,Canadian Asian Centre Developments Inc. (Trustee of) (Re),ours_has_edge,,"auto; printed=(2003), 39 C.B.R. (4th) 35"
+Q227,Q,ONCA_2007-2015,ONCA_2013onca449,2001canlii4874,Myers v. Canadian Broadcasting Corp.,ours_has_edge,,auto; printed=[2006] O.J. No. 1492
+Q228,Q,SCC_1950-1999,SCC_19934scr371,1985abca198,Falardeau v. Hinton (Town),ours_has_edge,,"auto; printed=(1985), 21 D.L.R. (4th) 477"
+Q229,Q,BCCA_2008-2016,BCCA_2012bcca498,1993canlii2561,R. v. Robitaille,ours_has_edge,,auto; printed=[1993] B.C.J. No. 1404
+Q230,Q,SCC_1950-1999,SCC_19771scr441,1955canlii124,Regina v. Mulligan.,ours_has_edge,,"auto; printed=(1955), 20 C.R. 269"
+Q231,Q,BCCA_1999-2007,BCCA_2000bcca639,1998canlii6471,Brown v. Cole,ours_has_edge,,auto; printed=[1999] 7 W.W.R. 703
+Q232,Q,ONCA_1998-2006,ONCA_c32644,1979canlii2299,R. v. Abell,ours_has_edge,,"auto; printed=(1979), 49 C.C.C. (2d) 193"
+Q233,Q,SCC_1950-1999,SCC_19872scr512,1984canlii1914,Regina v. Langevin,ours_has_edge,,"auto; printed=(1984), 11 C.C.C. (3d) 336"
+Q234,Q,BCCA_1999-2007,BCCA_2002bcca89,1992canlii431,R. v. Lemky,ours_has_edge,,"auto; printed=1992), 17 B.C.A.C. 71"
+Q235,Q,SCC_1950-1999,SCC_19771scr441,1953canlii465,Ford v. The Queen,ours_has_edge,,auto; printed=17 C.R. 26
+Q236,Q,SCC_1950-1999,SCC_1962scr729,1950canlii497,Nakkudi v. Jayaratne,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q237,Q,BCCA_2008-2016,BCCA_2012bcca27,1968canlii688,Elloway v. Boomars et al.,ours_has_edge,,"auto; printed=(1968), 69 D.L.R. (2d) 605"
+Q238,Q,BCCA_2008-2016,BCCA_2016bcca491,1997canlii418,R. v. E.F.H.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q239,Q,SCC_1875-1949,SCC_1948scr37,1910canlii180,The King v. MacDonald,ours_has_edge,,auto; printed=16 C.C.C. 121
+Q240,Q,SCC_1875-1949,SCC_1926scr194,1903canlii64,Dickie v. Campbell et al.,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q241,Q,ONCA_1998-2006,ONCA_c41268c41269,1997canlii14486,Ontario Adult Entertainment Bar Association v. Metropolitan Toronto (Municipality),ours_has_edge,,"auto; printed=(1997), 151 D.L.R. (4th) 158"
+Q242,Q,ONCA_1998-2006,ONCA_c32644,1992canlii2751,Scott v. College of Physicians and Surgeons,ours_has_edge,,"auto; printed=(1992), 95 D.L.R. (4th) 706"
+Q243,Q,ONCA_2016-2026,ONCA_2020onca536,2020scc2,R. v. Doonanco,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q244,Q,SCC_2000-2026,SCC_2002scc70,1995canlii3505,R. v. W. W.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q245,Q,SCC_1950-1999,SCC_19932scr230,1987canlii4272,"Re Dayco (Canada) Ltd. and National Automobile, Aerospace & Agricultural Implement Workers Union of Canada et al.",header_or_history,,auto; printed=
+Q246,Q,SCC_1875-1949,SCC_1926scr163,1920canlii956,Attorney-General for Quebec v. Attorney-General for Canada. Re Indian Lands,ours_has_edge,,auto; printed=[1905] A.C. 52
+Q247,Q,ONCA_1998-2006,ONCA_c32594,1996canlii10222,R. v. A.F.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q248,Q,SCC_1875-1949,SCC_1932scr44,1916canlii616,Singer v. Singer,ours_has_edge,,auto; printed=33 Ont. L.R. 602
+Q249,Q,ONCA_1998-2006,ONCA_c41268c41269,1983canlii3114,Hamilton Independent Variety & Confectionary Stores Inc. v. Hamilton (City),ours_has_edge,,"auto; printed=(1983), 143 D.L.R. (3d) 498"
+Q250,Q,ONCA_2007-2015,ONCA_2008onca663,2004canlii66310,Chann v. RBC Dominion Securities Inc.,ours_has_edge,,auto; printed=[2004] O.J. No. 5340
+Q251,Q,SCC_1950-1999,SCC_19921scr167,1975canlii1361,Regina v. Wolgram,ours_has_edge,,"auto; printed=(1975), 29 C.C.C. (2d) 536"
+Q252,Q,BCCA_1999-2007,BCCA_2002bcca89,1990canlii77,R. v. Khan,ours_has_edge,,"auto; printed=(1990), 59 C.C.C. (3d) 92"
+Q253,Q,BCCA_2017-2026,BCCA_2019bcca258,1997canlii4052,Village Gate Resorts Ltd. v. Moore,ours_has_edge,,auto; printed=[1997] B.C.J. No. 2478
+Q254,Q,SCC_2000-2026,SCC_2011scc42,1988abca234,R. v. Keegstra,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q255,Q,SCC_1950-1999,SCC_19934scr371,1988canlii3170,Allard Contr. Ltd. v. Coquitlam (Dist.),ours_has_edge,,"auto; printed=(1989), 35 B.C.L.R. (2d) 386"
+Q256,Q,SCC_1950-1999,SCC_19891scr1161,1981canlii691,Nordine (Re),not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q257,Q,SCC_1950-1999,SCC_19933scr327,1960canlii120,"Regina v. Toronto Magistrates, Ex Parte Tank Truck Transport Ltd.",not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q258,Q,SCC_1875-1949,SCC_1944scr292,1913canlii617,Niaitland v. MacKenzie. (Decision No. 2.),not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q259,Q,BCCA_2008-2016,BCCA_2010bcca493,1997canlii14501,R. v. Oliver,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q260,Q,BCCA_1999-2007,BCCA_2001bcca65,1996canlii1521,Royal Bank of Canada v. Central Capital Corp.,ours_has_edge,,"auto; printed=(1995), 29 C.B.R. (3d) 33"
+Q261,Q,SCC_1950-1999,SCC_19933scr327,1989canlii3257,Ontario Hydro v. Ontario Labour Relations Board,ours_has_edge,,auto; printed=[1988] 1 S.C.R. 749
+Q262,Q,BCCA_2017-2026,BCCA_2022bcca263,1997canlii1765,Milani v. Banks,ours_has_edge,,"auto; printed=(1997), 145 D.L.R. (4th) 55"
+Q263,Q,SCC_2000-2026,SCC_2009scc43,1985canlii2964,Francoeur c Municipalité régionale de comté d’Acton,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q264,Q,SCC_1875-1949,SCC_1926scr371,1914canlii740,Smith v. Ulen,ours_has_edge,,auto; printed=10 C.B.N.S. 470
+Q265,Q,ONCA_2016-2026,ONCA_2017onca544,1999canlii2004,Woodglen & Co. Ltd. v. Owens,ours_has_edge,,"auto; printed=(1999), 126 O.A.C. 103"
+Q266,Q,SCC_1875-1949,SCC_1926scr194,1915canlii327,Therrien v W.C. Edwards & Co.,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q267,Q,ONCA_2016-2026,ONCA_2018onca699,1998canlii19444,McIntosh v. College of Physicians and Surgeons of Ontario,ours_has_edge,,auto; printed=2012 ONCA 727
+Q268,Q,SCC_1875-1949,SCC_1948scr37,1904canlii98,The King v. Whiteside,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q269,Q,BCCA_2017-2026,BCCA_2023bcca113,1992canlii7751,R. v. Kutynec,ours_has_edge,,"auto; printed=(1992), 7 O.R. (3d) 277"
+Q270,Q,SCC_1950-1999,SCC_19872scr512,1983canlii1743,Regina v. Antoine,ours_has_edge,,"auto; printed=(1983), 41 O.R. (2d) 607"
+Q271,Q,SCC_1875-1949,SCC_1948scr37,1901canlii91,The King v. Morgan (No. 2),name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q272,Q,SCC_1875-1949,SCC_1926scr371,1903canlii29,"Hastings v. Le Roi No. 2, Ltd.",ours_has_edge,,auto; printed=34 Can. S.C.R. 177
+Q273,Q,SCC_1950-1999,SCC_19791scr684,1960canlii270,Edmonton (City) v. Northwestern Utilities Limited,ours_has_edge,,"auto; printed=(1959), 19 D.L.R. (2d) 655"
+Q274,Q,BCCA_2017-2026,BCCA_2019bcca360,1994canlii2614,Johnston v. Matheson,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q275,Q,SCC_1950-1999,SCC_19921scr167,1973canlii1571,Regina v. C.D.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q276,Q,SCC_1950-1999,SCC_19921scr167,1973canlii1477,Regina v. Chikoski,ours_has_edge,,"auto; printed=(1973), 14 C.C.C. (2d) 38"
+Q277,Q,SCC_1950-1999,SCC_19812scr64,1970canlii377,Regina v. Dietrich,ours_has_edge,,"auto; printed=(1970), 1 C.C.C. (2d) 49"
+Q278,Q,BCCA_1999-2007,BCCA_2003bcca401,1979canlii2969,Regina v. Challice,ours_has_edge,,"auto; printed=(1979), 45 C.C.C. (2d) 546"
+Q279,Q,SCC_1950-1999,SCC_19931scr167,1991abca4,Canada Mortgage and Housing Corporation v. Hong Kong Bank of Canada,header_or_history,,auto; printed=
+Q280,Q,SCC_1875-1949,SCC_1926scr371,1908canlii456,Dooley v. The City of St. John,ours_has_edge,,auto; printed=38 N.B.R. 455
+Q281,Q,SCC_2000-2026,SCC_2008scc58,1988canlii3029,"Bennett, Re",ours_has_edge,,"auto; printed=(2000), 229 N.B.R. (2d) 121"
+Q282,Q,SCC_1950-1999,SCC_19911scr64,1988canlii5190,R. v. Nipawin and District Satellite T.V. Inc. and Zanyk,header_or_history,,auto; printed=
+Q283,Q,SCC_1950-1999,SCC_19921scr167,1990canlii13162,R. v. Lohnes,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q284,Q,SCC_1875-1949,SCC_1948scr37,1905canlii145,The King v. Barre,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q285,Q,BCCA_2017-2026,BCCA_2023bcca290,1992canlii1829,Bau-und forschungsgesellschaft Thermoform Ag v. Paszner,ours_has_edge,,"auto; printed=(1992), 69 B.C.L.R. (2d) 52"
+Q286,Q,SCC_1875-1949,SCC_1926scr371,1912canlii384,Waller v. Corporation of Sarnia,ours_has_edge,,auto; printed=8 D.L.R. 629
+Q287,Q,SCC_1875-1949,SCC_1929scr630,1928canlii620,Georgia Construction Company v. Pacific Great Eastern Railway Company,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q288,Q,SCC_1875-1949,SCC_1932scr720,1931canlii365,Groff v. Herman,header_or_history,,auto; printed=
+Q289,Q,ONCA_2007-2015,ONCA_2008onca663,2007canlii44172,Clark v. BMO Nesbitt Burns,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q290,Q,SCC_1875-1949,SCC_1934scr324,1931canlii12,Singer v. Singer,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q291,Q,ONCA_2007-2015,ONCA_2008onca663,1989canlii4163,Jaremko v. A.E. LePage Real Estate Services Ltd. (Ont. C.A.),ours_has_edge,,"auto; printed=(1989), 69 O.R. (2d) 323"
+Q292,Q,SCC_1950-1999,SCC_19991scr768,1994canlii1983,R. v. Beaulac,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q293,Q,SCC_2000-2026,SCC_2001scc62,1997canlii5820,Ludco Enterprises Ltd. v. Canada,ours_has_edge,,auto; printed=16 On September 6
+Q294,Q,SCC_1875-1949,SCC_1933scr44,1908canlii69,Ville de St. Jean v. Molleur,ours_has_edge,,auto; printed=(1908) 40 Can. S.C.R. 139
+Q295,Q,BCCA_1999-2007,BCCA_2000bcca639,1997canlii2131,Pressler v. Lethbridge,ours_has_edge,,auto; printed=[1969] S.C.R. 277
+Q296,Q,SCC_1950-1999,SCC_19812scr64,1955canlii124,Regina v. Mulligan.,ours_has_edge,,"auto; printed=(1955), 111 C.C.C. 173"
+Q297,Q,BCCA_1999-2007,BCCA_2002bcca127,1992canlii2290,Shell Canada Ltd. v. Burnaby (Assessor of area),ours_has_edge,,auto; printed=[1988] Stated Case 262
+Q298,Q,SCC_1875-1949,SCC_1943scr37,1942canlii239,Vulcan-Browns Petroleums Limited v. Mercury Oils Limited,header_or_history,,auto; printed=
+Q299,Q,SCC_1950-1999,SCC_19933scr327,1956canlii153,Pronto Uranium Mines Limited v. The Ontario Labour Relations Board et al. Algom Uranium Mines Limited v. The Ontario Labour Relations Board et al.,ours_has_edge,,auto; printed=[1956] O.R. 862
+Q300,Q,BCCA_2008-2016,BCCA_2016bcca258,1974canlii433,Goldex Mines Ltd. v. Revill et al.,ours_has_edge,,auto; printed=(1974) 54 D.L.R. (3d) 672
+Q301,Q,ONCA_1998-2006,ONCA_c41268c41269,1995canlii7021,913719 Ontario Ltd. v. Niagara Falls (City of),ours_has_edge,,"auto; printed=(1995), 84 O.A.C. 149"
+Q302,Q,SCC_1950-1999,SCC_19921scr167,1978canlii2293,Regina v. Swinimer,ours_has_edge,,"auto; printed=(1978), 40 C.C.C. (2d) 432"
+Q303,Q,SCC_1875-1949,SCC_1934scr230,1933canlii105,Re Tod,header_or_history,,auto; printed=
+Q304,Q,SCC_1950-1999,SCC_1958scr499,1951canlii77,Re Kenny,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q305,Q,SCC_2000-2026,SCC_2002scc70,1993canlii3995,Tanny c. Gurman,ours_has_edge,,auto; printed=[1994] R.D.J. 10
+Q306,Q,BCCA_1999-2007,BCCA_2004bcca531,1994abca365,R. v. Keizer,ours_has_edge,,auto; printed=[1994] A.J. No. 820
+Q307,Q,SCC_1950-1999,SCC_19931scr167,1989canlii3174,Hongkong Bank of Canada v. Wheeler Holdings Ltd.,name_only,自动取到的是公司名中的数字，不是引证,auto; printed=375069 Alberta Ltd. and 386360
+Q308,Q,BCCA_2017-2026,BCCA_2023bcca290,1997canlii418,R. v. E.F.H.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q309,Q,SCC_2000-2026,SCC_2005scc71,1995canlii8923,R. v. S.D.P.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q310,Q,SCC_1875-1949,SCC_1929scr483,1928canlii460,Wilson v. Woollatt,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q311,Q,ONCA_1998-2006,ONCA_c35833,1997canlii1271,R. v. R.K.N.,not_in_text,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q312,Q,ONCA_2007-2015,ONCA_2009onca536,2001canlii24099,Banque Nationale de Paris (Canada) v. Canadian Imperial Bank of Commerce,ours_has_edge,,"auto; printed=(2001), 52 O.R. (3d) 161"
+Q313,Q,BCCA_1999-2007,BCCA_2002bcca279,1967canlii221,Gray v. Alanco Developments Ltd. et al.,ours_has_edge,,auto; printed=[1975] 2 S.C.R. 381
+Q314,Q,SCC_1875-1949,SCC_1926scr194,1913canlii53,Dumont v. Fraser,ours_has_edge,,auto; printed=48 Can. S.C.R. 137
+Q315,Q,SCC_1875-1949,SCC_1926scr194,1910canlii158,Calib S. Green et al. v Russell Blackburn et al.,name_only,未解决：自动匹配不到（抽查见缩写/脚注写法混在其中，不当作 CanLII 误链）,auto; printed=
+Q316,Q,SCC_1875-1949,SCC_1932scr720,1931canlii602,Groff v. Herman,header_or_history,,auto; printed=
+Q317,Q,SCC_2000-2026,SCC_2005scc71,2004canlii34919,R. v. Spence,ours_has_edge,,"auto; printed=(1999), 139 C.C.C. (3d) 258"
+Q318,Q,BCCA_1999-2007,BCCA_2001bcca363,1994canlii117,RJR-MacDonald Inc. v. Canada (Attorney General),ours_has_edge,,auto; printed=111 D.L.R. (4th) 385
+Q319,Q,SCC_1950-1999,SCC_19934scr371,1988canlii3169,Allard Contr. Ltd. v. Coquitlam (Dist.),ours_has_edge,,"auto; printed=(1989), 35 B.C.L.R. (2d) 386"
+E320,EDGE_both_weak,BCCA_1999-2007,BCCA_2002bcca279,"(1978), 9 B.C.L.R. 144",force v gibbons,real_citation,,
+E321,EDGE_both_weak,BCCA_1999-2007,BCCA_2007bcca567,(1991) 38 R.F.L. (3d) 70,daniel v daniel,real_citation,,
+E322,EDGE_both_weak,BCCA_1999-2007,BCCA_2001bcca445,"(1989), 40 B.C.L.R. (2d) 99",blackett v blackett,real_citation,,
+E323,EDGE_both_weak,BCCA_1999-2007,BCCA_2006bcca149,"(1993), 106 D.L.R. (4th) 179",gold v gold,real_citation,,
+E324,EDGE_both_loose,BCCA_1999-2007,BCCA_2002bcca279,"(1984), 45 O.R. (2d) 449",howes v crosby,real_citation,,
+E325,EDGE_both_weak,BCCA_1999-2007,BCCA_2002bcca279,"(1992), 63 B.C.L.R. (2d) 52",smyth v szep,real_citation,,
+E326,EDGE_both_weak,BCCA_1999-2007,BCCA_2001bcca445,"(1978), 9 B.C.L.R. 166",harry v kreutziger,real_citation,,
+E327,EDGE_both_weak,BCCA_1999-2007,BCCA_2003bcca401,(2002) 62 O.R. (3d) 617,r v paul,real_citation,,
+E328,EDGE_both_strong,BCCA_1999-2007,BCCA_2002bcca279,[1978] 2 S.C.R. 287,arnold v teno,real_citation,,
+E329,EDGE_both_strong,BCCA_1999-2007,BCCA_2004bcca237,[1998] 1 S.C.R. 982,pushpanathan v canada minister of citizenship and immigration,real_citation,,
+E330,EDGE_both_strong,BCCA_1999-2007,BCCA_2006bcca70,"(1990), 74 D.L.R. (4th) 321",hunt v carey canada inc,real_citation,,
+E331,EDGE_both_strong,BCCA_1999-2007,BCCA_2000bcca102,"(1999), 134 C.C.C. (3d) 353",r v stone,real_citation,,
+E332,EDGE_ours_only,BCCA_1999-2007,BCCA_2002bcca279,"(1994), 89 B.C.L.R. (2d) 79",Gauld (Guardian ad litem of) v. Jameson,real_citation,,
+E333,EDGE_ours_only,BCCA_1999-2007,BCCA_2000bcca639,61 B.C.L.R. (3d) 1,Brown v. Cole (1998),real_citation,,
+E334,EDGE_ours_only,BCCA_1999-2007,BCCA_2002bcca279,2 All E.R. 35,,real_citation,,
+E335,EDGE_ours_only,BCCA_1999-2007,BCCA_2000bcca639,"(1994), 17 O.R. 308",,real_citation,,
+E336,EDGE_ours_only,BCCA_1999-2007,BCCA_2000bcca639,[1982] 3 W.W.R. 97,,real_citation,,
+E337,EDGE_ours_only,BCCA_1999-2007,BCCA_1999bcca418,34 C.R. (4th) 26,,real_citation,,
+E338,EDGE_ours_only,BCCA_1999-2007,BCCA_2001bcca65,[1918] 2 K.B. 251,County Hotel & Wine Co. Ltd. v. London & North West. Ry. Co,real_citation,,
+E339,EDGE_ours_only,BCCA_1999-2007,BCCA_2004bcca531,[2001] O.J. No. 4524,,real_citation,,
+E340,EDGE_ours_only,BCCA_1999-2007,BCCA_2002bcca279,[1997] B.C.J. No. 3107,Moreland v. Sutherland,real_citation,,
+E341,EDGE_ours_only,BCCA_1999-2007,BCCA_2006bcca70,232 D.L.R. (4th) 443,,real_citation,,
+E342,EDGE_ours_only,BCCA_1999-2007,BCCA_2002bcca89,15 S.C.R. 420,,real_citation,,
+E343,EDGE_ours_only,BCCA_1999-2007,BCCA_2002bcca279,[1967] 1 O.R. 597,,real_citation,,
+E344,EDGE_both_weak,BCCA_2008-2016,BCCA_2015bcca358,"(1994), 28 C.R. (4th) 231",r v sims,real_citation,,
+E345,EDGE_both_loose,BCCA_2008-2016,BCCA_2010bcca531,[1973] S.C.R. 694,chuckry v r,real_citation,,
+E346,EDGE_both_loose,BCCA_2008-2016,BCCA_2016bcca258,(1982) 37 B.C.L.R 360,johnston v west fraser timber co,real_citation,,
+E347,EDGE_both_weak,BCCA_2008-2016,BCCA_2012bcca494,"(2002), 57 D.T.C. 755",holm v the queen,real_citation,,
+E348,EDGE_both_weak,BCCA_2008-2016,BCCA_2016bcca258,(1999) 48 B.L.R. (2d) 16,burdeny v k and d gourmet baked foods and investments inc,real_citation,,
+E349,EDGE_both_weak,BCCA_2008-2016,BCCA_2012bcca494,"(1973), 73 D.T.C. 5359",kennedy v m n r,real_citation,,
+E350,EDGE_both_weak,BCCA_2008-2016,BCCA_2010bcca493,"(1999), 139 C.C.C. (3d) 274",r v d p,real_citation,,
+E351,EDGE_both_weak,BCCA_2008-2016,BCCA_2008bcca461,"(1996), 112 C.C.C. (3d) 225",r v johnson / r v johnson,real_citation,,
+E352,EDGE_both_strong,BCCA_2008-2016,BCCA_2016bcca258,2004 BCCA 221,pasnak v chura,real_citation,,
+E353,EDGE_both_strong,BCCA_2008-2016,BCCA_2016bcca326,2009 BCCA 120,united states v costanzo,real_citation,,
+E354,EDGE_both_strong,BCCA_2008-2016,BCCA_2008bcca461,2008 BCCA 252,r v nguyen,real_citation,,
+E355,EDGE_both_strong,BCCA_2008-2016,BCCA_2015bcca358,116 C.C.C. (3d) 193,r v g s g,real_citation,,
+E356,EDGE_ours_only,BCCA_2008-2016,BCCA_2016bcca258,(1974) 54 D.L.R. (3d) 672,Pasnak v. Chura,real_wrong_name,引证是 Goldex Mines v. Revill，组名借成 Pasnak v. Chura,
+E357,EDGE_ours_only,BCCA_2008-2016,BCCA_2016bcca491,37 C.P.C. (2d) 94,Menzies v. Harlos,real_citation,,
+E358,EDGE_ours_only,BCCA_2008-2016,BCCA_2010bcca326,242 B.C.A.C. 299,Creative Salmon Company Ltd. v. Staniford,real_citation,,
+E359,EDGE_ours_only,BCCA_2008-2016,BCCA_2016bcca258,[1994] B.C.J. No. 548,,real_citation,,
+E360,EDGE_ours_only,BCCA_2008-2016,BCCA_2010bcca493,130 B.C.A.C. 1,R. v. L.H.S,real_citation,,
+E361,EDGE_ours_only,BCCA_2008-2016,BCCA_2014bcca494,75 O.R. (3d) 309,,real_citation,,
+E362,EDGE_ours_only,BCCA_2008-2016,BCCA_2012bcca498,233 B.C.A.C. 66,R. v. MacDonald,real_citation,,
+E363,EDGE_ours_only,BCCA_2008-2016,BCCA_2012bcca498,125 B.C.A.C. 310,R. v. Brogan,real_citation,,
+E364,EDGE_ours_only,BCCA_2008-2016,BCCA_2008bcca461,26 M.V.R. (3d) 15,R. v. Johnson,real_citation,,
+E365,EDGE_ours_only,BCCA_2008-2016,BCCA_2016bcca258,"(1991), 3 B.L.R. (2d) 113",Ontario Inc. v. Harold E. Ballard Ltd,real_citation,,
+E366,EDGE_ours_only,BCCA_2008-2016,BCCA_2012bcca27,509 U.S. 579,"Daubert v. Merrell Dow Pharmaceuticals, Inc",real_citation,,
+E367,EDGE_ours_only,BCCA_2008-2016,BCCA_2016bcca326,227 C.C.C. (3d) 336,U.S.A. v. Pannell,real_citation,,
+E368,EDGE_both_loose,BCCA_2017-2026,BCCA_2022bcca299,"(1991), 305 A.P.R. 251",burke v larter,real_citation,,
+E369,EDGE_both_loose,BCCA_2017-2026,BCCA_2023bcca113,"(1997), 116 C.C.C. (3d) 414",united states of mexico v hurley,real_citation,,
+E370,EDGE_both_weak,BCCA_2017-2026,BCCA_2020bcca355,"(2006), 211 C.C.C. (3d) 289",r v kakekagamick,real_citation,,
+E371,EDGE_both_loose,BCCA_2017-2026,BCCA_2022bcca263,"(2001), 53 O.R. (3d) 470",sharwood and co v municipal financial corp,real_citation,,
+E372,EDGE_both_loose,BCCA_2017-2026,BCCA_2022bcca299,"(1997), 29 B.C.L.R. (3d) 252",and kropp v swanaset bay golf course ltd,real_citation,,
+E373,EDGE_both_weak,BCCA_2017-2026,BCCA_2018bcca111,[1990] B.C.J. No. 2933,r v smith,real_citation,,
+E374,EDGE_both_weak,BCCA_2017-2026,BCCA_2022bcca263,"(1993), 100 D.L.R. (4th) 431",terracan capital corp v pine projects ltd,real_citation,,
+E375,EDGE_both_weak,BCCA_2017-2026,BCCA_2018bcca472,"(1984), 5 D.L.R. (4th) 574",smith v frick,real_citation,,
+E376,EDGE_both_strong,BCCA_2017-2026,BCCA_2025bcca80,2012 BCCA 343,environmental packaging technologies ltd v rudjuk,real_citation,,
+E377,EDGE_both_strong,BCCA_2017-2026,BCCA_2018bcca472,"(1999), 182 D.L.R. (4th) 413",mcphail v mcphail,real_citation,,
+E378,EDGE_both_strong,BCCA_2017-2026,BCCA_2018bcca100,2016 BCCA 497,r v vautour,real_citation,,
+E379,EDGE_both_strong,BCCA_2017-2026,BCCA_2023bcca113,2001 ABCA 267,united states of america v bonamie,real_citation,,
+E380,EDGE_ours_only,BCCA_2017-2026,BCCA_2025bcca328,(1970) 23 Current Leg. Prob. 23,,not_case,期刊文章 Current Leg. Prob.,
+E381,EDGE_ours_only,BCCA_2017-2026,BCCA_2023bcca113,227 C.C.C. (3d) 336,U.S.A. v. Pannell,real_citation,,
+E382,EDGE_ours_only,BCCA_2017-2026,BCCA_2018bcca327,127 O.R. (3d) 788,,real_citation,,
+E383,EDGE_ours_only,BCCA_2017-2026,BCCA_2023bcca113,"(1991), 69 C.C.C. (3d) 34",,real_citation,,
+E384,EDGE_ours_only,BCCA_2017-2026,BCCA_2025bcca304,"(1996), 6 C.P.C. (4th) 5",Convoy Supply Ltd. v. Drummond,real_citation,,
+E385,EDGE_ours_only,BCCA_2017-2026,BCCA_2020bcca355,2015 SCC 64,R. v. Lacasse,real_citation,,
+E386,EDGE_ours_only,BCCA_2017-2026,BCCA_2023bcca113,96 Alta. L.R. (3d) 252,,real_citation,,
+E387,EDGE_ours_only,BCCA_2017-2026,BCCA_2023bcca290,306 Nfld. & P.E.I.R. 103,"Ayangma v. French School Board, 2011 PECA, 3",unverified,原文片段未定位,
+E388,EDGE_ours_only,BCCA_2017-2026,BCCA_2018bcca111,[1990] Y.J. No. 142,R. v. Holmes,real_citation,,
+E389,EDGE_ours_only,BCCA_2017-2026,BCCA_2023bcca290,37 W.W.R. 1,,real_citation,,
+E390,EDGE_ours_only,BCCA_2017-2026,BCCA_2023bcca290,"(1991), 50 C.P.C. (2d) 154",,real_citation,,
+E391,EDGE_ours_only,BCCA_2017-2026,BCCA_2023bcca290,43 B.C.L.R. (6th) 330,GEA Refrigeration Canada Inc. v. Chang,real_citation,,
+E392,EDGE_both_weak,ONCA_1998-2006,ONCA_c41163,(2002) 59 OR 74,rodaro v royal bank of canada,real_citation,,
+E393,EDGE_both_weak,ONCA_1998-2006,ONCA_c39173,"(1974), 17 R.F.L. 86",krueger v taubner,real_citation,,
+E394,EDGE_both_loose,ONCA_1998-2006,ONCA_c33445,"(1998), 40 O.R. (3d) 24",he referred to clayton v clayton,real_citation,,
+E395,EDGE_both_weak,ONCA_1998-2006,ONCA_c39173,"(2003), 41 R.F.L. (5th) 80",hart v hart,real_citation,,
+E396,EDGE_both_weak,ONCA_1998-2006,ONCA_c39173,"(1999), 44 O.R. (3d) 61",brett v brett,real_citation,,
+E397,EDGE_both_weak,ONCA_1998-2006,ONCA_c35342,"(2001), 160 C.C.C. (3d) 493",r v moore mcfarlane,real_citation,,
+E398,EDGE_both_weak,ONCA_1998-2006,ONCA_c39173,"(1978), 21 O.R. (2d) 449",malcovitch v malcovitch,real_citation,,
+E399,EDGE_both_weak,ONCA_1998-2006,ONCA_c39173,"(2002), 30 R.F.L. (5th) 14",aguanno v aguanno,real_citation,,
+E400,EDGE_both_strong,ONCA_1998-2006,ONCA_c39173,"(2001), 23 R.F.L. (5th) 437",whitton v shippelt,real_citation,,
+E401,EDGE_both_strong,ONCA_1998-2006,ONCA_c39173,[1987] 2 S.C.R. 99,frame v smith,real_citation,,
+E402,EDGE_both_strong,ONCA_1998-2006,ONCA_c36766,"(1993), 82 C.C.C. (3d) 310",r v bevan,real_citation,,
+E403,EDGE_both_strong,ONCA_1998-2006,ONCA_c39173,"(1992), 43 R.F.L. 345",moge v moge,real_citation,,
+E404,EDGE_ours_only,ONCA_1998-2006,ONCA_c32644,"(1980), 27 O.R. (2d) 425",,real_citation,,
+E405,EDGE_ours_only,ONCA_1998-2006,ONCA_c39173,"(1975), 21 R.F.L. 117",Dal Santo v. Dal Santo,real_citation,,
+E406,EDGE_ours_only,ONCA_1998-2006,ONCA_c35833,"(1997), 114 C.C.C. (3d) 40",R. v. N. (R.K.),real_citation,,
+E407,EDGE_ours_only,ONCA_1998-2006,ONCA_c43997,"(1993), 6 P.P.S.A.C. (2d) 51",,real_citation,,
+E408,EDGE_ours_only,ONCA_1998-2006,ONCA_c34750,"(2000), 185 D.L.R. (4th) 763",,procedural_history,"""Reported at"" 本案下级报道",
+E409,EDGE_ours_only,ONCA_1998-2006,ONCA_c39173,"(2003), 21 C.F.L.Q. 49",,not_case,期刊文章 C.F.L.Q.,
+E410,EDGE_ours_only,ONCA_1998-2006,ONCA_c39173,"(2004), 46 R.F.L. (5th) 455",,real_citation,,
+E411,EDGE_ours_only,ONCA_1998-2006,ONCA_c41163,[1994] O.J. No. 2105,801962 Ontario Inc. v. MacKenzie Trust Co,real_citation,,
+E412,EDGE_ours_only,ONCA_1998-2006,ONCA_c39173,119 U.S. In 2000,,not_case,"正文 ""$184,119 U.S. In 2000"" 被抽成引证",
+E413,EDGE_ours_only,ONCA_1998-2006,ONCA_c32594,"(1998), 126 C.C.C. (3d) 495",,real_citation,,
+E414,EDGE_ours_only,ONCA_1998-2006,ONCA_c32644,[1978] 2 F.C. 453,,real_citation,,
+E415,EDGE_ours_only,ONCA_1998-2006,ONCA_c39173,[2003] O.J. No. 849,Royston v. Royston,real_citation,,
+E416,EDGE_both_weak,ONCA_2007-2015,ONCA_2007onca853,"(2002), 161 O.A.C. 169",r v kitaitchik,real_citation,,
+E417,EDGE_both_weak,ONCA_2007-2015,ONCA_2007onca322,"(2004), 186 O.A.C. 201",waxman v waxman,real_citation,,
+E418,EDGE_both_weak,ONCA_2007-2015,ONCA_2009onca847,"(1998), 156 D.L.R. (4th) 222",aguonie v galion solid waste material inc,real_citation,,
+E419,EDGE_both_weak,ONCA_2007-2015,ONCA_2007onca322,"(2003), 65 O.R. (3d) 30",reach m d inc v pharmaceutical manufacturers assn of canada,real_citation,,
+E420,EDGE_both_loose,ONCA_2007-2015,ONCA_2007onca322,"(1966), 59 D.L.R. (2d) 452",dirassar and james v kelly douglas and co ltd,real_comparer_mismatch,我们是 Dirassar v. Kelly Douglas；CanLII 是 Dirassar v. National Trust，宽配错配,
+E421,EDGE_both_loose,ONCA_2007-2015,ONCA_2009onca536,"(1998), 222 A.R. 139",re grossman,real_citation,,
+E422,EDGE_both_weak,ONCA_2007-2015,ONCA_2009onca847,[1999] F.C.J. No. 1842,st onge v canada,real_citation,,
+E423,EDGE_both_weak,ONCA_2007-2015,ONCA_2009onca847,[2008] O.J. No. 1868,jourdain v ontario,real_citation,,
+E424,EDGE_both_strong,ONCA_2007-2015,ONCA_2009onca843,1979 CanLII 8,palmer v the queen,real_citation,,
+E425,EDGE_both_strong,ONCA_2007-2015,ONCA_2013onca512,"(1995), 101 C.C.C. (3d) 97",r v u f j,real_citation,,
+E426,EDGE_both_strong,ONCA_2007-2015,ONCA_2013onca449,2007 ONCA 852,longley v canada attorney general,real_citation,,
+E427,EDGE_both_strong,ONCA_2007-2015,ONCA_2013onca449,2009 SCC 61,grant v torstar corp,real_citation,,
+E428,EDGE_ours_only,ONCA_2007-2015,ONCA_2009onca843,"(2002), 34 M.P.L.R. (3d) 266",Rotstein v. Oro-Medonte (Township),real_citation,,
+E429,EDGE_ours_only,ONCA_2007-2015,ONCA_2009onca536,"(2009), 92 O.R. (3d) 392",,procedural_history,原审判决报道,
+E430,EDGE_ours_only,ONCA_2007-2015,ONCA_2008onca663,[1987] O.J. No. 1227,The Bank relies on Queensbury Enterprises Inc. v. J.R. Corporate Planning Associates Inc,real_citation,,
+E431,EDGE_ours_only,ONCA_2007-2015,ONCA_2007onca322,[1971] 2 Q.B. 354,Cassell & Co. v. Broome,real_citation,,
+E432,EDGE_ours_only,ONCA_2007-2015,ONCA_2013onca449,"(2001), 208 DLR (4th) 380",Louie v. Lastman,real_citation,,
+E433,EDGE_ours_only,ONCA_2007-2015,ONCA_2008onca440,"(1992), 7 O.R. (3d) 102",,real_citation,,
+E434,EDGE_ours_only,ONCA_2007-2015,ONCA_2011onca95,"(1879), 4 Ex. D. 252",Tomline v. The Queen,real_citation,,
+E435,EDGE_ours_only,ONCA_2007-2015,ONCA_2008onca440,[1929] 3 W.W.R. 555,,real_citation,,
+E436,EDGE_ours_only,ONCA_2007-2015,ONCA_2014onca309,85 O.R. (3d) 401,Rizzi v. Mavros,real_citation,,
+E437,EDGE_ours_only,ONCA_2007-2015,ONCA_2009onca536,"(2001), 52 O.R. (3d) 161",Canada ) v. Canadian Imperial Bank of Commerce,real_citation,,
+E438,EDGE_ours_only,ONCA_2007-2015,ONCA_2009onca536,[1892] 2 Q.B. 633,,real_citation,,
+E439,EDGE_ours_only,ONCA_2007-2015,ONCA_2007onca322,[2006] S.C.C.A. No. 486,,real_citation,,
+E440,EDGE_both_loose,ONCA_2016-2026,ONCA_2018onca699,"(2003), 65 O.R. (3d) 146",henderson v college of physicians and surgeons of ontario,real_citation,,
+E441,EDGE_both_weak,ONCA_2016-2026,ONCA_2026onca300,(1996) 30 O.R. (3d) 538,r v priest,real_citation,,
+E442,EDGE_both_weak,ONCA_2016-2026,ONCA_2017onca544,"(1893), 6 R. 67",browne v dunn,real_citation,,
+E443,EDGE_both_loose,ONCA_2016-2026,ONCA_2020onca220,"(1993), 83 C.C.C. (3d) 546",r v nurse,real_citation,,
+E444,EDGE_both_weak,ONCA_2016-2026,ONCA_2018onca927,"(1998), 122 C.C.C. (3d) 481",r v lewis,real_citation,,
+E445,EDGE_both_weak,ONCA_2016-2026,ONCA_2020onca381,"(1999), 132 C.C.C. (3d) 262",r v valentini,real_citation,,
+E446,EDGE_both_weak,ONCA_2016-2026,ONCA_2019onca334,"(1999), 138 C.C.C. (3d) 217",r v kosikar / r v kosikar,real_citation,,
+E447,EDGE_both_weak,ONCA_2016-2026,ONCA_2020onca381,"(2004), 190 O.A.C. 354",r v b p,real_citation,,
+E448,EDGE_both_strong,ONCA_2016-2026,ONCA_2018onca927,2014 ONCA 72,r v sadikov,real_citation,,
+E449,EDGE_both_strong,ONCA_2016-2026,ONCA_2020onca536,2005 FC 576,gagliano v canada attorney general,real_citation,,
+E450,EDGE_both_strong,ONCA_2016-2026,ONCA_2017onca414,2014 SCC 40,canadian national railway co v canada attorney general,real_citation,,
+E451,EDGE_both_strong,ONCA_2016-2026,ONCA_2017onca544,2017 ONCA 293,deslaurier custom cabinets inc v 1728106 ontario inc,real_citation,,
+E452,EDGE_ours_only,ONCA_2016-2026,ONCA_2017onca544,88 Issue 3,,not_case,"目录 ""88 Issue 3""",
+E453,EDGE_ours_only,ONCA_2016-2026,ONCA_2018onca699,"(1998), 169 D.L.R. (4th) 524",,real_citation,,
+E454,EDGE_ours_only,ONCA_2016-2026,ONCA_2026onca421,127 O.R. (3d) 241,R. v. Arnaout,real_citation,,
+E455,EDGE_ours_only,ONCA_2016-2026,ONCA_2020onca449,127 O.R. (3d) 663,MacDonald v. Chicago Title Insurance Company of Canada,real_citation,,
+E456,EDGE_ours_only,ONCA_2016-2026,ONCA_2020onca220,363 C.C.C. (3d) 246,R. v. Jurkus,real_citation,,
+E457,EDGE_ours_only,ONCA_2016-2026,ONCA_2018onca699,[2012] S.C.C.A. No. 549,,real_citation,,
+E458,EDGE_ours_only,ONCA_2016-2026,ONCA_2026onca610,69 O.R. (3d) 790,Khimji v. Dhanani (2004),real_citation,,
+E459,EDGE_ours_only,ONCA_2016-2026,ONCA_2017onca544,404 D.L.R. (4th) 512,Shewchuk v. Blackmont Capital Inc,real_citation,,
+E460,EDGE_ours_only,ONCA_2016-2026,ONCA_2016onca299,[2008] S.C.C.A. No. 320,"Lazare v. Harvey, at",real_citation,,
+E461,EDGE_ours_only,ONCA_2016-2026,ONCA_2020onca536,"(1891), 22 O.R. 220",,real_citation,,
+E462,EDGE_ours_only,ONCA_2016-2026,ONCA_2020onca536,2018 ONSC 7523,,procedural_history,原审 2018 ONSC 7523,
+E463,EDGE_ours_only,ONCA_2016-2026,ONCA_2021onca267,111 D.L.R. (4th) 589,Bell Canada v. Olympia & York Developments Ltd,real_citation,,
+E464,EDGE_both_weak,SCC_1875-1949,SCC_1926scr163,"(1910), 43 S.C.R. 27",burrard power co v the king,real_citation,,
+E465,EDGE_both_loose,SCC_1875-1949,SCC_1935scr572,[1931] Can. S.C.R. 443,winnipeg electric co v geel,real_citation,,
+E466,EDGE_both_loose,SCC_1875-1949,SCC_1926scr163,[1912] A.C. 333,city of montreal v montreal street railway,real_citation,,
+E467,EDGE_both_weak,SCC_1875-1949,SCC_1934scr324,[1920] A.C. 1010,auger v beaudry,real_citation,,
+E468,EDGE_both_loose,SCC_1875-1949,SCC_1926scr194,28 Can. S.C.R. 388,and king v dupuis,real_citation,,
+E469,EDGE_both_loose,SCC_1875-1949,SCC_1926scr371,49 Can. S.C.R. 430,vancouver v hounsome,real_citation,,
+E470,EDGE_both_weak,SCC_1875-1949,SCC_1926scr194,"(1906), 37 S.C.R. 657",tanguay v price,real_citation,,
+E471,EDGE_both_loose,SCC_1875-1949,SCC_1939scr271,54 Can. S.C.R. 1,pearce v calgary,real_citation,,
+E472,EDGE_both_strong,SCC_1875-1949,SCC_1948scr37,[1933] S.C.R. 36,vaaro and others v the king,real_citation,,
+E473,EDGE_both_strong,SCC_1875-1949,SCC_1932scr54,[1929] S.C.R. 200,reference re waters and water powers,real_citation,,
+E474,EDGE_both_strong,SCC_1875-1949,SCC_1935scr572,[1931] Can. S.C.R. 443,winnipeg electric co v geel,real_citation,,
+E475,EDGE_both_strong,SCC_1875-1949,SCC_1948scr357,[1933] Ex. C.R. 197,,real_citation,,
+E476,EDGE_ours_only,SCC_1875-1949,SCC_1926scr371,L. R. 2 Ex. 30,,real_citation,,
+E477,EDGE_ours_only,SCC_1875-1949,SCC_1924scr86,[1905] 37 Wash. 243,,real_citation,,
+E478,EDGE_ours_only,SCC_1875-1949,SCC_1936scr323,Q.R. 59 K.B. 121,,procedural_history,原判 Q.R. 59 K.B. 121,
+E479,EDGE_ours_only,SCC_1875-1949,SCC_1934scr230,[1933] 1 D.L.R. 675,,procedural_history,脚注[2] 下级判决,
+E480,EDGE_ours_only,SCC_1875-1949,SCC_1938scr25,[1937] 3 D.L.R. 484,,procedural_history,脚注 下级判决,
+E481,EDGE_ours_only,SCC_1875-1949,SCC_1931scr288,[1927] A.C. 37,S.S. Hontestroom v. S.S. Sagaporack,real_citation,,
+E482,EDGE_ours_only,SCC_1875-1949,SCC_1926scr371,50 L.J.Q.B. 689,,real_citation,,
+E483,EDGE_ours_only,SCC_1875-1949,SCC_1933scr44,(1908) 40 Can. S.C.R. 139,,real_citation,,
+E484,EDGE_ours_only,SCC_1875-1949,SCC_1934scr230,(1882) 4 Ont. R. 663,,real_citation,,
+E485,EDGE_ours_only,SCC_1875-1949,SCC_1933scr44,[1894] A.C. 640,Dechène v. City of Montreal,real_citation,,
+E486,EDGE_ours_only,SCC_1875-1949,SCC_1929scr52,"(1886), 17 Q.B.D. 795",,real_citation,,
+E487,EDGE_ours_only,SCC_1875-1949,SCC_1926scr371,[1910] 102 L.T. 602,,real_citation,,
+E488,EDGE_both_weak,SCC_1950-1999,SCC_19791scr684,"(1973), 1 O.R. (2d) 577",re canada metal co ltd et al and macfarlane,real_citation,,
+E489,EDGE_both_loose,SCC_1950-1999,SCC_19891scr1161,474 U.S. 892 (1985),delta air lines inc v department of revenue 455 so 2d 317 1984 fla cert denied,real_comparer_mismatch,我们是 Delta Air Lines cert. denied；CanLII 是 Air Canada v. BC，宽配错配,
+E490,EDGE_both_weak,SCC_1950-1999,SCC_19931scr167,"(1921), 50 O.L.R. 211",paul v paul,real_citation,,
+E491,EDGE_both_loose,SCC_1950-1999,SCC_19891scr1161,[1927] A.C. 934,attorney general for british columbia v canadian pacific railway co,real_citation,,
+E492,EDGE_both_weak,SCC_1950-1999,SCC_19971scr314,"(1994), 19 O.R. (3d) 379",r v wiltse,real_citation,,
+E493,EDGE_both_weak,SCC_1950-1999,SCC_19991scr768,"(1997), 120 C.C.C. (3d) 16",r v beaulac,real_citation,,
+E494,EDGE_both_weak,SCC_1950-1999,SCC_19931scr167,"(1962), 36 D.L.R. (2d) 499",sara v sara,real_citation,,
+E495,EDGE_both_weak,SCC_1950-1999,SCC_19931scr167,"(1960), 23 D.L.R. (2d) 76",re bahnsen and hazelwood,real_citation,,
+E496,EDGE_both_strong,SCC_1950-1999,SCC_19832scr173,[1958] S.C.R. 52,mcneilly v agar,real_citation,,
+E497,EDGE_both_strong,SCC_1950-1999,SCC_19911scr48,[1983] 1 S.C.R. 2,abrahams v attorney general of canada,real_citation,,
+E498,EDGE_both_strong,SCC_1950-1999,SCC_19933scr327,[1955] S.C.R. 529,reference re industrial relations and disputes investigation act,real_citation,,
+E499,EDGE_both_strong,SCC_1950-1999,SCC_19872scr512,"(1988), 43 C.C.C. (3d) 379",r v smith,real_citation,,
+E500,EDGE_ours_only,SCC_1950-1999,SCC_1969scr865,68 D.L.R. (2d) 304,,real_citation,,
+E501,EDGE_ours_only,SCC_1950-1999,SCC_19902scr254,3 D.L.R. (4th) 16,,real_citation,,
+E502,EDGE_ours_only,SCC_1950-1999,SCC_19933scr327,[1899] A.C. 367,Canadian Pacific Railway Co. v. Corporation of the Parish of Notre Dame de Bonsecours,real_citation,,
+E503,EDGE_ours_only,SCC_1950-1999,SCC_19832scr173,[1927] A.C. 37,S.S. Hontestroom v. S.S. Sagaporack,real_citation,,
+E504,EDGE_ours_only,SCC_1950-1999,SCC_19891scr1161,"(1915), 84 L.J.K.B. 1752",Maskell v. Horner,real_citation,,
+E505,EDGE_ours_only,SCC_1950-1999,SCC_1966scr238,25 D.L.R. (2d) 225,,real_citation,,
+E506,EDGE_ours_only,SCC_1950-1999,SCC_19932scr230,"(1950), 2 L.A.C. 465","In re De Havilland Aircraft of Canada Ltd. and U.A.W., Local 112",real_citation,,
+E507,EDGE_ours_only,SCC_1950-1999,SCC_1966scr238,33 W.W.R. 360,,real_citation,,
+E508,EDGE_ours_only,SCC_1950-1999,SCC_19991scr768,53 Section 530,,not_case,"段落号+条文 ""53 Section 530""",
+E509,EDGE_ours_only,SCC_1950-1999,SCC_19911scr48,[1989] 1 F.C. 628,,procedural_history,APPEAL from FCA,
+E510,EDGE_ours_only,SCC_1950-1999,SCC_19932scr230,752 F.2d 1293 (1988),"Anderson v. Alpha Portland Industries, 727 F.2d 177 (1984), rehearing en banc",real_citation,,
+E511,EDGE_ours_only,SCC_1950-1999,SCC_19921scr167,"(1978), 40 C.C.C. (2d) 432",R. v. Swinimer,real_citation,,
+E512,EDGE_both_weak,SCC_2000-2026,SCC_2008scc58,"(1998), 41 O.R. (3d) 632",credit suisse canada v 1133 yonge street holdings ltd,real_citation,,
+E513,EDGE_both_loose,SCC_2000-2026,SCC_2004scc37,[1988] R.D.J. 267,and gelber v 128613 canada inc,real_citation,,
+E514,EDGE_both_loose,SCC_2000-2026,SCC_2005scc71,"(1980), 28 O.R. (2d) 23",drabinsky v maclean hunter ltd,real_citation,,
+E515,EDGE_both_weak,SCC_2000-2026,SCC_2002scc70,"(1994), 157 A.R. 279",ramrakha v zinner,real_citation,,
+E516,EDGE_both_weak,SCC_2000-2026,SCC_2004scc38,"(1965), 55 D.L.R. (2d) 338",mccready v munroe,real_citation,,
+E517,EDGE_both_loose,SCC_2000-2026,SCC_2009scc43,[2002] R.J.Q. 54,qu bec sous ministre du revenu v b d,real_citation,,
+E518,EDGE_both_weak,SCC_2000-2026,SCC_2020scc14,"(1994), 95 C.C.C. (3d) 139",r v legere,real_citation,,
+E519,EDGE_both_loose,SCC_2000-2026,SCC_2016scc37,"(1991), 57 B.C.L.R. (2d) 88",and privest properties ltd v foundation co of canada ltd,real_citation,,
+E520,EDGE_both_strong,SCC_2000-2026,SCC_2005scc6,[1984] 1 S.C.R. 536,stubart investments ltd v the queen,real_citation,,
+E521,EDGE_both_strong,SCC_2000-2026,SCC_2009scc43,2006 BCSC 639,totol vision enterprises inc v 689720 b c ltd,real_citation,,
+E522,EDGE_both_strong,SCC_2000-2026,SCC_2011scc42,2000 BCSC 1134,day v central okanagan regional district,real_citation,,
+E523,EDGE_both_strong,SCC_2000-2026,SCC_2025scc26,2011 ONCA 362,r v brant,real_citation,,
+E524,EDGE_ours_only,SCC_2000-2026,SCC_2005scc28,[2003] S.J. No. 856,,procedural_history,APPEAL from SKCA,
+E525,EDGE_ours_only,SCC_2000-2026,SCC_2009scc43,[2006] EWCA Civ 1134,Rogers v. Merthyr Tydfil County Borough Council,real_citation,,
+E526,EDGE_ours_only,SCC_2000-2026,SCC_2025scc8,[2025] 2 W.W.R. 175,,procedural_history,APPEAL from SKCA,
+E527,EDGE_ours_only,SCC_2000-2026,SCC_2020scc14,248 N.S.R. (2d) 221,R. v. Osmond,real_citation,,
+E528,EDGE_ours_only,SCC_2000-2026,SCC_2025scc26,"(2000), 21 For the Defence 36",,not_case,期刊 For the Defence,
+E529,EDGE_ours_only,SCC_2000-2026,SCC_2015scc16,[2012] 2 S.C.R. vi,,real_citation,,
+E530,EDGE_ours_only,SCC_2000-2026,SCC_2004scc37,1 C.C.Q. 47,,not_case,"条文 ""para. 1 C.C.Q. 47""",
+E531,EDGE_ours_only,SCC_2000-2026,SCC_2024scc40,11 Classified Under Section 92,,not_case,"标题 ""Section 11 Classified Under Section 92""",
+E532,EDGE_ours_only,SCC_2000-2026,SCC_2020scc14,260 O.A.C. 273,R. v. Badgerow,real_citation,,
+E533,EDGE_ours_only,SCC_2000-2026,SCC_2019scc8,2020 ONSC 1486,R. v. C.J,self_citation_leak,判决自身元数据 [2019] 1 S.C.R. 484 被当作被引,
+E534,EDGE_ours_only,SCC_2000-2026,SCC_2005scc69,2 Treaty 8,,not_case,"脚注号 ""2 Treaty 8""",
+E535,EDGE_ours_only,SCC_2000-2026,SCC_2020scc28,"(2020), 94 S.C.L.R. (2d) 301",,not_case,期刊 S.C.L.R.,

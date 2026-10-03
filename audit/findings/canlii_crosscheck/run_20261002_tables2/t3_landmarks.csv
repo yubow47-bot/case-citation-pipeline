@@ -1,0 +1,62 @@
+era,group,cited_decision,name,dd,ours_citing_all,ours_citing_unmappable,ours_citing_comparable,canlii_citing_3courts,canlii_citing_in_corpus,both,ours_only,canlii_only
+1800-1949,XC-G144573,SCC_1942scr80,The King v. Décary,12,12,1,11,16,12,11,0,1
+1800-1949,XC-G002700,SCC_1939scr247,Pierce v. Empey,5,5,0,5,14,5,4,1,1
+1800-1949,XC-G142986,SCC_1936scr188,Brodie v. The King,17,17,4,13,64,14,13,0,1
+1800-1949,XC-G145447,SCC_1946scr20,Savard v. The King,13,13,1,12,45,17,12,0,5
+1800-1949,XC-G002664,SCC_1938scr396,R. v. Comba,30,30,0,30,76,28,28,2,0
+1800-1949,XC-G124448,SCC_1934scr165,Paradis v. The King,11,11,0,11,50,19,11,0,8
+1800-1949,XC-G002796,SCC_1941scr396,Provincial Secretary of Prince Edward Island v. Egan,38,38,1,37,64,41,37,0,4
+1800-1949,XC-G139640,SCC_1923scr273,City of Montreal v. Daniel J. McAnulty Realty Co,5,5,0,5,8,6,5,0,1
+1800-1949,XC-G145028,SCC_1944scr69,The King ex rel. Tolfree v. Clark,9,9,0,9,20,14,9,0,5
+1800-1949,XC-G142771,SCC_1935scr628,Toronto Ry. Co. v. King,7,7,0,7,45,13,7,0,6
+1800-1949,XC-G003194,SCC_1949scr156,Preston v. R,7,7,0,7,22,7,7,0,0
+1800-1949,XC-G140410,SCC_1926scr457,McLeod v. Minister of Customs and Excise,6,6,0,6,7,6,6,0,0
+1800-1949,XC-G145235,SCC_1945scr234,Kuchma v. Rural Municipality of Tache,7,7,0,7,23,9,7,0,2
+1800-1949,XC-G145227,SCC_1945scr143,Gauthier & Co. Ltd. v. The King,5,5,1,4,34,10,4,0,6
+1800-1949,XC-G072759,SCC_1935scr53,Chapdelaine v. The King,5,5,0,5,22,6,5,0,1
+1800-1949,XC-G002793,SCC_1941scr270,R. v. Bradley,7,7,0,7,10,7,7,0,0
+1800-1949,XC-G140971,SCC_1928scr457,"Reference re Certain Sections of the Fisheries Act, 1914",5,5,0,5,9,5,5,0,0
+1800-1949,XC-G139646,SCC_1923scr414,The Governor and Company of Gentlemen Adventurers of England v. Vaillancourt,7,7,0,7,12,8,7,0,1
+1800-1949,XC-G143522,SCC_1938scr433,Touchette v. Pizzagalli,5,5,0,5,6,5,5,0,0
+1800-1949,XC-G143537,SCC_1938scr341,Manchuk v. The King,13,13,2,11,32,11,11,0,0
+1950-1999,XC-G146784,SCC_19522scr392,P.E.I. Potato Marketing Board v. H. B. Willis Inc,15,15,0,15,22,16,15,0,1
+1950-1999,XC-G005788,SCC_19752scr739,Eccles v. Bourque,48,48,3,45,69,45,45,0,0
+1950-1999,XC-G078861,SCC_19913scr459,Canadian Broadcasting Corp. v. New Brunswick (Attorney General),17,17,0,17,21,18,17,0,1
+1950-1999,XC-G006030,SCC_19762scr531,Barnett v. Harrison,7,7,0,7,21,8,7,0,1
+1950-1999,XC-G014901,SCC_19942scr557,Pezim v. British Columbia (Superintendent of Brokers),93,93,6,87,128,86,86,1,0
+1950-1999,XC-G156137,SCC_19792scr768,Heustis v. New Brunswick Electric Power Commission,9,9,0,9,12,9,9,0,0
+1950-1999,XC-G151118,SCC_1967scr14,Wilband v. The Queen,11,11,1,10,29,19,10,0,9
+1950-1999,XC-G005373,SCC_1972scr303,R. v. Appleby,16,16,1,15,35,16,15,0,1
+1950-1999,XC-G162061,SCC_19903scr644,,20,20,0,20,35,25,20,0,5
+1950-1999,XC-G009003,SCC_19852scr455,Fraser v. Public Service Staff Relations Board,33,33,0,33,43,33,33,0,0
+1950-1999,XC-G157510,SCC_19821scr202,Ontario Human Rights Commission v. Borough of Etobicoke,20,20,0,20,40,30,20,0,10
+1950-1999,XC-G152156,SCC_1970scr425,"Metropolitan Life Insurance Co. v. International Union of Operating Engineers, Local 796",14,14,0,14,24,15,14,0,1
+1950-1999,XC-G073709,SCC_1961scr123,Marshall v. The Queen,5,5,0,5,14,6,5,0,1
+1950-1999,XC-G012388,SCC_19912scr114,R. v. Lippé,45,45,2,43,49,43,43,0,0
+1950-1999,XC-G161339,SCC_19891scr206,Ontario (Attorney General) v. Pembina Exploration Canada Ltd,11,11,0,11,18,16,11,0,5
+1950-1999,XC-G014150,SCC_19934scr371,Allard Contractors Ltd. v. Coquitlam (District),13,13,0,13,19,16,13,0,3
+1950-1999,XC-G011701,SCC_19902scr906,R. v. Hess,19,19,1,18,40,26,18,0,8
+1950-1999,XC-G082265,SCC_19973scr440,Canada (Attorney General) v. Canada (Commission of Inquiry on the Blood System),8,8,0,8,12,11,8,0,3
+1950-1999,XC-G155087,SCC_19772scr654,McNamara Construction (Western) Ltd. v. The Queen,24,24,0,24,30,26,24,0,2
+1950-1999,XC-G016628,SCC_19961scr369,Royal Oak Mines Inc. v. Canada (Labour Relations Board),16,16,0,16,18,17,16,0,1
+2000-2026,XC-G055405,SCC_2025scc16,R. v. J.W,6,6,0,6,8,7,6,0,1
+2000-2026,XC-G044727,BCCA_2016bcca164,R. v. Noddle,7,7,0,7,7,7,7,0,0
+2000-2026,XC-G046089,BCCA_2017bcca111,Vaugeois v. Budget Rent-A-Car of B.C. Ltd,6,6,0,6,6,6,6,0,0
+2000-2026,XC-G110189,SCC_2024scc31,Aquino v. Bondfield Construction Co,6,6,0,6,6,6,6,0,0
+2000-2026,XC-G104176,ONCA_2019onca205,Merrifield v. Canada (Attorney General),9,9,0,9,9,9,9,0,0
+2000-2026,XC-G100413,ONCA_2016onca477,Onyskiw v. CJM Property Management Ltd,6,6,0,6,6,6,6,0,0
+2000-2026,XC-G105617,ONCA_2020onca720,Lochner v. Ontario Civilian Police Commission,25,25,0,25,25,25,25,0,0
+2000-2026,XC-G029450,BCCA_2005bcca339,Greither v. Greither,8,8,0,8,8,8,8,0,0
+2000-2026,XC-G101581,ONCA_2017onca221,R. v. Deol,5,5,0,5,5,5,5,0,0
+2000-2026,XC-G049733,ONCA_2019onca145,R. v. Johnson,6,6,0,6,6,6,6,0,0
+2000-2026,XC-G098150,ONCA_2014onca811,SA Horeca Financial Services v. Light,9,9,0,9,8,8,8,1,0
+2000-2026,XC-G097033,ONCA_2013onca669,Pate Estate v. Galway-Cavendish and Harvey (Township),15,15,0,15,15,15,15,0,0
+2000-2026,XC-G034978,BCCA_2009bcca294,Stone v. Ellerman,41,41,0,41,46,41,41,0,0
+2000-2026,XC-G092303,ONCA_2008onca501,R. v. Quidley,7,7,0,7,7,7,7,0,0
+2000-2026,XC-G046114,BCCA_2017bcca151,Foo v. Law Society of British Columbia,6,6,0,6,6,6,6,0,0
+2000-2026,XC-G051167,BCCA_2021bcca199,Muldoe v. Derzak,6,6,0,6,6,6,6,0,0
+2000-2026,XC-G054206,BCCA_2024bcca10,British Columbia (Director of Civil Forfeiture) v. Conrad,6,6,0,6,6,6,6,0,0
+2000-2026,XC-G036098,ONCA_2009onca443,R. v. Paul,6,6,0,6,6,6,6,0,0
+2000-2026,XC-G050057,BCCA_2020bcca143,R. v. Myles,7,7,0,7,7,7,7,0,0
+2000-2026,XC-G096744,ONCA_2013onca647,R. v. Manasseri,24,24,0,24,24,24,24,0,0
+Housen,XC-G024620,SCC_2002scc33,Housen v. Nikolaisen,1534,1534,65,1469,1577,1460,1457,12,3

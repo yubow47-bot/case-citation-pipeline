@@ -11,9 +11,10 @@ from canlii_client import get, calls_made, StopError, ROOT
 from t2_compare import wilson, nk
 
 csv.field_size_limit(10 ** 9)
-R = os.path.join(ROOT, "data", "run_20260918_scc_onca_bcca")
+RUN = os.environ.get("CROSSCHECK_RUN", "run_20261002_tables2")  # 旧 run 已移到 D:\_cases_offload
+R = os.path.join(ROOT, "data", RUN)
 C = os.path.join(ROOT, "data", "canlii_cache", "crosscheck")
-OUT = os.path.join(ROOT, "audit", "findings", "canlii_crosscheck")
+OUT = os.path.join(ROOT, "audit", "findings", "canlii_crosscheck", RUN)
 DB = {"SCC": "csc-scc", "ONCA": "onca", "BCCA": "bcca"}
 ERAS = [(1800, 1949), (1950, 1999), (2000, 2026)]
 
@@ -87,6 +88,7 @@ def main():
         print(era, v["name"][:40], "dd", v["dd"], "ours", len(O), "canlii_in_corpus", len(incorp),
               "both", len(both), "calls", calls_made(), flush=True)
 
+    os.makedirs(OUT, exist_ok=True)
     with open(os.path.join(OUT, "t3_landmarks.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["era", "group", "cited_decision", "name", "dd", "ours_citing_all", "ours_citing_unmappable", "ours_citing_comparable", "canlii_citing_3courts",

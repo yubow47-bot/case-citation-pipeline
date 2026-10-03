@@ -13,9 +13,10 @@ from t2_compare import nk
 import pyarrow.parquet as pq
 
 csv.field_size_limit(10 ** 9)
-R = os.path.join(ROOT, "data", "run_20260918_scc_onca_bcca")
+RUN = os.environ.get("CROSSCHECK_RUN", "run_20261002_tables2")  # 旧 run 已移到 D:\_cases_offload
+R = os.path.join(ROOT, "data", RUN)
 C = os.path.join(ROOT, "data", "canlii_cache", "crosscheck")
-OUT = os.path.join(ROOT, "audit", "findings", "canlii_crosscheck", "housen_evidence.csv")
+OUT = os.path.join(ROOT, "audit", "findings", "canlii_crosscheck", RUN, "housen_evidence.csv")
 DB = {"SCC": "csc-scc", "ONCA": "onca", "BCCA": "bcca"}
 MAIN = "XC-G024620"
 PAT = re.compile(r"H[ao]u?sen|Nikol[a-z]+|2002\s*SCC\s*33|S\.?\s?C\.?\s?R\.?\s*235|S\.?C\.?J\.?\s*No\.?\s*31", re.I)
@@ -62,6 +63,7 @@ for side, ids in (("ours_only", ours_only), ("canlii_only", canlii_only)):
         rows.append([side, s, tm.get(s, {}).get("canlii_id", ""), len(hits), first[0], first[1], verdict,
                      groups[:300] if side == "canlii_only" else ""])
 
+os.makedirs(os.path.dirname(OUT), exist_ok=True)
 with open(OUT, "w", newline="", encoding="utf-8") as f:
     w = csv.writer(f)
     w.writerow(["side", "source_decision", "canlii_id", "n_hits", "first_offset", "context", "verdict",

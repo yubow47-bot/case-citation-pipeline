@@ -1,0 +1,6 @@
+dd_threshold,groups_kept,est_share_real_by_bucket
+1,234889,0.776
+2,55407,0.861
+3,28382,0.902
+5,13630,0.993
+10,5401,1.000

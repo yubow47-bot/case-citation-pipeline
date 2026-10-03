@@ -17,9 +17,10 @@ from canlii_client import get, ROOT
 import pyarrow.parquet as pq
 
 csv.field_size_limit(10 ** 9)
-R = os.path.join(ROOT, "data", "run_20260918_scc_onca_bcca")
+RUN = os.environ.get("CROSSCHECK_RUN", "run_20261002_tables2")  # 旧 run 已移到 D:\_cases_offload
+R = os.path.join(ROOT, "data", RUN)
 C = os.path.join(ROOT, "data", "canlii_cache", "crosscheck")
-OUT = os.path.join(ROOT, "audit", "findings", "canlii_crosscheck")
+OUT = os.path.join(ROOT, "audit", "findings", "canlii_crosscheck", RUN)
 DB = {"SCC": "csc-scc", "ONCA": "onca", "BCCA": "bcca"}
 CA = {"CA", "ON", "BC", "QC", "AB", "NS", "MB", "SK", "NB", "NL", "YK", "NT", "PE", "NU"}
 STOP = {"r", "the", "re", "in", "of", "and", "v", "her", "his", "majesty", "queen", "king",
@@ -156,7 +157,8 @@ def main():
                 cls = "both_strong" if strong else ("both_weak" if weak else "both_loose")
                 agg[st][cls] += 1
                 agg[st]["fragmented"] += len(hit) > 1
-                pairs.append([st, src, cid, cls, len(hit), (e.get("title") or "") + " <-> " + " / ".join(sorted(n for g in hit for n in groups[g]["names"]))[:200]])
+                pairs.append([st, src, cid, cls, len(hit), (e.get("title") or "") + " <-> " + " / ".join(sorted(n for g in hit for n in groups[g]["names"]))[:200],
+                              ";".join(sorted(hit))])
                 continue
             # canlii_only：自动初裁
             text = texts.get(src, "")
@@ -208,7 +210,7 @@ def main():
 
     os.makedirs(OUT, exist_ok=True)
     with open(os.path.join(OUT, "t2_pairs.csv"), "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f); w.writerow(["stratum", "source", "cited_id", "class", "n_groups", "printed_form"])
+        w = csv.writer(f); w.writerow(["stratum", "source", "cited_id", "class", "n_groups", "printed_form", "matched_groups"])
         w.writerows(pairs)
     rng = random.Random(20260927)
     rng.shuffle(queue)
