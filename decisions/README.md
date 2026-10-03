@@ -38,3 +38,17 @@ API key 走环境变量或 `--key-file`，**不进仓库、不写进任何输出
 缓存是机器产物，不进 git——每一行的 `source_locator` 自带可重放的端点 URL，逐行可独立复核。
 `build_case_origin.py` 的缓存固定落在 `data/canlii_cache/ukpc_list.json`（仓库内、gitignore）：
 缓存留在会话临时目录会让 `--offline` 只在一台机器上可复现（PROBLEMS #59）。
+
+## `reporter_jurisdiction.csv` 的 `verification_level`
+
+管线**不读**这一列，它只记这一行的法域判断有多硬的证据。
+
+| 值 | 含义 |
+|---|---|
+| `name_inference` | 据缩写全称推断，未核对任何来源 |
+| `verified_print_evidence` | 语料印刷证据支持（六渠道，`audit/findings/jurisdiction_channels/`；机器整理，未人工复核） |
+| `verified_authority` | 外部权威资料列明该汇编的身份与表列法域（2026-10-02 代理审批，非人工复核）；不证明逐案来源或独占范围 |
+| `authority_identity_only` | 外部资料只支持汇编身份，表列法域/省份范围未经该资料确认（如 `Nfld. & P.E.I.R.`） |
+| `authority_country_only` | 外部资料只支持到国家层，省级未核（如 `Sask. L.R.`） |
+
+`S.J.` 按卷号拆两行（PROBLEMS #100）：有卷号归英国 Solicitors' Journal，无卷号 `[YYYY] S.J. No. N` 归萨斯喀彻温（Quicklaw）。
