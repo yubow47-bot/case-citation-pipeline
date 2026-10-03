@@ -17,9 +17,11 @@ Steps (each can also be run on its own):
 | import | `build.py` | copies the run's groups, members, edges and decision tables into `data/foundation/research.db`; 8 consistency checks; ~70 s |
 | weights | `score.py` | writes `confidence` and `weighted_dd = dd × confidence` per group from the CanLII calibration (`audit/findings/canlii_crosscheck/<run>/t6_bucket_rates.csv`); version `canlii-t6-v1`, status `experimental` |
 | case profiles | `index_cases.py` | one text per group (name or DD≥2): name, printed citations, DD/weight, two passages from citing judgments; keyword index (FTS trigram) |
-| methods | `index_methods.py` | per-layer records from `pipeline/*.py`, `decisions/`, `docs/`, `implementation/`, `audit/**/*.md` (PROBLEMS.md stays in `tools/recall`, see PROBLEMS #101) |
+| methods | `index_methods.py` | per-layer records from `pipeline/*.py`, `decisions/`, `docs/`, `implementation/`, `audit/**/*.md`, plus the hand-written **method cards** in `docs/method_cards/` (layer taken from the card). PROBLEMS.md stays in `tools/recall`, see PROBLEMS #101 |
 | vectors | `embed.py` | OpenRouter `qwen/qwen3-embedding-8b`, 1024 dims, one sqlite-vec table per collection; cached by text hash, so a new run only pays for changed texts |
-| acceptance | `acceptance.py` | fixed real questions; reports how many find the expected case / method in the top 5 |
+| relations | `relations.py` | labels every edge `same_case_history` or `other_judgment` by identity (not by wording); needs `registry/decision_own_citations.csv` from the run |
+| acceptance | `acceptance.py` | fixed real questions; cases 15, methods 12, and 16 "extension" questions (adding a court / a regex family) that expect a method card |
+| edge passages (optional, undecided) | `index_edges.py` | one passage per citation edge + keyword index; vectors (512-dim) are NOT built yet. See the plan for the decision criteria |
 
 ## Searching
 
@@ -29,10 +31,12 @@ python tools/foundation/query.py "上诉审查标准" --min-dd 5
 python tools/foundation/query.py --case XC-G012345                 # who cites this case
 python tools/foundation/query.py --count --min-dd 5 --origin FOREIGN   # exact numbers, full table
 python tools/foundation/query.py "同形缩写怎么消歧" --collection methods --layer classification
+python tools/foundation/query.py "标识符体系怎么处理" --collection methods     # method cards first (2 reserved slots)
+python tools/foundation/query.py "palpable and overriding error" --collection edges --cited-name Housen --court BCCA --year-from 2020 --mode keyword
 python tools/foundation/query.py                                   # interactive prompt
 ```
 
-Search ranks by meaning and keyword together (reciprocal-rank fusion). Counts and statistics must
+Search ranks by meaning and keyword together (reciprocal-rank fusion). Chinese questions about cases are first rewritten into English legal terms (`rewrite.py`, shown on screen); method search shows the two best method cards in the top k. Counts and statistics must
 come from `--count` or SQL on the full tables, never from the top hits.
 
 ## What the weights mean

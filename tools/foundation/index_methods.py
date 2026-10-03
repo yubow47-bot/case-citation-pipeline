@@ -36,6 +36,10 @@ KEYWORDS = {
     'adjudication': ['裁定', 'adjudicat', 'decide', 'case_origin', '来源', 'origin', '枢密院', 'identity', '身份'],
     'selection': ['选择层', 'select', '门槛', 'threshold', 'kept', 'distinct_decisions', ' DD', 'dd≥'],
 }
+CARD_LAYER = {'README': 'all', '00_new_court_playbook': 'all', '01_extraction': 'extraction',
+              '02_classification': 'classification', '03_merging': 'merging', '04_adjudication': 'adjudication',
+              '05_selection_and_edges': 'selection', '06_decision_tables': 'decision_tables',
+              '07_verification_gates': 'verification', '08_pitfalls_by_layer': 'pitfalls'}
 MAX = 1800
 
 
@@ -114,6 +118,14 @@ def build(db_path=DEFAULT_DB):
             continue
         for title, text, line in md_chunks(p):
             recs.append(('%s — %s' % (p.stem, title), text, vote_layer(text), status, p, line))
+    # Method cards (docs/method_cards): hand-written, one per layer; the layer comes from the card, not a keyword vote
+    for p in sorted((ROOT / 'docs' / 'method_cards').glob('*.md')):
+        h1 = next((l.lstrip('# ').strip() for l in p.read_text(encoding='utf-8').splitlines() if l.startswith('# ')), p.stem)
+        for title, text, line in md_chunks(p):
+            # every chunk carries the card's own subject, so a section like "流程（按顺序）" still says what it is about
+            # README is the card index (routing table), not an answer: it must not take a reserved card slot
+            recs.append(('method_card:%s（%s）— %s' % (p.stem, h1, title), text, CARD_LAYER.get(p.stem, 'unknown'),
+                         'reference' if p.stem == 'README' else 'method_card', p, line))
     db = connect(db_path)
     try:
         with db:

@@ -39,15 +39,15 @@ def prepare(text):
     return SECRET.sub('[redacted]', text)[:MAX_CHARS]
 
 
-def _post(texts, key, tries=5):
-    body = json.dumps({'model': MODEL, 'input': texts, 'dimensions': DIM}).encode()
+def _post(texts, key, dim=DIM, tries=5):
+    body = json.dumps({'model': MODEL, 'input': texts, 'dimensions': dim}).encode()
     for i in range(tries):
         try:
             req = urllib.request.Request('https://openrouter.ai/api/v1/embeddings', data=body,
                                          headers={'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'})
             r = json.load(urllib.request.urlopen(req, timeout=120))
             vecs = [d['embedding'] for d in sorted(r['data'], key=lambda d: d['index'])]
-            if len(vecs) != len(texts) or any(len(v) != DIM for v in vecs):
+            if len(vecs) != len(texts) or any(len(v) != dim for v in vecs):
                 raise ValueError('bad embedding response shape')
             return vecs, r.get('usage', {}).get('cost', 0) or 0
         except Exception as e:  # network errors, 429, 5xx: back off and retry
@@ -61,7 +61,7 @@ def _unit(v):
     return struct.pack('%df' % len(v), *(x / n for x in v))
 
 
-def embed_texts(texts):
+def embed_texts(texts, dim=DIM):
     """texts: list of str -> list of packed unit float32 vectors (cached)."""
     cache = sqlite3.connect(CACHE)
     cache.execute('CREATE TABLE IF NOT EXISTS emb(h TEXT, model TEXT, dim INTEGER, v BLOB, PRIMARY KEY(h,model,dim))')
@@ -71,7 +71,7 @@ def embed_texts(texts):
     for i in range(0, len(hs), 900):
         chunk = hs[i:i + 900]
         q = 'SELECT h,v FROM emb WHERE model=? AND dim=? AND h IN (%s)' % ','.join('?' * len(chunk))
-        have.update(cache.execute(q, (MODEL, DIM, *chunk)).fetchall())
+        have.update(cache.execute(q, (MODEL, dim, *chunk)).fetchall())
     todo = sorted({h: t for h, t in zip(hs, prepared) if h not in have}.items())
     cost, failed = 0.0, 0
     if todo:
@@ -79,7 +79,7 @@ def embed_texts(texts):
         batches = [todo[i:i + BATCH] for i in range(0, len(todo), BATCH)]
         done = 0
         with cf.ThreadPoolExecutor(WORKERS) as ex:
-            futs = {ex.submit(_post, [t for _, t in b], key): b for b in batches}
+            futs = {ex.submit(_post, [t for _, t in b], key, dim): b for b in batches}
             for f in cf.as_completed(futs):
                 b = futs[f]
                 try:
@@ -89,7 +89,7 @@ def embed_texts(texts):
                     print('batch failed:', str(e)[:200])
                     continue
                 cost += c
-                rows = [(h, MODEL, DIM, _unit(v)) for (h, _), v in zip(b, vecs)]
+                rows = [(h, MODEL, dim, _unit(v)) for (h, _), v in zip(b, vecs)]
                 cache.executemany('INSERT OR REPLACE INTO emb VALUES(?,?,?,?)', rows)
                 cache.commit()
                 have.update((h, v) for h, _, _, v in rows)

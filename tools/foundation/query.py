@@ -5,6 +5,7 @@
     python tools/foundation/query.py "Housen" --mode keyword                  # keyword only
     python tools/foundation/query.py --case XC-G012345                        # one case: who cites it
     python tools/foundation/query.py "同形缩写怎么消歧" --collection methods --layer classification
+    python tools/foundation/query.py "standard of review" --collection edges --cited-name Housen --court BCCA --year-from 2015
     python tools/foundation/query.py                                          # interactive prompt
 
 Hybrid = vector neighbours + keyword (FTS trigram) hits, merged by reciprocal rank. Counts and
@@ -12,11 +13,16 @@ statistics come from the full tables (use --count), never from the top hits.
 """
 import argparse
 import math
+import struct
 import sys
 from common import DEFAULT_DB, connect
 from embed import embed_texts, load_vec, vec_table
+from index_edges import EDGE_DIM
 from rewrite import to_english
 
+# Methods: the two best-matching hand-written method cards are always shown in the top k (reserved slots);
+# the other slots stay by score, so code and decision-table fragments are not crowded out.
+CARD_SLOTS = 2
 PRIOR = 0.5    # weight of the authority prior (tuned on acceptance.py: 0 -> 6/15, 0.15 -> 11/15, 0.5 -> 14/15; those questions all seek leading cases, so this favours well-cited cases)
 
 
@@ -63,7 +69,14 @@ def search(db, q, collection, k, mode, layer=None, english=None):
                                (r['run_id'], r['entity_key'].split('/', 1)[1])).fetchone()
                 s += PRIOR * math.log1p(w[0] if w else 0) / 60
             out.append((s, r))
-    return sorted(out, key=lambda x: -x[0])
+    out.sort(key=lambda x: -x[0])
+    if collection == 'methods' and CARD_SLOTS:
+        cards = [x for x in out if x[1]['status'] == 'method_card'][:CARD_SLOTS]
+        others = [x for x in out if x[1]['status'] != 'method_card']
+        keep = cards + others[:max(0, k - len(cards))]
+        keep_ids = {x[1]['id'] for x in keep}
+        out = sorted(keep, key=lambda x: -x[0]) + [x for x in out if x[1]['id'] not in keep_ids]
+    return out
 
 
 def _has_relations(db):
@@ -119,11 +132,116 @@ def count(db, run, a):
     print('groups: %d   total DD: %d   (exact, full table, run %s)' % (n[0], n[1], run))
 
 
+def _cited_ids(db, run, a):
+    """Group ids selected by --cited / --cited-name, or None when no such filter is given."""
+    ids = set()
+    if a.cited:
+        ids |= set(a.cited.split(','))
+    if a.cited_name:
+        ids |= {r[0] for r in db.execute('SELECT group_id FROM case_groups WHERE run_id=? AND name LIKE ?',
+                                         (run, '%' + a.cited_name + '%'))}
+    return ids if (a.cited or a.cited_name) else None
+
+
+def _edge_filter_sql(a, cited):
+    where, args = ['e.run_id=?'], []
+    if cited is not None:
+        if not cited:
+            return None, None
+        where.append('e.resolved_cited_case IN (%s)' % ','.join('?' * len(cited)))
+        args += sorted(cited)
+    if a.court:
+        where.append('e.source_decision GLOB ?'); args.append(a.court.upper() + '_*')
+    if a.year_from or a.year_to:
+        where.append("d.decision_date<>''")
+        if a.year_from:
+            where.append('substr(d.decision_date,1,4)>=?'); args.append(str(a.year_from))
+        if a.year_to:
+            where.append('substr(d.decision_date,1,4)<=?'); args.append(str(a.year_to))
+    if a.relation:
+        where.append('r.relation_type=?'); args.append(a.relation)
+    return ' AND '.join(where), args
+
+
+def search_edges(db, run, q, a, english=None):
+    """Citation edges whose passage matches the question, optionally limited to one cited case, court,
+    years, or relation type. Narrow filters are applied first (exact), then ranked; broad ones post-filter."""
+    cited = _cited_ids(db, run, a)
+    where, args = _edge_filter_sql(a, cited)
+    if where is None:
+        return []
+    base = ('FROM edge_passages e LEFT JOIN documents d ON d.run_id=e.run_id AND d.source_id=e.source_decision '
+            'LEFT JOIN edge_relations r ON r.run_id=e.run_id AND r.source_decision=e.source_decision '
+            'AND r.resolved_cited_case=e.resolved_cited_case WHERE ' + where)
+    allowed = None
+    filtered = cited is not None or a.court or a.year_from or a.year_to or a.relation
+    if filtered:
+        allowed = [r[0] for r in db.execute('SELECT e.id ' + base, [run] + args)]
+        if not allowed:
+            return []
+    ranks = {}
+    variants = [x for x in (q, english) if x]
+    if a.mode in ('hybrid', 'vector'):
+        vs, _ = embed_texts(variants, dim=EDGE_DIM)
+        for v in vs:
+            if v is None:
+                continue
+            if allowed is not None and len(allowed) <= 30000:
+                # exact ranking inside a narrow subset (unit vectors: dot product = cosine)
+                q_ = struct.unpack('%df' % EDGE_DIM, v)
+                scored = []
+                for i in range(0, len(allowed), 900):
+                    chunk = allowed[i:i + 900]
+                    for rid, emb in db.execute('SELECT rowid,embedding FROM vec_edges WHERE rowid IN (%s)' % ','.join('?' * len(chunk)), chunk):
+                        scored.append((sum(x * y for x, y in zip(q_, struct.unpack('%df' % EDGE_DIM, emb))), rid))
+                scored.sort(reverse=True)
+                rows = [rid for _, rid in scored[:a.k * 6]]
+            else:
+                rows = [r[0] for r in db.execute('SELECT rowid FROM vec_edges WHERE embedding MATCH ? AND k=?',
+                                                 (v, a.k * 60 if allowed is not None else a.k * 6))]
+                if allowed is not None:
+                    keep = set(allowed)
+                    rows = [x for x in rows if x in keep]
+            for i, rid in enumerate(rows):
+                ranks[rid] = ranks.get(rid, 0.0) + 1.0 / (60 + i)
+    if a.mode in ('hybrid', 'keyword'):
+        f = fts_query(english or q)
+        if f:
+            rows = [r[0] for r in db.execute('SELECT rowid FROM edge_fts WHERE edge_fts MATCH ? ORDER BY rank LIMIT ?',
+                                             (f, a.k * (60 if allowed is not None else 6)))]
+            if allowed is not None:
+                keep = set(allowed)
+                rows = [x for x in rows if x in keep]
+            for i, rid in enumerate(rows):
+                ranks[rid] = ranks.get(rid, 0.0) + 1.0 / (60 + i)
+    return sorted(ranks.items(), key=lambda x: -x[1])[:a.k]
+
+
+def show_edges(db, run, hits):
+    for n, (rid, _) in enumerate(hits, 1):
+        e = db.execute('SELECT * FROM edge_passages WHERE id=?', (rid,)).fetchone()
+        src = db.execute('SELECT name,decision_date FROM documents WHERE run_id=? AND source_id=?', (run, e['source_decision'])).fetchone()
+        g = db.execute('SELECT name,dd FROM case_groups WHERE run_id=? AND group_id=?', (run, e['resolved_cited_case'])).fetchone()
+        cite = db.execute('SELECT canonical_string FROM members WHERE run_id=? AND merged_group_id=? LIMIT 1',
+                          (run, e['resolved_cited_case'])).fetchone()
+        rel = db.execute('SELECT relation_type FROM edge_relations WHERE run_id=? AND source_decision=? AND resolved_cited_case=?',
+                         (run, e['source_decision'], e['resolved_cited_case'])).fetchone() if _has_relations(db) else None
+        print('%d. %s %s (%s)' % (n, e['source_decision'], (src[0] if src else '')[:50], (src[1] if src else '')[:10]))
+        print('   cites: %s [%s]  %s  DD %d' % ((g['name'] if g else '') or '(no case name)', e['resolved_cited_case'],
+                                                  cite[0] if cite else '', g['dd'] if g else 0)
+              + ('  <%s>' % rel[0] if rel and rel[0] != 'other_judgment' else ''))
+        print('   passage: ' + e['passage'][:420])
+    if not hits:
+        print('no hits')
+
+
 def run_query(db, a, q):
     run = a.run or latest_run(db)
-    en = to_english(q) if a.collection == 'cases' else ''   # method docs are Chinese: no rewrite
+    en = to_english(q) if a.collection in ('cases', 'edges') else ''   # method docs are Chinese: no rewrite
     if en:
         print('  (searching also as: %s)' % en)
+    if a.collection == 'edges':
+        return show_edges(db, run, search_edges(db, run, q, a, en))
     hits = search(db, q, a.collection, a.k, a.mode, a.layer, en)
     shown = 0
     for s, r in hits:
@@ -151,7 +269,8 @@ def run_query(db, a, q):
 def main():
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument('query', nargs='?')
-    p.add_argument('--collection', default='cases', choices=['cases', 'methods'])
+    p.add_argument('--collection', default='cases', choices=['cases', 'methods', 'edges'],
+                   help='cases (default), methods, or edges = the passages where one judgment cites another')
     p.add_argument('--mode', default='hybrid', choices=['hybrid', 'vector', 'keyword'])
     p.add_argument('-k', type=int, default=8)
     p.add_argument('--min-dd', type=int)
@@ -160,6 +279,11 @@ def main():
     p.add_argument('--case', help='show one case group and its citing decisions')
     p.add_argument('--count', action='store_true', help='exact count over the full table (with --min-dd/--origin/--name)')
     p.add_argument('--name')
+    p.add_argument('--cited', help='edges: cited case group id(s), comma separated')
+    p.add_argument('--cited-name', help='edges: cited case name contains this text')
+    p.add_argument('--court', help='edges: citing court, e.g. BCCA')
+    p.add_argument('--year-from', type=int); p.add_argument('--year-to', type=int)
+    p.add_argument('--relation', choices=['same_case_history', 'other_judgment'], help='edges: relation type')
     p.add_argument('--run')
     p.add_argument('--db', default=str(DEFAULT_DB))
     a = p.parse_args()
