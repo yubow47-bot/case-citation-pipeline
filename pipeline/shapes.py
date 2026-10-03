@@ -210,4 +210,91 @@ SHAPES = [
      rf"(?![ \t,;]*/[ \t]?\d)"),
 ]
 
+# ------------------------------------------------------------ v1.6 表驱动形状
+# 2026-10-03（PROBLEMS #107）：四个边缘法庭（TCC/SST/FPSLREB/CITT）残差挖掘暴露
+# 「前缀+编号」型标识（联邦案卷号 A-675-94、CP 20466、PSSRB File No. 168-02-37、
+# WT/DS135、魁北克 AZ-…）对七形状不可见，粘连中立引证 2005TCC640 同。两个新形状：
+#   shape_registered_id  正则由 decisions/id_prefixes.csv 生成——新增前缀只加行。
+#                        第一层「登记即抽」，不判断真引用/页眉/审理去向（后续层的事）。
+#                        字段复用：token=规范前缀，page=编号体（连字符归一），无年份。
+#   shape_neutral_glued  年份+法院码+序号无空格粘连（2005TCC640），法院码取自
+#                        neutral_court_codes.csv，故 2005ABC1 类随机串不会中。
+#                        字段与 neutral_bare 同构，下游按 neutral 处理。
+# 二者插在兜底形状之前（兜底恒在末位，test_shape_21 钉住）。未登记的
+# GD2-11（SST 证据页码）/Exhibit PR-…（证物号）不在表里，故结构上不会被抽到。
+import csv as _csv
+import os as _os
+
+_DECISIONS = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
+                           "decisions")
+_HYPHENS = "‐‑‒–"
+
+
+def load_id_prefix_rows():
+    path = _os.path.join(_DECISIONS, "id_prefixes.csv")
+    if not _os.path.exists(path):
+        return []
+    with open(path, encoding="utf-8", newline="") as f:
+        return [r for r in _csv.DictReader(f) if (r.get("prefix_id") or "").strip()]
+
+
+ID_PREFIX_ROWS = load_id_prefix_rows()
+
+
+def _registered_id_regex(rows):
+    alts = ["(?P<rid%d>(?P<rtok%d>%s)(?P<rbody%d>%s))"
+            % (i, i, r["prefix_regex"], i, r["body_regex"]) for i, r in enumerate(rows)]
+    return r"(?<![\w-])(?:" + "|".join(alts) + r")(?![\w-])"
+
+
+def _glued_neutral_regex():
+    path = _os.path.join(_DECISIONS, "neutral_court_codes.csv")
+    if not _os.path.exists(path):
+        return None
+    with open(path, encoding="utf-8", newline="") as f:
+        codes = {(r.get("court_code") or "").strip() for r in _csv.DictReader(f)}
+    codes = sorted((c for c in codes if c.isalpha() and c.isupper() and len(c) >= 2),
+                   key=lambda c: (-len(c), c))
+    if not codes:
+        return None
+    return (rf"(?<![A-Za-z0-9])(?P<year>{_YEAR})(?P<token>{'|'.join(codes)})"
+            rf"(?P<page>\d{{1,6}})(?![A-Za-z0-9])")
+
+
+def resolve_registered_id(groupdict):
+    """shape_registered_id 的捕获组归一：把 rtokN/rbodyN 解析为 token/page。
+    其他形状原样返回。返回新字典，不改入参。"""
+    if "rid0" not in groupdict and not any(k.startswith("rid") for k in groupdict):
+        return groupdict
+    g = dict(groupdict)
+    for i, r in enumerate(ID_PREFIX_ROWS):
+        tok = g.get("rtok%d" % i)
+        if tok is None:
+            continue
+        canon = (r.get("canonical_token") or "").replace("{prefix}", tok.upper())
+        body = (g.get("rbody%d" % i) or "")
+        body = body.replace("�C", "-")
+        for h in _HYPHENS:
+            body = body.replace(h, "-")
+        g["token"] = canon
+        g["page"] = body.strip().lstrip("-").strip()
+        g["rid_row"] = r["prefix_id"]
+        break
+    return g
+
+
+# [1938-39] C.T.C. 138：年份区间括注（15 处，TCC/CITT/FPSLREB）。复制 shape_bracket 的
+# 全部后段，只换年份头；year 组只取起始年（与 year_start 恒等 year_raw 的口径一致）。
+_BRACKET_HEAD = rf"\[\s*(?P<year>{_YEAR})\s*\]\s*"
+_BRACKET_RANGE_HEAD = rf"\[\s*(?P<year>{_YEAR})\s*[-‐-–]\s*(?:{_YEAR}|\d{{2}})\s*\]\s*"
+_bracket_rx = dict(SHAPES)["shape_bracket"]
+assert _bracket_rx.startswith(_BRACKET_HEAD)
+_EXTRA = [("shape_bracket_range", _BRACKET_RANGE_HEAD + _bracket_rx[len(_BRACKET_HEAD):])]
+if ID_PREFIX_ROWS:
+    _EXTRA.append(("shape_registered_id", _registered_id_regex(ID_PREFIX_ROWS)))
+_glued = _glued_neutral_regex()
+if _glued:
+    _EXTRA.append(("shape_neutral_glued", _glued))
+SHAPES = SHAPES[:-1] + _EXTRA + SHAPES[-1:]
+
 SHAPE_ORDER = [name for name, _ in SHAPES]

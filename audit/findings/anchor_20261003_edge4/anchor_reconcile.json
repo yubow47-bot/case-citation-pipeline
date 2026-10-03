@@ -1,0 +1,532 @@
+{
+ "TCC": {
+  "docs": 8077,
+  "families": {
+   "no_serial": {
+    "total": 6161,
+    "party": 5275,
+    "missed": 95,
+    "missed_party": 84,
+    "docs": 2437
+   },
+   "fed_docket": {
+    "total": 210,
+    "party": 153,
+    "missed": 210,
+    "missed_party": 153,
+    "docs": 152
+   },
+   "sst_decision": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "pssrb_file": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "glued_neutral": {
+    "total": 8065,
+    "party": 428,
+    "missed": 8055,
+    "missed_party": 426,
+    "docs": 4207
+   },
+   "year_range": {
+    "total": 11,
+    "party": 8,
+    "missed": 11,
+    "missed_party": 8,
+    "docs": 7
+   },
+   "di_cite": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "cp_pab": {
+    "total": 1,
+    "party": 0,
+    "missed": 1,
+    "missed_party": 0,
+    "docs": 1
+   },
+   "citt_number": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "wto_ds": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "NOISE_sst_gd": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "NOISE_exhibit": {
+    "total": 17186,
+    "party": 1365,
+    "missed": 17169,
+    "missed_party": 1365,
+    "docs": 2636
+   }
+  },
+  "examples": {
+   "no_serial": [
+    "robabilities. [29] In Northwest Hydraulic Consultants Ltd. v. Canada, [1998] T.C.J. no. 340 (QL) [Northwes",
+    "nts. . . \" (at paragraph 19). [34] In Venne v. Her Majesty the Queen, [1984] FCJ no. 314, (page 14, FCT",
+    "a-Rourke Adaptation Réadaptation c. Québec (Sous-ministre du Revenu), [2002] J.Q. no. 470 (QL) (C.A. Qué",
+    "ns with an intellectual disability: employees); Guérette c. Lapierre, [2003] J.Q. no. 4952 (QL) (S.C. Qué"
+   ],
+   "fed_docket": [
+    "red its decision in The Queen v. BCS Group Services Inc. appeal (file A-204-18). Signed at Ot",
+    "ce pending the decision in The Queen v. BCS Group Services Inc. (file A-204-18), a case pendi",
+    "or doing it: Vulcain Alarme Inc. v. The Minister of National Revenue, A-376-98, May 11, 1999,",
+    "st v. Canada [1993] 1 CTC 2294 (TCC), aff’d Feb. 4, 1998 (FCA)(Docket A-201-93). [5] [1998] 1"
+   ],
+   "sst_decision": [],
+   "pssrb_file": [],
+   "glued_neutral": [
+    "IT)G Judges and Taxing Officers Brent Paris Decision Content Citation:2009TCC107 Court File Nos",
+    "cers Bruce Russell Subjects Income Tax Act Decision Content Citation: 2018TCC165 Date: 20180821",
+    " Valerie A. Miller Subjects Income Tax Act Decision Content Citation: 2012TCC315 Date: 20121107",
+    " Valerie A. Miller Subjects Income Tax Act Decision Content Citation: 2012TCC319 Date: 20120907"
+   ],
+   "year_range": [
+    "r Court in M.N.R. v. Taylor, [1956] C.T.C. 189, at pages 211 and 212, [1956-60] Ex.C.R. 3, at pages 26",
+    "ies, [1962] S.C.R. 346, page 351. [60] For example, M.N.R. v. Taylor, [1956-60] Ex.C.R. 3. [61] For ex",
+    "o the meaning of business. In Minister of National Revenue v. Taylor, [1956-1960] Ex. C.R. 3, Presid",
+    "The Queen, 2003 FCA 400. [3] Dominion Natural Gas Co. Ltd. v. M.N.R., [1940-41] C.T.C. 155 (S.C.C.), "
+   ],
+   "di_cite": [],
+   "cp_pab": [],
+   "citt_number": [],
+   "wto_ds": [],
+   "NOISE_sst_gd": [],
+   "NOISE_exhibit": [
+    "CTC 2892 (TCC), at 2919. [9] Ibid., p. 12. [10] Ibid., p. 13-14. [11] Exhibit AR-1, Tab 6 (for AF",
+    "28 (TCC), at 2445. For additional context, see footnote 8 above. [36] Exhibit AR-1, Tab 1, p. 3, ",
+    " letters were sent to Mr. Savics in respect of AFS 9 and AFS 11. [37] Exhibit AR-1, Tab 3, which ",
+    "r (purchasers) in respect to a Viceroy framing and materials package (Exhibit R-6). This was als"
+   ]
+  }
+ },
+ "SST": {
+  "docs": 17915,
+  "families": {
+   "no_serial": {
+    "total": 1244,
+    "party": 1220,
+    "missed": 28,
+    "missed_party": 28,
+    "docs": 1029
+   },
+   "fed_docket": {
+    "total": 13530,
+    "party": 9706,
+    "missed": 13120,
+    "missed_party": 9311,
+    "docs": 4000
+   },
+   "sst_decision": {
+    "total": 37661,
+    "party": 2713,
+    "missed": 37595,
+    "missed_party": 2689,
+    "docs": 17624
+   },
+   "pssrb_file": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "glued_neutral": {
+    "total": 11,
+    "party": 11,
+    "missed": 11,
+    "missed_party": 11,
+    "docs": 11
+   },
+   "year_range": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "di_cite": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "cp_pab": {
+    "total": 1546,
+    "party": 1474,
+    "missed": 1319,
+    "missed_party": 1250,
+    "docs": 916
+   },
+   "citt_number": {
+    "total": 1,
+    "party": 1,
+    "missed": 1,
+    "missed_party": 1,
+    "docs": 1
+   },
+   "wto_ds": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "NOISE_sst_gd": {
+    "total": 118391,
+    "party": 31053,
+    "missed": 106895,
+    "missed_party": 27610,
+    "docs": 9823
+   },
+   "NOISE_exhibit": {
+    "total": 4092,
+    "party": 141,
+    "missed": 4080,
+    "missed_party": 138,
+    "docs": 296
+   }
+  },
+  "examples": {
+   "no_serial": [
+    "da (A.G.), 2011 FCA 47 Footnote 9 S.M.-R. v Canada (Attorney General) [2013] F.C.J. no. 689, 2013 FCA 158 ",
+    "neral) 2003 FCA 117. Footnote 5 Calihoo v. Canada (Attorney General), [2000] F.C.J. no. 612. Footnote 6 Ha",
+    "s refused. Footnotes Footnote 1 Calihoo v. Canada (Attorney General), [2000] FCJ No.612 TD. Footnote 2",
+    "ents of Marceau, J. in ECWU Local 916 v. Atomic Energy of Canada Ltd. [1985] F.C.J. No. 189Footnote 6 that"
+   ],
+   "fed_docket": [
+    "ension Plan Note de bas de page 17 Pincombe v. Canada (A.G.), (1995), A-675-94 ",
+    "e decision. Footnote 7 Ramlochan v. Canada (Attorney General), Docket T-148-13. ",
+    "te 30 2015 SSTAD 773. Footnote 31 Attorney General of Canada v. H.W., A-332-15 (April 4, 2016",
+    "sonable (Ramlochan v. Canada (Attorney General), Federal Court docket T-148-13). As the outco"
+   ],
+   "sst_decision": [
+    "-825 (J.S. v. Canada Employment Insurance Commission, 2015 SSTAD715), AD-14-131 (C.D. v. Canad",
+    "-131 (C.D. v. Canada Employment Insurance Commission, 2015 SSTAD594), AD-14-310 (M.C. v. Canad",
+    "-310 (M.C. v. Canada Employment Insurance Commission, 2015 SSTAD237), AD-15-74 (J.C. v. Minis",
+    ", 2011 FCA 1, and Breslaw v. Canada (Attorney General), 2004 FCA 264. AD-15-236 (C.S. v. Minis"
+   ],
+   "pssrb_file": [],
+   "glued_neutral": [
+    " chance of success.” Footnote 3 Canada (Attorney General) v. Carroll, 2011FC1092 para 14. Footn",
+    " chance of success.” Footnote 3 Canada (Attorney General) v. Carroll, 2011FC1092 para 14. ",
+    " chance of success.” Footnote 3 Canada (Attorney General) v. Carroll, 2011FC1092 para 14. Footn",
+    " chance of success.” Footnote 3 Canada (Attorney General) v. Carroll, 2011FC1092 para 14. Footn"
+   ],
+   "year_range": [],
+   "di_cite": [],
+   "cp_pab": [
+    "The Tribunal looked for guidance to Lombardo v. MHRD (July 23, 2001), CP 12731 (PAB) which fo",
+    "e. The Tribunal further looked to MHRD v. Mulek (September 13, 1996), CP 4719 (PAB) which fo",
+    "The Tribunal looked for guidance to Thawer v. MHRD (December 3, 2003, CP 18204 (PAB) which fo",
+    "have been made to cope with the pain: MNH v. Densmore (June 2, 1993), CP 2389 (PAB). In this"
+   ],
+   "citt_number": [
+    "r of Employment and Social Development) v S.F. and C.F., Decision No. AP-21-132 (“SF & CF”). D"
+   ],
+   "wto_ds": [],
+   "NOISE_sst_gd": [
+    "tween October 20, 2010 and June 14, 2012, and can be found from pages GD2-15 to GD2-101 of ",
+    "ber 20, 2010 and June 14, 2012, and can be found from pages GD2-15 to GD2-101 of the hearing",
+    "h McNichol and Joanne Gram. [18] The employability evaluation report (GD6-77 to 109) descri",
+    "reports dated September 27, 2012 (GD3-139 to 143), and March 5, 2013 (GD3-38 to 41/GD3-42 t"
+   ],
+   "NOISE_exhibit": [
+    "man Resources Development) v. Rice, 2002 FCA 47 at para. 8 Footnote 7 Exhibit A-1, p. 184, repor",
+    "ns. Exhibits A-2 and A-3 were already in the Respondent’s possession. Exhibit A-4 was prepared a",
+    "e 4 Canada (Attorney General) v Cloutier, 2005 FCA 73. Footnote 5 See Exhibit GD3-16. Footnote 6 Se",
+    " Cloutier, 2005 FCA 73. Footnote 5 See Exhibit GD3-16. Footnote 6 See Exhibit GD3-20. Footnote 7 Se"
+   ]
+  }
+ },
+ "FPSLREB": {
+  "docs": 3380,
+  "families": {
+   "no_serial": {
+    "total": 2391,
+    "party": 2200,
+    "missed": 65,
+    "missed_party": 55,
+    "docs": 954
+   },
+   "fed_docket": {
+    "total": 653,
+    "party": 45,
+    "missed": 653,
+    "missed_party": 45,
+    "docs": 466
+   },
+   "sst_decision": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "pssrb_file": {
+    "total": 3097,
+    "party": 2176,
+    "missed": 3058,
+    "missed_party": 2175,
+    "docs": 951
+   },
+   "glued_neutral": {
+    "total": 4,
+    "party": 2,
+    "missed": 4,
+    "missed_party": 2,
+    "docs": 4
+   },
+   "year_range": {
+    "total": 2,
+    "party": 2,
+    "missed": 2,
+    "missed_party": 2,
+    "docs": 2
+   },
+   "di_cite": {
+    "total": 219,
+    "party": 132,
+    "missed": 219,
+    "missed_party": 132,
+    "docs": 77
+   },
+   "cp_pab": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "citt_number": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "wto_ds": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "NOISE_sst_gd": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "NOISE_exhibit": {
+    "total": 16828,
+    "party": 1246,
+    "missed": 16824,
+    "missed_party": 1246,
+    "docs": 648
+   }
+  },
+  "examples": {
+   "no_serial": [
+    "follow decisions: Horsley et al. v. Canadian Union of Postal Workers, [1991] CLRB no. 861; Beaven et al.",
+    "991] CLRB no. 861; Beaven et al. v. Telecommunications Workers Union, [1996] CLRB no. 1163; Beaudet-Forti",
+    "6] CLRB no. 1163; Beaudet-Fortin v. Canadian Union of Postal Workers, [1997] CLRB no. 1216; and Dickinson",
+    " v. International Longshoremen’s and Warehousemen’s Union, Local 500, [1993] CLRB no. 1029. 23 Based on c"
+   ],
+   "fed_docket": [
+    "C.R. 489; Peet v. Canada (Treasury Board), (June 30, 1993) Court File T-1608-92 (F.C.T.D.); an",
+    "C.R. 489; Peet v. Canada (Treasury Board), (June 30, 1993) Court File T-1608-92 (F.C.T.D.); an",
+    "cording to Tucci v. Canada (Attorney General), Federal Court File No. T-623-96 (19970211),unl",
+    "aragraph 71). 143 In Pachowski v. Canada (Treasury Board), Docket No. T-1798-99 (20001016), th"
+   ],
+   "sst_decision": [],
+   "pssrb_file": [
+    "unsel for the grievor also noted that, in Crawford v. Treasury Board, PSSRB File No. 168-02-37 (19731120), th",
+    "lear in King v. Treasury Board (Revenue Canada – Customs and Excise), PSSRB File Nos. 166-02-28332 and 28333 (199",
+    "ed King and Holzer and Phillips v. Treasury Board (Transport Canada), PSSRB File No. 166-02-20099 (19910425), po",
+    "yer submitted Murray and Shaver v. Treasury Board (Transport Canada), PSSRB File Nos. 166-02-26588 to 26592 (1996"
+   ],
+   "glued_neutral": [
+    "ities, Cojocaru and CCH Canadian Ltd. v. Law Society of Upper Canada, 2004SCC13 (“CCH”), both ",
+    "s v. Canadian Broadcasting Corp., [1994] 3 S.C.R. 835; R. v. Mentuck, 2001SCC76, Sierra Club o"
+   ],
+   "year_range": [
+    "at flow from the breach of the agreement. Hadley v. Baxendale (1854), [1843-60] All E.R. Rep. 461,",
+    "dicta to the same effect can be found in Attorney General v. Halliday [1866-67] U.C.Q.B. 397 and Sander"
+   ],
+   "di_cite": [
+    "3; and 75 CLLC 16,164 (CLRB no. 45); and Provost Cartage Inc. (1985), 61 di 77 (CLRB no. 517)",
+    "or administered… … See also Samson v. Canada Post Corporation (1987), 71 di 215, at page 7. 14",
+    "ocal P139 (1980), 26 L.A.C. (2d) 379; and Fugère v. Québecair (1987), 72 di 44. In Burns Meat",
+    ". International Association of Machinists and Aerospace Workers (1984)59 di 109). In my view, "
+   ],
+   "cp_pab": [],
+   "citt_number": [],
+   "wto_ds": [],
+   "NOISE_sst_gd": [],
+   "NOISE_exhibit": [
+    " reviewed clause 30.06 of the collective agreement and sent an email (Exhibit U-6) on behalf of ",
+    "oth December 25 and January 1. The solution proposed by the grievors (Exhibit U-6) would have be",
+    "g Group (AV) that expired June 21, 2007 (“the collective agreement”) (Exhibit G-1). 6 In Matear ",
+    "r. Turgeon (Exhibit E-1A), Mr. Patry (Exhibit E-1B) and Mr. Tremblay (Exhibit E-1C). The reason t"
+   ]
+  }
+ },
+ "CITT": {
+  "docs": 5342,
+  "families": {
+   "no_serial": {
+    "total": 223,
+    "party": 189,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 177
+   },
+   "fed_docket": {
+    "total": 308,
+    "party": 156,
+    "missed": 308,
+    "missed_party": 156,
+    "docs": 208
+   },
+   "sst_decision": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "pssrb_file": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "glued_neutral": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "year_range": {
+    "total": 7,
+    "party": 5,
+    "missed": 7,
+    "missed_party": 5,
+    "docs": 5
+   },
+   "di_cite": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "cp_pab": {
+    "total": 1,
+    "party": 0,
+    "missed": 1,
+    "missed_party": 0,
+    "docs": 1
+   },
+   "citt_number": {
+    "total": 35844,
+    "party": 11573,
+    "missed": 35782,
+    "missed_party": 11570,
+    "docs": 5107
+   },
+   "wto_ds": {
+    "total": 609,
+    "party": 175,
+    "missed": 609,
+    "missed_party": 175,
+    "docs": 152
+   },
+   "NOISE_sst_gd": {
+    "total": 0,
+    "party": 0,
+    "missed": 0,
+    "missed_party": 0,
+    "docs": 0
+   },
+   "NOISE_exhibit": {
+    "total": 43079,
+    "party": 2421,
+    "missed": 43069,
+    "missed_party": 2420,
+    "docs": 1992
+   }
+  },
+  "examples": {
+   "no_serial": [],
+   "fed_docket": [
+    "Minister of Public Works and Government Services) (28 November 2000), A-421-99 (F.C.A.). 18 .",
+    "Minister of Public Works and Government Services) (28 November 2000), A-421-99 (F.C.A), para ",
+    "(Attorney General) v. Northrop Grumman Overseas Services Corporation, A-310-07. This judicial",
+    "vin v. The Canadian International Development Agency (19 March 2008), A-553-07 (FCA). 8 . Ber"
+   ],
+   "sst_decision": [],
+   "pssrb_file": [],
+   "glued_neutral": [],
+   "year_range": [
+    "Cases Cited: The King v. Dominion Bridge Co. Ltd., [1940] S.C.R. 487; [1940-41] C.T.C. 99; D.T.C. 499",
+    "Tax, [1942] S.C.R. 476. 34. His Majesty the King v. Leon L. Plotkins, [1938-39] C.T.C. 138 (Ex. Ct.) ",
+    "e Tax , [1942] S.C.R. 476; His Majesty the King v. Leon L. Plotkins , [1938-39] C.T.C. 138 (Ex. Ct.) ",
+    "10 (Ex. Ct.). 9. See, also, His Majesty the King v. Leon L. Plotkins, [1938-39] C.T.C. 138 (Ex. Ct.)."
+   ],
+   "di_cite": [],
+   "cp_pab": [],
+   "citt_number": [
+    ") INC. v. Department of Public Works and Government Services File No. PR-2008-062 Determination ",
+    "S INC. v. DEPARTMENT OF PUBLIC WORKS AND GOVERNMENT SERVICES File No. PR-2009-006 Order issued W",
+    "S INC. v. DEPARTMENT OF PUBLIC WORKS AND GOVERNMENT SERVICES File No. PR-2009-006 Determination ",
+    " and September 5, 2008 (RVD32517 ). In its determination in File Nos. PR-2008-038 to PR-2008-043"
+   ],
+   "wto_ds": [
+    "nal, [1978] 1 F.C. 222 (FCA); Panel Report, China – Automobiles (US), WT/DS440/R at para. 7.2",
+    "nal, [1978] 1 F.C. 222 (FCA); Panel Report, China – Automobiles (US), WT/DS440/R at para. 7.2",
+    "nal, [1978] 1 F.C. 222 (FCA); Panel Report, China – Automobiles (US), WT/DS440/R at para. 7.2",
+    "ibunal, [1978] 1 F.C. 222 (F.C.A.); Panel Report, China – Autos (US), WT/DS440/R at para. 7.2"
+   ],
+   "NOISE_sst_gd": [],
+   "NOISE_exhibit": [
+    "artment of Public Works and Government Services (PWGSC), in regard to Solicitation No. W8472-085129/A for fire contr",
+    "on behalf of the Department of Fisheries and Oceans, made the RFP for Solicitation No. F3051-080001/A available thro",
+    "ervices (PWGSC), in regard to a Request for Volume Discount (RVD) for Solicitation No. EN869-071124/O) (RVD302) issu",
+    "08—Solicitation No. W0106-09613B/A (RVD 695) and File No. PR-2009-118—Solicitation No. W010S-10D282/A (RVD 711) and "
+   ]
+  }
+ }
+}

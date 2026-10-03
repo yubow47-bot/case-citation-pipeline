@@ -1,0 +1,36 @@
+TCC docs=8077
+  family            total    party   missed miss_pty   docs
+  no_serial          6161     5275       95       84   2437
+  fed_docket          210      153      210      153    152
+  glued_neutral      8065      428     8055      426   4207
+  year_range           11        8       11        8      7
+  cp_pab                1        0        1        0      1
+  NOISE_exhibit     17186     1365    17169     1365   2636
+SST docs=17915
+  family            total    party   missed miss_pty   docs
+  no_serial          1244     1220       28       28   1029
+  fed_docket        13530     9706    13120     9311   4000
+  sst_decision      37661     2713    37595     2689  17624
+  glued_neutral        11       11       11       11     11
+  cp_pab             1546     1474     1319     1250    916
+  citt_number           1        1        1        1      1
+  NOISE_sst_gd     118391    31053   106895    27610   9823
+  NOISE_exhibit      4092      141     4080      138    296
+FPSLREB docs=3380
+  family            total    party   missed miss_pty   docs
+  no_serial          2391     2200       65       55    954
+  fed_docket          653       45      653       45    466
+  pssrb_file         3097     2176     3058     2175    951
+  glued_neutral         4        2        4        2      4
+  year_range            2        2        2        2      2
+  di_cite             219      132      219      132     77
+  NOISE_exhibit     16828     1246    16824     1246    648
+CITT docs=5342
+  family            total    party   missed miss_pty   docs
+  no_serial           223      189        0        0    177
+  fed_docket          308      156      308      156    208
+  year_range            7        5        7        5      5
+  cp_pab                1        0        1        0      1
+  citt_number       35844    11573    35782    11570   5107
+  wto_ds              609      175      609      175    152
+  NOISE_exhibit     43079     2421    43069     2420   1992

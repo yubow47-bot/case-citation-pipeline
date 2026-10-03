@@ -183,7 +183,7 @@ _ADMIT_CITE_TAIL_RE = re.compile(
     r"(?:,?\s+\d|,?\s+[A-Z][A-Za-z.]{0,9}\.?\s+\d).*$", re.DOTALL)  # 案名可含换行；无 DOTALL 时 .*$ 跨不过换行，漏剥 227 条（自检发现）
 
 # 形状 → 主缩写取自哪个字段（规格 §7.3）
-TOKEN_SHAPES = {"shape_bracket", "shape_neutral_bare"}
+TOKEN_SHAPES = {"shape_bracket", "shape_bracket_range", "shape_neutral_bare", "shape_neutral_glued"}   # v1.6：粘连中立引证按裸代码同构处理
 # 形状 → 是否印有独立的前置缩写槽（PROBLEMS #85 的 `date_form` 两条读法都用）
 LEADING_SHAPES = {"shape_leading_abbr", "shape_paren_year_abbr_page"}
 
@@ -212,6 +212,29 @@ def load_identifier_systems():
             tok = (r.get("printed_token") or "").strip()
             if tok:
                 out[tok] = r
+    return out
+
+
+# ------------------------------------------------ id_prefixes（v1.6，PROBLEMS #107）
+def load_id_prefixes():
+    """id_prefixes.csv → [(matcher, row)]。第一层 shape_registered_id 把规范前缀
+    写进 token（A-、CP、AP-…）；本层按 canonical_token 反查所属行。
+    {prefix} 占位行（CITT/SST 多前缀）用该行 prefix_regex 展开后整串匹配。"""
+    path = os.path.join(DECISIONS, "id_prefixes.csv")
+    if not os.path.exists(path):
+        return []
+    out = []
+    with open(path, encoding="utf-8", newline="") as f:
+        for r in csv.DictReader(f):
+            canon = (r.get("canonical_token") or "").strip()
+            if not canon:
+                continue
+            if "{prefix}" in canon:
+                pat = re.escape(canon).replace(re.escape("{prefix}"),
+                                               "(?:" + r["prefix_regex"] + ")")
+            else:
+                pat = re.escape(canon)
+            out.append((re.compile(pat, re.I), r))
     return out
 
 
@@ -749,6 +772,9 @@ class Classifier(object):
         self.prefix_norm = build_index(tables["series_prefix"], "normalized_key")
         # R2F：identifier 系统（印刷 token 逐字精确匹配；大小写敏感）
         self.ident_exact = tables.get("identifier_systems") or {}
+        # v1.6：前缀型标识（案卷号 docket / 出版社判决编号 decision）
+        self.id_prefixes = tables.get("id_prefixes") or []
+        self._idpref_cache = {}
         # R3 Stage 3：汇编卷/年体系（表驱动，仅用于盖章给归并层）
         self.vol_system = tables.get("volume_system") or {}
         # R4（D1）：法院标注决策表（封闭集合，精确匹配）
@@ -826,6 +852,57 @@ class Classifier(object):
         row["abbreviation"] = printed_token
         return False                         # 落入 Step 3
 
+    def _idpref_row(self, token):
+        if token not in self._idpref_cache:
+            hit = None
+            for rx, r in self.id_prefixes:
+                if rx.fullmatch(token):
+                    hit = r
+                    break
+            self._idpref_cache[token] = hit
+        return self._idpref_cache[token]
+
+    def _registered_id(self, row):
+        """v1.6 / PROBLEMS #107：已登记前缀+编号。
+        docket：标识一场诉讼程序，对不上唯一一份判决——保留不计数（约束四：不猜
+          是哪一份），citation_kind=docket + rejected_reason=docket_not_decision。
+        decision：标识单份判决，按 identifier 计数。
+        法域只在表行 verification_status 以 verified_ 开头时才套用，否则 UNSUPPORTED
+        （没有表证据就没有判定）。"""
+        tok = (row.get("token") or "").strip()
+        r = self._idpref_row(tok)
+        row["abbreviation"] = tok
+        row["lookup_mode"] = "exact"
+        row["identifier_subdivision_code"] = ""
+        row["jurisdiction_subdivision"] = ""
+        if r is None:                       # 表被改而抽取未同步：不静默
+            row["citation_kind"] = "ambiguous"
+            row["jurisdiction"] = "UNSUPPORTED"
+            row["jurisdiction_confidence"] = "unsupported"
+            append_reason(row, "rejected_reason", "id_prefix_not_in_table")
+            self.stats["id_prefix_not_in_table"] += 1
+            return True
+        verified = (r.get("verification_status") or "").startswith("verified_")
+        scope = (r.get("jurisdiction_scope") or "").strip()
+        if verified and scope:
+            row["jurisdiction"] = scope
+            row["jurisdiction_confidence"] = "confirmed"
+        else:
+            row["jurisdiction"] = "UNSUPPORTED"
+            row["jurisdiction_confidence"] = "unsupported"
+        if (r.get("identifies") or "") == "docket":
+            row["citation_kind"] = "docket"
+            append_reason(row, "rejected_reason", "docket_not_decision")
+            self.stats["docket_not_decision"] += 1
+        else:
+            row["citation_kind"] = "identifier"
+            if not verified:
+                # 用户裁定（2026-10-03）：未核实的前缀型判决编号先不计数——保留不丢
+                # （约束五），但不进计数；表行核实后（状态 verified_*）自动转为计数。
+                append_reason(row, "rejected_reason", "unverified_id_prefix")
+                self.stats["unverified_id_prefix"] += 1
+        return True
+
     def step1(self, row):
         shape = row["shape_name"]
         if shape == "shape_leading_abbr":
@@ -841,6 +918,8 @@ class Classifier(object):
             row["citation_kind"] = "reporter"
             row["abbreviation"] = row.get("abbr") or ""
             return False
+        if shape == "shape_registered_id":
+            return self._registered_id(row)
         if shape in TOKEN_SHAPES:
             tok = (row.get("token") or "").strip()
             ident = self.ident_exact.get(tok)
@@ -1044,6 +1123,7 @@ def main():
               ("neutral_court_codes", "reporter_jurisdiction",
                "series_prefix", "case_origin")}
     tables["identifier_systems"] = load_identifier_systems()
+    tables["id_prefixes"] = load_id_prefixes()
     tables["volume_system"] = load_volume_systems()
     tables["court_designations"] = load_court_designations()
     clf = Classifier(tables, stats)

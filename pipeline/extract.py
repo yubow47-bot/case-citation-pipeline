@@ -230,7 +230,7 @@ def extract_candidates(text, sdc, year, row_index, court, stats=None):
         span_cols = {col: (grp, grp in rx.groupindex)
                      for grp, col in _SPAN_GROUPS.items()}
         for m in matches:
-            g = m.groupdict()
+            g = shapes.resolve_registered_id(m.groupdict())   # v1.6：表驱动形状的组归一
             start, end = m.start(), m.end()
             spans = {}
             for col, (grp, has) in span_cols.items():
@@ -384,7 +384,7 @@ def extract_rows(text, sdc, year, stats=None):
     rows = []
     for name, rx in SHAPES:
         for m in rx.finditer(text):
-            g = m.groupdict()
+            g = shapes.resolve_registered_id(m.groupdict())   # v1.6
             rows.append({
                 "raw_string": re.sub(r"\s+", " ", m.group(0)).strip(),
                 "shape_name": name,
