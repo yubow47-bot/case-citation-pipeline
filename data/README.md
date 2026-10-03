@@ -5,21 +5,26 @@
 
 2026-09-15 瘦身：46.8 GB → 约 9.6 GB。原来的 25 个 run/冒烟目录只剩 7 个。
 
-## 现在有什么
+## 现在有什么（2026-10-02 整理后）
 
 | 目录 | 是什么 | 为什么留 |
 |---|---|---|
-| `run_20260914_r4c/` | **交付 run**，五层 + edges 完整 | 唯一交付物；USAGE §6b 的读法都指着它 |
-| `run_20260913_r3e/` | 上一基线，完整 | `r4_invariance_check.py` / `r4_verify_stage4.py` 拿它比 r4c |
-| `run_20260912_final/` | 只剩答案层（merge/decide/select + manifest + 日志） | 不可重建；`r2closure_delta.py` 的 Round-1 基线 |
-| `run_20260912_stage2/` | 只剩答案层 | 不可重建；`diff_old_new.py`、`traceback.py` 用法示例 |
-| `run_20260913_r2g/` | 只剩答案层 | 不可重建；`build_demo_examples.py` |
-| `run_20260913_r3d/` | 只剩答案层 | 不可重建；4 个 `_probe_r3d_*.py` |
-| `run_20260913_r2d_b/` | 只剩 `sensitivity_*`、`audit/`、manifest、日志 | 敏感性产物由 `r2closure_sensitivity.py` 事后生成，不在 run 指纹内 |
+| `run_20261002_bilingual/` | **当前基线**，五层 + edges 完整（SCC+ONCA+BCCA 主线，输入表状态 = 提交 `adfef95`） | 2026-10-02 表改动后重跑的对照基线 |
+| `run_receipts/` | 已移走的旧 run 里 300 KB 以下的小文件（manifest、各步骤日志、registry 报告、sensitivity 小表）4.9 MB | PROBLEMS.md / 审计报告引用的数字仍能查到出处 |
 | `extract_out` `classify_out` `merge_out` `decide_out` `select_out` `coverage_out` | 老路线（candidates-1.x）产出 | `test_layers.py --golden` 与 USAGE §8 数字读的就是这里——**别动** |
-| `audit/` | 改前快照（`before_task2/3/4`）与测量输出；`scratch_2026-09/` 是 09-09～09-14 的一次性探针 | 审计脚本的输入 |
+| `audit/` | 测量输出与 `scratch_2026-09/` 一次性探针 | 审计脚本的输入。改前快照（`before_task2/3/4`、`ab85_old`、`pre85_r21a`）已移出 |
 | `canlii_cache/` | CanLII 列表缓存 | `decisions/tools/build_case_origin.py --offline` 依赖 |
-| 根目录 5 个文件 | `corpus_manifest.json`、`.corpus_records.tsv`、`.tree_targets.tsv`、`neutral_triage.json`、`table_coverage.json` | `scripts/download_corpus.sh` 与 audit 脚本按这个路径读写 |
+| `recall/` | 经验库索引（SQLite + bge-m3 向量，`tools/recall/` 生成） | 见 `tools/recall/README.md` |
+| `glm_audit/` | 外部模型审计产物 | 历史记录 |
+| 根目录文件 | `corpus_manifest.json`、`neutral_triage.json`、`table_coverage.json`、三个 `run_*.log` | `scripts/download_corpus.sh` 与 audit 脚本按这个路径读写 |
+
+## 已移出本目录的 run（2026-10-02）
+
+为重跑腾出空间，下列 run 移到了仓库外的 `D:\_cases_offload\`（不在 git，不在本目录）：
+
+- `backup_to_external/run_20260918_scc_onca_bcca`（3.1 GB）：10-02 管辖权证据审计读的就是它。**应拷到移动硬盘**。`audit/jurisdiction_*.py` 与 `audit/canlii_crosscheck/*.py` 里写死了这个路径，用时须先放回 `data/` 或改指向新 run
+- `remove/`（约 16 GB）：`run_20260912_final`、`stage2`、`r2d_b`、`r2g`、`r3d`、`r3e`、`r4c`、`r21a`、`85date`、`run_20260918_final`、`smoke_88_89` 与 `audit/` 里的 5 个改前快照。重跑对比完成、确认无人需要后可整体删除
+- **注意**：`run_20260916_85date` 与 `run_20260918_final` **不在** `implementation/run_registry.csv`，删除后无法用 `rebuild_run.py` 重建；其余均已登记
 
 ## 被删的 run 怎么找回
 
