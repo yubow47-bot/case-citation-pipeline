@@ -9,6 +9,7 @@ import sys
 from common import DEFAULT_DB, connect
 from embed import load_vec
 from query import search, latest_run
+from rewrite import to_english
 
 CASES = [
     ('standard of appellate review palpable and overriding error', ['Housen']),
@@ -46,7 +47,7 @@ METHODS = [
 def run(db, items, collection, k, mode):
     ok = 0
     for q, expect in items:
-        hits = search(db, q, collection, k * 3, mode)
+        hits = search(db, q, collection, k * 3, mode, None, to_english(q) if collection == 'cases' else '')
         top = []
         for _, r in hits:
             top.append(r['title'] + ' ' + r['source_locator'])

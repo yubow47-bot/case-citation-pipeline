@@ -102,6 +102,12 @@ NEW_COLUMNS = ["citation_kind", "abbreviation", "jurisdiction",
 
 # 年份形状（4 位数字），用于 year/vol 同形判定
 _YEAR_SHAPE_RE = re.compile(r"^(?:1[6-9]|20)\d{2}$")
+_ZERO_PAD_RE = re.compile(r"(?<=[a-z])0+(?=\d)")
+
+
+def _unpad(k):
+    """归一后的引证串里，紧跟在字母后的前导零去掉：`2003bcca0443` -> `2003bcca443`。"""
+    return _ZERO_PAD_RE.sub("", k)
 
 # ---------------------------------------------------------------- §8.4 Step 2
 FED_STATUTE = re.compile(r"(?:^|[\s(\[])(?:R\.S\.C\.|S\.C\.)\s*(?:18|19|20)\d{2}")
@@ -980,8 +986,10 @@ class Classifier(object):
         # 自身引证（source_decision_citation 即「法院_nk(citation_en)」）即自引。它是真
         # 引证，故不进 rejected_reason（§8.3 要求「不是引证」与其他含义分开），只打标记；
         # 计数时由归并层排除。平行汇编、双语代码等头部其他写法单行认不出，交裁定层
+        # 补零是同一个印刷号码的两种写法（头部印 `2003 BCCA 0443`、语料引证 `2003 BCCA 443`），
+        # 按数值相等比较；PROBLEMS #105（BCCA_2003bcca443 引了自己，DD 多算 1）。
         own = (row.get("source_decision_citation") or "").split("_", 1)[-1]
-        if own and nk(row.get("raw_string") or "") == own:
+        if own and _unpad(nk(row.get("raw_string") or "")) == _unpad(own):
             row["self_citation"] = "true"
             self.stats["self_citation"] += 1
 

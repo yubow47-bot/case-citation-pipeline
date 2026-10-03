@@ -139,6 +139,13 @@ def test_classifier():
     r = c.run_row(_row("shape_neutral_bare", "2010 FC 30", token="FC", year_start="2010", page="30"))
     check((r["citation_kind"], r["jurisdiction"], r["rejected_reason"]) == ("neutral", "CA", ""),
           "#41 精确中立码胜过归一汇编，不判 table_conflict")
+    # ---- PROBLEMS #105：补零是同一个号码（BCCA_2003bcca443 头部印 `2003 BCCA 0443`）
+    r = c.run_row(_row("shape_neutral_bare", "2003 SCC 05", token="SCC", year_start="2003", page="05",
+                       source_decision_citation="SCC_2003scc5"))
+    check(r.get("self_citation") == "true", "#105 头部补零写法 `2003 SCC 05` == 判决自身 2003scc5，标自引")
+    r = c.run_row(_row("shape_neutral_bare", "2003 SCC 50", token="SCC", year_start="2003", page="50",
+                       source_decision_citation="SCC_2003scc5"))
+    check(r.get("self_citation") != "true", "#105 5 与 50 不是同一个号码，不标自引")
     r = c.run_row(_row("shape_bracket", "[1920] 1 K.B. 257", token="K.B.", vol="1",
                        year_start="1920", page="257"))
     check(r["jurisdiction"] == "UNSUPPORTED", "同形异义无区间可消，不猜")
@@ -354,6 +361,21 @@ def test_case_name_markers():
 # ============================================================ 裁定层（单元）
 def _k(year, code, num):
     return "%s||%s||%s" % (year, code, num)
+
+
+def test_own_citations_loader():
+    import tempfile as _t
+    d = _t.mkdtemp(prefix="own_cites_")
+    p = os.path.join(d, "decision_own_citations.csv")
+    with open(p, "w", encoding="utf-8", newline="") as f:
+        f.write("merge_key,decision_id,source_court,field\n"
+                "2003|1|scr||39,SCC_2003scc5,SCC,citation2_en\n"
+                "2003||scc||5,SCC_2003scc5,SCC,citation_en\n")
+    idx = decide.load_own_citations(p)
+    check(idx["2003|1|scr||39"] == {"SCC_2003scc5"} and len(idx) == 2,
+          "#105 判决自己印的引证表：并行引证与自身引证都按键归到判决 id")
+    check(not decide.load_own_citations(None) and not decide.load_own_citations(p + ".nope"),
+          "#105 不传/文件不存在 -> 空表（行为与改动前一致）")
 
 
 def test_decide_units():
@@ -881,7 +903,7 @@ def main():
     if a.golden or a.golden_write:
         sys.exit(golden(a.golden_write))
     for t in (test_admit_candidate, test_classifier, test_disambiguation,
-              test_case_name_markers, test_decide_units, test_registry_gate,
+              test_case_name_markers, test_own_citations_loader, test_decide_units, test_registry_gate,
               test_registry_audit, test_mini_chain):
         t()
     print("全部通过：%d 条断言" % len(PASSED))

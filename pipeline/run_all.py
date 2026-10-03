@@ -265,9 +265,12 @@ def main():
         reg += ["--anchor-corpus", c]
     r.run_step("build_registry", reg)
     registry_file = os.path.join(args.out, "registry", "decision_registry.csv")
+    own_citations_file = os.path.join(args.out, "registry", "decision_own_citations.csv")
 
     def decide_cmd(court_args):
         cmd = [os.path.join("pipeline", "decide.py")] + court_args
+        # PROBLEMS #105：判决自己印的引证，只用于剔自引（与笔误闸的登记簿无关，总是传）
+        cmd += ["--own-citations", own_citations_file]
         if anchor_courts:
             # 不传 --anchor-corpus 时**不加这个参数**：行为与改动前一致
             cmd += ["--registry", registry_file]

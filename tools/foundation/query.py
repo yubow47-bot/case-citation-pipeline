@@ -15,6 +15,7 @@ import math
 import sys
 from common import DEFAULT_DB, connect
 from embed import embed_texts, load_vec, vec_table
+from rewrite import to_english
 
 PRIOR = 0.5    # weight of the authority prior (tuned on acceptance.py: 0 -> 6/15, 0.15 -> 11/15, 0.5 -> 14/15; those questions all seek leading cases, so this favours well-cited cases)
 
@@ -29,18 +30,23 @@ def fts_query(q):
     return ' OR '.join('"%s"' % t for t in terms) if terms else None
 
 
-def search(db, q, collection, k, mode, layer=None):
+def search(db, q, collection, k, mode, layer=None, english=None):
+    """`english`: English rewrite of a Chinese question (see rewrite.py). The vector side searches with
+    both the original and the rewrite; the keyword side uses the rewrite (the index is English)."""
     ranks = {}
+    variants = [x for x in (q, english) if x]
     if mode in ('hybrid', 'vector'):
-        v, _ = embed_texts([q])
-        if v[0] is not None:
+        vs, _ = embed_texts(variants)
+        for v in vs:
+            if v is None:
+                continue
             rows = db.execute('SELECT rowid,distance FROM %s WHERE embedding MATCH ? AND k=?' % vec_table(collection),
-                              (v[0], k * 6)).fetchall()
+                              (v, k * 6)).fetchall()
             for i, (rid, _) in enumerate(rows):
                 ranks.setdefault(rid, 0.0)
                 ranks[rid] += 1.0 / (60 + i)
     if mode in ('hybrid', 'keyword'):
-        f = fts_query(q)
+        f = fts_query(english or q)
         if f:
             rows = db.execute('SELECT rowid FROM text_fts WHERE text_fts MATCH ? ORDER BY rank LIMIT ?', (f, k * 6)).fetchall()
             for i, (rid,) in enumerate(rows):
@@ -58,6 +64,10 @@ def search(db, q, collection, k, mode, layer=None):
                 s += PRIOR * math.log1p(w[0] if w else 0) / 60
             out.append((s, r))
     return sorted(out, key=lambda x: -x[0])
+
+
+def _has_relations(db):
+    return db.execute("SELECT 1 FROM sqlite_master WHERE name='edge_relations'").fetchone() is not None
 
 
 def case_row(db, run, gid):
@@ -81,6 +91,11 @@ def show_case(db, run, gid, rec=None, citing=5):
     rows = db.execute('''SELECT e.source_decision, d.name, d.decision_date FROM citation_edges e
         LEFT JOIN documents d ON d.run_id=e.run_id AND d.source_id=e.source_decision
         WHERE e.run_id=? AND e.resolved_cited_case=? ORDER BY d.decision_date DESC LIMIT ?''', (run, gid, citing)).fetchall()
+    rel = dict(db.execute("SELECT relation_type,COUNT(*) FROM edge_relations WHERE run_id=? AND resolved_cited_case=? GROUP BY 1",
+                          (run, gid)).fetchall()) if _has_relations(db) else {}
+    if rel.get('same_case_history'):
+        print('    of the %d citing judgments, %d are the same litigation (procedural history), %d other judgments'
+              % (g['dd'], rel['same_case_history'], rel.get('other_judgment', 0)))
     if rows:
         print('    cited by (latest %d of %d): ' % (len(rows), g['dd']) + '; '.join(
             '%s %s (%s)' % (r[0], (r[1] or '')[:40], (r[2] or '')[:10]) for r in rows))
@@ -106,7 +121,10 @@ def count(db, run, a):
 
 def run_query(db, a, q):
     run = a.run or latest_run(db)
-    hits = search(db, q, a.collection, a.k, a.mode, a.layer)
+    en = to_english(q) if a.collection == 'cases' else ''   # method docs are Chinese: no rewrite
+    if en:
+        print('  (searching also as: %s)' % en)
+    hits = search(db, q, a.collection, a.k, a.mode, a.layer, en)
     shown = 0
     for s, r in hits:
         if a.collection == 'cases':

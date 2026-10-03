@@ -197,6 +197,40 @@ def corpus_citation_entries(courts, corpus_dir, clf, court_codes):
 
 
 # ------------------------------------------------------------------ 自校验
+def own_citation_entries(courts, corpus_dir, clf, court_codes):
+    """每件判决**自己印的引证**（语料 `citation_en` 与 `citation2_en`）-> 键。
+
+    只供裁定层剔「判决引用自己」（PROBLEMS #105）；**不进 decision_registry.csv**，
+    因为那张表只授权笔误闸（规格 2.3）。两列都是语料给的、判决自身的印刷事实；
+    判决 id 一律取 `citation_en` 构的 id（与 source_decision_citation 同源）。
+    构不出键的串如实计数跳过（铁律四）。返回 (rows, stats)。"""
+    rows, stats = set(), collections.Counter()
+    for court in courts:
+        path = os.path.join(corpus_dir, court + ".parquet")
+        if not os.path.exists(path):
+            stats["missing_corpus_" + court] = 1
+            continue
+        pf = pq.ParquetFile(path)
+        cols = [c for c in ("citation_en", "citation2_en") if c in list(pf.schema_arrow.names)]
+        for batch in pf.iter_batches(batch_size=BATCH, columns=cols):
+            d = batch.to_pydict()
+            for i, cite in enumerate(d["citation_en"]):
+                if not cite:
+                    continue
+                did = extract.source_decision_citation(court, cite)
+                for field in cols:
+                    c = d[field][i]
+                    if not c:
+                        continue
+                    key, why, _detail, _removed = one_key(clf, court, c, court_codes)
+                    if key is None:
+                        stats["skipped_" + field + "_" + why] += 1
+                        continue
+                    rows.add((key, did, court, field))
+                    stats["keys_" + field] += 1
+    return rows, stats
+
+
 def crosscheck(entries, self_courts, corpus_courts):
     """两个来源的键集合比对。同一法院两边都在场时才比。
 
@@ -276,6 +310,13 @@ def build(run_dir, anchor_courts=(), corpus_dir=None, extracted_courts=(),
     _write_csv(os.path.join(reg_dir, "decision_registry.csv"),
                REGISTRY_FIELDS, rows)
 
+    own_rows, own_stats = own_citation_entries(
+        tuple(extracted_courts), corpus_dir, clf, court_codes)
+    _write_csv(os.path.join(reg_dir, "decision_own_citations.csv"),
+               ["merge_key", "decision_id", "source_court", "field"],
+               [{"merge_key": k, "decision_id": did, "source_court": c, "field": f}
+                for k, did, c, f in sorted(own_rows)])
+
     xc_rows, xc_summary = crosscheck(entries, set(extracted_courts),
                                      set(anchor_courts))
     if xc_rows:
@@ -300,6 +341,7 @@ def build(run_dir, anchor_courts=(), corpus_dir=None, extracted_courts=(),
                     ks, merged_path)
 
     manifest = {
+        "own_citations": {"rows": len(own_rows), **{k: v for k, v in sorted(own_stats.items())}},
         "registry_rows": len(rows),
         "registry_keys": len({r["merge_key"] for r in rows}),
         "by_source": dict(sorted(by_source.items())),

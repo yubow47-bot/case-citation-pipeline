@@ -16,6 +16,7 @@ import build
 import score
 import index_cases
 import index_methods
+import relations
 import embed
 
 
@@ -38,6 +39,7 @@ def main():
         # no calibration for this run yet: reuse the newest one, and say so
         found = sorted((ROOT/'audit'/'findings'/'canlii_crosscheck').glob('*/t6_bucket_rates.csv'))
         rates = found[-1] if found else None
+    report['relations'] = relations.label(run_dir, a.db)
     report['weights'] = score.score(run_dir.name, a.db, rates) if rates else 'skipped: no calibration file'
     report['case_profiles'] = index_cases.build_profiles(run_dir, a.db)
     report['methods'] = index_methods.build(a.db)
