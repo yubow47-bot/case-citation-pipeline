@@ -378,6 +378,39 @@ def test_own_citations_loader():
           "#105 不传/文件不存在 -> 空表（行为与改动前一致）")
 
 
+def test_own_citation_rule():
+    """#105：裁定层「只在提及自己的来源判决不计 DD」——直接测规则函数 own_citation_self_ids。
+    成员 = 本组的键；did_idx = 键 -> 提及它的来源判决；own_cites = 键 -> 把它印在自己头部的判决。"""
+    def mem(court, key):
+        return {"court": court, "merge_key": key}
+
+    members = [mem("SCC", "2003||scc||5"), mem("SCC", "2003|1|scr||39"), mem("ONCA", "2002|58|or|3d|1")]
+    did = {"SCC|2003||scc||5": {"A", "X"},
+           "SCC|2003|1|scr||39": {"SELF", "X"},         # SELF 只经由自己头部印的并行引证提及本组
+           "ONCA|2002|58|or|3d|1": {"BOTH", "X"}}        # BOTH 既经由自己的键、又经由下级判决的键
+    own = {"2003|1|scr||39": {"SELF", "BOTH"}}
+    did["SCC|2003|1|scr||39"].add("BOTH")
+    ids = {"A", "X", "SELF", "BOTH"}
+
+    def run(own_cites, root_kind=None):
+        return decide.own_citation_self_ids(members, did, ids, own_cites, root_kind or {}, Counter())
+
+    check(run(own) == {"SELF"},
+          "#105 只经由自己印的键提及本组 -> 剔（SELF）；还经由别的键提及 -> 保留，即审理历史（BOTH，用户裁定计入 DD）")
+    check("X" not in run(own) and "A" not in run(own),
+          "#105 与自己印的键无关的来源判决一概不动")
+    check(run({}) == set() and run(None) == set(),
+          "#105 没有自引表 -> 空集（行为与改动前一致）")
+    check(run(own, {"2003|1|scr||39": "typo_number"}) == set(),
+          "#105 笔误并入的键不算判决自己的键（#54 原意：并进来的键可能是另一件判决）")
+    check(run({"2003|1|scr||39": {"SOMEONE_ELSE"}}) == set(),
+          "#105 这个键是别的判决自己印的 -> 不剔")
+    st = Counter()
+    decide.own_citation_self_ids(members, did, ids, own, {}, st)
+    check((st["self_ids_removed_own_citation"], st["own_key_plus_other_key_kept"]) == (1, 1),
+          "#105 统计口径：剔 1、因另有别的键而保留 1")
+
+
 def test_decide_units():
     check(decide._one_edit("33", "3") and decide._one_edit("18", "19")
           and not decide._one_edit("79", "45"), "_one_edit：错一位才算")
@@ -903,7 +936,7 @@ def main():
     if a.golden or a.golden_write:
         sys.exit(golden(a.golden_write))
     for t in (test_admit_candidate, test_classifier, test_disambiguation,
-              test_case_name_markers, test_own_citations_loader, test_decide_units, test_registry_gate,
+              test_case_name_markers, test_own_citations_loader, test_own_citation_rule, test_decide_units, test_registry_gate,
               test_registry_audit, test_mini_chain):
         t()
     print("全部通过：%d 条断言" % len(PASSED))

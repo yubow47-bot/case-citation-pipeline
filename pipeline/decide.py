@@ -576,6 +576,35 @@ def load_own_citations(path):
     return idx
 
 
+def own_citation_self_ids(members, did_idx, ids, own_cites, root_kind, stats):
+    """PROBLEMS #105：返回应从本组 DD 里剔掉的「只在提及自己」的来源判决 id。
+
+    own_cites = {merge_key: {判决 id}}：每件判决自己印的引证（citation_en / citation2_en）。
+    某来源判决 d 提及本组**只**经过它自己印的那些键（头部并行引证 `[2003] 1 S.C.R. 39`、
+    补零写法等）→ 它在提及自己，不计 DD。只要 d 还经由别的键提及本组（例：SCC 判决引用了
+    自己上诉自的下级判决，下级判决的报告引注是另一个键），那就是对另一份判决的真实提及，
+    照常计入——用户裁定（2026-10-03）：审理历史关系计入 DD，之后按关系类型标记筛选。
+    笔误并入的键不算 d 自己的键（#54 的原意：被当笔误并进来的键可能是另一件判决）。
+    own_cites 为空 → 返回空集（行为与改动前一致）。"""
+    out = set()
+    if not own_cites:
+        return out
+    via = defaultdict(set)             # 来源判决 -> 它经由哪些键提及本组
+    for m in members:
+        for d in did_idx.get(row_key(m), ()):
+            via[d].add(m["merge_key"])
+    for d in sorted(ids):
+        own_keys = {k for k in via[d]
+                    if d in own_cites.get(k, ())
+                    and root_kind.get(k) not in ("typo_number", "typo_year")}
+        if own_keys and via[d] <= own_keys:
+            stats["self_ids_removed_own_citation"] += 1
+            out.add(d)
+        elif own_keys:
+            stats["own_key_plus_other_key_kept"] += 1   # 自己的键之外还有别的键：保留
+    return out
+
+
 def neutral_start(rows):
     """各语料法院的中立引用起用界（#56），取自判决自己头部印的引证：
     {法院码: (最早一次自印中立引用的年份, 最晚一次自印非中立引用的年份)}。"""
@@ -1315,26 +1344,7 @@ def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin
         for k, r in root.items():
             if k == r:
                 selfd |= own[k]
-        # PROBLEMS #105：判决自己印的引证（citation_en / citation2_en）。某来源判决 d 提及本组
-        # **只**经过它自己印的那些键（头部并行引证 `[2003] 1 S.C.R. 39`、补零写法等）→ 它在
-        # 提及自己，不计 DD。只要 d 还经由别的键提及本组（例：SCC 判决引用了自己上诉自的
-        # 下级判决，下级判决的报告引注是另一个键），那就是对另一份判决的真实提及，照常计入——
-        # 用户裁定（2026-10-03）：审理历史关系计入 DD，之后按关系类型标记筛选。
-        # 笔误并入的键不算 d 自己的键（#54 的原意：被当笔误并进来的键可能是另一件判决）。
-        if own_cites:
-            via = defaultdict(set)         # 来源判决 -> 它经由哪些键提及本组
-            for m in members:
-                for d in did_idx.get(row_key(m), ()):
-                    via[d].add(m["merge_key"])
-            for d in sorted(ids - selfd):
-                own_keys = {k for k in via[d]
-                            if d in own_cites.get(k, ())
-                            and root_kind.get(k) not in ("typo_number", "typo_year")}
-                if own_keys and via[d] <= own_keys:
-                    stats["self_ids_removed_own_citation"] += 1
-                    selfd.add(d)
-                elif own_keys:
-                    stats["own_key_plus_other_key_kept"] += 1   # 自己的键之外还有别的键：保留
+        selfd |= own_citation_self_ids(members, did_idx, ids - selfd, own_cites, root_kind, stats)
         stats["self_ids_removed"] += len(ids & selfd)
         ids -= selfd
         occ = sum(key_occ(m) for m in members)
