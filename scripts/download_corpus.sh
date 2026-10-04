@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# download_corpus.sh — 语料快照下载脚本（技术规格 §1.3 快照政策的执行工具）
+# download_corpus.sh — 语料快照下载脚本（technical specification §1.3, snapshot policy）
 #
 # 运行环境: bash（Git Bash / WSL）。本机已实测可用通道为 WSL Ubuntu + curl(OpenSSL)。
 # 为何不是 download_corpus.ps1: Windows 自带 curl 使用 schannel，在受限令牌环境下

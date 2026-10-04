@@ -1,346 +1,345 @@
-# 技术债台账（DEBT_LEDGER）
+# Technical debt ledger (DEBT_LEDGER)
 
-**用途**：把 `PROBLEMS.md` 那 83 条关账，只留真正需要盯的。以后你只需要看这一页。
+**Purpose**: to close the books on the 83 entries of `PROBLEMS.md` and keep only what really needs watching. From now on this is the only page you need to look at.
 
-**判定标准**：**有真实影响 + 没有终态（没修、没测清、也没被明确接受为限制）= 债。**
-按此标准，83 条里真债 **15 条**（§1，共涉及 **32** 个 PROBLEMS 编号），其余 **51** 个条目不是债（分类见 §3）。
+**Criterion**: **a real impact + no final state (not fixed, not fully measured, and not explicitly accepted as a limitation) = debt.**
+By this criterion, **15** of the 83 entries are real debts (§1, covering **32** PROBLEMS numbers in total); the other **51** entries are not debts (classified in §3).
 
-**证据等级约定**（本文件每一条都标了）：
+**Evidence-grade convention** (every item in this file carries one):
 
-- ✅ = **本会话独立实测**（跑代码/扫语料/查数据得出，可复现）
-- 📖 = **台账记载**（`PROBLEMS.md` 里的数字，本会话**未**独立复核）
+- ✅ = **measured independently in this session** (from running code / scanning the corpus / querying the data; reproducible)
+- 📖 = **recorded in the ledger** (a number from `PROBLEMS.md`, **not** independently re-checked in this session)
 
-> 为什么单列这个：本会话我连着三次把话说重了（把已修的 #18 当成"不做"、把 #14 当成"无害"、
-> 把 #1 说成"整条抽不到"），三次都是因为**拿台账当事实**。所以这份文件里凡是标 📖 的，
-> 动手前都要先复核。B1–B21（原 demo 账本，见下）的现状同样是 📖，本次合并只是把
-> `implementation/demo_repair_progress.md` 里最后一次提到的状态摘出来，**没有逐条重新
-> 跑代码验证**——跟 #1–#63 的复核程度不一样，动手前同样要先复核。
+> Why this is called out: three times in a row in this session I overstated things (calling the fixed #18 "won't do", calling #14 "harmless",
+> and saying #1 "is not extracted at all"), and all three times it was because **I took the ledger as fact**. So anything marked 📖 in this file
+> must be re-checked before acting on it. The current state of B1–B21 (the former demo ledger, see below) is 📖 too; this merge only extracted
+> the status last mentioned in `implementation/demo_repair_progress.md`, **without re-running code to verify each one**
+> — a lower degree of re-checking than for #1–#63, so re-check before acting on those as well.
 
-**2026-09-15 两本账合并记录**：`implementation/demo_repair_progress.md` 里的 B1–B21
-（R2–R4 demo 那几轮工作单独开的账本，记归并/裁定层的身份判断类问题）已按用户决定
-编号并入 `PROBLEMS.md`，成为 **#64–#84**。合并起因：#21（债 1）修复触发的组级重组，
-根因正好是 B21 已经测过的机制——如果两本账一直分开，这类关联会一直被漏掉。
-`implementation/demo_repair_progress.md` 本身保留作历史记录，不删，但从此不再是
-独立的追踪账本，新问题一律登记进 `PROBLEMS.md`。
-
----
-
-## 1. 真债 15 条
-
-### 甲、会让数字少算（召回缺口）
-
-#### 债 2 —— #14 内联脚注案名切不到（1877–1967 SCC）
-
-- **是什么**：那批判决的引证在 `[n]` 脚注行，案名在正文里以 `Brook v. Hook[11]` 形式带标记。
-  现行"往引证前面找案名"的办法对这批材料结构上不成立。
-- **影响**（✅ 全部本次实测）：
-  - 过门槛 8,646 组里，**576 组（6.7%）完全没有案名**；
-  - 这些无案名组的引证证据，**60.4% 来自 1968 年前的 SCC**；有案名组只有 **5.1%**（相差 12 倍）；
-  - **不影响 dd、不影响门槛、不影响榜单**，只影响"案名"这一列与按案名的合并。
-  - 📖 台账：`v. X[n]` 样式覆盖 4,373/10,829 份 SCC 判决。
-- **关账动作**：先做**一次测量**——"可链接的内联标记占比"。测完只有两种结果：
-  比例低 → 关账写进限制说明；比例高 → 变成真正的工作项（抽取层加内联标记锚点表）。
-- **注意**：这条当初被记成"本版只登记，不实现"，混进了"不做"桶。它不是"不做"，是"还没测"。
-
-#### 债 3 —— #35 + #32 外国法院代码/中立码缺权威源
-
-- **是什么**：CanLII 的结构供不出外国中立码（BAILII 等才有）；英国法院代码
-  （UKPC/UKHL/EWCA）也没有权威源。
-- **影响**：📖 抽漏的 215,405 行里，疑似真法院码 **1,042 行**；`[年] UKPC n` 43 行。
-  **这正对项目原初目标（外国引证），是已知最大的一块可寻源缺口。**
-- **关账动作**：评估 BAILII（UK/爱尔兰）、AustLII（澳新）、SAFLII（南非）的抓取可行性
-  **与授权条款**（须先评估授权，同规格 §5.1 对外部源的既定立场）。
-  **（2026-09-15 拍板修订，优先级降级）**：① **范围收缩**——来源地不追求全覆盖：
-  汇编法域分类（196 行主表已核实，见债 4）+ 枢密院加拿大特例
-  （`case_origin.csv` 203 行，1888 年前缺口如实标注）即够用；外国中立码长尾
-  （债 6 的 36 条）同理只做低成本抽查，不必全量。② **"授权评估"的适用范围
-  订正**：原写法把两类混成一件，属写错——（a）**读公开判决页面、抄印刷串、
-  记出处 URL = 允许**（判决书是公共文件，印刷串是事实，与债 6 本轮对各国
-  法院官网的做法同性质）；（b）**批量抓取/入库仍不做**——理由不是版权，是
-  对方小站点的服务承载与使用礼貌。据此，"须先评估授权"不再构成（a）类
-  核实的阻塞；BAILII 等降级为可选的抽查来源之一。
-  **（同一决定也解决了 #66/B3 跨法域法院来源地问题**——枢密院加拿大特例走
-  `case_origin.csv` + `case_origin_manual.csv` 逐案核路线即够，#66 不再单列为债，
-  归入 §3.2）。
-
-### 乙、会让判定站不住（基础薄）
-
-#### 债 4 —— #40 reporter 法域表 196 行全部未核实 ★ 性价比最高
-
-- **是什么**：`decisions/reporter_jurisdiction.csv` 196 行，**100% `confidence=estimated`、
-  100% `verification_level=name_inference`**，来源栏自己写着"临时推断（未核实）"。
-- **影响**：📖 法域解出 519,149 行（89.1%），其中境外 **51,024 行**
-  （GB 43,797 / US 6,676 / NZ 377 / AU 145 / ZA 29）**全部是按缩写名推断的**。
-  缓解措施已就位：`jurisdiction_confidence` 列保留，可按 confidence 过滤掉 estimated 行。
-- **关账动作**：逐条核实 196 行，核完把 `confidence` 升 `confirmed`。
-  这是全部真债里**每小时收益最高**的一条——它直接决定"域外权威引用"这条研究线能不能用。
-- **进展（2026-09-15）**：`audit/findings/reporter_jurisdiction_proposal.csv` 已完成提案，
-  166 行 CONFIRMED（📖 加权覆盖 94.0%），CHANGE=0（没有一行法域判定是错的），
-  等人抽 20 行批准后落表（`implementation/prompt_switch_r21a.md`/`plan_gold_debt_2026-09-15.md`）。
-
-#### 债 5 —— #31 CanLII 伪代码的尾括注 + #70/B7 DTC 系同档平票（同族，合并处理）
-
-- **是什么**：`2026 CanLII 88302 (PE IWCAT)` 这类，法域印在**尾括注**里，7 个形状都不收尾括注。
-  同族问题（B7）：`2022 DTC 5064` 类代码**同时**精确命中法院代码表与汇编表，两表都给
-  exact 档 → 按 R2-2 规则必须弃权，不许按形状顺序硬选——本质上是"同一个印刷代码在
-  两张表里都能查到、但语义不同"的双重身份问题，和 CanLII 尾括注是同一类"表结构容不下
-  这个信息"的问题。
-- **影响**：📖 1,678 次 `token=CanLII` 的中立引用，法域一律落 `UNSUPPORTED`（该码横跨
-  14 个法域）。📖 DTC 全量 4,980 行同档平票弃权，0 计数（诚实少算，不是猜测）。
-- **关账动作**：拍板三点——(a) 抽取层是否加尾括注捕获槽（按约束六，要加只能在抽取层）；
-  (b) 分类层是否要区分"是中立引用但法域不可知"与"是 reporter 且查不到表"两种
-  UNSUPPORTED；(c) DTC 等双重身份码在两表中的正确定位——是否需要给决策表行加显式
-  「非法院代码/非汇编」标注来打破平票。
-
-#### 债 6 —— #39 境外中立码长尾 36 条未溯源
-
-- **是什么**：36 条境外中立码还没有权威来源。清单与"去哪查"的线索已在
-  `audit/findings/neutral_foreign_proposal.md`，全部标【待核实】、未入表（空着是正确行为）。
-- **影响**：这 36 条码无法定法域。
-- **关账动作**：按清单核实。这是债 3/债 4 的同族工作，可以合并做。
-  **（2026-09-15 进展与拍板）**：本轮已核实 5 条入提案（NZCA/NZSC/NZHC/TASSC/NICA，
-  见 `audit/findings/neutral_foreign_verified.csv`），25 条 NOT_FOUND（官网 JS 化，
-  每条附试过的 URL）。按债 3 的拍板：剩余条目**只做低成本抽查**（读公开页面
-  抄印刷串即允许），不必全量核实；汇编法域分类 + 枢密院特例已够用。
-
-#### 债 7 —— #50 同一判决的长短两种案名合不到一起
-
-- **是什么**：`Canada (Minister of Citizenship and Immigration) v. X` 与简称被当成两组。
-- **影响**：📖 修后该档 **19 条、可补 dd 331**，且逐条看**多数是假连接**。原修法方向已作废。
-- **关账动作**：明确封存（写进限制说明），或按新方向重做。量级小，可低优先级。
-
-#### 债 10 —— #64/B1 + #67/B4：reporter 法域表结构性无法产出来源地
-
-- **是什么**：`decide.py:183` 明文规定，`reporter_jurisdiction.csv`（债 4 那 196 行）
-  只能升级为 `jurisdiction`（印在哪国的汇编），**永远不得**升级为来源地事实。R. v. W.(D.)
-  的 S.C.R. 引证（`1991|1|scr||742`）与美国来源地（`389 U.S. 347 (1967)` 类）都卡在这里——
-  中立码规则结构性不适用，两条问题同一根因。
-- **影响**：这些键 `foreign_status=UNDETERMINED`，不是缺陷（约束四：无证据不填默认值），
-  但意味着"域外权威引用"研究线在 reporter 式引证上永远得不到来源地，只能得到印刷地。
-- **关账动作**：唯一解锁路径是对 S.C.R./C.C.C./D.L.R.、U.S. Reports 等逐一做
-  source-verified、年代有界的排他性核查（走 `reporter_origin_scope.csv` 路线，目前 40 行，
-  法条级核实），或案件级人工表逐案核（`case_origin_manual.csv`）。#81/B18 的检索能力
-  阻塞已解除（配 Exa key），反哺了 `reporter_origin_scope.csv` 的建表，但全量覆盖比例
-  未做最终统计，这条债因此维持"未解决"。
-
-#### 债 11 —— #68/B5 同案传播（co-citation propagation）未实现
-
-- **是什么**：`decide.py`§9.4 第 4 条设计允许在"已受支持的同一案件身份关系"上传播来源地
-  证据，本轮最小闭环未建该链。
-- **影响**：组内有些成员已知来源地、有些未知时，按现行保守规则容易整组落 CONFLICT 或
-  UNDETERMINED，本可通过身份关系传播消解的一部分未消解。
-- **关账动作**：方向已知未做，无排期。**2026-09-15 复核修正工作量估计**：`decide.py` 的
-  `assign_identity_basis`/`ELIGIBLE_BASES` 已经把"哪些连接可信"（anchor/singleton/
-  same_citation/anchor_variant_bilingual）与"哪些只是启发式"（name_year/cocitation/typo）
-  分好了——这是需要领域知识的难点，已经做完。剩下缺的只是在可信边上做连通分量传播，
-  是标准图算法，可以用 `networkx.connected_components` 接现成实现，套用
-  `aggregate_group_origin` 已有的"多来源地即 CONFLICT、不猜"逻辑改造即可。
-  工作量比原估计小得多，不是独立工作流，是 decide.py 内的一次扩展。
-
-#### 债 12 —— #69/B6(D9) 从未做过独立人工金标验证
-
-- **是什么**：项目自建以来所有准确性证据都是自洽类（回归门、golden、不变量）或
-  上游真值召回（98.80%，只覆盖裸中立引证）。过门槛组 **79%（6,873/8,646）是汇编式
-  引证**，精确率和召回率从未独立测过。
-- **影响**：不知道最终输出对不对，只知道"和上次一样"以及"没违反已编码的规则"。
-  这是发论文/对外审计前必须补的一块。
-- **关账动作**：已有执行计划 `implementation/plan_gold_debt_2026-09-15.md`§2（三个子样本：
-  提及级精确率、组级正确率、召回下界；双标算一致性）。**用户 2026-09-15 决定暂缓**——
-  现阶段是制作方法，不是最严格的论文发表口径，先做债 4/6/1。
-
-#### 债 13 —— #71/B8 非序数括注拆键，下游计数方向未确立
-
-- **是什么**：`10 Cush. (Mass.) 337` 与 `10 Cush. 337` 因现有表无法区分"新系列"括注
-  （如 (N.S.)，真的是新系列）与"法院注记"括注（如 (Mass.)/(P.C.)，只是法院/法域标注），
-  拆成两个基础键，35 个基础键受影响。
-- **影响**：**方向未定**——既可能少算（同一引证被拆成两组，各自达不到门槛）也可能多算
-  （不同判决被误并）。不做方向声明是当前唯一诚实的选择。
-- **关账动作**：解锁条件=有来源的注记分类表（区分"系列"与"法院注记"两类括注），
-  目前不存在，需新建。
-
-#### 债 14 —— #77/B14 身份基础闸门挡住的组：价值最高的未开工方向
-
-- **是什么**：R3 测过共引传播的净新增组上限是 113,432，但**被合格身份基础闸门挡住的
-  只有 4,567 组**，其中 `name_year`（案名+年份启发式）占 97.9%。也就是说：瓶颈不是
-  共引传播规则太严，而是"案名+年份"这个身份判据本身不可靠、不能升格为合格判据。
-- **影响**：这是本表里**性价比可能最高的一条**——如果能补上更可靠的身份判据（更好的
-  中立锚识别或案名抽取），能同时惠及债 2（案名）、B21（搭车误判）等多个问题。
-- **关账动作**：交用户决策，未实现放宽。正确方向是另立一个"中立锚/案名抽取"工作流，
-  不是继续放宽共引传播口径（那条路已经测过效果差）。
-
-#### 债 15 —— #82/B19 供应商/数据库标识符未走既有表路线
-
-- **是什么**：`oj`（Ontario Judgments QL）、`scca`（S.C.C.A. No.）、`bcj`/`fcj` 等 Quicklaw
-  标识符，按性质应该走既有的 `decisions/identifier_systems.csv` +
-  `decisions/court_or_reporter_scope.csv` 路线（R2F 已用这条路线处理过
-  CanLII/Carswell/DTC/Westlaw），不该混进 `reporter_origin_scope.csv` 这张新表。
-- **影响**：这批标识符目前既没有走对的路线，也没有法域/来源地结论。`scca`（1,189 组）
-  优先级最高。
-- **关账动作**：登记为下一轮候选，本轮为避免超范围未做。
-
-#### 债 16 —— #84/B21 单锚簇搭车吸收不同实例判决
-
-- **是什么**：组内有一个强锚点（如中立引用）时，其余成员未经充分核验即被吸收进同一组。
-  全量测过 **4,035 组/5,249 个搭车成员**（异年搭车 1,001 个）。拟议的共引路由收紧规则
-  被否（会移动 kept 组的 4.0%，超 1% 红线；对 #75/B12 子集有效率仅 16/98），触发停止
-  条件，未实现。
-- **影响**：这不是抽象风险——**2026-09-15 债 1（#21）修复后就实测发作了一次**：
-  R. v. Hamilton 的 2004 ONCA 判决与 2005 SCC 判决（两个不同法院、不同判决）被错误
-  并成一组（dd 50→56）。同一批重组里也纠正了 r4c 已存在的一处同类错误
-  （MNR v. Wright's Canadian Ropes 的 SCC/枢密院两判决），详见
-  `audit/findings/r21_group_reshuffle_pairs.md`。
-- **关账动作**：需要的判别器不是共引，而是"异年+印刷法院标注"（如 A.C. 旁的
-  `(P.C.)`）这类正向证据——R4 Stage 2 已把标注抓取铺好（`observed_deciding_court`
-  逐键识别，26/26 零错），解锁条件=在此基础上做窄规则重提，规模会显著缩小
-  （只有带标注的搭车者会被拆）。**不因这条债推迟任何交付**——规模（单次发作 1 组）
-  与已测的收紧代价（4.0% kept 组）相比太小，不值得现在动手。
-
-### 丙、会让人读错（口径没写清）
-
-#### 债 8 —— #47 的后遗症：`key_occurrence_count` 没文档化
-
-- **是什么**：两个 occurrence 列口径不同，而 `USAGE.md` §5 的列说明里**只有
-  `occurrence_count`，没有 `key_occurrence_count`**——后者才是账本里"守恒"用的那个。
-- **影响**（✅ 本次实测）：全表求和
-  `occurrence_count` = **1,092,865**，`key_occurrence_count` = **532,101**（**差 2.05 倍**）。
-  谁按前者求和、又拿 532,101 去对账，就会以为数据错了。
-  连带 #60 的陷阱：`case_name_agreement` 的分母是"投了票的行"，**1 票也能显示 1.0**，
-  要看 `case_name_support` 才对（USAGE §5 已警告，但列名本身不提防）。
-- **关账动作**：补 USAGE 的列说明。纯文档，成本极低，但能挡住最常见的误读。
-
-#### 债 9 —— 规格回写欠账（约 15 条）
-
-- **是什么**：#37 #38 #42 #48 #49 #52 #54 #55 #56 #57 #58 #59 #60 #61 #62
-  都写着"**须人复核并补进规格**"——实现按实测改了，规格文档没回写。
-- **影响**：**读规格的人会得到与代码不符的印象**。这是"复现/审计"层面的债，**不是数字错**。
-- **关账动作**：一次追认 + 回写规格（或统一在规格里标"实现注记（v1.x）"）。
-  这是条数最多、但**最便宜**的一类：不需要改代码、不需要补资料。
-- **进展**：规格 v1.7（提交 `a0647da`）注记已写好，全部标"待复核"，只差人追认。
+**Record of merging the two ledgers on 2026-09-15**: B1–B21 in `implementation/demo_repair_progress.md`
+(a separate ledger opened for the R2–R4 demo rounds, recording identity-judgement problems in the merge/adjudication layers) were numbered and merged
+into `PROBLEMS.md` by the user's decision, becoming **#64–#84**. Reason for the merge: the group-level reshuffle triggered by the fix for #21 (debt 1)
+had as its root cause exactly the mechanism already measured in B21 — had the two ledgers stayed separate, links like this would have kept being missed.
+`implementation/demo_repair_progress.md` itself is kept as a historical record and not deleted, but it is no longer
+an independent tracking ledger; every new problem goes into `PROBLEMS.md`.
 
 ---
 
-## 2. 真债的构成（一句话）
+## 1. The 15 real debts
 
-| 类型 | 条数 | 是哪几条 |
+### A. Debts that make numbers under-count (recall gaps)
+
+#### Debt 2 — #14 case names behind inline footnotes cannot be cut (SCC 1877–1967)
+
+- **What it is**: in that batch of judgments the citations are in `[n]` footnote lines, and the case names are in the body with a marker, as in `Brook v. Hook[11]`.
+  The current method of "looking for the case name before the citation" structurally does not work for this material.
+- **Impact** (✅ all measured this time):
+  - Of the 8,646 groups over the threshold, **576 groups (6.7%) have no case name at all**;
+  - **60.4%** of the citation evidence for these nameless groups **comes from the SCC before 1968**; for named groups it is only **5.1%** (a 12-fold difference);
+  - **It does not affect dd, the threshold or the ranking**; it affects only the "case name" column and merging by case name.
+  - 📖 Ledger: the `v. X[n]` pattern covers 4,373/10,829 SCC judgments.
+- **To close it**: first take **one measurement** — "the share of inline markers that can be linked". There are only two outcomes:
+  a low share → close it and write it into the limitations; a high share → it becomes a real work item (an inline-marker anchor table in the extraction layer).
+- **Note**: this was originally recorded as "registered only in this version, not implemented" and slipped into the "won't do" bucket. It is not "won't do"; it is "not yet measured".
+
+#### Debt 3 — #35 + #32 foreign court codes / neutral codes lack an authoritative source
+
+- **What it is**: CanLII's structure cannot supply foreign neutral codes (BAILII and the like have them); English court codes
+  (UKPC/UKHL/EWCA) have no authoritative source either.
+- **Impact**: 📖 of the 215,405 rows missed by extraction, **1,042 rows** are likely real court codes; `[year] UKPC n` 43 rows.
+  **This is exactly the project's original goal (foreign citations), and the largest known gap that a source could close.**
+- **To close it**: assess the feasibility of fetching from BAILII (UK/Ireland), AustLII (Australia/New Zealand) and SAFLII (South Africa)
+  **and their licence terms** (licensing must be assessed first, in line with the established position on external sources in spec §5.1).
+  **(Revised by decision on 2026-09-15, priority lowered)**: ① **Scope narrowed** — the place of origin does not aim for full coverage:
+  the reporter jurisdiction classification (the 196-row main table is verified, see debt 4) + the Privy Council Canadian special case
+  (`case_origin.csv`, 203 rows, with the pre-1888 gap stated honestly) is enough; the long tail of foreign neutral codes
+  (the 36 entries of debt 6) likewise gets only low-cost spot checks, not full verification. ② **The scope of "licence assessment"
+  corrected**: the original wording lumped two kinds together, which was a mistake — (a) **reading public judgment pages, copying printed strings and
+  recording the source URL = allowed** (judgments are public documents and printed strings are facts, the same in nature as what debt 6 did this round with
+  courts' official websites); (b) **bulk fetching / storing in a database is still not done** — the reason is not copyright but
+  the load on the other side's small sites and courtesy of use. Accordingly, "licensing must be assessed first" no longer blocks
+  verification of kind (a); BAILII and the like are demoted to one optional source for spot checks.
+  **(The same decision also settles #66/B3, the place of origin of cross-jurisdictional courts** — for the Privy Council Canadian special case, the route of
+  `case_origin.csv` + `case_origin_manual.csv` with case-by-case verification is enough, so #66 is no longer listed as a debt and
+  moves to §3.2.)
+
+### B. Debts that leave determinations on weak ground
+
+#### Debt 4 — #40 all 196 rows of the reporter jurisdiction table unverified ★ best value for effort
+
+- **What it is**: `decisions/reporter_jurisdiction.csv` has 196 rows, **100% `confidence=estimated` and
+  100% `verification_level=name_inference`**, and its source column itself says "provisional inference (unverified)".
+- **Impact**: 📖 jurisdiction is resolved for 519,149 rows (89.1%), of which **51,024 rows** are foreign
+  (GB 43,797 / US 6,676 / NZ 377 / AU 145 / ZA 29), **all inferred from the abbreviation's name**.
+  A mitigation is in place: the `jurisdiction_confidence` column is kept, so estimated rows can be filtered out by confidence.
+- **To close it**: verify the 196 rows one by one, then raise `confidence` to `confirmed`.
+  Of all the real debts this one has **the highest return per hour** — it directly decides whether the "foreign authority citation" research line is usable.
+- **Progress (2026-09-15)**: `audit/findings/reporter_jurisdiction_proposal.csv` has completed the proposal:
+  166 rows CONFIRMED (📖 weighted coverage 94.0%), CHANGE=0 (not one jurisdiction determination was wrong);
+  it awaits a human spot check of 20 rows and approval before going into the table (`implementation/prompt_switch_r21a.md`/`plan_gold_debt_2026-09-15.md`).
+
+#### Debt 5 — #31 the trailing parenthesis of the CanLII pseudo-code + #70/B7 the same-grade tie of DTC-type codes (same family, handled together)
+
+- **What it is**: in forms like `2026 CanLII 88302 (PE IWCAT)` the jurisdiction is printed in a **trailing parenthesis**, and none of the 7 shapes captures trailing parentheses.
+  A problem of the same family (B7): codes like `2022 DTC 5064` hit the court-code table and the reporter table exactly **at the same time**; both tables give
+  the exact grade → under rule R2-2 it must abstain and may not force a choice by shape order — essentially a dual-identity problem of
+  "the same printed code can be found in two tables with different meanings", the same kind of problem as the CanLII trailing parenthesis:
+  "the table structure has no room for this information".
+- **Impact**: 📖 for 1,678 neutral citations with `token=CanLII` the jurisdiction always falls to `UNSUPPORTED` (the code spans
+  14 jurisdictions). 📖 all 4,980 DTC rows abstain on a same-grade tie and count 0 (an honest under-count, not a guess).
+- **To close it**: decide three things — (a) whether the extraction layer adds a trailing-parenthesis capture slot (under constraint six, if added it can only be in the extraction layer);
+  (b) whether the classification layer should distinguish two kinds of UNSUPPORTED, "a neutral citation whose jurisdiction is unknowable" and "a reporter not found in the table";
+  (c) the correct placement of dual-identity codes such as DTC in the two tables — whether decision-table rows need an explicit
+  "not a court code / not a reporter" label to break the tie.
+
+#### Debt 6 — #39 a long tail of 36 foreign neutral codes not traced to a source
+
+- **What it is**: 36 foreign neutral codes still have no authoritative source. The list and leads on "where to look" are in
+  `audit/findings/neutral_foreign_proposal.md`, all marked [unverified] and not in the table (leaving them empty is the correct behaviour).
+- **Impact**: the jurisdiction of these 36 codes cannot be determined.
+- **To close it**: verify against the list. This is work of the same family as debts 3 and 4 and can be done together.
+  **(Progress and decision on 2026-09-15)**: this round verified 5 entries into the proposal (NZCA/NZSC/NZHC/TASSC/NICA,
+  see `audit/findings/neutral_foreign_verified.csv`), with 25 NOT_FOUND (official sites rendered by JS;
+  each lists the URLs tried). Under the debt 3 decision, the remaining entries get **only low-cost spot checks** (reading public pages
+  and copying printed strings is allowed), not full verification; the reporter jurisdiction classification + the Privy Council special case is enough.
+
+#### Debt 7 — #50 long and short case names of the same judgment do not join
+
+- **What it is**: `Canada (Minister of Citizenship and Immigration) v. X` and its short form are treated as two groups.
+- **Impact**: 📖 after the fix this band has **19 entries, could add dd 331**, and looked at one by one **most are false links**. The original direction of the fix has been abandoned.
+- **To close it**: shelve it explicitly (write it into the limitations), or redo it in a new direction. Small in size, can be low priority.
+
+#### Debt 10 — #64/B1 + #67/B4: the reporter jurisdiction table structurally cannot produce a place of origin
+
+- **What it is**: `decide.py:183` states explicitly that `reporter_jurisdiction.csv` (the 196 rows of debt 4)
+  can only be upgraded to `jurisdiction` (which country's reporter it is printed in) and **never** to a fact about place of origin. The S.C.R. citation of R. v. W.(D.)
+  (`1991|1|scr||742`) and US places of origin (the `389 U.S. 347 (1967)` kind) are both stuck here —
+  the neutral-code rules structurally do not apply; both problems have the same root cause.
+- **Impact**: these keys have `foreign_status=UNDETERMINED`, which is not a defect (constraint four: no evidence, no default),
+  but it means the "foreign authority citation" research line can never get a place of origin for reporter-style citations, only the place of printing.
+- **To close it**: the only path is a source-verified, date-bounded exclusivity check for S.C.R./C.C.C./D.L.R., U.S. Reports and so on, one by one
+  (the `reporter_origin_scope.csv` route, currently 40 rows,
+  verified at the statute level), or case-by-case checks in the manual case-level table (`case_origin_manual.csv`). The search-capability
+  block of #81/B18 has been lifted (with an Exa key), which fed the building of `reporter_origin_scope.csv`, but the final share of full coverage
+  has not been counted, so this debt stays "unresolved".
+
+#### Debt 11 — #68/B5 same-case propagation (co-citation propagation) not implemented
+
+- **What it is**: item 4 of `decide.py` §9.4 allows place-of-origin evidence to propagate over "supported same-case identity relations",
+  but this round's minimal closed loop did not build that chain.
+- **Impact**: when some members of a group have a known place of origin and others do not, the current conservative rule easily drops the whole group to CONFLICT or
+  UNDETERMINED; part of what identity-relation propagation could have resolved stays unresolved.
+- **To close it**: the direction is known but not done, and unscheduled. **2026-09-15 review corrected the effort estimate**: `decide.py`'s
+  `assign_identity_basis`/`ELIGIBLE_BASES` already separate "which links are trustworthy" (anchor/singleton/
+  same_citation/anchor_variant_bilingual) from "which are only heuristic" (name_year/cocitation/typo)
+  — that was the hard part needing domain knowledge, and it is done. What remains is propagation over connected components of trustworthy edges,
+  a standard graph algorithm that can use the ready-made `networkx.connected_components`, adapting
+  the existing "several places of origin means CONFLICT, no guessing" logic of `aggregate_group_origin`.
+  The effort is much smaller than first estimated; it is not a separate workstream but one extension inside decide.py.
+
+#### Debt 12 — #69/B6(D9) no independent manually labelled gold validation has ever been done
+
+- **What it is**: since the project began, all accuracy evidence has been self-consistency (regression gates, golden, invariants) or
+  recall against upstream ground truth (98.80%, covering only bare neutral citations). **79% (6,873/8,646)** of the groups over the threshold are reporter-style
+  citations, and their precision and recall have never been measured independently.
+- **Impact**: we do not know whether the final output is right, only that it is "the same as last time" and "violates no encoded rule".
+  This must be filled in before a paper or an external audit.
+- **To close it**: an execution plan exists in `implementation/plan_gold_debt_2026-09-15.md` §2 (three sub-samples:
+  mention-level precision, group-level correctness, a recall lower bound; agreement from double labelling). **The user decided on 2026-09-15 to defer it**
+  — the current stage is building the method, not the strictest standard for publishing a paper; debts 4/6/1 come first.
+
+#### Debt 13 — #71/B8 splitting keys on non-ordinal parentheticals; the direction of the downstream count effect is not established
+
+- **What it is**: `10 Cush. (Mass.) 337` and `10 Cush. 337` are split into two base keys, because the current tables cannot distinguish a "new series" parenthetical
+  (such as (N.S.), really a new series) from a "court note" parenthetical (such as (Mass.)/(P.C.), only a court/jurisdiction label);
+  35 base keys are affected.
+- **Impact**: **the direction is undetermined** — it could under-count (one citation split into two groups, each missing the threshold) or over-count
+  (different judgments merged by mistake). Making no claim about the direction is the only honest choice for now.
+- **To close it**: the unlocking condition = a sourced classification table of notes (distinguishing "series" from "court note" parentheticals),
+  which does not exist and would have to be built.
+
+#### Debt 14 — #77/B14 groups blocked by the identity-basis gate: the highest-value direction not yet started
+
+- **What it is**: R3 measured the upper bound of net new groups from co-citation propagation at 113,432, but **only 4,567 groups
+  are blocked by the qualifying identity-basis gate**, of which `name_year` (the case name + year heuristic) makes up 97.9%. In other words: the bottleneck is not
+  that the co-citation propagation rule is too strict, but that "case name + year" as an identity criterion is itself unreliable and cannot be promoted to a qualifying criterion.
+- **Impact**: this is **possibly the best value for effort** in this table — if a more reliable identity criterion can be added (better
+  neutral-anchor recognition or case-name extraction), it benefits several problems at once, including debt 2 (case names) and B21 (absorption along the way).
+- **To close it**: left to the user's decision; no relaxation implemented. The right direction is a separate "neutral anchor / case-name extraction" workstream,
+  not further relaxing the co-citation propagation definition (that road has been measured and works poorly).
+
+#### Debt 15 — #82/B19 vendor/database identifiers not on the existing table route
+
+- **What it is**: Quicklaw identifiers such as `oj` (Ontario Judgments QL), `scca` (S.C.C.A. No.) and `bcj`/`fcj`
+  should by nature go through the existing `decisions/identifier_systems.csv` +
+  `decisions/court_or_reporter_scope.csv` route (R2F already used that route for
+  CanLII/Carswell/DTC/Westlaw), not be mixed into the new `reporter_origin_scope.csv` table.
+- **Impact**: these identifiers are currently on neither the right route nor do they have a jurisdiction / place-of-origin conclusion. `scca` (1,189 groups)
+  has the highest priority.
+- **To close it**: registered as a candidate for the next round; not done this round to avoid going out of scope.
+
+#### Debt 16 — #84/B21 single-anchor clusters absorb judgments of different instances along the way
+
+- **What it is**: when a group has one strong anchor (such as a neutral citation), the other members are absorbed into the same group without adequate checks.
+  Measured on the full data: **4,035 groups / 5,249 members absorbed along the way** (1,001 of them from a different year). The proposed tightening of co-citation routing
+  was rejected (it would move 4.0% of kept groups, over the 1% red line; its effectiveness on the #75/B12 subset was only 16/98), which triggered the stop
+  condition; not implemented.
+- **Impact**: this is not an abstract risk — **it actually happened once after the fix for debt 1 (#21) on 2026-09-15**:
+  the 2004 ONCA judgment and the 2005 SCC judgment in R. v. Hamilton (two different courts, different judgments) were wrongly
+  merged into one group (dd 50→56). The same reshuffle also corrected an existing error of the same kind in r4c
+  (the SCC/Privy Council judgments of MNR v. Wright's Canadian Ropes); see
+  `audit/findings/r21_group_reshuffle_pairs.md`.
+- **To close it**: the discriminator needed is not co-citation but positive evidence of the kind "different year + printed court designation" (such as
+  `(P.C.)` next to A.C.) — R4 Stage 2 has already laid down designation capture (`observed_deciding_court`
+  recognized per key, 26/26 with zero errors); the unlocking condition = re-propose a narrow rule on that basis, which would be much smaller in scale
+  (only absorbed members carrying a designation would be split). **No delivery is delayed for this debt** — its scale (one group per occurrence)
+  is too small compared with the measured cost of tightening (4.0% of kept groups) to be worth acting on now.
+
+### C. Debts that make people misread (definitions not written down)
+
+#### Debt 8 — an after-effect of #47: `key_occurrence_count` is not documented
+
+- **What it is**: the two occurrence columns use different definitions, but the column notes in `USAGE.md` §5 **only have
+  `occurrence_count`, not `key_occurrence_count`** — and the latter is the one the ledger uses for "conservation".
+- **Impact** (✅ measured this time): summed over the whole table,
+  `occurrence_count` = **1,092,865** and `key_occurrence_count` = **532,101** (**a 2.05-fold difference**).
+  Anyone who sums the former and reconciles it against 532,101 will think the data is wrong.
+  Linked to the #60 trap: the denominator of `case_name_agreement` is "rows that voted", so **a single vote can show 1.0**;
+  `case_name_support` is the one to look at (USAGE §5 warns about it, but the column name itself does not guard against it).
+- **To close it**: add the column note to USAGE. Pure documentation, very cheap, but it blocks the most common misreading.
+
+#### Debt 9 — spec write-back backlog (about 15 entries)
+
+- **What it is**: #37 #38 #42 #48 #49 #52 #54 #55 #56 #57 #58 #59 #60 #61 #62
+  all say "**must be reviewed by a human and written into the specification**" — the implementation was changed after measurement, but the specification was not updated.
+- **Impact**: **a reader of the specification gets an impression that does not match the code**. This is a debt at the "reproduction/audit" level, **not wrong numbers**.
+- **To close it**: ratify once + write back into the specification (or mark them uniformly in the specification as "implementation notes (v1.x)").
+  This is the most numerous but **cheapest** kind: no code changes and no new material needed.
+- **Progress**: the notes for spec v1.7 (commit `a0647da`) are written, all marked "pending review"; only human ratification is missing.
+
+---
+
+## 2. What the real debts consist of (one line each)
+
+| Type | Count | Which |
 |---|---|---|
-| 需要**改生产代码** | **0** | 原债 1（#21）已于 2026-09-15 修复，移入 §3.1 |
-| 需要**补资料** | 4 | 债 3（#35/#32）、债 4（#40）、债 6（#39）、债 10（#64/#67，reporter/来源地排他核查） |
-| 需要**你拍板** | 3 | 债 5（#31/#70，含 DTC）、债 7（#50）、债 5(c) 的 DTC 部分 |
-| 需要**做一次测量** | 1 | 债 2（#14） |
-| 需要**写文档** | 2 | 债 8（列口径）、债 9（规格回写） |
-| 需要**新开工作流**（价值高，未排期） | 3 | 债 11（#68，同案传播）、债 14（#77，身份基础/name_year 不可靠）、债 15（#82，供应商标识符路线） |
-| 需要**独立验证**（已有计划，暂缓） | 1 | 债 12（#69，人工金标） |
-| 需要**规则设计**（方向未定） | 1 | 债 13（#71，非序数括注拆键） |
-| **接受为已知残余，出现时不追**（有量化监控） | 1 | 债 16（#84，B21 单锚簇搭车——已测代价过高，不实现，但持续监控其发作） |
+| Need **production code changes** | **0** | The former debt 1 (#21) was fixed on 2026-09-15 and moved to §3.1 |
+| Need **more source material** | 4 | Debt 3 (#35/#32), debt 4 (#40), debt 6 (#39), debt 10 (#64/#67, reporter / place-of-origin exclusivity checks) |
+| Need **your decision** | 3 | Debt 5 (#31/#70, including DTC), debt 7 (#50), the DTC part of debt 5(c) |
+| Need **one measurement** | 1 | Debt 2 (#14) |
+| Need **documentation** | 2 | Debt 8 (column definitions), debt 9 (spec write-back) |
+| Need **a new workstream** (high value, unscheduled) | 3 | Debt 11 (#68, same-case propagation), debt 14 (#77, identity basis / name_year unreliable), debt 15 (#82, vendor identifier route) |
+| Need **independent validation** (plan exists, deferred) | 1 | Debt 12 (#69, manually labelled gold) |
+| Need **rule design** (direction undetermined) | 1 | Debt 13 (#71, splitting keys on non-ordinal parentheticals) |
+| **Accepted as known residue, not chased when it occurs** (with quantitative monitoring) | 1 | Debt 16 (#84, B21 single-anchor absorption — the measured cost is too high, not implemented, but its occurrences are monitored) |
 
-**15 条真债里，只有 3 条（债 2/4/6）已经有明确的下一步动作在推进；债 10/11/14/15
-是这次合并两本账后新浮现的、之前完全没有排期的方向；债 16 是"明知会发生、决定不修"
-的一类。**
+**Of the 15 real debts, only 3 (debts 2/4/6) already have a clear next step under way; debts 10/11/14/15
+surfaced only after merging the two ledgers this time and had never been scheduled at all; debt 16 is the kind "known to happen, decided not to fix".**
 
 ---
 
-## 3. 不是债的 51 个条目
+## 3. The 51 entries that are not debts
 
-**精确分区**：83 = 债涉及的 **32** 个条目（§1，一些债涉及多个编号）+ 非债 **51** 个条目（本节）。
-（PROBLEMS.md 编号是 `#1`–`#84`，其中 **`#22` 本来就不存在**，所以总数是 83 条。）
+**Exact partition**: 83 = the **32** entries covered by debts (§1; some debts cover several numbers) + **51** non-debt entries (this section).
+(PROBLEMS.md numbers run `#1`–`#84`, of which **`#22` never existed**, so the total is 83.)
 
-### 3.1 已修 / 已实现，清零（24 条）
+### 3.1 Fixed / implemented, cleared (24 entries)
 
 `#7 #11 #13 #18 #19 #20 #21 #23 #24 #25 #28 #29 #30 #33 #34 #36 #41 #43 #44 #45 #46 #51 #53 #73`
 
-- **#21（原债 1）关账方式**：已修（2026-09-15）。新增第 8 形状
-  `shape_paren_year_abbr_page`（(年) 缩写 页），**兜底语义**——只在七个既有形状
-  都不命中的位置生效（extract 层重叠抑制），上次回滚的「挤掉正确匹配」病因
-  从根上消除；守卫全部按真实排版测（vol 容 `. , ;` 与小写连接词、罗马续接
-  大小写双收、p./page/斜杠续接拒、page==year 拒），结构谓词无词表。
-  实测（run_20260915_r21a，交付 run 已切换，2026-09-15 用户复核通过）：counted
-  新增 **635**（A.C. 268、S.C.R. 77、O.J. 24、P. 19、中立码等），消失 **0**、身份
-  变化 **0**；过门槛组 8,646→**8,657**（+11，Keech v. Sandford / 2008 SCC 20 /
-  2019 ONCA 638 等）；既有组 dd 上升 90、下降 0；榜单前 25 无进出。组级重组
-  29 键/22 对，1 对新犯（并入 #84/B21）、1 对纠正 r4c 旧错——见
-  `audit/findings/r21_group_reshuffle_pairs.md`。测试 `pipeline/tests/test_shape_21.py`
-  （76 条）。
-- **#73（B10）关账方式**：已修复（2026-09-13，commit 8d8b008 + r2e）。相容包含规则
-  放过"年份复写"长误析——新增结构关系 `year_reread_as_vol`（按字段 SPAN 偏移对齐），
-  仲裁将容器整类判 `year_reread_as_vol_invalid`；反例 a-e 先行失败后转绿，
-  test_candidates 158→170；红线披露：old-supported lost 61（cap 60，超出 1 条已归因）。
+- **How #21 (formerly debt 1) was closed**: fixed (2026-09-15). An 8th shape was added,
+  `shape_paren_year_abbr_page` ((year) abbreviation page), with **fallback semantics** — it takes effect only at positions none of the seven existing shapes
+  match (overlap suppression in the extract layer), which removes at the root the cause of the last rollback, "crowding out correct matches";
+  all guards were tested on real typesetting (vol tolerates `. , ;` and lowercase connectives, Roman continuations
+  accepted in both cases, p./page/slash continuations rejected, page==year rejected), structural predicates with no word list.
+  Measured (run_20260915_r21a; the delivery run has been switched, user review passed on 2026-09-15): counted
+  gained **635** (A.C. 268, S.C.R. 77, O.J. 24, P. 19, neutral codes, etc.), vanished **0**, identity
+  changes **0**; groups over the threshold 8,646→**8,657** (+11: Keech v. Sandford / 2008 SCC 20 /
+  2019 ONCA 638, etc.); dd of existing groups rose for 90 and fell for 0; no entries or exits in the top 25. Group-level reshuffle:
+  29 keys / 22 pairs, 1 pair newly wrong (merged into #84/B21), 1 pair correcting an old r4c error — see
+  `audit/findings/r21_group_reshuffle_pairs.md`. Test `pipeline/tests/test_shape_21.py`
+  (76 assertions).
+- **How #73 (B10) was closed**: fixed (2026-09-13, commit 8d8b008 + r2e). The compatible-containment rule
+  let through long "repeated year" misparses — a new structural relation `year_reread_as_vol` was added (aligned by field SPAN offsets),
+  and arbitration marks the whole class of containers `year_reread_as_vol_invalid`; counter-examples a–e failed first and then turned green,
+  test_candidates 158→170; red-line disclosure: old-supported lost 61 (cap 60; the 1 over has been attributed).
 
-（注意：`#7`「已解决」、`#18`「已由槽位订正修复」、`#44`「已改为两级投票」等措辞里**没有
-"已修"二字**，但都已落地——这正是按关键词自动分类会漏的原因。）
-回归门状态（✅ 本次实测全绿）：`run_regression.py --selftest` exit 0、
-`test_layers.py` 120 断言全过、`test_layers.py --golden`「全量金标逐项一致」exit 0
-（提醒：`--golden` 只证明与旧产出一致，对新代码无独立证明力，见 #21 的补充说明）。
+(Note: the wording of `#7` "resolved", `#18` "fixed by the slot correction", `#44` "changed to two-level voting" and so on **does not contain
+the word "fixed"**, yet all have landed — which is exactly why classifying by keyword misses them.)
+Regression gate status (✅ all green in this measurement): `run_regression.py --selftest` exit 0,
+`test_layers.py` all 120 assertions pass, `test_layers.py --golden` "full golden matches item by item" exit 0
+(reminder: `--golden` only proves agreement with the old output and has no independent power over new code; see the note on #21).
 
-### 3.2 已测清 = 已知限制，不需要动作（19 条）
+### 3.2 Fully measured = known limitations, no action needed (19 entries)
 
-| 编号 | 限制 | 量级 |
+| Number | Limitation | Size |
 |---|---|---|
-| #10 | `shape_vol_abbr_page` 形态不印年份（现代汇编体例） | ✅ 全部组 35.9%、过门槛组 16.9%、**按 dd 加权 10.0%**；缺年份组 100% 是 reporter 类，集中在 O.R. 3d 474 / C.C.C. 3d 229 / D.L.R. 4d 122 / O.A.C. 82 |
-| #3 | 无卷号括号引证只靠年份区间消歧 | 已留 `vol_missing` 痕；不影响 dd/门槛 |
-| #4 | `shape_leading_abbr` 残余误报 | 📖 去重后 10,850 行（真前缀 9,806 + 无逗号吞名 1,044 + EXHIBIT 类） |
-| #5 | `table_conflict` | 📖 reporter 表填好后同档冲突实测 0 |
-| #6 | `case_origin_conflict` 频次未知 | 待来源地表扩到一定规模后才有意义 |
-| #17 | 年份无左侧数字守卫 | 📖 带/不带守卫计数完全相等（SCC 31,926 = 31,926；ONCA 17,107 = 17,107）；语料 0 实例 |
-| #26 #27 | 两处刻意不加的槽位 | 📖 40 次（全是案名吞噬）、0 次 |
-| #63 | 抽取层对上游真值的 1.2% 少算（872 条） | 失败形态安全（可见的诚实拒绝）；明确不解冻 |
-| #65（B2） | D3 无配对者的极端相邻结构 | 📖 构造性风险场景，全语料 1,233 条 D3 旗全部有配对者且按规则消解，未发现真实实例 |
-| #66（B3） | 跨法域法院（UKPC/JCPC）来源地无规则层排他证据 | 已用既有方案覆盖（债 3 的 2026-09-15 决定）：走 `case_origin.csv`（203 行）+ `case_origin_manual.csv`（32 行）逐案核路线即够，不再单列为债 |
-| #72（B9） | 案名投票混入非 counted 候选 | 📖 全量 466,862 投票行 43.7% 来自非 counted 候选；`case_name_modal` 只作展示列，不作身份证据 |
-| #74（B11） | 案名敏感性 C 口径（仅 counted 投票）出现换名样例 | 生产保持 A 口径不变，只是敏感性诊断发现的现象，不影响交付 |
-| #75（B12） | 单锚簇搭车的一个子集（外国混合汇编、异年搭车） | 📖 93 组/98 个搭车成员，拟议规则有效率仅 16/98，是 #84/B21 的子集，一并登记不重复算债 |
-| #76（B13） | 年读作卷 | 📖 实测提及 92 条（原计划口径 188，无法复现），counted 恒为 0，不会成为错答案 |
-| #78（B15） | M3 弃权桶规模 | 📖 13,130 族/142,082 dd，按计划保守方向弃权，登记为已知残差 |
-| #79（B16） | 同形异义真歧义残差 | 📖 估计 294 组合/1,911 条提及落在异国重叠区，登记为残差，未来应标 `exclusive_reporter_scope_ambiguous` |
-| #80（B17） | 表侧退化行（`pd`/`nfldpeir` 无区间；`lrex`/`lrqb` 大小写不一致） | 量小，登记待人顺手处理 |
-| #83（B20） | 连续编卷零化与自印无年形式自成身份锚的孤立组残差 | 📖 孤立组口径 A 实测 9,449→16,743（+7,294 残差），按"不扩范围"原则不动 |
+| #10 | The `shape_vol_abbr_page` form prints no year (modern reporter style) | ✅ 35.9% of all groups, 16.9% of groups over the threshold, **10.0% weighted by dd**; 100% of groups missing a year are reporter-type, concentrated in O.R. 3d 474 / C.C.C. 3d 229 / D.L.R. 4d 122 / O.A.C. 82 |
+| #3 | Bracketed citations with no volume are disambiguated by year range alone | A `vol_missing` trace is left; does not affect dd/threshold |
+| #4 | Residual false positives of `shape_leading_abbr` | 📖 10,850 rows after deduplication (real prefixes 9,806 + comma-less name swallowing 1,044 + EXHIBIT-type) |
+| #5 | `table_conflict` | 📖 measured 0 same-grade conflicts once the reporter table was filled |
+| #6 | Frequency of `case_origin_conflict` unknown | Meaningful only once the place-of-origin table reaches some size |
+| #17 | No left-hand digit guard on the year | 📖 counts with and without the guard are identical (SCC 31,926 = 31,926; ONCA 17,107 = 17,107); 0 instances in the corpus |
+| #26 #27 | Two slots deliberately not added | 📖 40 times (all case-name swallowing), 0 times |
+| #63 | The extraction layer's 1.2% under-count against upstream ground truth (872 entries) | A safe failure form (a visible, honest refusal); explicitly not unfrozen |
+| #65 (B2) | The extreme adjacency structure of D3 without a partner | 📖 a constructed risk scenario; all 1,233 D3 flags in the full corpus have partners and resolve under the rules; no real instance found |
+| #66 (B3) | No exclusive rule-layer evidence for the place of origin of cross-jurisdictional courts (UKPC/JCPC) | Covered by the existing approach (the 2026-09-15 decision on debt 3): the case-by-case route of `case_origin.csv` (203 rows) + `case_origin_manual.csv` (32 rows) is enough; no longer listed as a debt |
+| #72 (B9) | Case-name voting includes non-counted candidates | 📖 43.7% of all 466,862 voting rows come from non-counted candidates; `case_name_modal` is only a display column, not identity evidence |
+| #74 (B11) | Name changes appear under definition C of case-name sensitivity (counted-only voting) | Production keeps definition A unchanged; a phenomenon found by a sensitivity diagnostic, no effect on delivery |
+| #75 (B12) | A subset of single-anchor absorption (foreign mixed reporters, different-year absorption) | 📖 93 groups / 98 absorbed members; the proposed rule was effective on only 16/98; a subset of #84/B21, recorded together and not counted as a separate debt |
+| #76 (B13) | Year read as volume | 📖 92 mentions measured (the planned definition's 188 could not be reproduced); counted is always 0, so it never becomes a wrong answer |
+| #78 (B15) | Size of the M3 abstention bucket | 📖 13,130 families / 142,082 dd; abstains in the conservative direction as planned; recorded as a known residual |
+| #79 (B16) | Residual true ambiguity of homographs | 📖 an estimated 294 combinations / 1,911 mentions fall in zones where countries overlap; recorded as residual; should be marked `exclusive_reporter_scope_ambiguous` in future |
+| #80 (B17) | Degenerate table rows (`pd`/`nfldpeir` with no range; `lrex`/`lrqb` inconsistent case) | Small; recorded for someone to fix in passing |
+| #83 (B20) | Residual isolated groups from zeroing continuous volume numbering and from self-printed year-less forms becoming their own identity anchors | 📖 isolated groups under definition A measured 9,449→16,743 (+7,294 residual); left alone under the "no scope expansion" principle |
 
-### 3.3 已决定不做 / 是选择（5 条）
+### 3.3 Decided not to do / a choice (5 entries)
 
-- **#1 跨年年份**：✅ 更正——**不是"整条抽不到"**。实测 `[1893-94] 1 S.C.R. 1`
-  会被 `shape_vol_abbr_page` 抓到 `1 S.C.R. 1`（vol=1, page=1, 无年份），并进"缺年份"类。
-  ✅ 全语料扫得跨年形式仅 **70 次 / 46 份判决**（SCC 49、ONCA 21）。
-- **#2**：`[1978] 1 AC 728` 与 `[1978] AC 728` 按严格匹配算两个键（不做猜测性合并，是选择）。
-- **#8**：不设判决年份下限 = 不预筛（是选择，不是缺陷）。
-- **#9**：旧线路的 396 个 UNCLEAR 串，不迁移（旧线路已废弃）。
-- **#12**：`117 U, S. R. 113`、`13 C.B., N.S., 381` ✅ 实测确认零命中，但量级只有 2 + 13 次；
-  放宽会破坏案名切分，已否决。
+- **#1 split years**: ✅ corrected — **it is not "not extracted at all"**. Measured: `[1893-94] 1 S.C.R. 1`
+  is caught by `shape_vol_abbr_page` as `1 S.C.R. 1` (vol=1, page=1, no year) and goes into the "missing year" class.
+  ✅ A scan of the full corpus finds split-year forms only **70 times / in 46 judgments** (SCC 49, ONCA 21).
+- **#2**: `[1978] 1 AC 728` and `[1978] AC 728` count as two keys under strict matching (no speculative merging; a choice).
+- **#8**: no lower bound on judgment year = no pre-filtering (a choice, not a defect).
+- **#9**: the 396 UNCLEAR strings of the old line are not migrated (the old line is abandoned).
+- **#12**: `117 U, S. R. 113` and `13 C.B., N.S., 381` ✅ measured and confirmed at zero hits, but only 2 + 13 occurrences;
+  relaxing would break case-name cutting; rejected.
 
-### 3.4 口径与流程规则（3 条）
+### 3.4 Definition and process rules (3 entries)
 
-`#15`（诊断脚本分桶设计：应为「脚注行 / 正文散文 / Cases Cited 块」三分类 × 年代）、
-`#16`（以后任何新形状或放宽的准入门槛，流程规则；锚按 6 计，待人复核）、
-`#81`（B18，检索能力阻塞已解除——不是问题本身的关账，是解锁其他债的前置条件变化；
-配置 Exa API key 后 `web_search` 恢复可用，反哺 `reporter_origin_scope.csv`，见债 10）。
+`#15` (design of diagnostic-script buckets: should be "footnote rows / body prose / Cases Cited blocks" × era),
+`#16` (the admission gate for any future new shape or relaxation, a process rule; anchors counted as 6, pending human review),
+`#81` (B18, the search-capability block has been lifted — not the closing of the problem itself but a change in a precondition that unlocks other debts;
+with an Exa API key configured, `web_search` works again and fed `reporter_origin_scope.csv`, see debt 10).
 
 ---
 
-## 4. 本会话的更正记录（防止再被台账误导）
+## 4. Corrections made in this session (so the ledger does not mislead again)
 
-| 我先前的说法 | 实际 | 怎么发现的 |
+| What I said earlier | What is actually so | How it was found |
 |---|---|---|
-| #18 属于"已声明不做" | 它**已修**（"已由槽位订正修复 2026-09-06"） | 逐条读原文，发现措辞里没有"已修"二字，被关键词分类漏掉 |
-| #14 属于"什么都不用做" | 它是**债 2**，是"案名"列最大的缺口（过门槛 6.7% 无名，六成证据来自 1968 前 SCC） | 用 `effective_sources` 做了链接来源对照 |
-| #1 那批引证"整条抽不到" | 引证**抓到了**，只是没有年份，影响比账上写的还小 | 用 `shapes.SHAPES` 直接测合成串 |
-| 62 条是项目已知问题的全部 | demo 那几轮工作另开了一本 B1–B21 账本，从未并入过 | #21 修复触发的组级重组把两本账的关联暴露出来（2026-09-15） |
+| #18 belongs to "declared won't do" | It **is fixed** ("fixed by the slot correction 2026-09-06") | Reading each entry's text showed the wording lacked the word "fixed", so keyword classification missed it |
+| #14 belongs to "nothing to do" | It is **debt 2**, the largest gap in the "case name" column (6.7% of groups over the threshold are nameless, six tenths of their evidence from the SCC before 1968) | Compared link sources using `effective_sources` |
+| That batch of #1 citations is "not extracted at all" | The citations **are captured**, just without a year; the impact is even smaller than the ledger says | Tested synthetic strings directly with `shapes.SHAPES` |
+| The 62 entries are all of the project's known problems | The demo rounds opened a separate B1–B21 ledger that was never merged | The group-level reshuffle triggered by the #21 fix exposed the link between the two ledgers (2026-09-15) |
 
-**教训（也是这份文件的用法）**：`PROBLEMS.md` 的措辞不能当结论用。**要动手，先复核。**
-
----
-
-## 5. 怎么用这份文件
-
-1. **`PROBLEMS.md` 是唯一的问题台账**（本身不得被脚本读取），本文件是它的分诊结果。
-   有新问题一律先登记进 `PROBLEMS.md`（用 `audit/append_problems_entry.py`，它按
-   `\r\n` 切分/拼回，保证不破坏 CRLF），再来这里分诊。
-2. 每条债关账后 **移到 §3**，并写明关账方式（修了 / 测清了 / 明确封存）。
-3. **建议先做债 4（196 行法域表核实）**：提案已就位，等人抽查批准即可落表。
-4. 债 10/11/14/15 是这次合并后新浮现的方向，**都还没有人排期**，其中债 14 可能是
-   性价比最高的一条（能同时惠及债 2 和债 16）。
-5. 管线**建议封版**（`v1.0-frozen`，除 bug 不再改规则）——但这个建议现在需要重新评估：
-   合并前的依据是"9 条真债 8 条不是工程活"，合并后真债增加到 15 条，其中 3 条
-   （债 11/14/15）是全新的、未排期的工作方向，"封版"的范围需要用户重新确认是指
-   "五层架构不再改"还是"所有已知方向都不再推进"。
+**Lesson (and how to use this file)**: the wording of `PROBLEMS.md` cannot be used as a conclusion. **Before acting, re-check.**
 
 ---
 
-**相关文件**：体积与目录治理已执行（2026-09-15，46.8 GB → 9.6 GB），见 `data/README.md` 与 `implementation/run_registry.csv`（`CLEANUP_PLAN.md` 是执行前的提案稿，已删除，内容被前者取代）。两本账合并的原始 B 账本见 `implementation/demo_repair_progress.md`（保留作历史记录，不再是独立追踪账本）。
+## 5. How to use this file
+
+1. **`PROBLEMS.md` is the only problem ledger** (it must not itself be read by scripts); this file is its triage.
+   Every new problem is first recorded in `PROBLEMS.md` (with `audit/append_problems_entry.py`, which splits and rejoins on
+   `\r\n` so CRLF is not broken), then triaged here.
+2. When a debt is closed, **move it to §3** and state how it was closed (fixed / fully measured / explicitly shelved).
+3. **Suggest doing debt 4 first (verifying the 196-row jurisdiction table)**: the proposal is in place and only needs a human spot check and approval to go into the table.
+4. Debts 10/11/14/15 are directions that surfaced after this merge and **none is scheduled yet**; debt 14 may be
+   the best value for effort (it would benefit debt 2 and debt 16 at the same time).
+5. The pipeline is **recommended for freezing** (`v1.0-frozen`, no more rule changes except bugs) — but this recommendation now needs reassessment:
+   before the merge the basis was "of 9 real debts, 8 are not engineering work"; after the merge the real debts rose to 15, of which 3
+   (debts 11/14/15) are entirely new, unscheduled directions, so the user needs to reconfirm whether "freeze" means
+   "the five-layer architecture no longer changes" or "no known direction is pursued any further".
+
+---
+
+**Related files**: size and directory governance has been carried out (2026-09-15, 46.8 GB → 9.6 GB), see `data/README.md` and `implementation/run_registry.csv` (`CLEANUP_PLAN.md` was the proposal draft before execution and has been deleted; its content is superseded by the former). The original B ledger merged with this one is `implementation/demo_repair_progress.md` (kept as a historical record, no longer an independent tracking ledger).

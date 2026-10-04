@@ -40,7 +40,7 @@ METHODS = [
     ('双语中立引证 英法对应', ['bilingual_neutral_codes']),
     ('方括号法院标注 court designation 识别', ['court_designations', 'designation']),
     ('distinct_decisions_count 并集 不是 max', ['merge', 'select', 'distinct']),
-    ('抽取层禁止固定缩写表 按结构形状匹配', ['extract', 'shapes', '技术规格']),
+    ('抽取层禁止固定缩写表 按结构形状匹配', ['extract', 'shapes', 'technical_specification']),
 ]
 
 # Extension scenarios: what someone adding a court / a new regex family would ask. The expected

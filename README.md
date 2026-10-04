@@ -17,7 +17,7 @@ A method for turning any collection of court judgments into an auditable citatio
 | **Scope** | Courts are chosen with `PIPELINE_COURTS`. A new court needs its corpus file and, where it uses reporters or codes the rule tables lack, new table rows; [`docs/method_cards/00_new_court_playbook.md`](docs/method_cards/00_new_court_playbook.md) lists the steps. |
 | **Run it** | Download the corpus, run `pipeline/run_all.py`. The current three-court run took 37 minutes and wrote 3.1 GB. See [Quick start](#quick-start). |
 
-> Research data, not legal advice. Read [`docs/USAGE.md`](docs/USAGE.md) (Chinese) before quoting any number: it defines what "cited N times" counts and lists what the tables under-count.
+> Research data, not legal advice. Read [`docs/USAGE.md`](docs/USAGE.md) before quoting any number: it defines what "cited N times" counts and lists what the tables under-count.
 
 ## Example: one paragraph through two layers
 
@@ -194,7 +194,7 @@ $ python tools/foundation/query.py "Donoghue" --mode keyword -k 1
 
 ### Method RAG
 
-[`index_methods.py`](tools/foundation/index_methods.py) splits the project's own material into about 1,100 records, each tagged with a layer and a status and pinned to `file:line` at a commit: every function and class in `pipeline/` (parsed with `ast`), every rule table, every heading section of the spec and audit reports, and the hand-written [method cards](docs/method_cards/) (what each layer does, what to change for a new court, how to verify, known pitfalls). Method searches reserve two top slots for method cards, so an extension question lands on the curated answer first. The cards are written in Chinese, and the multilingual embeddings still match English questions: "how to add a new court" returns the new-court playbook card among the top three results.
+[`index_methods.py`](tools/foundation/index_methods.py) splits the project's own material into about 1,100 records, each tagged with a layer and a status and pinned to `file:line` at a commit: every function and class in `pipeline/` (parsed with `ast`), every rule table, every heading section of the spec and audit reports, and the hand-written [method cards](docs/method_cards/) (what each layer does, what to change for a new court, how to verify, known pitfalls). Method searches reserve two top slots for method cards, so an extension question lands on the curated answer first. The question "how to add a new court" returned the new-court playbook card among the top three results; that was measured when the cards were still in Chinese, so rebuild the index after pulling to re-check it on the English cards.
 
 ### Indexing and embedding
 
@@ -212,9 +212,9 @@ For 61 sampled cited cases, our citing judgments are also on CanLII's list 98.5�
 
 These measurements predate extraction v1.6 and the latest classification fixes and have not been repeated on `run_20261003_v16f`. The DD threshold of 5 used by the select layer is a placeholder that has not been calibrated.
 
-The test scripts `test_layers.py` (171 checks), `test_candidates.py` (378), `test_non_citation_words.py` (167), `test_registered_id.py` (87), `test_shape_21.py` (76) and the extraction regression self-test all pass locally. Some of them read the corpus and earlier run outputs, which are too large for the repository, so they do not run in CI.
+The test scripts `test_layers.py` (172 checks), `test_candidates.py` (378), `test_non_citation_words.py` (167), `test_registered_id.py` (87), `test_shape_21.py` (76) and the extraction regression self-test all pass locally. Some of them read the corpus and earlier run outputs, which are too large for the repository, so they do not run in CI.
 
-Every problem found so far, with its measured size, cause, fix and effect, is recorded in [`PROBLEMS.md`](PROBLEMS.md) (Chinese); [`DEBT_LEDGER.md`](DEBT_LEDGER.md) tracks the remaining technical debt.
+Every problem found so far, with its measured size, cause, fix and effect, is recorded in [`PROBLEMS.md`](PROBLEMS.md); [`DEBT_LEDGER.md`](DEBT_LEDGER.md) tracks the remaining technical debt.
 
 ## Quick start
 
@@ -248,7 +248,7 @@ python pipeline/tests/test_layers.py
 python pipeline/tests/test_layers.py --golden
 ```
 
-The full order of steps is in §12 of the [technical specification](docs/外国引证数据整理抽取管线项目技术规格.md) (Chinese). Changes that go beyond the specification are recorded in `PROBLEMS.md`.
+The full order of steps is in §12 of the [technical specification](docs/technical_specification.md). Changes that go beyond the specification are recorded in `PROBLEMS.md`.
 
 ## Roadmap
 

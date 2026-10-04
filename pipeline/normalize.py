@@ -1,5 +1,5 @@
 # normalize.py — 共享纯函数
-# 见技术规格 6.1-6.3
+# See technical specification §6.1-6.3
 
 import re
 
