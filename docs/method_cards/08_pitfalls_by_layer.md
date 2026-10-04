@@ -1,122 +1,122 @@
-# 踩过的坑：按层的索引
+# Pitfalls already hit: an index by layer
 
-用法：动手之前，先在这里找你要改的那一层，看有没有人踩过。每条一句话，细节和数字去 `PROBLEMS.md` 看对应编号。
+How to use it: before you start, find the layer you are about to change and see whether someone has already tripped there. One sentence per entry; for details and numbers, read the matching number in `PROBLEMS.md`.
 
-状态是 2026-10-03 账本里的状态。**标【原文】的，我只读了标题，状态以 PROBLEMS 原文为准**。完整的条目共 106 条。
+Statuses are those in the ledger on 2026-10-03. **For entries marked [text], I read only the title; go by the PROBLEMS text for the status**. The full ledger has 106 entries.
 
-## 抽取层
+## Extraction layer
 
-| # | 一句话 | 状态 |
+| # | In one sentence | Status |
 |---|---|---|
-| 1 | 跨年 `1893-94` 不支持，别写永不执行的 `split("-")` | 明确不支持 |
-| 7 | 页码后缀 `12n`：旧写法回溯成 page=1，静默截断 | 已修 |
-| 11 | 非序数括注 `(Mass.)`、`(N.S.)` 抽不到 | v1.5 已修（`_NONORD`） |
-| 12 | `_ABBR` 不含逗号，`U, S. R.` 抽不到，刻意保留防吞名 | 刻意保留 |
-| 17 | `shape_neutral_bare` 年份无左侧数字守卫 | 已量化，【原文】 |
-| 18 | 案名吞噬：前缀→卷槽的逗号造成 98.8% 的吞名 | 已修（分隔符按槽位分配） |
-| 19 | `F.2d` 序数紧贴缩写零命中 | 已修 |
-| 20 | 页码家族：`D/2948`、罗马页 | 已修 |
-| 21 | 无卷号 `(1938) S.C.R. 423` | 先回滚，**以兜底形状 `shape_paren_year_abbr_page` 重新实现**（2026-09-15） |
-| 22、23 | `CanLII`/`CarswellOnt` 混合大小写码；`O.J. No.` 的 token 污染 | 已修 |
-| 24、25 | leading_abbr 的年份前缀；`serial_marker` 作用域 | 已修 |
-| 26、27 | leading_abbr 不加序数槽、nominate 不加系列槽 | 刻意保留（0 次/全是吞名） |
-| 28–30 | 法语 `no`、撇号 reporter、单字符罗马页 | v1.5 已修 |
-| 63 | 召回 98.80%，漏的是去重输给粘连 span | 已量化 |
-| 65 | 页码 token 与后随中立引证年份直接相邻的极端结构 | 构造性风险，【原文】 |
-| 98 | F6 页码延后形式、F7 制定法方括号年份 | 低频，登记观测 |
+| 1 | Split years `1893-94` are unsupported; do not write a `split("-")` that never runs | Explicitly unsupported |
+| 7 | Page suffix `12n`: the old pattern backtracked to page=1, silently truncating | Fixed |
+| 11 | Non-ordinal parentheticals `(Mass.)`, `(N.S.)` not extracted | Fixed in v1.5 (`_NONORD`) |
+| 12 | `_ABBR` has no comma, so `U, S. R.` is not extracted; kept deliberately to prevent name swallowing | Deliberately kept |
+| 17 | `shape_neutral_bare` year has no left-hand digit guard | Quantified, [text] |
+| 18 | Case-name swallowing: the comma in the prefix→volume slot caused 98.8% of the swallowing | Fixed (separators assigned per slot) |
+| 19 | `F.2d` with the ordinal glued to the abbreviation had zero hits | Fixed |
+| 20 | Page family: `D/2948`, Roman-numeral pages | Fixed |
+| 21 | No volume: `(1938) S.C.R. 423` | First rolled back, **reimplemented as the fallback shape `shape_paren_year_abbr_page`** (2026-09-15) |
+| 22, 23 | Mixed-case codes `CanLII`/`CarswellOnt`; token pollution in `O.J. No.` | Fixed |
+| 24, 25 | Year prefix of leading_abbr; scope of `serial_marker` | Fixed |
+| 26, 27 | No ordinal slot for leading_abbr, no series slot for nominate | Deliberately kept (0 genuine / all swallowing) |
+| 28–30 | French `no`, reporters with apostrophes, single-character Roman pages | Fixed in v1.5 |
+| 63 | Recall 98.80%; the misses lost deduplication to glued spans | Quantified |
+| 65 | The extreme structure where a page token directly abuts the year of a following neutral citation | A constructed risk, [text] |
+| 98 | F6 deferred page forms, F7 bracketed years in statutes | Low frequency, recorded as observations |
 
-## 分类层
+## Classification layer
 
-| # | 一句话 | 状态 |
+| # | In one sentence | Status |
 |---|---|---|
-| 3 | `shape_bracket` 无卷号时只靠年份消歧误判风险高 | 被 #52 改写为“不印卷号是印刷事实” |
-| 4 | `shape_leading_abbr` 假阳性率 | 已测量（槽位订正后残余 10,850 行） |
-| 5 | `table_conflict` 实际频次 | 实测 0（#41 之后） |
-| 31 | `CanLII` 伪代码横跨 14 个法域，不入中立码表 | 走 `identifier_systems.csv` |
-| 32 | CanLII 的 `jurisdiction` 是馆藏归属不是法院法域 | 建表脚本硬排除 |
-| 33、36、41 | 归一键假命中（`F.C.`→`FC`）；归一命中不是印刷事实；精确优先 | 已修 |
-| 34 | 建表首轮 overclaim“剩余全是噪声” | 已订正 |
-| 35 | CanLII 供不出外国中立码（UKHL、EWHC、HCA…）和机构自用码 | 须另找来源，授权先评估 |
-| 37、38 | 规格没定义 §8.4 的 `s` 字段、没写 `shape_neutral_bare` 专节 | 实现补，待复核 |
-| 39 | 境外中立码长尾 36 条未溯源 | 【原文】 |
-| 40 | `reporter_jurisdiction.csv` 早期是临时表（全 `estimated`） | 之后部分升级 |
-| 43–45 | 案名带段落编号 `[24]`；投票对原始串计票；尾巴吞平行引证 | 已修 |
-| 52 | 同形缩写消歧（K.B./Q.B./S.C./P./C.L.R.…）、前缀参与 | 已修 |
-| 57、58、61 | 案名借用别的案子的名字；没有 v. 的案名；吞整句散文 | 已修 |
-| 70（B7） | `DTC` 类码同时精确命中两表，同档平票弃权 | 设计如此，【原文】 |
-| 71（B8） | 非序数括注拆键（`10 Cush. (Mass.) 337`）缓办 | 缓办，【原文】 |
-| 73（B10） | “年份复写”长误析把真中立引证压成 contained | 登记，【原文】 |
-| 79（B16） | 同形异义的真歧义残差（K.B.、Q.B.、S.C.） | 已测量，【原文】 |
-| 80（B17） | 表侧退化行：有行无区间 = 命中一切 | 登记，【原文】 |
-| 82（B19） | 数据库/厂商式引证（`oj`、`scca`、`bcj`）应走 `identifier_systems` | 【原文】 |
-| 85 | 日期 `1 June 2007` 被当引证 | 一期已修（`date_form`） |
-| 86、87 | 缩写月份 `Mar.`/`Apr.` 不拦；`Apr` 与 `A.P.R.` 撞键 | 未修 |
-| 93、94 | 括注嵌套括号抓不到；`court_designations` 只有 16 行覆盖不足 | 未修 |
-| 95 | 语料自带案名可能错（`[1914] A.C. 599`） | 案名投票会继承 |
-| 96 | 报告年≠判决年（8 例） | 键里是报告年 |
-| 99 | `FCA` 加拿大和澳大利亚同码 | 未修 |
-| 100 | `S.J.` 萨斯喀彻温 vs 英国 | 已修（按卷号拆行） |
-| 102 | `A.R.`（安大略上诉 1880–1897）判成 AB；`L.C.R.` 丢省 | 未修 |
-| 103 | 法语码对照判错一对 | 已改表 |
-| 104 | `[1998] 1 FC 549` 是汇编不是中立码 | 未修 |
+| 3 | `shape_bracket` without a volume relies on the year alone for disambiguation, with a high risk of error | Rewritten by #52 as "no printed volume is a printed fact" |
+| 4 | False-positive rate of `shape_leading_abbr` | Measured (10,850 rows remain after the slot correction) |
+| 5 | Actual frequency of `table_conflict` | Measured 0 (after #41) |
+| 31 | The `CanLII` pseudo-code spans 14 jurisdictions and does not go into the neutral-code table | Goes through `identifier_systems.csv` |
+| 32 | CanLII's `jurisdiction` is collection membership, not the court's jurisdiction | Hard-excluded by the table-building script |
+| 33, 36, 41 | False hits through normalized keys (`F.C.`→`FC`); a normalized hit is not a printed fact; exact first | Fixed |
+| 34 | The first round of table building overclaimed "everything left is noise" | Corrected |
+| 35 | CanLII cannot supply foreign neutral codes (UKHL, EWHC, HCA …) or institution-internal codes | Another source is needed; assess licensing first |
+| 37, 38 | The specification did not define the `s` field of §8.4 or give `shape_neutral_bare` its own section | Filled in by the implementation, pending review |
+| 39 | A long tail of 36 foreign neutral codes not traced to a source | [text] |
+| 40 | `reporter_jurisdiction.csv` was originally a provisional table (all `estimated`) | Partly upgraded since |
+| 43–45 | Case names carrying paragraph numbers `[24]`; voting counted raw strings; the tail swallowed parallel citations | Fixed |
+| 52 | Homograph disambiguation (K.B./Q.B./S.C./P./C.L.R. …), prefixes take part | Fixed |
+| 57, 58, 61 | Case names borrowing another case's name; case names without v.; swallowing whole sentences of prose | Fixed |
+| 70 (B7) | Codes of the `DTC` kind hit both tables exactly; a same-grade tie abstains | By design, [text] |
+| 71 (B8) | Splitting keys on non-ordinal parentheticals (`10 Cush. (Mass.) 337`) deferred | Deferred, [text] |
+| 73 (B10) | Long misparses with a "repeated year" suppress real neutral citations as contained | Recorded, [text] |
+| 79 (B16) | Residual true ambiguity of homographs (K.B., Q.B., S.C.) | Measured, [text] |
+| 80 (B17) | Degenerate table rows: a row with no range = matches everything | Recorded, [text] |
+| 82 (B19) | Database/vendor-style citations (`oj`, `scca`, `bcj`) should go through `identifier_systems` | [text] |
+| 85 | Dates `1 June 2007` taken as citations | Phase one fixed (`date_form`) |
+| 86, 87 | Abbreviated months `Mar.`/`Apr.` not blocked; `Apr` collides with `A.P.R.` | Unfixed |
+| 93, 94 | Parenthetical designations with nested parentheses not captured; `court_designations` has only 16 rows, insufficient coverage | Unfixed |
+| 95 | The case name shipped with the corpus may be wrong (`[1914] A.C. 599`) | Case-name voting inherits it |
+| 96 | Report year ≠ judgment year (8 cases) | The key holds the report year |
+| 99 | `FCA` is the same code for Canada and Australia | Unfixed |
+| 100 | `S.J.` Saskatchewan vs British | Fixed (split by volume) |
+| 102 | `A.R.` (Ontario Appeal Reports 1880–1897) judged as AB; `L.C.R.` loses its province | Unfixed |
+| 103 | One pair in the French-code mapping judged wrongly | Table corrected |
+| 104 | `[1998] 1 FC 549` is a reporter, not a neutral code | Unfixed |
 
-## 归并层
+## Merge layer
 
-| # | 一句话 | 状态 |
+| # | In one sentence | Status |
 |---|---|---|
-| 2 | 卷号可省略的写法是否同一引证 | 严格匹配，未合并 |
-| 42 | 组内单值字段取谁 | 众数，计入 manifest |
-| 44 | 案名投票两级折叠 | 已修 |
-| 46、47 | 裁定层要 `decision_ids.csv` 才能算对 DD；跨院轮 occurrence 虚高 | 已修 |
-| 53 | 归并键要含系列前缀 | 已修 |
-| 60 | “一票定名”；按 `case_name_support` 设闸实测为净负 | 不启用 |
-| 72（B9） | 案名投票混入非 counted 候选（43.7%） | 【原文】 |
-| 76（B13） | 年读作卷 | counted 0 条，【原文】 |
-| 90 | **零填充编号自成一键**（BCCA 319、SCC 520、ONCA 27） | **未修** |
+| 2 | Whether forms that omit the volume are the same citation | Strict matching, not merged |
+| 42 | Which value to take for single-valued fields within a group | Mode, recorded in the manifest |
+| 44 | Two-level folding for case-name voting | Fixed |
+| 46, 47 | The adjudication layer needs `decision_ids.csv` to get DD right; occurrence inflated in the cross-court round | Fixed |
+| 53 | The merge key must include the series prefix | Fixed |
+| 60 | "One vote decides the name"; a gate on `case_name_support` measured net negative | Not enabled |
+| 72 (B9) | Case-name voting included non-counted candidates (43.7%) | [text] |
+| 76 (B13) | Year read as volume | 0 counted, [text] |
+| 90 | **Zero-padded numbers form their own key** (BCCA 319, SCC 520, ONCA 27) | **Unfixed** |
 
-## 裁定层
+## Adjudication layer
 
-| # | 一句话 | 状态 |
+| # | In one sentence | Status |
 |---|---|---|
-| 48 | 链式合并串出跨数十年的嵌合体 | 已修 |
-| 49 | 案名+年份判同的盲区，同名当事人不同判决被并 | 已修（多道判据） |
-| 50 | 同一判决长短两种案名，平行引证合不到一起 | 【原文】 |
-| 54 | 自引：每件判决自带 DD+1 | 已修 |
-| 55 | 语料里两件不同判决被合成一组 | 已修，残余 56 单元 |
-| 56 | 起用中立引证前的“中立引证”被当身份 | 已修 |
-| 59 | 枢密院上诉案被标成英国案 | 已填（1888–1959） |
-| 62 | 同名、年份差 ≤1 的组 | 只标记不合并 |
-| 64–68（B1–B5） | 汇编引证来源地不可推断；极端相邻结构；UKPC/JCPC 无规则层排他证据；美国来源地不可达；同案传播未实现 | 登记，多为未修，【原文】 |
-| 69（B6） | 历史脚注案名关联未做（`preceding_text` 仅 120 字符窗口） | 【原文】 |
-| 74–75（B11–B12） | 案名敏感性换名样例；单锚簇搭车吸收不同实例判决 | B12 测过，拟议规则被否 |
-| 77、78、81、83、84（B14、B15、B18、B20、B21） | 被身份闸门挡住的组；弃权桶规模；拿不到出版方来源；孤立组残差；单锚簇无条件吸收 | 登记，【原文】 |
-| 88 | 同一印刷串承担两种身份 | 已修（混合键扣留，默认开启） |
-| 89 | 登记簿依赖语料在场 | 未修 |
-| 91 | 压制者未决时，被压制的真引证一并弃权 | 未修，已披露 |
-| 92 | R4 人工核验批次 18 案未决（预算耗尽） | 【原文】 |
-| 97 | 决策表列名不一致，加载成功零生效 | 已修，方法论提醒 |
-| 105 | 自引漏网（补零、头部并行引证） | 已修（2026-10-03） |
-| 106 | 案件身份按案件分组，老案各级被并成一组 | **未修** |
+| 48 | Chained merging strung together chimeras spanning decades | Fixed |
+| 49 | Blind spot of name+year identity: different judgments with same-named parties merged | Fixed (several criteria) |
+| 50 | One judgment with a long and a short case name, so parallel citations do not join | [text] |
+| 54 | Self-citation: every judgment adds DD+1 to itself | Fixed |
+| 55 | Two different judgments in the corpus merged into one group | Fixed, residue of 56 units |
+| 56 | "Neutral citations" before a court began using them taken as identities | Fixed |
+| 59 | Privy Council appeals labelled British | Filled (1888–1959) |
+| 62 | Groups with the same name and years within ±1 | Flagged only, not merged |
+| 64–68 (B1–B5) | Place of origin of reporter citations not inferable; extreme adjacency structure; no exclusive rule-layer evidence for UKPC/JCPC; US place of origin unreachable; same-case propagation not implemented | Recorded, mostly unfixed, [text] |
+| 69 (B6) | Linking case names in historical footnotes not done (`preceding_text` is only a 120-character window) | [text] |
+| 74–75 (B11–B12) | Sample of name changes under case-name sensitivity; single-anchor clusters absorb judgments of different instances along the way | B12 measured; the proposed rule was rejected |
+| 77, 78, 81, 83, 84 (B14, B15, B18, B20, B21) | Groups blocked by the identity gate; size of the abstention bucket; publisher sources unobtainable; residual isolated groups; single-anchor clusters absorb unconditionally | Recorded, [text] |
+| 88 | One printed string carrying two identities | Fixed (mixed-key holdout, on by default) |
+| 89 | The registry depends on the corpus being present | Unfixed |
+| 91 | When the suppressor is undecided, the suppressed real citation abstains too | Unfixed, disclosed |
+| 92 | 18 cases of the R4 manual verification batch undecided (budget exhausted) | [text] |
+| 97 | Inconsistent decision-table column names: loaded successfully, zero effect | Fixed, methodological reminder |
+| 105 | Self-citations slipping through (zero padding, parallel citations in the header) | Fixed (2026-10-03) |
+| 106 | Case identity groups by case, so all instances of an old case merge into one group | **Unfixed** |
 
-## 选取层和边
+## Selection layer and edges
 
-| # | 一句话 | 状态 |
+| # | In one sentence | Status |
 |---|---|---|
-| 60 | 不按 `case_name_support` 设闸 | 决定 |
-| 106 | 审理历史标记只覆盖一部分 | 未修 |
+| 60 | No gate on `case_name_support` | Decided |
+| 106 | The procedural-history flag covers only part | Unfixed |
 
-## 流程、测试、工具
+## Process, tests, tools
 
-| # | 一句话 | 状态 |
+| # | In one sentence | Status |
 |---|---|---|
-| 13 | 每份判决头部印自身引证，会虚增行数 | 已修（`self_citation` 标记，#54） |
-| 14 | 内联脚注标记 `[n]`，案名切分对 1877–1967 年材料效果差 | 【原文】 |
-| 15 | 诊断脚本分桶：脚注行、正文散文、Cases Cited 块 × 年代 | 设计要求 |
-| 16 | 新形状的准入判据（冻结散文样本、零破坏） | 规则 |
-| 51 | manifest 记录输入路径时跨盘符崩溃 | 已修 |
-| 98 | `--golden` 只证明旧产出没变 | 已披露，验收纪律 |
-| 101 | 经验库读 PROBLEMS.md：第一个裁决例外，三道限制 | 例外成立 |
+| 13 | Every judgment's header prints its own citation, inflating the row count | Fixed (`self_citation` flag, #54) |
+| 14 | Inline footnote markers `[n]`; case-name cutting works poorly on 1877–1967 material | [text] |
+| 15 | Diagnostic scripts bucket by: footnote rows, body prose, Cases Cited blocks × era | Design requirement |
+| 16 | Admission criteria for new shapes (frozen prose sample, zero breakage) | Rule |
+| 51 | Recording input paths in the manifest crashed across drive letters | Fixed |
+| 98 | `--golden` only proves the old output did not change | Disclosed, acceptance discipline |
+| 101 | The experience library reads PROBLEMS.md: the first adjudicated exception, with three limits | Exception granted |
 
-## 来源
+## Sources
 
-`PROBLEMS.md` 全文（106 条）；规格 §15。本表只是索引，每一条的数字、证据、处置以 PROBLEMS 原文为准。
+The full text of `PROBLEMS.md` (106 entries); spec §15. This table is only an index; for every entry's numbers, evidence and disposition, go by the PROBLEMS text.

@@ -1,122 +1,122 @@
-# 第 2 层 分类
+# Layer 2: classification
 
-## 这一层做什么
+## What this layer does
 
-**逐行独立判定**，只看这一行自带的字段：这条引证是什么种类、属于哪个法域、是不是误报、案名是什么。查决策表在这一层做，抽取层不查表。
+**Each row is judged independently**, looking only at the fields the row carries: what kind of citation it is, which jurisdiction it belongs to, whether it is a false positive, and what the case name is. Decision-table lookups happen in this layer; the extraction layer does none.
 
-- 输入：`extract_out/candidates.csv`。
-- 输出：`classify_out/<法院>/classified.csv` 加 `manifest.json`。
-- 在抽取层字段之后新增【已核实：`classified.csv` 表头】：`citation_kind`、`abbreviation`、`jurisdiction`、`jurisdiction_confidence`、`lookup_mode`、`vol_missing`、`series_prefix`、`candidate_case_name`、`rejected_reason`、`name_rejected_reason`、`disambiguated_by`、`self_citation`、`parse_status`、`year_vol_ambiguity`、`identifier_subdivision_code`、`jurisdiction_subdivision`、`volume_system`、`court_designation_status`、`observed_deciding_court`、`court_designation_evidence_id`。
-- 分类层的类别（`citation_kind`）有四类：`reporter`（印刷汇编）、`neutral`（中立引证）、`identifier`（数据库或厂商标识符，如 CanLII、Carswell）、`ambiguous`（同时命中两表且同档）。
+- Input: `extract_out/candidates.csv`.
+- Output: `classify_out/<court>/classified.csv` plus `manifest.json`.
+- Added after the extraction-layer fields [verified: `classified.csv` header]: `citation_kind`, `abbreviation`, `jurisdiction`, `jurisdiction_confidence`, `lookup_mode`, `vol_missing`, `series_prefix`, `candidate_case_name`, `rejected_reason`, `name_rejected_reason`, `disambiguated_by`, `self_citation`, `parse_status`, `year_vol_ambiguity`, `identifier_subdivision_code`, `jurisdiction_subdivision`, `volume_system`, `court_designation_status`, `observed_deciding_court`, `court_designation_evidence_id`.
+- The classification layer has four kinds (`citation_kind`): `reporter` (printed law report), `neutral` (neutral citation), `identifier` (database or vendor identifier, e.g. CanLII, Carswell), `ambiguous` (hits both tables at the same grade).
 
-## 分类层 vs 裁定层（最容易混）
+## Classification layer vs adjudication layer (the easiest to confuse)
 
-- 分类层判的是 **reporter 层面**：`A.C.` 属于哪个法域。答案对所有用这个缩写的引证一样，字段 `jurisdiction`。
-- 裁定层判的是**案件层面**：`[1938] A.C. 415` 具体来自哪里（可能是加拿大上诉到枢密院的案子），字段 `case_origin`。
-- 二者不总相等，这正是裁定层存在的理由。**未入表时来源地必须是 `UNDETERMINED`，不得默认取 `jurisdiction` 的值。**
-- 判据：一条规则只要需要看别的行，就不属于分类层。
+- The classification layer judges at the **reporter level**: which jurisdiction `A.C.` belongs to. The answer is the same for every citation using that abbreviation; field `jurisdiction`.
+- The adjudication layer judges at the **case level**: where `[1938] A.C. 415` actually comes from (it may be a Canadian appeal to the Privy Council); field `case_origin`.
+- The two are not always equal, which is exactly why the adjudication layer exists. **When not in the table, the place of origin must be `UNDETERMINED`; it must not default to the value of `jurisdiction`.**
+- The test: if a rule needs to look at other rows, it does not belong in the classification layer.
 
-## 处理顺序（代码：`Classifier.run_row`，`classify.py:958`）
+## Processing order (code: `Classifier.run_row`, `classify.py:958`)
 
-1. **Step 1 形状级预处理**（`step1`）：确定 `citation_kind` 与 `abbreviation`。
-2. **Step 2 剔除非案例**（`step2`）：只打 `rejected_reason`，行不删。
-3. **Step 3 法域查表**（`step3`）。
-4. **Step 4 同形异义消歧**（Step 3 返回多候选时）。
-5. **Step 5 案名候选切分与清洗**。
+1. **Step 1, shape-level preprocessing** (`step1`): determine `citation_kind` and `abbreviation`.
+2. **Step 2, reject non-cases** (`step2`): only sets `rejected_reason`; no rows are deleted.
+3. **Step 3, jurisdiction lookup** (`step3`).
+4. **Step 4, homograph disambiguation** (when Step 3 returns several candidates).
+5. **Step 5, case-name candidate cutting and cleaning**.
 
-### Step 1：两表并查，精确优先
+### Step 1: look up both tables, exact first
 
-- `shape_bracket`、`shape_neutral_bare` 的 `token` 同时去查 `neutral_court_codes.csv` 和 `reporter_jurisdiction.csv`。
-- **不设优先级**：法院码表能立即填满而 reporter 表长期为空，设优先级就是让填表进度决定结论。
-- **精确 > 归一**：印刷串精确等于哪张表的键就归哪张；只有去标点后才同形的是归一命中。
-  - **归一命中一律不下判定**（落 `ambiguous` + `UNSUPPORTED`，`lookup_mode=normalized` 留痕，计数器 `neutral_withheld_fuzzy_only`）。理由：它是推断不是印刷事实（#36）。
-  - 结构闸：仅当本行**无卷号**才启用归一退路（`[1979] 1 F.C. 103` 有卷号，是汇编，不是中立码 `FC`；#33）。
-  - 两表都命中但成色不同档 → 精确的一方胜出；同档才算 `table_conflict`（#41）。
-- `shape_leading_abbr`：`leading_abbr` 要查 `series_prefix.csv`，不在表里 → `unrecognized_series_prefix`（大概率根本不是引证）。认得的前缀若带法域则参与消歧（`Q.R.` → 魁北克；#52）。
-- **`unrecognized_series_prefix` 和 `UNSUPPORTED` 必须区分**：前者是“大概率不是引证”，后者是“确实是引证但法域未知”。
-- 标识符：`CanLII`、`CarswellOnt` 等走 `identifier_systems.csv`，键是印刷 token **逐字**（大小写敏感，无模糊匹配），只有 `verification_status` 为 `verified_official_source` 或 `verified_authoritative_manual` 的行驱动推断（`ALLOWED_IDENTIFIER_STATUSES`，`classify.py:192`）。
+- The `token` of `shape_bracket` and `shape_neutral_bare` is looked up in both `neutral_court_codes.csv` and `reporter_jurisdiction.csv`.
+- **No priority between them**: the court-code table can be filled at once while the reporter table stays empty for a long time, so a priority would let the progress of table filling decide the conclusion.
+- **Exact > normalized**: if the printed string exactly equals a key in one table, it belongs to that table; a match only after stripping punctuation is a normalized hit.
+  - **A normalized hit never yields a determination** (it falls to `ambiguous` + `UNSUPPORTED`, leaves a trace in `lookup_mode=normalized`, counter `neutral_withheld_fuzzy_only`). Reason: it is an inference, not a printed fact (#36).
+  - Structural gate: the normalized fallback is enabled only when the row **has no volume** (`[1979] 1 F.C. 103` has a volume, so it is a reporter, not the neutral code `FC`; #33).
+  - Both tables hit but at different grades → the exact side wins; only the same grade counts as `table_conflict` (#41).
+- `shape_leading_abbr`: `leading_abbr` is looked up in `series_prefix.csv`; not in the table → `unrecognized_series_prefix` (most likely not a citation at all). A recognized prefix that carries a jurisdiction takes part in disambiguation (`Q.R.` → Quebec; #52).
+- **`unrecognized_series_prefix` and `UNSUPPORTED` must be kept apart**: the former means "most likely not a citation", the latter "definitely a citation, jurisdiction unknown".
+- Identifiers: `CanLII`, `CarswellOnt` and the like go through `identifier_systems.csv`, keyed on the printed token **verbatim** (case-sensitive, no fuzzy matching); only rows whose `verification_status` is `verified_official_source` or `verified_authoritative_manual` drive inference (`ALLOWED_IDENTIFIER_STATUSES`, `classify.py:192`).
 
-### Step 2：非案例引证的拒收（`rejected_reason`，可累积，用 `|` 连接）
+### Step 2: rejecting non-case citations (`rejected_reason`, cumulative, joined with `|`)
 
-| 取值 | 含义 | 备注 |
+| Value | Meaning | Notes |
 |---|---|---|
-| `federal_statute` | 联邦制定法被当成引证 | 作用域：`preceding_text + raw_string`（#37） |
-| `party_initials` | `R. v. A.B.` 的当事人缩写被误抽 | 判据严格：前文正好以 `R. v.` 结尾且本行以 `X.Y.` 起头（#37） |
-| `docket_not_decision` | v1.6：`shape_registered_id` 的案卷号，标识一场诉讼而非一份判决——**保留不计数**，不猜是哪一份（约束四）。注意它与其他取值性质不同：不是「不是引证」，而是「是引证但对不上判决」（规格 §8.8 的两类拒绝尚未为它另设字段，#111） | 见 `id_prefixes.csv` |
-| `non_citation_word` | v1.6：缩写位是结构词/日历词/案名片段（`Footnote`、`Section`、`See …`、`On …`、月份、`X`），查 `non_citation_words.csv`（whole/first_word/last_word，**区分大小写**）；已登记汇编永不拒收（#113） | 观测计数在表里 |
-| `versus_as_page` | v1.6：页位是小写罗马 `v` 且缩写未登记——案名里无句点的 versus 被读成罗马页（`Villani v Canada`）；纯字段判据（#113） | 边缘 24,532 行/主线 55 行 |
-| `unverified_id_prefix` | v1.6：`decision` 型前缀（`AZ-`、`J.E.`…）所在表行尚未核实——保留不计数，核实后（状态 `verified_*`）自动转计数 | 用户裁定 2026-10-03 |
-| `date_form` | `1 June 2007` 与“卷 缩写 页”同形 | 三条件同时成立：缩写槽是英文月份全称、卷 1–31、页 1600–2099（#85）。**常量 `MONTH_NAMES` 在代码里**（用户裁定，规格 §8.4 v1.7 写明理由：封闭的日历词不是报告集缩写） |
-| `unrecognized_series_prefix` | 前缀不在系列表 | 结构骨架误报 |
-| `table_conflict` | 同时命中两表且同档 | 待人裁 |
+| `federal_statute` | A federal statute taken as a citation | Scope: `preceding_text + raw_string` (#37) |
+| `party_initials` | Party initials in `R. v. A.B.` extracted by mistake | Strict test: the preceding text ends exactly in `R. v.` and the row starts with `X.Y.` (#37) |
+| `docket_not_decision` | v1.6: a file number from `shape_registered_id`, identifying a proceeding rather than a judgment — **kept but not counted**, with no guess at which judgment (constraint four). Note that it differs in nature from the other values: not "not a citation" but "a citation that does not map to a judgment" (the two kinds of rejection in spec §8.8 have no separate field for it yet, #111) | See `id_prefixes.csv` |
+| `non_citation_word` | v1.6: the abbreviation slot holds a structural word / calendar word / case-name fragment (`Footnote`, `Section`, `See …`, `On …`, month names, `X`), looked up in `non_citation_words.csv` (whole/first_word/last_word, **case-sensitive**); a registered reporter is never rejected (#113) | Observed counts are in the table |
+| `versus_as_page` | v1.6: the page slot is a lowercase Roman `v` and the abbreviation is unregistered — a versus without a period in a case name read as a Roman page (`Villani v Canada`); a pure field test (#113) | 24,532 rows on the margin / 55 rows on the main line |
+| `unverified_id_prefix` | v1.6: the table row for a `decision`-type prefix (`AZ-`, `J.E.` …) is not yet verified — kept but not counted; once verified (status `verified_*`) it switches to counted automatically | User decision 2026-10-03 |
+| `date_form` | `1 June 2007` has the same shape as "volume abbreviation page" | All three conditions hold: the abbreviation slot is a full English month name, volume 1–31, page 1600–2099 (#85). **The constant `MONTH_NAMES` is in code** (user decision; spec §8.4 v1.7 states the reason: the closed set of calendar words is not a reporter abbreviation) |
+| `unrecognized_series_prefix` | Prefix not in the series table | Structural-skeleton false positive |
+| `table_conflict` | Hits both tables at the same grade | Awaiting a human decision |
 
-- **`rejected_reason`（行级）和 `name_rejected_reason`（案名级）必须分开**。归并层计数要排除前者但不能排除后者（切不出案名的行是真引证）；案名投票两个都排除。合并成一个字段会让引用次数被系统性低估（§8.8）。
-- `name_rejected_reason` 取值：`no_v_structure`、`no_separator_before_v`、`too_long`（>120）、`has_bracketed_year`、`multi_v`、`empty_after_clean`。
-- 刻意不拦的日期（登记未修）：缩写月份 `28 Feb. 1995`（#86）、法文月份、“年-月-日”形态（#85 残差栏）；`Apr` 归一后与 `A.P.R.` 撞键（#87）。
+- **`rejected_reason` (row level) and `name_rejected_reason` (case-name level) must stay separate**. Merge-layer counting must exclude the former but not the latter (a row with no extractable case name is a real citation); case-name voting excludes both. Merging them into one field would systematically under-count citations (§8.8).
+- `name_rejected_reason` values: `no_v_structure`, `no_separator_before_v`, `too_long` (>120), `has_bracketed_year`, `multi_v`, `empty_after_clean`.
+- Dates deliberately not blocked (recorded, unfixed): abbreviated months `28 Feb. 1995` (#86), French months, the "year-month-day" form (#85 residual column); `Apr` collides with `A.P.R.` after normalization (#87).
 
-### Step 3/4：法域查表与同形异义消歧【按规格 §8.5/§8.6 加 #52 的实现订正】
+### Step 3/4: jurisdiction lookup and homograph disambiguation [per spec §8.5/§8.6 plus the implementation correction in #52]
 
-- 先精确匹配缩写，再归一键，`lookup_mode` 记 `exact` 或 `normalized`。
-- 同一缩写在表里出现多行 = 有同形异义（表本身就是索引，不需要另列清单）。
-- 消歧只用**本行自带的结构证据**（卷号、年份），不读周边文本（约束三）：
-  - 表里卷号区间含 0 表示该系列可不印卷号，从 1 起表示恒印卷号；无卷号行按 vol=0 参与并标 `vol_missing`；
-  - 无年份时年份维度不参与、只凭卷号；
-  - 命中的法域唯一才判定，零或多命中 → `UNSUPPORTED`；
-  - 成色取命中表行中最弱者，上限 `inferred`；
-  - `disambiguated_by` 记途径：`series_prefix`/`vol_year`/`novol_year`/`vol_only`。
-- `shape_vol_abbr_page` 与 `shape_leading_abbr`（部分）没有年份组件，参与不了消歧，这是已知限制。
+- Match the abbreviation exactly first, then the normalized key; `lookup_mode` records `exact` or `normalized`.
+- The same abbreviation appearing in several rows of the table = a homograph (the table is itself the index; no separate list is needed).
+- Disambiguation uses only **the structural evidence the row carries** (volume, year) and never reads surrounding text (constraint three):
+  - A volume range containing 0 in the table means the series may print no volume; a range starting at 1 means the volume is always printed; rows with no volume take part as vol=0 and are flagged `vol_missing`;
+  - With no year, the year dimension does not take part; only the volume counts;
+  - A determination is made only when exactly one jurisdiction matches; zero or several matches → `UNSUPPORTED`;
+  - The grade is the weakest among the matching table rows, capped at `inferred`;
+  - `disambiguated_by` records the route: `series_prefix`/`vol_year`/`novol_year`/`vol_only`.
+- `shape_vol_abbr_page` and (part of) `shape_leading_abbr` have no year component and cannot take part in disambiguation; this is a known limitation.
 
-### Step 5：案名切分与清洗（`candidate_case_name`）【按规格 §8.7 加 #43/#45/#57/#58/#61】
+### Step 5: case-name cutting and cleaning (`candidate_case_name`) [per spec §8.7 plus #43/#45/#57/#58/#61]
 
-- 从 `preceding_text` 里找**最后一个** ` v.`；起点取它前面最近的 `;`、`:`、换行；**找不到分隔符就放弃，不退化为从 0 开始**；候选取到 `preceding_text` 末尾（含被告方）。
-- 清洗：剥引导符、`citing/see/per/applied` 等引导动词、引导性 `in `（保留 `in re`）；剥段落编号（#43）；切掉尾巴里的平行引证（#45）。
-- 没有 ` v.` 的案名只认段首段尾的闭集标记：`Reference re`、`Re`、`In re`、`Ex parte`、`(Re)`、魁北克匿名名 `Droit de la famille — N`（#58）。
-- 候选吞进左侧整句散文时切掉（≥3 个小写散文词触发；切完不像案名则原样退回，不判无名；#61）。
-- 自引标记：本行 `nk(raw_string)` 等于本判决自身引证即 `self_citation=true`，**数值相等比较**（`2003 BCCA 0443` == `2003 BCCA 443`，PROBLEMS #105，`_unpad`）。它是真引证，不进 `rejected_reason`，只是不计数。
+- Find the **last** ` v.` in `preceding_text`; the start is the nearest `;`, `:` or line break before it; **if no separator is found, give up rather than falling back to position 0**; the candidate runs to the end of `preceding_text` (including the respondent side).
+- Cleaning: strip signals, signal verbs such as `citing/see/per/applied`, and an introductory `in ` (keeping `in re`); strip paragraph numbers (#43); cut parallel citations off the tail (#45).
+- Case names without ` v.` are recognized only through a closed set of markers at the start or end: `Reference re`, `Re`, `In re`, `Ex parte`, `(Re)`, and the Quebec anonymized name `Droit de la famille — N` (#58).
+- When the candidate swallows a whole sentence of prose on the left, it is cut (triggered by ≥3 lowercase prose words; if the result does not look like a case name, the original is returned unchanged rather than judged nameless; #61).
+- Self-citation flag: when the row's `nk(raw_string)` equals the judgment's own citation, `self_citation=true`, **compared numerically** (`2003 BCCA 0443` == `2003 BCCA 443`, PROBLEMS #105, `_unpad`). It is a real citation, so it does not go into `rejected_reason`; it is just not counted.
 
-## 加新法院时要改什么
+## What to change when adding a court
 
-分类层的代码一般不用改，**要改的是决策表**（详见 `06_decision_tables.md`）：
+The classification code usually needs no change; **what changes are the decision tables** (see `06_decision_tables.md`):
 
-1. `neutral_court_codes.csv`：新法院自己的中立码，以及它判决里常引的外国码。只收**判决上印的那一串**（约束七）。用 `decisions/tools/build_neutral_court_codes.py`（CanLII API，限速 1 秒/次，key 走环境变量或 `--key-file`，不进仓库）。
-2. `reporter_jurisdiction.csv`：新法院常引、表里还没有的汇编缩写，同形异义加区间行。
-3. `identifier_systems.csv`：该法院判决里的数据库标识符。
-4. `court_designations.csv`：括注里的法院标注（`(Ont. C.A.)`），当前只有 16 行，`unrecognized` 桶很大（#94）。
-5. `bilingual_neutral_codes.csv`：有法语判决时。
-6. 不要用默认值填空。查不到就让它 `UNSUPPORTED`，登记到 PROBLEMS。
+1. `neutral_court_codes.csv`: the new court's own neutral code, and the foreign codes its judgments often cite. Only **the string printed in judgments** is accepted (constraint seven). Use `decisions/tools/build_neutral_court_codes.py` (CanLII API, rate-limited to 1 request/second; the key comes from an environment variable or `--key-file` and never goes into the repository).
+2. `reporter_jurisdiction.csv`: reporter abbreviations the new court often cites that the table lacks; homographs get range rows.
+3. `identifier_systems.csv`: database identifiers in the court's judgments.
+4. `court_designations.csv`: court designations in parentheses (`(Ont. C.A.)`); it currently has only 16 rows and the `unrecognized` bucket is large (#94).
+5. `bilingual_neutral_codes.csv`: when there are French judgments.
+6. Do not fill gaps with defaults. If nothing can be found, leave it `UNSUPPORTED` and record it in PROBLEMS.
 
-如果分类层“反复拒收同一模式”，那是**缺一个形状的信号**，正确处置是把信号送回审计环、评估后在抽取层建形状并全量重跑，**不是让分类层就地重抽**（那会让它变成第二个抽取器）。
+If the classification layer "keeps rejecting the same pattern", that is **a signal that a shape is missing**; the right response is to send the signal back to the audit loop, evaluate, build the shape in the extraction layer and rerun the full corpus, **not to let the classification layer re-extract on the spot** (that would turn it into a second extractor).
 
-## 验证
+## Verification
 
-- `python pipeline/tests/test_layers.py`（单元断言 171 条加迷你全链）；`--golden` 只证明旧产出没变（#98）。
-- 改 `classify.py` 前后各留一份 `classified.csv`，用 `python audit/classify_diff.py --snapshot <目录>` 然后 `--before/--after` **全量逐行差分**，不要抽样（历史上抽样漏过 145 行回归）。
-- 决策表接入后**抽样反查下游字段真被填了**，不能只看加载行数（#97）。
-- 覆盖率：`python audit/table_coverage.py`（`--assert-only` 先自检口径）。
+- `python pipeline/tests/test_layers.py` (171 unit assertions plus the mini end-to-end chain); `--golden` only proves the old output did not change (#98).
+- Keep a `classified.csv` from before and after any change to `classify.py`, then run `python audit/classify_diff.py --snapshot <directory>` and `--before/--after` for a **full row-by-row diff**; do not sample (a sample once missed a 145-row regression).
+- After wiring in a decision table, **sample downstream fields to confirm they really got filled**; loaded row counts alone are not enough (#97).
+- Coverage: `python audit/table_coverage.py` (`--assert-only` first self-checks the definition).
 
-## 已知的坑
+## Known pitfalls
 
-| # | 内容 | 状态 |
+| # | Content | Status |
 |---|---|---|
-| 31 | `CanLII` 是 14 个法域共用的伪代码，不能入中立码表 | 走 `identifier_systems.csv`，法域由尾括注取 |
-| 32 | CanLII 的 `jurisdiction` 是“馆藏归属”不是法院法域（`ukpc`=`ca`） | 建表脚本硬排除 |
-| 33/36/41 | 归一键假命中（`F.C.`→`FC`） | 已修（结构闸、归一不判定、精确优先） |
-| 34 | 建表首轮 overclaim“剩余全是噪声” | 已订正 |
-| 35 | CanLII 供不出外国中立码（UKHL、EWHC、HCA…约 1,042 行）和机构自用码 | 须另找来源，授权要先评估 |
-| 40 | `reporter_jurisdiction.csv` 早期是临时表，全部 `estimated` | 之后部分行升级，见 `verification_level` |
-| 52 | 同形缩写（K.B./Q.B./S.C./P./C.L.R.…） | 已修（区间多行、前缀参与） |
-| 85 | 日期被当引证 | 一期已修；#86 #87 未修 |
-| 93/94 | 括注标注嵌套括号抓不到；`court_designations` 覆盖不足 | 未修 |
-| 95 | 语料自带案名可能是错的（`[1914] A.C. 599`） | 案名投票会原样继承 |
-| 96 | 报告年≠判决年（Anns 1977→1978 等 8 例） | 键里的年份是报告年 |
-| 99 | `FCA` 加拿大与澳大利亚同码 | 未修（表层只有加拿大行；`[YYYY] FCA N` 带方括号的 17 行全是澳大利亚案） |
-| 100 | `S.J.` 萨斯喀彻温判例 vs 英国 Solicitors' Journal | 已修（按卷号拆两行） |
-| 102 | `A.R.`（安大略上诉 1880–1897 年）被判成 AB；`L.C.R.` 省丢了 | 未修 |
-| 103 | 法语码对照有判错 | 已改表，13 行 |
-| 104 | `[1998] 1 FC 549` 是汇编，不是中立码 `FC` | 未修 |
+| 31 | `CanLII` is a pseudo-code shared by 14 jurisdictions and cannot go into the neutral-code table | Goes through `identifier_systems.csv`; the jurisdiction comes from the trailing parenthesis |
+| 32 | CanLII's `jurisdiction` is "which collection it belongs to", not the court's jurisdiction (`ukpc`=`ca`) | Hard-excluded by the table-building script |
+| 33/36/41 | False hits through the normalized key (`F.C.`→`FC`) | Fixed (structural gate, no determination from normalization, exact first) |
+| 34 | The first round of table building overclaimed "everything left is noise" | Corrected |
+| 35 | CanLII cannot supply foreign neutral codes (UKHL, EWHC, HCA …, about 1,042 rows) or institution-internal codes | Another source is needed; licensing must be assessed first |
+| 40 | `reporter_jurisdiction.csv` was originally a provisional table, all `estimated` | Some rows upgraded since; see `verification_level` |
+| 52 | Homograph abbreviations (K.B./Q.B./S.C./P./C.L.R. …) | Fixed (multiple range rows, prefixes take part) |
+| 85 | Dates taken as citations | Phase one fixed; #86 #87 unfixed |
+| 93/94 | Designations with nested parentheses not captured; `court_designations` coverage insufficient | Unfixed |
+| 95 | The case name shipped with the corpus may be wrong (`[1914] A.C. 599`) | Case-name voting inherits it unchanged |
+| 96 | Report year ≠ judgment year (Anns 1977→1978 and 8 cases in all) | The year in the key is the report year |
+| 99 | `FCA` is the same code for Canada and Australia | Unfixed (the table has only the Canadian row; all 17 bracketed `[YYYY] FCA N` rows are Australian cases) |
+| 100 | `S.J.` Saskatchewan reports vs the British Solicitors' Journal | Fixed (split into two rows by volume) |
+| 102 | `A.R.` (Ontario Appeal Reports 1880–1897) judged as AB; the province of `L.C.R.` lost | Unfixed |
+| 103 | Errors in the French-code mapping | Table corrected, 13 rows |
+| 104 | `[1998] 1 FC 549` is a reporter, not the neutral code `FC` | Unfixed |
 
-## 来源
+## Sources
 
-规格 §5、§8；PROBLEMS #5、#31–#41、#43–#45、#52、#57、#58、#61、#85–#87、#93–#104；代码 `pipeline/classify.py`；表 `decisions/`。
+Spec §5, §8; PROBLEMS #5, #31–#41, #43–#45, #52, #57, #58, #61, #85–#87, #93–#104; code `pipeline/classify.py`; tables in `decisions/`.
 
-核实状态：处理顺序、字段、函数位置、种类、标识符状态对照代码和 `classified.csv`（2026-10-03）【已核实】；各步规则细节【按规格】，规格标“待复核”的不另外核实。
+Verification status: processing order, fields, function locations, kinds and identifier statuses checked against the code and `classified.csv` (2026-10-03) [verified]; rule details for each step [per spec]; items the specification marks "pending review" were not separately verified.
