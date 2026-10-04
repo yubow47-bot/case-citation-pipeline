@@ -1,6 +1,6 @@
 # Case Citation Pipeline
 
-![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
+![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Corpus: a2aj/canadian-case-law](https://img.shields.io/badge/corpus-a2aj%2Fcanadian--case--law-yellow)](https://huggingface.co/datasets/a2aj/canadian-case-law)
 ![Validated on: SCC · ONCA · BCCA](https://img.shields.io/badge/validated%20on-SCC%20%C2%B7%20ONCA%20%C2%B7%20BCCA-informational)
@@ -218,7 +218,7 @@ Every problem found so far, with its measured size, cause, fix and effect, is re
 
 ## Quick start
 
-Needs Python 3.11, `bash` (Git Bash or WSL) for the corpus download, and about 5 GB of free disk (1.4 GB corpus plus 3.1 GB per run).
+Needs Python 3.11 or later (CI runs the demo and the layer tests on 3.11–3.14, Linux and Windows), `bash` (Git Bash or WSL) for the corpus download, and about 5 GB of free disk (1.4 GB corpus plus 3.1 GB per run).
 
 ```bash
 pip install pyarrow pyyaml
