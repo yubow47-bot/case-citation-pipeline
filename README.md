@@ -194,7 +194,7 @@ $ python tools/foundation/query.py "Donoghue" --mode keyword -k 1
 
 ### Method RAG
 
-[`index_methods.py`](tools/foundation/index_methods.py) splits the project's own material into about 1,100 records, each tagged with a layer and a status and pinned to `file:line` at a commit: every function and class in `pipeline/` (parsed with `ast`), every rule table, every heading section of the spec and audit reports, and the hand-written [method cards](docs/method_cards/) (what each layer does, what to change for a new court, how to verify, known pitfalls). Method searches reserve two top slots for method cards, so an extension question lands on the curated answer first. Searching "新法院" (new court) returns the "adding a new court" sections of the selection and adjudication cards.
+[`index_methods.py`](tools/foundation/index_methods.py) splits the project's own material into about 1,100 records, each tagged with a layer and a status and pinned to `file:line` at a commit: every function and class in `pipeline/` (parsed with `ast`), every rule table, every heading section of the spec and audit reports, and the hand-written [method cards](docs/method_cards/) (what each layer does, what to change for a new court, how to verify, known pitfalls). Method searches reserve two top slots for method cards, so an extension question lands on the curated answer first. The cards are written in Chinese, and the multilingual embeddings still match English questions: "how to add a new court" returns the new-court playbook card among the top three results.
 
 ### Indexing and embedding
 
