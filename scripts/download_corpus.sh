@@ -7,7 +7,8 @@
 # WSL/Git Bash 的 curl(OpenSSL) 实测正常，故以 bash 版为准。
 #
 # 数据集: HuggingFace a2aj/canadian-case-law
-# 目标  : SCC + 数据集内全部安大略法域（顶层目录名以 "ON" 开头的法院目录）
+# 目标  : SCC + BCCA + 数据集内全部安大略法域（顶层目录名以 "ON" 开头的法院目录）；
+#         设环境变量 PIPELINE_COURTS=SCC,BCCA,... 可改为只下指定的法院目录
 #         具体清单以 HF API 枚举实测为准，list 模式先列出供人工确认。
 #
 # 用法:
@@ -45,7 +46,7 @@ command -v python3   >/dev/null 2>&1 || { echo "需要 python3" >&2; exit 2; }
 # --- 枚举：输出 TSV（court, relpath, url, expected_bytes, expected_sha256, dest_name）---
 enumerate() {
   python3 - "$REPO" "$REV" <<'PYEOF'
-import json, sys, urllib.request
+import json, os, sys, urllib.request
 
 repo, rev = sys.argv[1], sys.argv[2]
 url = f"https://huggingface.co/api/datasets/{repo}/tree/{rev}?recursive=true&expand=true"
@@ -61,7 +62,11 @@ while url:
             url = part[part.find("<") + 1:part.find(">")]
 
 dirs = [e["path"] for e in entries if e.get("type") == "directory"]
-targets = [d for d in dirs if d == "SCC" or d.startswith("ON")]
+wanted = [c for c in os.environ.get("PIPELINE_COURTS", "").split(",") if c]
+if wanted:
+    targets = [d for d in dirs if d in wanted]      # 用户显式指定：只下这些法院目录
+else:
+    targets = [d for d in dirs if d in ("SCC", "BCCA") or d.startswith("ON")]
 
 for court in targets:
     files = sorted(
