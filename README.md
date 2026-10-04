@@ -1,6 +1,7 @@
 # Case Citation Pipeline
 
 ![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Corpus: a2aj/canadian-case-law](https://img.shields.io/badge/corpus-a2aj%2Fcanadian--case--law-yellow)](https://huggingface.co/datasets/a2aj/canadian-case-law)
 ![Validated on: SCC · ONCA · BCCA](https://img.shields.io/badge/validated%20on-SCC%20%C2%B7%20ONCA%20%C2%B7%20BCCA-informational)
 
@@ -259,3 +260,7 @@ From the project's own open items:
 - Decide whether to build vectors for individual citation passages (the keyword index exists).
 - Generate research answers from retrieved results with source references.
 - Add more courts and tribunals, starting from the playbook in `docs/method_cards/00_new_court_playbook.md`.
+
+## License
+
+The code is released under the [MIT License](LICENSE). The judgments themselves come from the [a2aj/canadian-case-law](https://huggingface.co/datasets/a2aj/canadian-case-law) dataset and are covered by its own terms, not by this license.
