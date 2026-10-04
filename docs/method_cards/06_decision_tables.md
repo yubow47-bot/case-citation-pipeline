@@ -20,6 +20,7 @@
 | `series_prefix.csv` | 4 | 分类 | `canonical_prefix`（`L.R.`、`Q.R.`） | 很少 |
 | `identifier_systems.csv` | 16 | 分类、裁定 | `printed_token`（**逐字、区分大小写**） | 该法院判决里的数据库/厂商标识符 |
 | `id_prefixes.csv` | 15 | **抽取**（生成 `shape_registered_id` 的正则）、分类 | `prefix_id`；`canonical_token` 反查 | 案卷号（docket）与出版社判决编号（decision）；新法院里「前缀+编号」型标识加行即可。状态全是 `unverified_*`：核实前法域 UNSUPPORTED、decision 型不计数 |
+| `non_citation_words.csv` | 39 | 分类（step2） | `word` + `match_type`（区分大小写） | 缩写位被结构词/日历词/案名片段占用的假汇编；新法院出现新的噪声词时加行，建表脚本会断言对已解析行零命中 |
 | `court_designations.csv` | 16 | 分类 | `printed_designation`（括注里的法院标注） | 新法院常见的括注（`(Ont. C.A.)`），当前覆盖不足（#94） |
 | `bilingual_neutral_codes.csv` | 46 | 裁定 | `code_en` ↔ `code_fr` | 有法语判决时 |
 | `case_origin.csv` | 203 | 分类（载入）、裁定 | `citation_display`（印刷引证串） | 枢密院类上诉案；来源 CanLII `ukpc` 库，覆盖 1888–1959 |
@@ -60,6 +61,7 @@
 | `build_case_origin.py` | 抓 `ukpc` 库建枢密院来源地；`--offline`、`--key-file` |
 | `build_bilingual_neutral_codes.py` | 双语码对照 |
 | `build_identifier_systems_csv.py` | 标识符系统表 |
+| `build_non_citation_words_csv.py` | 拒收词表（观测计数现场重算，含零误伤断言） |
 | `build_id_prefixes_csv.py` | 前缀型标识表（案卷号 / 出版社编号），`source_locator` 填的是观测出处，不是发行方官方出处 |
 
 关键点（来自 `build_neutral_court_codes.py` 的三道拒收闸，约束四）：

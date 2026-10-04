@@ -43,6 +43,8 @@
 | `federal_statute` | 联邦制定法被当成引证 | 作用域：`preceding_text + raw_string`（#37） |
 | `party_initials` | `R. v. A.B.` 的当事人缩写被误抽 | 判据严格：前文正好以 `R. v.` 结尾且本行以 `X.Y.` 起头（#37） |
 | `docket_not_decision` | v1.6：`shape_registered_id` 的案卷号，标识一场诉讼而非一份判决——**保留不计数**，不猜是哪一份（约束四）。注意它与其他取值性质不同：不是「不是引证」，而是「是引证但对不上判决」（规格 §8.8 的两类拒绝尚未为它另设字段，#111） | 见 `id_prefixes.csv` |
+| `non_citation_word` | v1.6：缩写位是结构词/日历词/案名片段（`Footnote`、`Section`、`See …`、`On …`、月份、`X`），查 `non_citation_words.csv`（whole/first_word/last_word，**区分大小写**）；已登记汇编永不拒收（#113） | 观测计数在表里 |
+| `versus_as_page` | v1.6：页位是小写罗马 `v` 且缩写未登记——案名里无句点的 versus 被读成罗马页（`Villani v Canada`）；纯字段判据（#113） | 边缘 24,532 行/主线 55 行 |
 | `unverified_id_prefix` | v1.6：`decision` 型前缀（`AZ-`、`J.E.`…）所在表行尚未核实——保留不计数，核实后（状态 `verified_*`）自动转计数 | 用户裁定 2026-10-03 |
 | `date_form` | `1 June 2007` 与“卷 缩写 页”同形 | 三条件同时成立：缩写槽是英文月份全称、卷 1–31、页 1600–2099（#85）。**常量 `MONTH_NAMES` 在代码里**（用户裁定，规格 §8.4 v1.7 写明理由：封闭的日历词不是报告集缩写） |
 | `unrecognized_series_prefix` | 前缀不在系列表 | 结构骨架误报 |

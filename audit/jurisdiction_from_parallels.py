@@ -8,7 +8,10 @@
 import csv, json, os, re, collections
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 csv.field_size_limit(10 ** 9)
-R = os.path.join(ROOT, "data", "run_20260918_scc_onca_bcca")
+# 2026-10-03：run/法院/输出目录可由环境变量覆盖（边缘四法庭复用同一渠道；默认值不变）
+R = os.path.join(ROOT, os.environ.get("CHANNEL_RUN", os.path.join("data", "run_20260918_scc_onca_bcca")))
+CHANNEL_COURTS = tuple((os.environ.get("CHANNEL_COURTS") or "SCC,ONCA,BCCA").split(","))
+CHANNEL_OUT = os.path.join(ROOT, os.environ.get("CHANNEL_OUT", os.path.join("audit", "findings", "jurisdiction_channels")))
 GAP_OK = re.compile(r"^[\s,]*$")
 
 
@@ -78,7 +81,7 @@ def use(chain):
             ev_court[k][c.upper()] += 1
 
 
-for court in ("SCC", "ONCA", "BCCA"):
+for court in CHANNEL_COURTS:
     cur, rows = None, []
     for r in csv.DictReader(open(os.path.join(R, "classify_out", court, "classified.csv"), encoding="utf-8")):
         if r["rejected_reason"]:
@@ -123,4 +126,4 @@ for l in lines:
 
 # 完整分布另存，供 audit/jurisdiction_channels_summary.py 汇总
 json.dump({"ev": {k: dict(v) for k, v in ev.items()}, "label": abbr_label},
-          open(os.path.join(ROOT, "audit", "findings", "jurisdiction_channels", "ch1_evidence.json"), "w", encoding="utf-8"), ensure_ascii=False)
+          open(os.path.join(CHANNEL_OUT, "ch1_evidence.json"), "w", encoding="utf-8"), ensure_ascii=False)

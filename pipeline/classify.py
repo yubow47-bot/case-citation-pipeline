@@ -238,6 +238,30 @@ def load_id_prefixes():
     return out
 
 
+# ------------------------------------------------ non_citation_words（v1.6，边缘法庭）
+def _ck(s):
+    """区分大小写、只去标点的 key：`ON CA`（安省上诉法院标注）≠ `On November`。"""
+    return re.sub(r"[^A-Za-z0-9]", "", s or "")
+
+
+def load_non_citation_words():
+    """non_citation_words.csv → {'whole': set, 'first_word': set, 'last_word': set}。
+    被误当成报告集缩写的结构词/日历词/案名片段（Footnote、Section、May、See …、… v）。
+    表行带出处与观测计数；已登记在 reporter_jurisdiction 的缩写永不拒收（见 step2 安全阀）。"""
+    out = {"whole": set(), "first_word": set(), "last_word": set()}
+    path = os.path.join(DECISIONS, "non_citation_words.csv")
+    if not os.path.exists(path):
+        return out
+    with open(path, encoding="utf-8", newline="") as f:
+        for r in csv.DictReader(f):
+            if (r.get("verification_status") or "").strip() != "observed_closed_word":
+                continue
+            mt = (r.get("match_type") or "").strip()
+            if mt in out and _ck(r.get("word")):
+                out[mt].add(_ck(r["word"]))
+    return out
+
+
 # ------------------------------------------------------------------- 决策表 IO
 def load_table(name):
     """读一张决策表。空表（只有表头）返回空列表——空表不是故障（§13.4）。"""
@@ -774,6 +798,7 @@ class Classifier(object):
         self.ident_exact = tables.get("identifier_systems") or {}
         # v1.6：前缀型标识（案卷号 docket / 出版社判决编号 decision）
         self.id_prefixes = tables.get("id_prefixes") or []
+        self.noncite = tables.get("non_citation_words") or {"whole": set(), "first_word": set(), "last_word": set()}
         self._idpref_cache = {}
         # R3 Stage 3：汇编卷/年体系（表驱动，仅用于盖章给归并层）
         self.vol_system = tables.get("volume_system") or {}
@@ -851,6 +876,27 @@ class Classifier(object):
         row["citation_kind"] = "reporter"
         row["abbreviation"] = printed_token
         return False                         # 落入 Step 3
+
+    def _non_citation_word(self, row):
+        """v1.6：缩写位是结构词/日历词/案名片段（non_citation_words.csv），不是汇编。
+        只管 reporter 类；缩写已登记在 reporter_jurisdiction（精确或归一）的绝不拒收——
+        表里的词与汇编撞名时汇编赢（安全阀；建表时另有对已解析行零命中的断言）。"""
+        if (row.get("citation_kind") or "") != "reporter":
+            return False
+        abbr = (row.get("abbreviation") or "").strip()
+        if not abbr:
+            return False
+        if abbr in self.rep_exact or nk(abbr) in self.rep_norm:
+            return False
+        words = [_ck(w) for w in re.split(r"\s+", abbr) if _ck(w)]
+        if not words:
+            return False
+        if _ck(abbr) in self.noncite["whole"]:
+            return True
+        if len(words) >= 2 and (words[0] in self.noncite["first_word"]
+                                or words[-1] in self.noncite["last_word"]):
+            return True
+        return False
 
     def _idpref_row(self, token):
         if token not in self._idpref_cache:
@@ -970,6 +1016,18 @@ class Classifier(object):
         if date_form_hit(row):
             append_reason(row, "rejected_reason", "date_form")
             self.stats["date_form_rejected"] += 1
+        # v1.6：缩写位是结构词/日历词/案名片段（`7 Section 69`、`3 See Villani v`、`1 May 2014`）
+        if self._non_citation_word(row):
+            append_reason(row, "rejected_reason", "non_citation_word")
+            self.stats["non_citation_word"] += 1
+        # v1.6：案名里的 v 被读成单字符罗马页（`620247 Ontario Ltd. v`、`16 Villani v`——无句点的
+        # versus）。纯字段判据：页位是小写罗马 v、缩写未登记。真罗马页（`[1983] 2 S.C.R. v`）的缩写
+        # 都是已登记汇编，不会触发；边缘法庭实测 24,532 行、主线 55 行。
+        if (row.get("page_roman") or "") == "v" and (row.get("citation_kind") or "") == "reporter":
+            ab_ = (row.get("abbreviation") or "").strip()
+            if ab_ and ab_ not in self.rep_exact and nk(ab_) not in self.rep_norm:
+                append_reason(row, "rejected_reason", "versus_as_page")
+                self.stats["versus_as_page"] += 1
         # R2F：secondary_source（CanLIIDocs 等）的拒绝传播到同引证的其他形状
         # 读法（卷读法孪生）——表驱动（identifier_systems），非字符串特例
         ab = (row.get("abbreviation") or "").strip()
@@ -1124,6 +1182,7 @@ def main():
                "series_prefix", "case_origin")}
     tables["identifier_systems"] = load_identifier_systems()
     tables["id_prefixes"] = load_id_prefixes()
+    tables["non_citation_words"] = load_non_citation_words()
     tables["volume_system"] = load_volume_systems()
     tables["court_designations"] = load_court_designations()
     clf = Classifier(tables, stats)
