@@ -64,6 +64,10 @@ for text, abbr in [
     ("held on 30 On November 3, 2007", None),                # 首词 On
     ("Exhibit 5 12 April 1 was filed", "April"),             # 月份整词
     ("table 2 X 3 mm", "X"),                                 # 关税表
+    ("In 10 In January 2019 the Tribunal", None),            # 第二批：In + 月份
+    ("Exhibit 000 Total 11 amount", "Total"),
+    ("filed 000 Dec. 2007 at", "Dec."),
+    ("held 62 The December 12 hearing", "The December"),     # The + 月份：整词
     ("Notice 16 Villani v Canada", None),                    # 单字符罗马页 v（无句点的 versus）
     ("see 620247 Ontario Ltd. v Smith", None),               # 编号公司
 ]:
@@ -76,7 +80,9 @@ for text, shape, abbr in [
     ("[1928] 2 K.B. 100", "shape_bracket", "K.B."),
     ("R. v. Smith, 20 C.C.C. 1", "shape_vol_abbr_page", "C.C.C."),
     ("see 50 Cl. C 99 for", "shape_vol_abbr_page", None),                # 末词大写 C ≠ 案名分隔符 c.
-    ("[1983] 2 S.C.R. v", "shape_bracket", "S.C.R."),                      # 真罗马页：缩写已登记，不是 versus
+    ("[1983] 2 S.C.R. v", "shape_bracket", "S.C.R."),             # 真罗马页：缩写已登记，不是 versus
+    ("Browne v. Dunn (1893), 6 The Reports 67 (H.L.)", "shape_vol_abbr_page", None),   # 首词 The 的案例汇编（2026-10-03 误杀；期刊不在本项目范围，测试不对期刊表态）
+    ("[1952] 1 The Times L.R. 101", "shape_vol_abbr_page", None),
 ]:
     r = reasons(clf, text, shape=shape, abbr=abbr)
     check("B 不拒收 %r" % text, r is not None and all("non_citation_word" not in x for x in r), "got=%r" % (r,))
