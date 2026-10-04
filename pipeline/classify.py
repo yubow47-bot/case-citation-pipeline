@@ -183,6 +183,8 @@ _ADMIT_CITE_TAIL_RE = re.compile(
     r"(?:,?\s+\d|,?\s+[A-Z][A-Za-z.]{0,9}\.?\s+\d).*$", re.DOTALL)  # 案名可含换行；无 DOTALL 时 .*$ 跨不过换行，漏剥 227 条（自检发现）
 
 # 形状 → 主缩写取自哪个字段（规格 §7.3）
+# PROBLEMS #99：码表里只有加拿大一行、但方括号年份形 `[YYYY] CODE N` 属另一国的中立码（nk 后）
+_BRACKETED_NEUTRAL_FOREIGN = {"fca"}
 TOKEN_SHAPES = {"shape_bracket", "shape_bracket_range", "shape_neutral_bare", "shape_neutral_glued"}   # v1.6：粘连中立引证按裸代码同构处理
 # 形状 → 是否印有独立的前置缩写槽（PROBLEMS #85 的 `date_form` 两条读法都用）
 LEADING_SHAPES = {"shape_leading_abbr", "shape_paren_year_abbr_page"}
@@ -828,6 +830,13 @@ class Classifier(object):
         """§8.2 两表并查：都命中即 table_conflict 交人裁，不设优先级。"""
         has_vol = bool((row.get("vol") or "").strip())
         court_hit, court_mode = self._court_lookup(printed_token, has_vol)
+        if court_hit and court_mode == "exact" and has_vol \
+                and (row.get("vol") or "").strip() != str(row.get("year_start") or "").strip():
+            # PROBLEMS #104：`[1998] 1 FC 549` 有卷号位（且卷号不是重复的年号）= 印刷汇编的
+            # 结构签名，不是中立引证；码 FC 与 F.C.R. 同形，不能凭精确命中当中立码。
+            # 放弃中立命中，落到下面的汇编查询。`[1999] 1999 ABCA 305` 卷号=年号，是中立码的重复年份写法，保留。
+            court_hit = None
+            self.stats["court_exact_withheld_by_vol_signature"] += 1
 
         reporter_hits = lookup_all(printed_token, self.rep_exact)
         rep_mode = "exact" if reporter_hits else ""
@@ -859,6 +868,19 @@ class Classifier(object):
                 row["jurisdiction_confidence"] = "unsupported"
                 row["lookup_mode"] = "normalized"
                 self.stats["neutral_withheld_fuzzy_only"] += 1
+                return True
+            if (row.get("shape_name") == "shape_bracket" and not has_vol
+                    and nk(printed_token) in _BRACKETED_NEUTRAL_FOREIGN):
+                # PROBLEMS #99：加拿大中立引证年份不加方括号，`[2003] FCA 50` 是澳大利亚
+                # 联邦法院的印刷形。码表只有加拿大一行，精确命中也不是这条引证的印刷事实——
+                # 按约束四不给判定，保留不计数。
+                row["citation_kind"] = "ambiguous"
+                row["abbreviation"] = printed_token
+                row["jurisdiction"] = "UNSUPPORTED"
+                row["jurisdiction_confidence"] = "unsupported"
+                row["lookup_mode"] = court_mode
+                append_reason(row, "rejected_reason", "bracketed_year_foreign_form")
+                self.stats["neutral_withheld_bracketed_foreign_form"] += 1
                 return True
             row["citation_kind"] = "neutral"
             row["abbreviation"] = court_hit["court_code"]
