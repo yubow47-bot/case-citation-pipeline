@@ -64,6 +64,6 @@
 
 ## 来源
 
-规格 §11、§11.2（订正见上）；代码 `pipeline/select.py`、`pipeline/edges.py`、`select_config.yaml`；`audit/findings/canlii_crosscheck/run_20261002_tables2/t6_calibration.md`；PROBLEMS #60、#105、#106。
+规格 §11、§11.2（订正见上）；代码 `pipeline/select_layer.py`、`pipeline/edges.py`、`select_config.yaml`；`audit/findings/canlii_crosscheck/run_20261002_tables2/t6_calibration.md`；PROBLEMS #60、#105、#106。
 
 核实状态：文件、阈值配置、表头对照实际 run（2026-10-03）【已核实】；校准数字来自我们自己的核实样本，见校准报告。

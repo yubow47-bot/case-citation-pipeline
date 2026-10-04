@@ -44,7 +44,7 @@
 `data/select_out/selected.csv` 的 `kept` 列 = `dd >= 5`。**这个 5 没有依据**。代码里写死：
 
 ```
-pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_11_2"
+pipeline/select_layer.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_11_2"
 ```
 
 规格 §11.2 原文的意思：该值是按「外国地标案例查表」场景调的，范围扩展为全部引证后失去
@@ -155,7 +155,7 @@ pipeline/select.py: THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_1
   dedup_position 与生产口径 100% 同结果；counted_only 只改案名列与分组切分
   （modal 变 5,271），dd/门槛/来源地/FOREIGN 边零变化。**case_name_modal 实际参与
   decide 的案件聚类，不是纯展示列。**
-- **回溯原文**：`python pipeline/traceback.py --run-dir <run目录> --search <案名>`，
+- **回溯原文**：`python pipeline/trace_source.py --run-dir <run目录> --search <案名>`，
   再 `--candidate-id <id>` 取分类证据 + 仲裁状态 + 原文窗口（`<<…>>` 标出跨度）。
 - 真实样例走读见 `implementation/demo_examples.md`；新旧差分见
   `implementation/diff_report.md`；修复工作记录见 `implementation/demo_repair_progress.md`。

@@ -29,15 +29,15 @@
   - `ONCA:19881:8555:8570:shape_neutral_bare`：raw='2011 ONCA, 2011' shape=shape_neutral_bare → **cross_boundary_invalid**（D3 旗 cross_boundary_year_page；让位于 ONCA:19881:8566:8579:shape_neutral_bare）
   - `ONCA:19881:8555:8570:shape_vol_abbr_page`：raw='2011 ONCA, 2011' shape=shape_vol_abbr_page → **cross_boundary_invalid**（D3 旗 cross_boundary_year_page；让位于 ONCA:19881:8566:8579:shape_neutral_bare）
   - `ONCA:19881:8566:8579:shape_neutral_bare`：raw='2011 ONCA 779' shape=shape_neutral_bare → **counted**（真引证，键 `2011||onca||779`进最终表；同跨度的卷读法 alternative_unsupported_reading）
-  - 复现命令：`python pipeline/traceback.py --run-dir data/run_20260913_r2g --candidate-id ONCA:19881:8566:8579:shape_neutral_bare`
+  - 复现命令：`python pipeline/trace_source.py --run-dir data/run_20260913_r2g --candidate-id ONCA:19881:8566:8579:shape_neutral_bare`
 
 ## 5. 从最终结果回到原文与判断依据
 
 ```
 # 粗搜（按案名/原文串找 candidate_id）
-python pipeline/traceback.py --run-dir data/run_20260913_r2g --search Thorner
+python pipeline/trace_source.py --run-dir data/run_20260913_r2g --search Thorner
 # 深查：回显分类证据 + 仲裁状态 + 原文窗口（<<…>> 标出候选跨度）
-python pipeline/traceback.py --run-dir data/run_20260913_r2g \
+python pipeline/trace_source.py --run-dir data/run_20260913_r2g \
     --candidate-id <台账里的 candidate_id>
 # 台账：merge_out/{SCC,ONCA}/mentions_candidates.csv（逐候选仲裁状态）
 # 边：edges/citation_edges.csv；mention_detail_key 回连上表

@@ -117,7 +117,7 @@ def show_case(db, run, gid, rec=None, citing=5):
         if ctx:
             print('    context: ' + ctx[0][:300])
         print('    source: ' + rec['source_locator'])
-    print('    trace:  python pipeline/traceback.py --run-dir data/%s --search "%s"' % (run, (g['name'] or cites[0] if cites else gid)[:40]))
+    print('    trace:  python pipeline/trace_source.py --run-dir data/%s --search "%s"' % (run, (g['name'] or cites[0] if cites else gid)[:40]))
 
 
 def count(db, run, a):

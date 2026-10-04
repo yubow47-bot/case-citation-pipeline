@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""traceback.py — 从最终结果回溯原文（阶段 4）
+"""trace_source.py — 从最终结果回溯原文（阶段 4）
 
 给定运行目录里的候选定位信息（语料行号 + 原文偏移，或 candidate_id），从
 **未改动的** corpus parquet 取原文，打印带标记的窗口，并回显该候选的解析、
@@ -7,15 +7,15 @@
 
 用法
     # 按 candidate_id（mentions_candidates.csv / 台账里的 id）
-    python pipeline/traceback.py --run-dir data/run_20260912_stage2 \
+    python pipeline/trace_source.py --run-dir data/run_20260912_stage2 \
         --candidate-id "SCC:701:31220:31241:shape_vol_abbr_page"
 
     # 按定位四元组
-    python pipeline/traceback.py --run-dir data/run_20260912_stage2 \
+    python pipeline/trace_source.py --run-dir data/run_20260912_stage2 \
         --court ONCA --row 8123 --start 4021 --end 4044
 
     # 按案件名找边/候选再回溯（先粗后细）
-    python pipeline/traceback.py --run-dir data/run_20260912_stage2 --search Almrei
+    python pipeline/trace_source.py --run-dir data/run_20260912_stage2 --search Almrei
 
 窗口 = 原文 [start-160, end+160]，候选跨度以 << … >> 标出。语料只读。
 """

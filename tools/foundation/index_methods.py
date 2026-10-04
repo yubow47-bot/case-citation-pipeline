@@ -21,8 +21,8 @@ from common import ROOT, DEFAULT_DB, connect, upsert_text, rebuild_fts
 
 CODE_LAYER = {'extract': 'extraction', 'shapes': 'extraction', 'normalize': 'extraction',
               'classify': 'classification', 'merge': 'merging', 'decide': 'adjudication',
-              'registry': 'adjudication', 'registry_report': 'adjudication', 'select': 'selection',
-              'edges': 'edges', 'run_all': 'orchestration', 'traceback': 'orchestration',
+              'registry': 'adjudication', 'registry_report': 'adjudication', 'select_layer': 'selection',
+              'edges': 'edges', 'run_all': 'orchestration', 'trace_source': 'orchestration',
               'coverage_report': 'orchestration'}
 TABLE_LAYER = {'reporter_jurisdiction': 'classification', 'court_designations': 'classification',
                'identifier_systems': 'classification', 'neutral_court_codes': 'classification',

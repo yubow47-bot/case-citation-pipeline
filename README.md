@@ -189,7 +189,7 @@ $ python tools/foundation/query.py "Donoghue" --mode keyword -k 1
     citations: [1932] A.C. 562
     DD 108  weighted DD 106.2 (confidence 0.98, experimental)  origin FOREIGN GB
     cited by (latest 5 of 108): ONCA_2025onca452 Price v. Smith & Wesson Corporation (2025-06-23); BCCA_2024bcca323 Bevan v. Husak (2024-09-12); …
-    trace:  python pipeline/traceback.py --run-dir data/run_20261003_selfcite --search "Donoghue v. Stevenson"
+    trace:  python pipeline/trace_source.py --run-dir data/run_20261003_selfcite --search "Donoghue v. Stevenson"
 ```
 
 ### Method RAG

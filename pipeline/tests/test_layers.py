@@ -44,6 +44,15 @@ def check(cond, label):
     PASSED.append(label)
 
 
+def test_no_stdlib_shadowing():
+    # #114: every script runs with pipeline/ first on sys.path, so a module named like a
+    # stdlib module (select.py, traceback.py) replaces it for the whole process. On POSIX,
+    # `import subprocess` pulls in the real `select`; the demo crashed on a clean clone.
+    names = {n[:-3] for n in os.listdir(PIPE) if n.endswith(".py")}
+    clash = sorted(names & set(sys.stdlib_module_names))
+    check(not clash, "pipeline/ module names shadow the stdlib: %s (#114)" % clash)
+
+
 # ============================================================ 分类层（单元）
 def test_admit_candidate():
     def name(s):
@@ -670,7 +679,7 @@ def test_mini_chain():
     cfg = os.path.join(tmp, "select.yaml")
     with open(cfg, "w", encoding="utf-8") as f:
         f.write("t:\n  threshold_dd: 2\n")
-    _run("select.py", "--input", os.path.join(tmp, "decide", "cross", "decided.csv"),
+    _run("select_layer.py", "--input", os.path.join(tmp, "decide", "cross", "decided.csv"),
          "--config", cfg, "--profile", "t", "--output", os.path.join(tmp, "select"))
 
     # ---- 归并层
@@ -935,7 +944,7 @@ def main():
     a = ap.parse_args()
     if a.golden or a.golden_write:
         sys.exit(golden(a.golden_write))
-    for t in (test_admit_candidate, test_classifier, test_disambiguation,
+    for t in (test_no_stdlib_shadowing, test_admit_candidate,test_classifier, test_disambiguation,
               test_case_name_markers, test_own_citations_loader, test_own_citation_rule, test_decide_units, test_registry_gate,
               test_registry_audit, test_mini_chain):
         t()

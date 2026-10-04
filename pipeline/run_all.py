@@ -303,7 +303,7 @@ def main():
                [os.path.join("pipeline", "registry_report.py"),
                 "--run-dir", args.out])
     r.run_step("select",
-               [os.path.join("pipeline", "select.py"),
+               [os.path.join("pipeline", "select_layer.py"),
                 "--input", os.path.join(args.out, "decide_out", "cross_court",
                                         "decided.csv"),
                 "--config", os.path.join(ROOT, "select_config.yaml"),

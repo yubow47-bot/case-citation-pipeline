@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""select.py — 选取层（规格 §11）
+"""select_layer.py — 选取层（规格 §11）
 
 **一道门槛，判据是 distinct_decisions_count。不删行，只打标记。**
 
 用法
-    python pipeline/select.py --input data/decide_out/cross_court/decided.csv \
+    python pipeline/select_layer.py --input data/decide_out/cross_court/decided.csv \
         --config select_config.yaml --profile default --output data/select_out
 
 输出
