@@ -8,7 +8,7 @@
 
 This project reads every judgment a court has published and works out which earlier cases it cites. It finds each case citation in the text, figures out which case it refers to, and counts how many different judgments cite that case. Every number can be traced back to the judgment and the exact place in the text it came from.
 
-It currently runs on three Canadian courts — the Supreme Court of Canada (SCC), the Court of Appeal for Ontario (ONCA) and the Court of Appeal for British Columbia (BCCA) — using the public [a2aj Canadian case law dataset](https://huggingface.co/datasets/a2aj/canadian-case-law), and its results have been checked against CanLII. Other courts in the dataset can be added.
+It currently covers three Canadian courts: the Supreme Court of Canada (SCC), the Court of Appeal for Ontario (ONCA) and the Court of Appeal for British Columbia (BCCA). The judgments come from the public [a2aj Canadian case law dataset](https://huggingface.co/datasets/a2aj/canadian-case-law), and other courts in that dataset can be added. The results have been checked against [CanLII](https://www.canlii.org), Canada's free case-law website, which publishes its own lists of cited cases.
 
 | | |
 | --- | --- |
@@ -42,10 +42,13 @@ raw_string            shape                 offset   kind       jurisdiction  pa
 
 How to read this:
 
+- `kind` is the type of citation: `neutral` is the court's own case number (like `2002 SCC 33`); `reporter` is a reference to a printed law report (volume, report name, page, like `[2002] 2 S.C.R. 235`).
 - `offset` is the character position in the paragraph where the citation starts.
-- `jurisdiction` is the country of the court (`CA` Canada, `GB` United Kingdom). `UNSUPPORTED` means "unknown" — the tool does not guess.
+- `jurisdiction` is the country of the court (`CA` Canada, `GB` United Kingdom). `UNSUPPORTED` means "unknown": the tool does not guess.
+- `parse_status` says whether the citation reads cleanly (`valid`) or is doubtful.
 - `2002 SCC 33` shows up twice because the first step keeps every possible reading. One reading is correct (the Supreme Court's own case number); the other mistakes it for volume 2002 of a law report called "SCC", and is flagged as doubtful. A later step picks the right one.
 - `(H.L.)` (House of Lords) is recorded as the court that decided the English case.
+- `[2002] 2 S.C.R. 235` and `2 S.C.R. 235` are the same reference found twice (with and without the year); later steps count it once.
 - The statute reference at the end is correctly *not* treated as a case.
 
 ### What this makes possible
@@ -56,11 +59,11 @@ Once every citation in a court's history is matched to a case, questions that us
 | ---: | --- | --- | --- |
 | 108 | Donoghue v. Stevenson | [1932] A.C. 562 | United Kingdom |
 | 52 | Salomon v. Salomon & Co | [1897] A.C. 22 | United Kingdom |
-| 43 | Makin v. Attorney-General for New South Wales | [1894] A.C. 57 | Australia |
-| 41 | Ibrahim v. The King | [1914] A.C. 599 | Hong Kong |
+| 43 | Makin v. Attorney-General for New South Wales | [1894] A.C. 57 | Australia (appeal to the Privy Council) |
+| 41 | Ibrahim v. The King | [1914] A.C. 599 | Hong Kong (appeal to the Privy Council) |
 | 17 | Hedley Byrne & Co Ltd v Heller & Partners Ltd | [1964] A.C. 465 | United Kingdom |
 
-"Cited by" counts *different* judgments: a judgment that mentions a case twenty times counts once. Country of origin is filled in only when the citation itself proves it, so for now it is known for about a quarter of all cases (63,436 of 233,385), and these counts are a minimum. The same tables can be broken down by court and decade to see how reliance on English, Australian or other foreign law has changed over time.
+"Cited by" counts *different* judgments: a judgment that mentions a case twenty times counts once. "Country of origin" is where the case started. The last two were decided in London by the Privy Council, which heard appeals from across the British Empire, so they are printed in an English law report but come from Australia and Hong Kong. Origin is filled in only when the text proves it, which so far is about 27% of all cases (63,436 of 233,385); the real counts of foreign cases are therefore at least this high. The same tables can be broken down by court and decade to see how reliance on English, Australian or other foreign law has changed over time.
 
 ## How it works
 
@@ -104,7 +107,7 @@ The judgments come from the [`a2aj/canadian-case-law`](https://huggingface.co/da
 
 Trial courts, other appeal courts, federal courts and tribunals are not included yet. Which courts to run is a setting (`PIPELINE_COURTS`). A trial run on the Canadian International Trade Tribunal could place only 28% of its citations, because it mostly cites tariff items and specialist reports our tables do not cover yet ([findings](implementation/exp_bcca_citt_findings.md)).
 
-Size of the latest full run:
+Size of the latest full run. The first number is much larger than the rest because every mention is counted, including the same case cited many times and the duplicate readings shown in the example:
 
 | | |
 | --- | ---: |
@@ -157,7 +160,7 @@ $ python tools/foundation/query.py "Donoghue" --mode keyword -k 1
     trace:  python pipeline/trace_source.py --run-dir data/run_20261003_selfcite --search "Donoghue v. Stevenson"
 ```
 
-In this output, `DD` is the number of different judgments citing the case. `weighted DD` adjusts that number using our accuracy check against CanLII, giving an estimate of how many of those citations are real (still experimental). The `trace` line is a command that shows each citing passage in the original text.
+In this output, `[XC-G002421]` is the case's ID in our tables, and `DD` ("distinct decisions") is the number of different judgments citing the case. `weighted DD` adjusts that number using our accuracy check against CanLII, giving an estimate of how many of those citations are real (still experimental). The `trace` line is a command that shows each citing passage in the original text.
 
 ### Searching the project's documentation
 
@@ -171,7 +174,7 @@ Search combines keyword matching (SQLite full-text search) and meaning-based mat
 
 We compared our results with CanLII's own citation lists for 360 judgments, sampled from all three courts and from different periods ([details](audit/findings/canlii_crosscheck/)).
 
-**Are the citations we find real?** We read the source text for 215 of them. About 87% are real case citations (likely range 75–92%). About 8% are not cases at all (journal articles, statute sections, tables of contents), and about 5% point to an earlier stage of the same case. Accuracy rises with how often a case is cited:
+**Are the citations we find real?** We read the source text for 215 of them. About 87% are real case citations (allowing for sampling error, the true figure is likely between 75% and 92%). About 8% are not cases at all (journal articles, statute sections, tables of contents), and about 5% point to an earlier stage of the same case. Accuracy rises with how often a case is cited:
 
 | Case is cited by | Real case citations |
 | --- | ---: |
@@ -180,7 +183,7 @@ We compared our results with CanLII's own citation lists for 360 judgments, samp
 | 5–9 judgments | 99% |
 | 10 or more | 100% |
 
-**Do we miss citations?** For Supreme Court judgments from 2000–2026, we find 97% of the cases CanLII lists. For older judgments it is lower: 80% for 1950–1999 and 36% for 1875–1949. For that oldest period, we could not find most of the cases only CanLII lists anywhere in the judgment text, so part of the gap may be on CanLII's side ([details](audit/findings/canlii_crosscheck/run_20261002_tables2/t2_summary.md)). For Ontario and British Columbia the figure ranges from 70% (Ontario 1998–2006) to 97% (Ontario 2016–2026).
+**Do we miss citations?** For Supreme Court judgments from 2000–2026, we find 97% of the cases CanLII lists. For older judgments it is lower: 80% for 1950–1999 and 36% for 1875–1949. For that oldest period we checked the 68 cases that CanLII lists but we do not: none of them turned out to be a citation we had missed in the text, and most could not be found in the judgment text at all, so part of the gap may be on CanLII's side ([details](audit/findings/canlii_crosscheck/run_20261002_tables2/t2_summary.md)). For Ontario and British Columbia the figure ranges from 70% (Ontario 1998–2006) to 97% (Ontario 2016–2026).
 
 **Do we get the "cited by" lists right?** For 61 sampled cases, the judgments we list as citing them also appear on CanLII's list 98.5–99.8% of the time, and we find 83% (cases decided before 1950) to 99.5% (cases after 2000) of the citing judgments CanLII lists within the same three courts.
 
@@ -188,7 +191,7 @@ These checks were done on the run before the latest one and have not been repeat
 
 About 880 automated checks pass locally. The demo and the step-by-step tests also run automatically on every push (Python 3.11–3.14, Linux and Windows); the remaining checks need the full downloaded data, which is too large for the automated runs.
 
-Every problem found so far — its size, cause, fix and effect — is recorded in [`PROBLEMS.md`](PROBLEMS.md). Remaining technical debt is tracked in [`DEBT_LEDGER.md`](DEBT_LEDGER.md).
+Every problem found so far is recorded, with its size, cause, fix and effect, in [`PROBLEMS.md`](PROBLEMS.md). Remaining technical debt is tracked in [`DEBT_LEDGER.md`](DEBT_LEDGER.md).
 
 ## Quick start
 
