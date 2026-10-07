@@ -1,27 +1,26 @@
 # Case Citation Pipeline
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23149206.svg)](https://doi.org/10.5281/zenodo.23149206)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Corpus: a2aj/canadian-case-law](https://img.shields.io/badge/corpus-a2aj%2Fcanadian--case--law-yellow)](https://huggingface.co/datasets/a2aj/canadian-case-law)
 ![Validated on: SCC · ONCA · BCCA](https://img.shields.io/badge/validated%20on-SCC%20%C2%B7%20ONCA%20%C2%B7%20BCCA-informational)
 
-A method for turning any collection of court judgments into an auditable citation network: find every case citation in the text, work out which case each one points to, and count how many judgments cite it, with every number traceable to a judgment and a character offset. Which courts to run is a setting. The method can run on whatever courts the [a2aj corpus](https://huggingface.co/datasets/a2aj/canadian-case-law) provides; it has been run end to end and checked against CanLII on three of them so far (SCC, ONCA, BCCA). Two retrieval (RAG) layers sit on top: one serves research questions over the results, the other holds the project's methods so the pipeline can be extended to new courts and citation styles.
+This project reads every judgment a court has published and works out which earlier cases it cites. It finds each case citation in the text, figures out which case it refers to, and counts how many different judgments cite that case. Every number can be traced back to the judgment and the exact place in the text it came from.
+
+It currently runs on three Canadian courts — the Supreme Court of Canada (SCC), the Court of Appeal for Ontario (ONCA) and the Court of Appeal for British Columbia (BCCA) — using the public [a2aj Canadian case law dataset](https://huggingface.co/datasets/a2aj/canadian-case-law), and its results have been checked against CanLII. Other courts in the dataset can be added.
 
 | | |
 | --- | --- |
-| **The problem** | Knowing which cases a court actually relies on, foreign or domestic, means counting citations across its whole history. Judgments print the same case in many forms (neutral citations, several reporters, vendor IDs, 19th-century footnote styles), and a fixed abbreviation list misses most of them. |
-| **The approach** | Five one-way layers: extract every citation-shaped string, classify it against rule tables whose rows each cite a printed source, merge identical strings, decide which strings are the same case, and select by citation count. Rows are flagged, never deleted. |
-| **What it looks like** | CSV tables per layer (candidates, classified rows, case groups, citation edges), and a SQLite results database with two RAG layers: hybrid keyword and vector search over cases for research, and over the project's code, audits and method cards for maintenance. See [the example](#example-one-paragraph-through-two-layers) and [Two RAG layers](#two-rag-layers-on-top-of-the-pipeline). |
-| **Stack** | Python 3.11, standard library plus `pyarrow` and `PyYAML`. Search uses SQLite FTS, `sqlite-vec` and OpenRouter embeddings. |
-| **How well it works** | 215 hand-checked citation edges from 360 judgments compared with CanLII: 87.0% are real case citations (roughly 75–92%), rising to 98.9–100% for cases cited by five or more judgments. About 880 test checks pass locally; there is no CI because the tests read the downloaded corpus. See [How well it works](#how-well-it-works). |
-| **Scope** | Courts are chosen with `PIPELINE_COURTS`. A new court needs its corpus file and, where it uses reporters or codes the rule tables lack, new table rows; [`docs/method_cards/00_new_court_playbook.md`](docs/method_cards/00_new_court_playbook.md) lists the steps. |
-| **Run it** | Download the corpus, run `pipeline/run_all.py`. The current three-court run took 37 minutes and wrote 3.1 GB. See [Quick start](#quick-start). |
+| **Why it is hard** | The same case is written in many ways: the court's own number (`2002 SCC 33`), one or more law-report references (`[2002] 2 S.C.R. 235`), database IDs, and older footnote styles. A fixed list of abbreviations misses most of them. |
+| **What you get** | Spreadsheet-style tables (CSV) of every citation found and every case cited, plus a searchable database where you can look up a case, see who cites it, and jump to the quoted passage. |
+| **How accurate** | Checked by hand against CanLII: about 87% of the citations found are real case citations. For cases cited by five or more judgments, it is 99–100%. See [How well it works](#how-well-it-works). |
 
-> Research data, not legal advice. Read [`docs/USAGE.md`](docs/USAGE.md) before quoting any number: it defines what "cited N times" counts and lists what the tables under-count.
+> This is research data, not legal advice. Read [`docs/USAGE.md`](docs/USAGE.md) before quoting any number: it explains exactly what "cited by N judgments" counts and where the tables under-count.
 
-## Example: one paragraph through two layers
+## Example
 
-`scripts/demo.py` runs the extract and classify layers on an invented paragraph. It needs no corpus and no network:
+`scripts/demo.py` runs the first two steps on a made-up paragraph. It needs no downloads and no internet:
 
 ```text
 [12] The standard of review was settled in Housen v. Nikolaisen, 2002 SCC 33, [2002] 2 S.C.R. 235.
@@ -41,66 +40,61 @@ raw_string            shape                 offset   kind       jurisdiction  pa
 1 S.C.R. 103          vol_abbr_page         208      reporter   CA            valid                -
 ```
 
-Extraction keeps every overlapping reading, so `2002 SCC 33` appears twice: once as a neutral citation and once misread as volume 2002 of a reporter called `SCC`, which the classify layer marks `ambiguous_year_vol`. The merge layer picks between overlapping readings later. `(H.L.)` is captured as a court designation for the English report. The statute reference is not picked up as a case citation.
+How to read this:
 
-### What the full pipeline makes possible
+- `offset` is the character position in the paragraph where the citation starts.
+- `jurisdiction` is the country of the court (`CA` Canada, `GB` United Kingdom). `UNSUPPORTED` means "unknown" — the tool does not guess.
+- `2002 SCC 33` shows up twice because the first step keeps every possible reading. One reading is correct (the Supreme Court's own case number); the other mistakes it for volume 2002 of a law report called "SCC", and is flagged as doubtful. A later step picks the right one.
+- `(H.L.)` (House of Lords) is recorded as the court that decided the English case.
+- The statute reference at the end is correctly *not* treated as a case.
 
-The two layers above only find and label strings. The later layers decide which strings are the same case and count how many different judgments cite it (DD, distinct citing judgments). Once every citation in a court's history is resolved to a case, questions that used to need years of manual reading become a query. One we have not seen measured at this scale: which foreign judgments have Canadian courts actually relied on, and how much? The table is the start of that answer, from run `run_20261003_v16f` over SCC, ONCA and BCCA:
+### What this makes possible
 
-| DD | Case | Citation | Origin |
+Once every citation in a court's history is matched to a case, questions that used to take years of reading become a simple lookup. For example: which foreign judgments have Canadian courts relied on most? Here are the top five across SCC, ONCA and BCCA:
+
+| Cited by (judgments) | Case | Citation | Country of origin |
 | ---: | --- | --- | --- |
-| 108 | Donoghue v. Stevenson | [1932] A.C. 562 | GB |
-| 52 | Salomon v. Salomon & Co | [1897] A.C. 22 | GB |
-| 43 | Makin v. Attorney-General for New South Wales | [1894] A.C. 57 | AU |
-| 41 | Ibrahim v. The King | [1914] A.C. 599 | HK |
-| 17 | Hedley Byrne & Co Ltd v Heller & Partners Ltd | [1964] A.C. 465 | GB |
+| 108 | Donoghue v. Stevenson | [1932] A.C. 562 | United Kingdom |
+| 52 | Salomon v. Salomon & Co | [1897] A.C. 22 | United Kingdom |
+| 43 | Makin v. Attorney-General for New South Wales | [1894] A.C. 57 | Australia |
+| 41 | Ibrahim v. The King | [1914] A.C. 599 | Hong Kong |
+| 17 | Hedley Byrne & Co Ltd v Heller & Partners Ltd | [1964] A.C. 465 | United Kingdom |
 
-Origin (the country of the court that decided the cited case) is set only when the citation itself or a verified rule table proves it. In this run 63,436 of 233,385 case groups have a proven origin, so these counts are a lower bound; widening that coverage is ongoing work. The same tables can be cut by court and decade to follow how reliance on English, Australian or other foreign authority changed over time.
+"Cited by" counts *different* judgments: a judgment that mentions a case twenty times counts once. Country of origin is filled in only when the citation itself proves it, so for now it is known for about a quarter of all cases (63,436 of 233,385), and these counts are a minimum. The same tables can be broken down by court and decade to see how reliance on English, Australian or other foreign law has changed over time.
 
-## Pipeline
+## How it works
 
 ```mermaid
-flowchart TB
-    subgraph ROW1[" "]
-        direction LR
-        J["Judgment Text<br/>Corpus and source records<br/>(a2aj / Canadian Case Law)"]
-        E["1 · Extract<br/>Citation candidates, raw text and offsets<br/><i>Checks: residual mining · old/new anchors ·<br/>fields and boundaries · CanLII source text</i>"]
-        C["2 · Classify<br/>Citation type, jurisdiction and error flags<br/><i>Checks: table provenance and scope ·<br/>reviewed samples · collisions and unknowns</i>"]
-        T["Rule Tables<br/>Court codes · Reporters ·<br/>Identifier systems"]
-        J ==> E ==> C
-        T -.-> C
-    end
+flowchart LR
+    J["Judgments<br/>(a2aj dataset)"]
+    E["1 · Find<br/>every piece of text<br/>that looks like a citation"]
+    C["2 · Label<br/>what kind of citation,<br/>which country"]
+    M["3 · Combine<br/>identical citations"]
+    D["4 · Match<br/>different citations<br/>of the same case"]
+    S["5 · Count<br/>how many judgments<br/>cite each case"]
+    O["Results<br/>tables + search"]
+    T["Reference tables<br/>courts · law reports"]
 
-    subgraph ROW2[" "]
-        direction LR
-        M["3 · Merge<br/>Overlap arbitration, mention grouping and counts<br/><i>Checks: overlap decisions · duplicate counts ·<br/>false merges · unresolved parses</i>"]
-        D["4 · Decide<br/>Case identity, origin and cross-court links<br/><i>Checks: same case, different citations ·<br/>same name, different cases · origin evidence</i>"]
-        S["5 · Select<br/>Threshold flags; retain all rows<br/><i>Checks: threshold boundaries · count definitions ·<br/>row retention · sensitivity</i>"]
-        O["Structured Results<br/>Cases, citation counts<br/>and evidence references"]
-        M ==> D ==> S ==> O
-    end
-
-    ROW1 ==> ROW2
+    J --> E --> C --> M --> D --> S --> O
+    T -.-> C
 
     classDef main fill:#eaf3ff,stroke:#2563eb,stroke-width:2px,color:#142d50;
     classDef support fill:#f8fafc,stroke:#94a3b8,color:#25354a;
     class J,E,C,M,D,S,O main;
     class T support;
-    style ROW1 fill:none,stroke:none
-    style ROW2 fill:none,stroke:none
 ```
 
-1. Extract: structural regex shapes, every match kept with its offsets. No abbreviation list.
-2. Classify: row by row, look up jurisdiction in the rule tables, split case-name candidates, flag false positives and self-citations.
-3. Merge: statistics across rows. Arbitrate overlapping readings, collapse identical strings, fold variants, vote on case names.
-4. Decide: case identity. Join parallel reporters, link the same case across courts, split different cases that share a name, determine origin.
-5. Select: one threshold on DD. Rows below it are flagged, not removed.
+1. **Find.** Look for text with the shape of a citation (a year, a court code, a volume and page). Keep every match and its position. No fixed list of abbreviations is needed.
+2. **Label.** For each match, decide what kind of citation it is and which country's court it comes from, using reference tables of courts and law reports. Flag things that only look like citations, and judgments citing themselves.
+3. **Combine.** When the same text could be read two ways, keep the right reading. Treat identical citations as one, and pick the most common case name for each.
+4. **Match.** Work out which different citations point to the same case (for example a court number and a law-report reference printed side by side), and keep apart different cases that happen to share a name.
+5. **Count.** Count how many different judgments cite each case. Cases below the threshold (currently five judgments) are flagged, never deleted.
 
-Each layer fixes only problems it produces itself, and a layer never reads a later layer's output. Rule-table rows in [`decisions/`](decisions/) are keyed on facts printed in judgments and carry a source locator. A lookup that finds nothing returns `UNSUPPORTED`.
+Each step only passes results forward; nothing is ever silently removed. Every row in the [reference tables](decisions/) comes with the source it was taken from. If a lookup finds nothing, the answer is "unknown" rather than a guess.
 
-### Corpus
+### Data
 
-The judgments come from the [`a2aj/canadian-case-law`](https://huggingface.co/datasets/a2aj/canadian-case-law) dataset on Hugging Face. This project does not collect them.
+The judgments come from the [`a2aj/canadian-case-law`](https://huggingface.co/datasets/a2aj/canadian-case-law) dataset on Hugging Face. This project does not collect them itself.
 
 | Court | Judgments | Years |
 | --- | ---: | --- |
@@ -108,79 +102,50 @@ The judgments come from the [`a2aj/canadian-case-law`](https://huggingface.co/da
 | Court of Appeal for Ontario (ONCA) | 24,089 | 1998–2026 |
 | Court of Appeal for British Columbia (BCCA) | 14,703 | 1999–2026 |
 
-Trial courts, other appellate courts, federal courts and tribunals are not in the corpus. The court list is set by `PIPELINE_COURTS`. A trial run on the Canadian International Trade Tribunal resolved jurisdiction for only 28.4% of rows because its citations are mostly tariff items and specialist reporters the tables do not cover yet ([findings](implementation/exp_bcca_citt_findings.md)).
+Trial courts, other appeal courts, federal courts and tribunals are not included yet. Which courts to run is a setting (`PIPELINE_COURTS`). A trial run on the Canadian International Trade Tribunal could place only 28% of its citations, because it mostly cites tariff items and specialist reports our tables do not cover yet ([findings](implementation/exp_bcca_citt_findings.md)).
 
-Most recent full run, `run_20261003_v16f` (commit `f7f3951`, before the classification fixes in `d5f54e9` and `fe8c66c`):
+Size of the latest full run:
 
 | | |
 | --- | ---: |
-| Citation candidates extracted | 1,469,878 |
-| Citation rows after merging | 260,413 |
-| Case groups | 233,385 |
-| Citation edges (citing judgment → cited case) | 489,220 |
-| Groups cited by 5+ judgments | 13,610 |
+| Possible citations found | 1,469,878 |
+| Distinct citations after combining | 260,413 |
+| Distinct cases | 233,385 |
+| Links from a judgment to a case it cites | 489,220 |
+| Cases cited by 5 or more judgments | 13,610 |
 
-## Two RAG layers on top of the pipeline
+## Searching the results
 
-The pipeline above produces two things: structured results (cases, counts, edges with offsets) and a large written record of how each layer was built, checked and repaired. Both are turned into retrieval-augmented search, shown below. The data side serves people asking research questions of the results. The method side serves whoever maintains or extends the pipeline, so that adding a court or a citation shape starts from what already worked and what already failed.
+After each run, one command builds a searchable database on top of the results. There are two kinds of search: one over the **cases**, for researchers, and one over the **project's own documentation**, for whoever maintains or extends it.
 
 ```mermaid
 flowchart TB
-    subgraph METHODS["Method RAG · Maintainers"]
-        direction TB
-        MS["Specs · Audits<br/>Repair history"]
-        MC["Method Cards<br/>Steps · Checks · Pitfalls"]
-        MI["Search Indexes"]
-        MQ["Maintenance Question"]
-        MV["Vector Search"]
-        MK["Keyword Search"]
-        MR["Combined Methods<br/>Scope and status checked"]
-        MA["Model-Assisted<br/>Extension and Repair"]
+    R["Pipeline results<br/>cases · citations · passages"]
+    N["Project notes<br/>guides · checks · fix history"]
+    S["Search<br/>by keyword or by meaning"]
+    U1["Researchers<br/>find a case, see who cites it,<br/>read the passage"]
+    U2["Maintainers<br/>find how to add a court<br/>or fix a problem"]
+    A["AI-written answers<br/>with sources (planned)"]
 
-        MS -->|Curate and validate| MC
-        MC --> MI
-        MQ --> MV & MK
-        MI -.-> MV & MK
-        MV & MK --> MR
-        MR --> MA
-    end
-
-    subgraph DATA["Data RAG · Research Users"]
-        direction TB
-        DS["Pipeline Results<br/>Cases · Edges · Offsets"]
-        DI["Search Indexes"]
-        DQ["Research Question"]
-        DV["Vector Search"]
-        DK["Keyword Search"]
-        DT["SQL Queries<br/>Counts · Filters"]
-        DR["Results with Evidence"]
-        DA["Model-Assisted Answer<br/>(planned)"]
-        DP["Trace to Judgment<br/>and Passage"]
-
-        DS --> DI
-        DS -.-> DT
-        DQ --> DV & DK & DT
-        DI -.-> DV & DK
-        DV & DK & DT --> DR
-        DR --> DA
-        DA --> DP
-    end
+    R --> S
+    N --> S
+    S --> U1
+    S --> U2
+    U1 -.-> A
 
     classDef content fill:#eaf3ff,stroke:#2563eb,color:#142d50;
-    classDef search fill:#f8fafc,stroke:#94a3b8,color:#25354a;
     classDef result fill:#fff4e8,stroke:#d97706,color:#65320a;
     classDef planned fill:#ffffff,stroke:#d97706,stroke-dasharray:5 4,color:#65320a;
-    class MS,MC,DS content;
-    class MI,MQ,MV,MK,DI,DQ,DV,DK,DT search;
-    class MR,MA,DR,DP result;
-    class DA planned;
+    class R,N,S content;
+    class U1,U2 result;
+    class A planned;
 ```
 
-The dashed box is not built yet: search returns ranked results with their source passages, and no model writes an answer from them yet. Everything else in the diagram is in [`tools/foundation/`](tools/foundation/README.md) and runs with one command after each pipeline run.
+The dashed box is not built yet: today, search returns the matching cases with their source passages, but no AI writes an answer from them. Everything else is in [`tools/foundation/`](tools/foundation/README.md).
 
-### Data RAG
+### Searching cases
 
-[`after_run.py`](tools/foundation/after_run.py) loads a run into a local SQLite database (`data/foundation/research.db`, about 2.8 GB for three courts; built from your own run, not shipped). It holds judgments, case groups, citation strings, citation edges with relation labels and CanLII-calibrated weights. Exact counts and filters run as SQL over these tables. For search, each case with a name or DD ≥ 2 becomes one profile: name, citations, DD, and 2 to 4 of the most sentence-like passages from judgments that cite it (330 characters before the citation, 120 after) ([`index_cases.py`](tools/foundation/index_cases.py)). Every hit links back to its run record and judgment:
+[`after_run.py`](tools/foundation/after_run.py) loads a run into a local database (`data/foundation/research.db`, about 2.8 GB for three courts; you build it from your own run). It holds the judgments, the cases, every citation and short passages around them. Exact counts and filters are plain SQL queries. Every search result links back to the judgment it came from:
 
 ```console
 $ python tools/foundation/query.py "Donoghue" --mode keyword -k 1
@@ -192,55 +157,64 @@ $ python tools/foundation/query.py "Donoghue" --mode keyword -k 1
     trace:  python pipeline/trace_source.py --run-dir data/run_20261003_selfcite --search "Donoghue v. Stevenson"
 ```
 
-### Method RAG
+In this output, `DD` is the number of different judgments citing the case. `weighted DD` adjusts that number using our accuracy check against CanLII, giving an estimate of how many of those citations are real (still experimental). The `trace` line is a command that shows each citing passage in the original text.
 
-[`index_methods.py`](tools/foundation/index_methods.py) splits the project's own material into about 1,100 records, each tagged with a layer and a status and pinned to `file:line` at a commit: every function and class in `pipeline/` (parsed with `ast`), every rule table, every heading section of the spec and audit reports, and the hand-written [method cards](docs/method_cards/) (what each layer does, what to change for a new court, how to verify, known pitfalls). Method searches reserve two top slots for method cards, so an extension question lands on the curated answer first. The question "how to add a new court" returned the new-court playbook card among the top three results; that was measured when the cards were still in Chinese, so rebuild the index after pulling to re-check it on the English cards.
+### Searching the project's documentation
 
-### Indexing and embedding
+[`index_methods.py`](tools/foundation/index_methods.py) breaks the project's own material into about 1,100 searchable pieces: every function in the code, every reference table, every section of the technical specification and the audit reports, and a set of hand-written [guides](docs/method_cards/) (what each step does, what to change for a new court, how to check it, common mistakes). Questions such as "how do I add a new court?" are answered from the hand-written guides first.
 
-After each pipeline run, `after_run.py` imports the run, computes weights, rebuilds both collections and embeds them with [`embed.py`](tools/foundation/embed.py): `qwen/qwen3-embedding-8b` via OpenRouter, 1,024 dimensions, one `sqlite-vec` table per collection, cached by text hash so a new run only pays for changed text. [`query.py`](tools/foundation/query.py) fuses keyword (SQLite FTS) and vector rankings with reciprocal-rank fusion. Statistics always come from SQL over the full tables, never from top hits.
+### Technical details
+
+Search combines keyword matching (SQLite full-text search) and meaning-based matching (embeddings from `qwen/qwen3-embedding-8b` via OpenRouter, stored with `sqlite-vec`), merged into one ranking. Embeddings are cached, so a new run only pays for text that changed. Counts always come from SQL over the full tables, never from the top search hits.
 
 ## How well it works
 
-All accuracy figures come from comparing run `run_20261002_tables2` with CanLII's own citation lists for 360 judgments, sampled across three courts and three periods each ([`audit/findings/canlii_crosscheck/`](audit/findings/canlii_crosscheck/)).
+We compared our results with CanLII's own citation lists for 360 judgments, sampled from all three courts and from different periods ([details](audit/findings/canlii_crosscheck/)).
 
-We checked 215 of our edges by reading the source text. Weighted to the full set, 87.0% are real case citations (about 75–92%), 8.2% are not cases (journals, statute sections, tables of contents) and 4.8% point to the case's own procedural history. By DD of the cited case: 75.0% at DD 1, 81.7% at DD 2–4, 98.9% at DD 5–9, 100% at DD 10+.
+**Are the citations we find real?** We read the source text for 215 of them. About 87% are real case citations (likely range 75–92%). About 8% are not cases at all (journal articles, statute sections, tables of contents), and about 5% point to an earlier stage of the same case. Accuracy rises with how often a case is cited:
 
-For the 40 sampled SCC judgments from 2000–2026 we match 97.3% of the cited cases CanLII lists for them. Coverage falls for older material: 79.8% for SCC 1950–1999 and 36.4% for SCC 1875–1949. For that oldest stratum, none of the 68 cases only CanLII lists turned up as a missed citation in the judgment text; 63 of them could not be located in the text by name, so part of the gap may sit on CanLII's side ([t2 summary](audit/findings/canlii_crosscheck/run_20261002_tables2/t2_summary.md)). The ONCA and BCCA samples range from 70.2% (ONCA 1998–2006) to 96.9% (ONCA 2016–2026).
+| Case is cited by | Real case citations |
+| --- | ---: |
+| 1 judgment | 75% |
+| 2–4 judgments | 82% |
+| 5–9 judgments | 99% |
+| 10 or more | 100% |
 
-For 61 sampled cited cases, our citing judgments are also on CanLII's list 98.5–99.8% of the time, and we find 82.7% (pre-1950 cases) to 99.5% (post-2000 cases) of CanLII's citing judgments within the same three courts.
+**Do we miss citations?** For Supreme Court judgments from 2000–2026, we find 97% of the cases CanLII lists. For older judgments it is lower: 80% for 1950–1999 and 36% for 1875–1949. For that oldest period, we could not find most of the cases only CanLII lists anywhere in the judgment text, so part of the gap may be on CanLII's side ([details](audit/findings/canlii_crosscheck/run_20261002_tables2/t2_summary.md)). For Ontario and British Columbia the figure ranges from 70% (Ontario 1998–2006) to 97% (Ontario 2016–2026).
 
-These measurements predate extraction v1.6 and the latest classification fixes and have not been repeated on `run_20261003_v16f`. The DD threshold of 5 used by the select layer is a placeholder that has not been calibrated.
+**Do we get the "cited by" lists right?** For 61 sampled cases, the judgments we list as citing them also appear on CanLII's list 98.5–99.8% of the time, and we find 83% (cases decided before 1950) to 99.5% (cases after 2000) of the citing judgments CanLII lists within the same three courts.
 
-The test scripts `test_layers.py` (172 checks), `test_candidates.py` (378), `test_non_citation_words.py` (167), `test_registered_id.py` (87), `test_shape_21.py` (76) and the extraction regression self-test all pass locally. Some of them read the corpus and earlier run outputs, which are too large for the repository, so they do not run in CI.
+These checks were done on the run before the latest one and have not been repeated yet. The cut-off of five citing judgments is a working value that has not been formally calibrated.
 
-Every problem found so far, with its measured size, cause, fix and effect, is recorded in [`PROBLEMS.md`](PROBLEMS.md); [`DEBT_LEDGER.md`](DEBT_LEDGER.md) tracks the remaining technical debt.
+About 880 automated checks pass locally. The demo and the step-by-step tests also run automatically on every push (Python 3.11–3.14, Linux and Windows); the remaining checks need the full downloaded data, which is too large for the automated runs.
+
+Every problem found so far — its size, cause, fix and effect — is recorded in [`PROBLEMS.md`](PROBLEMS.md). Remaining technical debt is tracked in [`DEBT_LEDGER.md`](DEBT_LEDGER.md).
 
 ## Quick start
 
-Needs Python 3.11 or later (CI runs the demo and the layer tests on 3.11–3.14, Linux and Windows), `bash` (Git Bash or WSL) for the corpus download, and about 5 GB of free disk (1.4 GB corpus plus 3.1 GB per run).
+You need Python 3.11 or later, `bash` (Git Bash or WSL on Windows) for the download script, and about 5 GB of free disk space (1.4 GB of judgments plus 3.1 GB per run). A full run on three courts takes about 40 minutes.
 
 ```bash
 pip install pyarrow pyyaml
 bash scripts/download_corpus.sh list       # show what will be downloaded
-bash scripts/download_corpus.sh download   # write Parquet files to corpus/
+bash scripts/download_corpus.sh download   # save the judgments to corpus/
 ```
 
-The download selects SCC, ONCA and BCCA by default. To fetch other courts from the same dataset, name them: `PIPELINE_COURTS=SCC,CITT bash scripts/download_corpus.sh download`. Use the same variable when running the pipeline.
+By default this downloads SCC, ONCA and BCCA. To get other courts from the same dataset, name them: `PIPELINE_COURTS=SCC,CITT bash scripts/download_corpus.sh download`. Use the same setting when running the pipeline.
 
 ```bash
-python scripts/demo.py                                        # offline example above, no corpus needed
-python pipeline/run_all.py --out data/run_smoke --limit-batches 1   # smoke test, one batch per court
+python scripts/demo.py                                        # the example above, no download needed
+python pipeline/run_all.py --out data/run_smoke --limit-batches 1   # quick test on a small sample
 python pipeline/run_all.py --out data/run_YYYYMMDD_name             # full run
 ```
 
-To build the results database and search indexes, install `sqlite-vec` and put an OpenRouter key in the file named in [`tools/foundation/README.md`](tools/foundation/README.md):
+To build the search database, install `sqlite-vec` and add an OpenRouter key as described in [`tools/foundation/README.md`](tools/foundation/README.md):
 
 ```bash
 python tools/foundation/after_run.py --run data/run_YYYYMMDD_name
 ```
 
-After changing any layer, run the checks:
+After changing the code, run the checks:
 
 ```bash
 python pipeline/tests/run_regression.py --selftest
@@ -248,19 +222,16 @@ python pipeline/tests/test_layers.py
 python pipeline/tests/test_layers.py --golden
 ```
 
-The full order of steps is in §12 of the [technical specification](docs/technical_specification.md). Changes that go beyond the specification are recorded in `PROBLEMS.md`.
+The full sequence of steps is in §12 of the [technical specification](docs/technical_specification.md). To add a new court, start with the [new-court guide](docs/method_cards/00_new_court_playbook.md).
 
 ## Roadmap
 
-From the project's own open items:
-
-- Calibrate the DD threshold, which is still a placeholder.
-- Re-measure accuracy against CanLII on the current run.
-- Resolve the open entries in `PROBLEMS.md`, such as the `(F.C.A.)` designation shared by Canada and Australia (#99) and inconsistent BCCA headers (#110).
-- Decide whether to build vectors for individual citation passages (the keyword index exists).
-- Generate research answers from retrieved results with source references.
-- Add more courts and tribunals, starting from the playbook in `docs/method_cards/00_new_court_playbook.md`.
+- Calibrate the "cited by five or more" cut-off.
+- Repeat the CanLII accuracy check on the latest run.
+- Fix the open problems in `PROBLEMS.md`, for example the court label `(F.C.A.)`, which can mean either Canada's or Australia's Federal Court (#99), and inconsistent headers in BC judgments (#110).
+- Let an AI write research answers from the search results, with sources.
+- Add more courts and tribunals.
 
 ## License
 
-The code is released under the [MIT License](LICENSE). The judgments themselves come from the [a2aj/canadian-case-law](https://huggingface.co/datasets/a2aj/canadian-case-law) dataset and are covered by its own terms, not by this license.
+The code is released under the [MIT License](LICENSE). The judgments come from the [a2aj/canadian-case-law](https://huggingface.co/datasets/a2aj/canadian-case-law) dataset and are covered by its own terms, not by this license.
