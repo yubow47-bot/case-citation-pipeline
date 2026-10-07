@@ -6,21 +6,16 @@
 [![Corpus: a2aj/canadian-case-law](https://img.shields.io/badge/corpus-a2aj%2Fcanadian--case--law-yellow)](https://huggingface.co/datasets/a2aj/canadian-case-law)
 ![Validated on: SCC · ONCA · BCCA](https://img.shields.io/badge/validated%20on-SCC%20%C2%B7%20ONCA%20%C2%B7%20BCCA-informational)
 
-A method for turning any collection of court judgments into a citation network you can check: find every case citation in the text, work out which case each one points to, and count how many different judgments cite that case. Every number can be traced back to a judgment and the exact character position in its text.
+Courts constantly cite earlier cases. This project reads every published judgment of a court, finds each case it cites, and counts how many different judgments rely on each case. The result is a citation network you can check: every number traces back to a specific judgment and the exact place in its text.
 
-Which courts to run is a setting. The method works on any court in the public [a2aj Canadian case law dataset](https://huggingface.co/datasets/a2aj/canadian-case-law). So far it has been run end to end on three courts — the Supreme Court of Canada (SCC), the Court of Appeal for Ontario (ONCA) and the Court of Appeal for British Columbia (BCCA) — and checked against [CanLII](https://www.canlii.org), Canada's free case-law website, which publishes its own lists of cited cases.
-
-On top of the results sit two search systems (RAG, "retrieval-augmented generation": search that finds relevant passages so a person or an AI model can answer from them). One answers research questions about the cases; the other searches the project's own methods, so the pipeline can be extended to new courts and citation styles.
+It has been run on three Canadian courts — the Supreme Court of Canada (SCC), the Court of Appeal for Ontario (ONCA) and the Court of Appeal for British Columbia (BCCA) — using the public [a2aj Canadian case law dataset](https://huggingface.co/datasets/a2aj/canadian-case-law), and checked against [CanLII](https://www.canlii.org), Canada's free case-law website. Other courts can be added by changing a setting.
 
 | | |
 | --- | --- |
-| **The problem** | To know which cases a court actually relies on, foreign or domestic, you have to count citations across its whole history. But judgments print the same case in many forms: the court's own case number (a "neutral citation", e.g. `2002 SCC 33`), references to one or more printed law reports (e.g. `[2002] 2 S.C.R. 235`), database IDs, and 19th-century footnote styles. A fixed list of abbreviations misses most of them. |
-| **The approach** | Five steps, each passing its results forward only: (1) find every piece of text shaped like a citation; (2) label each one using reference tables, where every row names the printed source it was taken from; (3) combine identical citations; (4) decide which different citations are the same case; (5) count citing judgments and apply a cut-off. Rows are flagged, never deleted. |
-| **What you get** | CSV tables for each step (candidate citations, labelled rows, cases, and links from each judgment to each case it cites), plus a SQLite results database with two search systems: keyword and meaning-based search over the cases, for research; and over the project's code, audits and method guides, for maintenance. See [the example](#example-one-paragraph-through-two-steps) and [Two search systems](#two-search-systems-rag-on-top-of-the-pipeline). |
-| **Stack** | Python 3.11, the standard library plus `pyarrow` and `PyYAML`. Search uses SQLite full-text search, `sqlite-vec` and OpenRouter embeddings. |
-| **How well it works** | 215 citation links from 360 judgments checked by hand against CanLII: 87.0% are real case citations (likely between 75% and 92%), rising to 98.9–100% for cases cited by five or more judgments. About 880 automated checks pass locally; the demo and the step tests also run automatically on GitHub. See [How well it works](#how-well-it-works). |
-| **Scope** | Courts are chosen with the `PIPELINE_COURTS` setting. A new court needs its data file and, where it uses law reports or court codes the reference tables do not know yet, new table rows; [`docs/method_cards/00_new_court_playbook.md`](docs/method_cards/00_new_court_playbook.md) lists the steps. |
-| **Run it** | Download the data, run `pipeline/run_all.py`. The current three-court run took 37 minutes and wrote 3.1 GB. See [Quick start](#quick-start). |
+| **The problem** | The same case is written in many different ways — the court's own case number (`2002 SCC 33`), law-report references (`[2002] 2 S.C.R. 235`), database IDs, old footnote styles — so a simple list of abbreviations misses most citations. |
+| **The approach** | Five steps: find anything shaped like a citation, label it, combine duplicates, decide which citations are the same case, and count. Nothing is ever deleted, only flagged, and every lookup rule records where it came from. |
+| **What you get** | Tables of every citation and every cited case, plus two search tools: one for researchers to explore the cases, one for maintainers to find how the pipeline works. |
+| **How accurate** | About 87% of citation links are real case citations; for cases cited by five or more judgments, 99–100%. |
 
 > This is research data, not legal advice. Read [`docs/USAGE.md`](docs/USAGE.md) before quoting any number: it defines exactly what "cited N times" counts and lists where the tables under-count.
 
@@ -106,13 +101,13 @@ flowchart TB
     style ROW2 fill:none,stroke:none
 ```
 
-1. **Find:** match text patterns shaped like citations (year, court code, volume and page) and keep every match with its position. No fixed list of abbreviations is needed.
-2. **Label:** row by row, look up the country in the reference tables, separate out possible case names, and flag things that only look like citations and judgments citing themselves.
-3. **Combine:** work across all rows. Where the same text can be read two ways, choose one; collapse identical citations into one; fold together small variations in how a citation is written; pick each case's name by majority vote.
-4. **Decide:** settle which citations are the same case. Join the different law-report references printed side by side for one case, link the same case across courts, split apart different cases that share a name, and determine the country of origin.
-5. **Select:** apply one cut-off on DD (the number of different citing judgments). Cases below it are flagged, not removed.
+1. **Find** anything shaped like a citation (year, court code, volume, page). No abbreviation list is needed, so unfamiliar reports are still caught.
+2. **Label** each one: what kind of citation, which country, and whether it is only a look-alike or a judgment citing itself.
+3. **Combine** identical citations and resolve text that could be read two ways.
+4. **Decide** which different citations are the same case — for example a case number and a law-report reference printed side by side — and keep apart different cases with the same name.
+5. **Select** by counting how many different judgments cite each case (DD). Cases below the cut-off are flagged, not removed.
 
-Each step fixes only the problems it creates itself, and no step ever reads the output of a later step. Every row in the reference tables in [`decisions/`](decisions/) is based on something actually printed in judgments and records where it was found. If a lookup finds nothing, the answer is `UNSUPPORTED` ("unknown") rather than a guess.
+Each step only fixes its own mistakes and never depends on a later step, so a problem can always be traced to where it started. The [reference tables](decisions/) contain only facts actually printed in judgments, each with its source; when a lookup finds nothing, the answer is "unknown" rather than a guess.
 
 ### Data
 
@@ -126,7 +121,7 @@ The judgments come from the [`a2aj/canadian-case-law`](https://huggingface.co/da
 
 Trial courts, other appeal courts, federal courts and tribunals are not included yet. The list of courts is set by `PIPELINE_COURTS`. A trial run on the Canadian International Trade Tribunal could determine the country for only 28.4% of rows, because its citations are mostly tariff items and specialist law reports the tables do not cover yet ([findings](implementation/exp_bcca_citt_findings.md)).
 
-Most recent full run, `run_20261003_v16f` (code version `f7f3951`, before the labelling fixes in `d5f54e9` and `fe8c66c`). The first number is much larger than the rest because it counts every match, including repeated mentions and the duplicate readings shown in the example:
+Size of the latest full run (`run_20261003_v16f`). The first number is much larger than the rest because it counts every match, including repeated mentions and duplicate readings:
 
 | | |
 | --- | ---: |
@@ -138,7 +133,7 @@ Most recent full run, `run_20261003_v16f` (code version `f7f3951`, before the la
 
 ## Two search systems (RAG) on top of the pipeline
 
-The pipeline produces two things: structured results (cases, counts, and citation links with their exact positions) and a large written record of how each step was built, checked and repaired. Both are turned into searchable collections, shown below. The data side serves people asking research questions about the results. The method side serves whoever maintains or extends the pipeline, so that adding a court or a new citation pattern starts from what already worked and what already failed.
+The pipeline produces two things: the results themselves, and a detailed record of how each step was built, checked and fixed. Both are made searchable. Researchers search the results; maintainers search the record, so adding a new court starts from what already worked and what already failed.
 
 ```mermaid
 flowchart TB
@@ -196,9 +191,7 @@ The dashed box is not built yet: search returns ranked results with their source
 
 ### Data search
 
-[`after_run.py`](tools/foundation/after_run.py) loads a run into a local SQLite database (`data/foundation/research.db`, about 2.8 GB for three courts; you build it from your own run, it is not shipped). It holds the judgments, the cases, the citation texts, the citation links with labels for how a case is used, and weights calibrated against CanLII. Exact counts and filters are SQL queries over these tables.
-
-For search, every case that has a name or is cited by at least two judgments gets one profile: its name, its citations, its DD, and 2 to 4 of the most readable passages from judgments that cite it (330 characters before the citation and 120 after) ([`index_cases.py`](tools/foundation/index_cases.py)). Every result links back to its run and judgment:
+After each run, the results are loaded into a local database. Every frequently cited case gets a short profile — its name, its citations, how many judgments cite it, and a few passages where it is cited — and these profiles are indexed for both keyword search and search by meaning. The effect: you can type a case name or a legal idea, get the matching cases ranked, see who cites them, and jump straight to the passage in the original judgment. Exact numbers always come from the full tables, not from search results.
 
 ```console
 $ python tools/foundation/query.py "Donoghue" --mode keyword -k 1
@@ -210,15 +203,13 @@ $ python tools/foundation/query.py "Donoghue" --mode keyword -k 1
     trace:  python pipeline/trace_source.py --run-dir data/run_20261003_selfcite --search "Donoghue v. Stevenson"
 ```
 
-How to read this: `[XC-G002421]` is the case's ID in our tables. `DD 108` means 108 different judgments cite it. `weighted DD` discounts each citation by how likely it is to be real, based on the CanLII check (still experimental); `confidence` is how sure that estimate is. `origin FOREIGN GB` means a foreign case from the United Kingdom. The `trace` line is a command that prints every citing passage from the original text.
+`DD 108` means 108 different judgments cite this case; `weighted DD` is an experimental estimate of how many of those are real, based on the CanLII check. The `trace` line prints every citing passage from the original text.
 
 ### Method search
 
-[`index_methods.py`](tools/foundation/index_methods.py) splits the project's own material into about 1,100 records. Each is tagged with the pipeline step it belongs to and its status, and pinned to a file and line number at a specific code version. The records are: every function and class in `pipeline/` (read with Python's `ast` parser), every reference table, every section of the specification and the audit reports, and the hand-written [method guides](docs/method_cards/) (what each step does, what to change for a new court, how to verify it, known pitfalls). Method searches always reserve the top two places for method guides, so a question about extending the pipeline lands on the hand-written answer first. The question "how to add a new court" returned the new-court guide among the top three results; that was measured when the guides were still in Chinese, so rebuild the index after pulling to re-check it on the English guides.
+The project's own material — the code, the reference tables, the specification, the audit reports and a set of hand-written method guides — is split into small pieces, each labelled with the step it belongs to and linked to the exact file and line. A maintainer can ask a question such as "how do I add a new court?" and gets the hand-written guide first, followed by the relevant code and past problems. The effect: extending the pipeline starts from what already worked and what already failed, instead of from scratch.
 
-### Indexing and embedding
-
-After each pipeline run, `after_run.py` imports the run, computes the weights, rebuilds both collections and turns their text into embeddings (numeric vectors that capture meaning) with [`embed.py`](tools/foundation/embed.py): model `qwen/qwen3-embedding-8b` via OpenRouter, 1,024 dimensions, one `sqlite-vec` table per collection. Embeddings are cached by a hash of the text, so a new run only pays for text that changed. [`query.py`](tools/foundation/query.py) merges the keyword ranking (SQLite full-text search) and the meaning ranking with reciprocal-rank fusion, a standard way of combining two ranked lists. Statistics always come from SQL over the full tables, never from the top search results.
+Both searches are rebuilt automatically after each run with one command ([`after_run.py`](tools/foundation/after_run.py)). Search by meaning uses text embeddings from OpenRouter; only changed text is re-processed, so updates are cheap.
 
 ## How well it works
 
@@ -239,7 +230,7 @@ All accuracy figures come from comparing run `run_20261002_tables2` with CanLII'
 
 These measurements were made before version 1.6 of the find step and the latest labelling fixes, and have not yet been repeated on `run_20261003_v16f`. The cut-off of DD 5 used by the select step is a working value that has not been calibrated.
 
-The test scripts `test_layers.py` (172 checks), `test_candidates.py` (378), `test_non_citation_words.py` (167), `test_registered_id.py` (87), `test_shape_21.py` (76) and the find-step regression self-test all pass locally. The demo and the step tests also run automatically on GitHub on every push (Python 3.11–3.14, Linux and Windows). The remaining tests read the downloaded data and earlier run outputs, which are too large for the repository, so they run only locally.
+About 880 automated checks pass locally. The demo and the step tests also run on GitHub on every push (Python 3.11–3.14, Linux and Windows); the rest need the full downloaded data and run only locally.
 
 Every problem found so far is recorded in [`PROBLEMS.md`](PROBLEMS.md), with its measured size, cause, fix and effect; [`DEBT_LEDGER.md`](DEBT_LEDGER.md) tracks the remaining technical debt.
 
