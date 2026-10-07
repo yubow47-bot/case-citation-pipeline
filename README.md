@@ -15,9 +15,23 @@ It has been run on three Canadian courts — the Supreme Court of Canada (SCC), 
 | **The problem** | The same case is written in many different ways — the court's own case number (`2002 SCC 33`), law-report references (`[2002] 2 S.C.R. 235`), database IDs, old footnote styles — so a simple list of abbreviations misses most citations. |
 | **The approach** | Five steps: find anything shaped like a citation, label it, combine duplicates, decide which citations are the same case, and count. Nothing is ever deleted, only flagged, and every lookup rule records where it came from. |
 | **What you get** | Tables of every citation and every cited case, plus two search tools: one for researchers to explore the cases, one for maintainers to find how the pipeline works. |
-| **How accurate** | About 87% of citation links are real case citations; for cases cited by five or more judgments, 99–100%. |
+| **How accurate** | About 87% of citation links are real case citations; for cases cited by five or more different judgments (the kept result), 99–100%. See [What the final data looks like](#what-the-final-data-looks-like). |
 
 > This is research data, not legal advice. Read [`docs/USAGE.md`](docs/USAGE.md) before quoting any number: it defines exactly what "cited N times" counts and lists where the tables under-count.
+
+## What the final data looks like
+
+The pipeline's output is a list of cases, each with one key number, its DD. **DD** ("distinct decisions") is the number of different judgments that cite a case; a judgment that cites the same case twenty times counts once.
+
+Every case found stays in the tables, whatever its DD. The select step then sorts them with one cut-off, currently **DD ≥ 5**:
+
+| DD | Meaning | Share of real case citations (checked against CanLII) | In the latest run |
+| --- | --- | ---: | --- |
+| **5 or more** | Kept: the main result. Cited by at least five different judgments. | 98.9% (5–9) to 100% (10 or more) | 13,610 of 233,385 cases |
+| **2 to 4** | Below the cut-off: flagged, not deleted. Cited by a few judgments; mostly real, but more noise and mistakes get through. | 81.7% | 219,775 cases with DD 1–4 together |
+| **1** | Below the cut-off: flagged, not deleted. Cited by a single judgment; a quarter of these links are not real case citations. | 75.0% | (included in the 219,775) |
+
+So a high DD means the case is both reliably identified and widely relied on, while a low DD means either a rarely cited case or a citation that may be a mistake. Nothing is removed, so you can lower the cut-off and look at the flagged cases yourself. The cut-off of 5 is a working value that has not been formally calibrated. Where these accuracy numbers come from is explained in [How well it works](#how-well-it-works).
 
 ## Example: one paragraph through two steps
 
@@ -54,7 +68,7 @@ How to read this:
 
 ### What the full pipeline makes possible
 
-The two steps above only find and label pieces of text. The later steps decide which pieces are the same case and count how many different judgments cite it. This count is the key number in the whole project. It is abbreviated **DD** ("distinct decisions") in the code and output: the number of *different* judgments that cite a case, so a judgment that cites it twenty times counts once.
+The two steps above only find and label pieces of text. The later steps decide which pieces are the same case and count its DD, the number of different judgments that cite it (defined [above](#what-the-final-data-looks-like)).
 
 Once every citation in a court's history is matched to a case, questions that used to need years of reading become a query. One we have not seen measured at this scale: which foreign judgments have Canadian courts actually relied on, and how much? The table below is the start of that answer, from run `run_20261003_v16f` over SCC, ONCA and BCCA:
 
@@ -105,7 +119,7 @@ flowchart TB
 2. **Label** each one: what kind of citation, which country, and whether it is only a look-alike or a judgment citing itself.
 3. **Combine** identical citations and resolve text that could be read two ways.
 4. **Decide** which different citations are the same case — for example a case number and a law-report reference printed side by side — and keep apart different cases with the same name.
-5. **Select** by counting how many different judgments cite each case (the DD number explained above). Cases below the cut-off are flagged, not removed.
+5. **Select** by DD (the number of different judgments citing each case). Cases with DD of 5 or more are kept as the main result; cases with DD 1–4 are flagged as below the cut-off, not removed.
 
 Each step only fixes its own mistakes and never depends on a later step, so a problem can always be traced to where it started. The [reference tables](decisions/) contain only facts actually printed in judgments, each with its source; when a lookup finds nothing, the answer is "unknown" rather than a guess.
 
@@ -215,20 +229,22 @@ Both searches are rebuilt automatically after each run with one command ([`after
 
 All accuracy figures come from comparing run `run_20261002_tables2` with CanLII's own citation lists for 360 judgments, sampled across the three courts and three time periods each ([`audit/findings/canlii_crosscheck/`](audit/findings/canlii_crosscheck/)).
 
-**Are the citation links real?** We checked 215 of our links by reading the source text. Weighted up to the full set, 87.0% are real case citations (allowing for sampling error, likely between 75% and 92%), 8.2% are not cases at all (journal articles, statute sections, tables of contents) and 4.8% point to an earlier stage of the same case. Accuracy rises with how many judgments cite the case:
+**Are the citation links real?** We checked 215 of our links by reading the source text. Weighted up to the full set, 87.0% are real case citations (allowing for sampling error, likely between 75% and 92%), 8.2% are not cases at all (journal articles, statute sections, tables of contents) and 4.8% point to an earlier stage of the same case. Accuracy rises with a case's DD. **DD** ("distinct decisions") is the number of different judgments that cite a case; a judgment that cites the same case twenty times counts once.
 
-| Case is cited by | Real case citations |
+| DD | Real case citations |
 | --- | ---: |
-| 1 judgment | 75.0% |
-| 2–4 judgments | 81.7% |
-| 5–9 judgments | 98.9% |
+| 1 | 75.0% |
+| 2–4 | 81.7% |
+| 5–9 | 98.9% |
 | 10 or more | 100% |
+
+This is why the cut-off sits at 5: below it a case may be rare or a mistake, above it nearly every citation checked was real.
 
 **Do we miss citations?** For the 40 sampled SCC judgments from 2000–2026, we find 97.3% of the cited cases CanLII lists for them. Coverage falls for older judgments: 79.8% for SCC 1950–1999 and 36.4% for SCC 1875–1949. For that oldest period we examined the 68 cases that only CanLII lists: none turned out to be a citation we had missed in the judgment text, and 63 of them could not be found in the text by name at all, so part of the gap may be on CanLII's side ([t2 summary](audit/findings/canlii_crosscheck/run_20261002_tables2/t2_summary.md)). The ONCA and BCCA samples range from 70.2% (ONCA 1998–2006) to 96.9% (ONCA 2016–2026).
 
 **Are the "cited by" lists right?** For 61 sampled cited cases, the judgments we list as citing them are also on CanLII's list 98.5–99.8% of the time, and we find 82.7% (cases before 1950) to 99.5% (cases after 2000) of the citing judgments CanLII lists within the same three courts.
 
-These measurements were made before version 1.6 of the find step and the latest labelling fixes, and have not yet been repeated on `run_20261003_v16f`. The cut-off of DD 5 used by the select step is a working value that has not been calibrated.
+These measurements were made before version 1.6 of the find step and the latest labelling fixes, and have not yet been repeated on `run_20261003_v16f`. The select-step cut-off of DD 5 is a working value that has not been calibrated.
 
 About 880 automated checks pass locally. The demo and the step tests also run on GitHub on every push (Python 3.11–3.14, Linux and Windows); the rest need the full downloaded data and run only locally.
 
