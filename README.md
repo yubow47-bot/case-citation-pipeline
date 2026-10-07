@@ -54,11 +54,11 @@ How to read this:
 
 ### What the full pipeline makes possible
 
-The two steps above only find and label pieces of text. The later steps decide which pieces are the same case and count how many different judgments cite it. In the tables this count is called **DD** ("distinct decisions"): a judgment that cites a case twenty times counts once.
+The two steps above only find and label pieces of text. The later steps decide which pieces are the same case and count how many different judgments cite it. This count is the key number in the whole project. It is abbreviated **DD** ("distinct decisions") in the code and output: the number of *different* judgments that cite a case, so a judgment that cites it twenty times counts once.
 
 Once every citation in a court's history is matched to a case, questions that used to need years of reading become a query. One we have not seen measured at this scale: which foreign judgments have Canadian courts actually relied on, and how much? The table below is the start of that answer, from run `run_20261003_v16f` over SCC, ONCA and BCCA:
 
-| Cited by (DD) | Case | Citation | Origin |
+| Cited by (number of different judgments) | Case | Citation | Origin |
 | ---: | --- | --- | --- |
 | 108 | Donoghue v. Stevenson | [1932] A.C. 562 | GB (United Kingdom) |
 | 52 | Salomon v. Salomon & Co | [1897] A.C. 22 | GB (United Kingdom) |
@@ -105,7 +105,7 @@ flowchart TB
 2. **Label** each one: what kind of citation, which country, and whether it is only a look-alike or a judgment citing itself.
 3. **Combine** identical citations and resolve text that could be read two ways.
 4. **Decide** which different citations are the same case — for example a case number and a law-report reference printed side by side — and keep apart different cases with the same name.
-5. **Select** by counting how many different judgments cite each case (DD). Cases below the cut-off are flagged, not removed.
+5. **Select** by counting how many different judgments cite each case (the DD number explained above). Cases below the cut-off are flagged, not removed.
 
 Each step only fixes its own mistakes and never depends on a later step, so a problem can always be traced to where it started. The [reference tables](decisions/) contain only facts actually printed in judgments, each with its source; when a lookup finds nothing, the answer is "unknown" rather than a guess.
 
@@ -217,7 +217,7 @@ All accuracy figures come from comparing run `run_20261002_tables2` with CanLII'
 
 **Are the citation links real?** We checked 215 of our links by reading the source text. Weighted up to the full set, 87.0% are real case citations (allowing for sampling error, likely between 75% and 92%), 8.2% are not cases at all (journal articles, statute sections, tables of contents) and 4.8% point to an earlier stage of the same case. Accuracy rises with how many judgments cite the case:
 
-| Case is cited by (DD) | Real case citations |
+| Case is cited by | Real case citations |
 | --- | ---: |
 | 1 judgment | 75.0% |
 | 2–4 judgments | 81.7% |
