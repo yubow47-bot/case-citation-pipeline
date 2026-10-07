@@ -85,34 +85,23 @@ Origin is the country of the court where the cited case came from. Makin and Ibr
 ## Pipeline
 
 ```mermaid
-flowchart TB
-    subgraph ROW1[" "]
-        direction LR
-        J["Judgment text<br/>from the a2aj<br/>Canadian case law dataset"]
-        E["1 · Find<br/>Every piece of text shaped like a citation,<br/>with its exact position<br/><i>Checks: scan leftover text for misses ·<br/>compare old and new versions ·<br/>correct start and end · compare with CanLII text</i>"]
-        C["2 · Label<br/>Citation type, country, warning flags<br/><i>Checks: every table row has a source ·<br/>hand-reviewed samples ·<br/>abbreviations with two meanings · unknown codes</i>"]
-        T["Reference tables<br/>Court codes · Law reports ·<br/>ID systems"]
-        J ==> E ==> C
-        T -.-> C
-    end
+flowchart LR
+    J["Judgments<br/>(a2aj dataset)"]
+    E["1 · Find<br/>every piece of text<br/>that looks like a citation"]
+    C["2 · Label<br/>what kind of citation,<br/>which country"]
+    M["3 · Combine<br/>identical citations"]
+    D["4 · Match<br/>different citations<br/>of the same case"]
+    S["5 · Count<br/>how many judgments<br/>cite each case"]
+    O["Results<br/>tables + search"]
+    T["Reference tables<br/>courts · law reports"]
 
-    subgraph ROW2[" "]
-        direction LR
-        M["3 · Combine<br/>Choose between overlapping readings,<br/>group identical citations, count them<br/><i>Checks: which reading wins ·<br/>no double counting · nothing wrongly combined ·<br/>citations that could not be read</i>"]
-        D["4 · Decide<br/>Which citations are the same case,<br/>its country, links across courts<br/><i>Checks: same case, different citations ·<br/>same name, different cases · evidence for country</i>"]
-        S["5 · Select<br/>Flag cases below the cut-off;<br/>keep every row<br/><i>Checks: cases near the cut-off ·<br/>what exactly is counted · no rows lost ·<br/>effect of changing the cut-off</i>"]
-        O["Results<br/>Cases, citation counts<br/>and where each was found"]
-        M ==> D ==> S ==> O
-    end
-
-    ROW1 ==> ROW2
+    J --> E --> C --> M --> D --> S --> O
+    T -.-> C
 
     classDef main fill:#eaf3ff,stroke:#2563eb,stroke-width:2px,color:#142d50;
     classDef support fill:#f8fafc,stroke:#94a3b8,color:#25354a;
     class J,E,C,M,D,S,O main;
     class T support;
-    style ROW1 fill:none,stroke:none
-    style ROW2 fill:none,stroke:none
 ```
 
 1. **Find** anything shaped like a citation (year, court code, volume, page). No abbreviation list is needed, so unfamiliar reports are still caught.
