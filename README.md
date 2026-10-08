@@ -70,7 +70,7 @@ How to read this:
 
 The two steps above only find and label pieces of text. The later steps decide which pieces are the same case and count its DD, the number of different judgments that cite it (defined [above](#what-the-final-data-looks-like)).
 
-Once every citation in a court's history is matched to a case, questions that used to need years of reading become a query. One we have not seen measured at this scale: which foreign judgments have Canadian courts actually relied on, and how much? The table below is the start of that answer, from run `run_20261003_v16f` over SCC, ONCA and BCCA:
+Once every citation in a court's history is matched to a case, questions that used to need years of reading become a query. One we have not seen measured at this scale: which foreign judgments have Canadian courts actually relied on, and how much? The table below shows the five most-cited of the 375 foreign cases with a proven origin in run `run_20261003_v16f` over SCC, ONCA and BCCA:
 
 | Cited by (number of different judgments) | Case | Citation | Origin |
 | ---: | --- | --- | --- |
