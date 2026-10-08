@@ -106,7 +106,7 @@ mkdir -p "$DATA" "$CORPUS"
 echo "枚举数据集: $REPO @$REV ..."
 # Python on Windows ends printed lines with CR LF; drop the CR so it does not become part of
 # the last field (file names).
-enumerate | tr -d '' > "$TSV"
+enumerate | tr -d '\r' > "$TSV"
 
 echo
 echo "数据集全部顶层目录见上方 stderr 注释；目标清单:"
