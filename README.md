@@ -90,8 +90,8 @@ flowchart LR
     E["1 · Find<br/>every piece of text<br/>that looks like a citation"]
     C["2 · Label<br/>what kind of citation,<br/>which country"]
     M["3 · Combine<br/>identical citations"]
-    D["4 · Match<br/>different citations<br/>of the same case"]
-    S["5 · Count<br/>how many judgments<br/>cite each case"]
+    D["4 · Decide<br/>which different citations<br/>are the same case"]
+    S["5 · Select<br/>count citing judgments,<br/>apply the cut-off"]
     O["Results<br/>tables + search"]
     T["Reference tables<br/>courts · law reports"]
 
