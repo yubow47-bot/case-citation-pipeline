@@ -263,7 +263,7 @@ To build the results database and search indexes, install `sqlite-vec` and put a
 python tools/foundation/after_run.py --run data/run_YYYYMMDD_name
 ```
 
-After changing any step, run the checks:
+After changing any step, run the checks. The first two need nothing else; `--golden` compares against the output of a finished pipeline run, so run the pipeline once first (see above):
 
 ```bash
 python pipeline/tests/run_regression.py --selftest

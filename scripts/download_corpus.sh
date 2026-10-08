@@ -41,11 +41,17 @@ MANIFEST="$DATA/corpus_manifest.json"
 
 command -v curl      >/dev/null 2>&1 || { echo "需要 curl" >&2; exit 2; }
 command -v sha256sum >/dev/null 2>&1 || { echo "需要 sha256sum" >&2; exit 2; }
-command -v python3   >/dev/null 2>&1 || { echo "需要 python3" >&2; exit 2; }
+# On Windows "python3" is often a Microsoft Store stub that fails when run, so try
+# each name and keep the first one that actually executes.
+PY=""
+for cand in python3 python; do
+  if command -v "$cand" >/dev/null 2>&1 && "$cand" -c "import sys" >/dev/null 2>&1; then PY="$cand"; break; fi
+done
+[ -n "$PY" ] || { echo "需要 python3（或 python）" >&2; exit 2; }
 
 # --- 枚举：输出 TSV（court, relpath, url, expected_bytes, expected_sha256, dest_name）---
 enumerate() {
-  python3 - "$REPO" "$REV" <<'PYEOF'
+  "$PY" - "$REPO" "$REV" <<'PYEOF'
 import json, os, sys, urllib.request
 
 repo, rev = sys.argv[1], sys.argv[2]
@@ -173,7 +179,7 @@ done < "$TSV"
 
 # --- 清单（python3 生成合法 JSON）---
 if [ -s "$RECORDS" ]; then
-    python3 - "$RECORDS" "$MANIFEST" "$REPO" "$REV" <<'PYEOF'
+    "$PY" - "$RECORDS" "$MANIFEST" "$REPO" "$REV" <<'PYEOF'
 import csv, json, sys, datetime
 
 records_tsv, manifest_path, repo, rev = sys.argv[1:5]
