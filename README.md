@@ -70,7 +70,7 @@ How to read this:
 
 The two steps above only find and label pieces of text. The later steps decide which pieces are the same case and count its DD, the number of different judgments that cite it (defined [above](#what-the-final-data-looks-like)).
 
-Once every citation in a court's history is matched to a case, questions that used to need years of reading become a query. One we have not seen measured at this scale: which foreign judgments have Canadian courts actually relied on, and how much? The table below shows the five most-cited of the 375 foreign cases with a proven origin in run `run_20261003_v16f` over SCC, ONCA and BCCA:
+Once every citation in a court's history is matched to a case, questions that used to need years of reading become a query. One we have not seen measured at this scale: which foreign judgments have Canadian courts actually relied on, and how much? The table below shows the five most-cited of the 375 foreign cases with a proven origin in SCC, ONCA and BCCA:
 
 | Cited by (number of different judgments) | Case | Citation | Origin |
 | ---: | --- | --- | --- |
@@ -124,7 +124,7 @@ The judgments come from the [`a2aj/canadian-case-law`](https://huggingface.co/da
 
 Trial courts, other appeal courts, federal courts and tribunals are not included yet. The list of courts is set by `PIPELINE_COURTS`. A trial run on the Canadian International Trade Tribunal could determine the country for only 28.4% of rows, because its citations are mostly tariff items and specialist law reports the tables do not cover yet ([findings](implementation/exp_bcca_citt_findings.md)).
 
-Size of the latest full run (`run_20261003_v16f`). The first number is much larger than the rest because it counts every match, including repeated mentions and duplicate readings:
+Size of the full run. The first number is much larger than the rest because it counts every match, including repeated mentions and duplicate readings:
 
 | | |
 | --- | ---: |
@@ -233,7 +233,7 @@ This is why the cut-off sits at 5: below it a case may be rare or a mistake, abo
 
 **Are the "cited by" lists right?** For 61 sampled cited cases, the judgments we list as citing them are also on CanLII's list 98.5–99.8% of the time, and we find 82.7% (cases before 1950) to 99.5% (cases after 2000) of the citing judgments CanLII lists within the same three courts.
 
-These measurements were made before version 1.6 of the find step and the latest labelling fixes, and have not yet been repeated on `run_20261003_v16f`. The select-step cut-off of DD 5 is a working value that has not been calibrated.
+These measurements were made before version 1.6 of the find step and the latest labelling fixes, and have not yet been repeated on this run. The select-step cut-off of DD 5 is a working value that has not been calibrated.
 
 About 880 automated checks pass locally. The demo and the step tests also run on GitHub on every push (Python 3.11–3.14, Linux and Windows); the rest need the full downloaded data and run only locally.
 
