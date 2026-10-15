@@ -12,7 +12,9 @@ Each record keeps file:line and the git commit it was indexed at.
 """
 import argparse
 import ast
+import collections
 import csv
+import hashlib
 import json
 import re
 import subprocess
@@ -130,9 +132,16 @@ def build(db_path=DEFAULT_DB):
     try:
         with db:
             db.execute("DELETE FROM text_records WHERE collection='methods'")
+            chunk_ordinals = collections.Counter()
             for title, text, layer, status, p, line in recs:
                 rel = p.relative_to(ROOT).as_posix()
-                upsert_text(db, 'methods', '%s:%d:%s' % (rel, line, title[:60]), layer, status, title,
+                # A long heading produces several chunks with the same locator/title.
+                # Include their content identity so later chunks cannot overwrite earlier evidence.
+                chunk_hash = hashlib.sha256(text.encode('utf-8')).hexdigest()
+                base = '%s:%d:%s' % (rel, line, title[:60])
+                ordinal = chunk_ordinals[base]
+                chunk_ordinals[base] += 1
+                upsert_text(db, 'methods', '%s:%d:%s' % (base, ordinal, chunk_hash), layer, status, title,
                             text, '%s:%d @ %s' % (rel, line, head))
             rebuild_fts(db)
         by = {}

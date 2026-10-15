@@ -25,16 +25,20 @@ def has_cjk(q):
     return bool(CJK.search(q))
 
 
-def to_english(q):
+def to_english(q, allow_network=False):
     """Return an English rewrite of q, or '' when q has no Chinese or the call fails."""
     if not has_cjk(q):
         return ''
+    CACHE.parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(CACHE)
     db.execute('CREATE TABLE IF NOT EXISTS rw(q TEXT, model TEXT, en TEXT, PRIMARY KEY(q,model))')
     row = db.execute('SELECT en FROM rw WHERE q=? AND model=?', (q, MODEL)).fetchone()
     if row:
         db.close()
         return row[0]
+    if not allow_network:
+        db.close()
+        return ''
     body = json.dumps({'model': MODEL, 'temperature': 0, 'max_tokens': 120,
                        'messages': [{'role': 'system', 'content': SYSTEM},
                                     {'role': 'user', 'content': SECRET.sub('[redacted]', q)[:500]}]}).encode()

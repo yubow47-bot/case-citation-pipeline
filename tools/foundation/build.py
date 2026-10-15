@@ -4,13 +4,16 @@ import collections
 import datetime
 import json
 from pathlib import Path
-from common import ROOT, DEFAULT_DB, SCHEMA, connect, digest, dump, identifier, nk, rows, upsert_text, rebuild_fts
+from seal import verify_output_seal
+from common import (ROOT, DEFAULT_DB, SCHEMA, connect, digest, dump, identifier, nk, rows,
+                    upsert_text, rebuild_fts, csv_fields, artifact_digest, resolve_artifact,
+                    source_record, source_snapshot, verify_snapshot, start_component,
+                    finish_component, fail_component, component_status,
+                    selected_corpus_rows, policy_from_manifest)
 
 
 def create_csv_table(db, name, path, foreign_keys):
-    with path.open(encoding='utf-8-sig', newline='') as f:
-        import csv
-        fields = csv.DictReader(f).fieldnames
+    fields = csv_fields(path)
     columns = ','.join(identifier(k) + ' TEXT NOT NULL' for k in fields)
     db.execute(f'CREATE TABLE IF NOT EXISTS {identifier(name)}(run_id TEXT NOT NULL,row_number INTEGER NOT NULL,{columns},PRIMARY KEY(run_id,row_number),{foreign_keys})')
     actual = [r['name'] for r in db.execute(f'PRAGMA table_info({identifier(name)})')][2:]
@@ -67,12 +70,21 @@ def build(run_dir, db_path, corpus_dir=None):
     run_id = run_dir.name
     manifest_path = run_dir/'run_manifest.json'
     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+    policy = policy_from_manifest(manifest)
     if manifest.get('status') != 'complete' or manifest.get('input_identity_verified_unchanged') is not True:
         raise ValueError('Run must be complete and its input identity verified unchanged')
     files = {'members':'select_out/selected.csv','citation_edges':'edges/citation_edges.csv',
              'effective_associations':'decide_out/cross_court/effective_sources.csv'}
-    hashed = {v:digest(run_dir/v) for v in files.values()}
+    required = list(files.values()) + ['select_out/manifest.json', 'registry/decision_own_citations.csv']
+    required += ['merge_out/'+court+'/mentions_candidates.csv' for court in manifest['params']['courts']]
+    output_seal = verify_output_seal(run_dir, manifest, required)
+    hashed = {v:artifact_digest(run_dir/v) for v in files.values()}
     hashed['run_manifest.json'] = digest(manifest_path)
+    hashed['select_out/manifest.json'] = digest(run_dir/'select_out/manifest.json')
+    for court in manifest['params']['courts']:
+        rel = 'merge_out/' + court + '/mentions_candidates.csv'
+        hashed[rel] = artifact_digest(run_dir/rel)
+    hashed['registry/decision_own_citations.csv'] = artifact_digest(run_dir/'registry/decision_own_citations.csv')
     tables = {}
     for rel, expected in manifest['input_identity']['files'].items():
         if rel.startswith('decisions/'):
@@ -82,16 +94,30 @@ def build(run_dir, db_path, corpus_dir=None):
             tables[rel] = (p,expected)
     db = connect(db_path)
     db.executescript(SCHEMA)
+    generation = None
     try:
         prior = db.execute('SELECT * FROM runs WHERE run_id=?',(run_id,)).fetchone()
         if prior:
+            imported = component_status(db, run_id, 'import')
+            generation = start_component(db, run_id, 'import', hashed)
             previous = {r['relative_path']:r['sha256'] for r in db.execute('SELECT * FROM artifacts WHERE run_id=?',(run_id,))}
-            if prior['status'] != 'ready' or any(previous.get(k)!=v for k,v in hashed.items()):
+            # Older imports omitted mentions/select-manifest hashes. They need a new DB,
+            # rather than silently blessing evidence that was never snapshotted.
+            if any(previous.get(k)!=v for k,v in hashed.items()):
                 raise ValueError('An existing run changed; import under a new run identity')
-            return {'run_id':run_id,'already_imported':True,'checks':validate(db,run_id)}
+            snapshot = source_snapshot(db, run_id, run_dir)
+            if imported != 'ready':
+                raise ValueError('Previous import is incomplete; rebuild into a fresh database')
+            checks = validate(db, run_id)
+            verify_snapshot(snapshot)
+            with db:
+                finish_component(db, run_id, 'import', generation, details={'already_imported': True, 'checks': checks})
+            return {'run_id':run_id,'already_imported':True,'checks':checks, 'status': 'building'}
+        db.execute('INSERT INTO runs VALUES(?,?,?,?,?,?)',(run_id,str(run_dir),manifest['input_identity']['fingerprint'],
+                   json.dumps(manifest,ensure_ascii=False),datetime.datetime.now(datetime.timezone.utc).isoformat(),'building'))
+        db.commit()
+        generation = start_component(db, run_id, 'import', hashed)
         with db:
-            db.execute('INSERT INTO runs VALUES(?,?,?,?,?,?)',(run_id,str(run_dir),manifest['input_identity']['fingerprint'],
-                       json.dumps(manifest,ensure_ascii=False),datetime.datetime.now(datetime.timezone.utc).isoformat(),'building'))
             for i,r in enumerate(rows(run_dir/files['members']),2):
                 if r['is_primary']=='true':
                     db.execute('INSERT INTO case_groups VALUES(?,?,?,?,?,?,?,?,?)',(run_id,r['merged_group_id'],
@@ -111,22 +137,24 @@ def build(run_dir, db_path, corpus_dir=None):
             db.execute('CREATE INDEX IF NOT EXISTS edge_source ON citation_edges(run_id,source_decision)')
             db.execute('CREATE INDEX IF NOT EXISTS effective_pair ON effective_associations(run_id,source_decision,merged_group_id,status)')
             import pyarrow.parquet as pq
-            corpus_dir = Path(corpus_dir or ROOT/'corpus')
+            corpus_dir = Path(corpus_dir or manifest['params'].get('corpus_dir') or ROOT/'corpus')
             for court in manifest['params']['courts']:
                 path = corpus_dir/(court+'.parquet')
                 expected = manifest['input_identity']['files']['corpus/'+court+'.parquet']
                 if digest(path) != expected:
                     raise ValueError('Corpus snapshot mismatch: '+court)
+                source_record(db, run_id, 'corpus/'+court+'.parquet', path, expected)
                 pf = pq.ParquetFile(path)
-                offset = 0
-                for batch in pf.iter_batches(batch_size=500,columns=['citation_en','name_en','document_date_en']):
-                    values=[]
-                    for n,r in enumerate(batch.to_pylist(),offset):
-                        citation=r['citation_en'] or ''
-                        values.append((run_id,court,n,court+'_'+nk(citation),citation,r['name_en'] or '',
-                                       str(r['document_date_en'] or ''),str(path)))
-                    db.executemany('INSERT INTO documents VALUES(?,?,?,?,?,?,?,?)',values)
-                    offset += len(values)
+                offset, values = 0, []
+                for n, selected in selected_corpus_rows(pf, policy, include_text=False):
+                    citation = selected['citation']
+                    values.append((run_id,court,n,court+'_'+nk(citation),citation,selected['name'],
+                                   str(selected['date'] or ''),str(path)))
+                    offset = n + 1
+                    if len(values) >= 500:
+                        db.executemany('INSERT INTO documents VALUES(?,?,?,?,?,?,?,?)',values)
+                        values = []
+                db.executemany('INSERT INTO documents VALUES(?,?,?,?,?,?,?,?)',values)
                 db.execute('INSERT INTO artifacts VALUES(?,?,?,?)',(run_id,'corpus/'+court+'.parquet',expected,offset))
             for rel,(path,sha) in tables.items():
                 total = 0
@@ -146,7 +174,8 @@ def build(run_dir, db_path, corpus_dir=None):
                 upsert_text(db,'cases',run_id+'/'+g['group_id'],'results','uncalibrated',g['name'],'\n'.join(texts),
                             str(run_dir/files['members'])+':record='+str(g['primary_row']),run_id)
             for rel,sha in hashed.items():
-                if digest(run_dir/rel)!=sha: raise ValueError('Input changed during import: '+rel)
+                if artifact_digest(run_dir/rel)!=sha: raise ValueError('Input changed during import: '+rel)
+                source_record(db, run_id, rel, run_dir/rel, sha)
                 name = next((k for k,v in files.items() if v==rel),None)
                 db.execute('INSERT INTO artifacts VALUES(?,?,?,?)',(run_id,rel,sha,counts.get(name)))
             rebuild_fts(db)
@@ -155,12 +184,21 @@ def build(run_dir, db_path, corpus_dir=None):
             total=db.execute('SELECT COUNT(*) FROM case_groups WHERE run_id=?',(run_id,)).fetchone()[0]
             if total!=expected_stats['groups_total'] or counts['members']!=expected_stats['rows_total']:
                 raise ValueError('Counts differ from the select manifest')
-            db.execute("UPDATE runs SET status='ready' WHERE run_id=?",(run_id,))
+            snapshot = source_snapshot(db, run_id, run_dir)
+            verify_snapshot(snapshot)
+            finish_component(db, run_id, 'import', generation, details={'rows': counts, 'groups': total, 'checks': checks,
+                                                                    'output_seal': output_seal})
         report={'run_id':run_id,'db':str(Path(db_path).resolve()),'rows':counts,'groups':total,'checks':checks,
                 'case_texts':db.execute("SELECT COUNT(*) FROM text_records WHERE run_id=? AND collection='cases'",(run_id,)).fetchone()[0],
-                'semantic_accuracy':'not_assessed','weights':'not_calibrated'}
+                'semantic_accuracy':'not_assessed','weights':'not_calibrated','status':'building', 'output_seal': output_seal,
+                'text_policy': policy,
+                'note':'Imported documents describe corpus metadata rows under this run policy, including rows without usable text. Publication requires keyword indexes and integrity acceptance.'}
         dump(Path(db_path).parent/(run_id+'_import.json'),report)
         return report
+    except Exception as exc:
+        if generation is not None:
+            fail_component(db, run_id, 'import', generation, exc)
+        raise
     finally:
         db.close()
 

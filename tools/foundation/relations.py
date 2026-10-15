@@ -18,7 +18,7 @@ import collections
 import csv
 import json
 from pathlib import Path
-from common import ROOT, DEFAULT_DB, connect
+from common import ROOT, DEFAULT_DB, connect, rows, resolve_artifact
 
 csv.field_size_limit(10**9)
 
@@ -33,26 +33,26 @@ def label(run_dir, db_path=DEFAULT_DB):
             run_id TEXT NOT NULL, source_decision TEXT NOT NULL, resolved_cited_case TEXT NOT NULL,
             relation_type TEXT NOT NULL, PRIMARY KEY(run_id,source_decision,resolved_cited_case))''')
         own = collections.defaultdict(set)          # merge_key -> {decision ids that printed it}
-        have_own = own_file.exists()
+        have_own = own_file.exists() or Path(str(own_file)+'.gz').exists()
         if have_own:
-            for r in csv.DictReader(own_file.open(encoding='utf-8', newline='')):
+            for r in rows(own_file):
                 own[r['merge_key']].add(r['decision_id'])
         keys_of = collections.defaultdict(set)      # group -> merge keys
         for g, mk in db.execute('SELECT DISTINCT merged_group_id,merge_key FROM members WHERE run_id=?', (run_id,)):
             keys_of[g].add(mk)
         counts = collections.Counter()
-        rows = []
+        records = []
         for s, g in db.execute('SELECT source_decision,resolved_cited_case FROM citation_edges WHERE run_id=?', (run_id,)):
             if not have_own:
                 t = 'unknown'
             else:
                 t = 'same_case_history' if any(s in own.get(k, ()) for k in keys_of[g]) else 'other_judgment'
             counts[t] += 1
-            rows.append((run_id, s, g, t))
+            records.append((run_id, s, g, t))
         with db:
             db.execute('DELETE FROM edge_relations WHERE run_id=?', (run_id,))
-            db.executemany('INSERT INTO edge_relations VALUES(?,?,?,?)', rows)
-        return {'run_id': run_id, 'edges': len(rows), 'by_relation': dict(counts), 'own_citations_file': have_own}
+            db.executemany('INSERT INTO edge_relations VALUES(?,?,?,?)', records)
+        return {'run_id': run_id, 'edges': len(records), 'by_relation': dict(counts), 'own_citations_file': have_own}
     finally:
         db.close()
 
