@@ -1,4 +1,4 @@
-"""Offline identity queue, stratified review samples, manual labels and evaluation."""
+"""Offline identity queue, stratified samples, human/model labels and evaluation."""
 import argparse
 import json
 from pathlib import Path
@@ -78,6 +78,7 @@ def main(argv=None):
                 write_bounded_json(target, result, inputs=[args.samples, args.labels])
             summary = {k: result[k] for k in ('schema', 'run_id', 'frame_id', 'rows',
                        'sampled_records', 'labelled_records', 'frame_N', 'sampled_n', 'labelled_n',
+                       'label_method', 'label_counts_by_method', 'manual_reviewed_n', 'model_reviewed_n',
                        'population_calibration_status') if k in result}
             summary['output'] = str(Path(args.output).resolve())
             print(json.dumps(summary, ensure_ascii=False))

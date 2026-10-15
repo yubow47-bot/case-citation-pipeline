@@ -1,4 +1,4 @@
-"""Bounded manual review labels and descriptive, separate train/holdout evaluation.
+"""Bounded human/model review labels and descriptive train/holdout evaluation.
 
 All rates describe the labelled, verifiable subset. No function publishes population accuracy,
 updates DD or writes calibration weights. Labels bind to an immutable sample record hash.
@@ -29,9 +29,12 @@ ENUMS = {
                        'procedural', 'mentioned', 'unknown', 'unverifiable'),
     'origin': ('correct', 'incorrect', 'unknown', 'unverifiable'),
 }
-MANUAL_FIELDS = tuple(ENUMS) + ('origin_country', 'annotator', 'label_method', 'notes', 'annotated_at')
+LABEL_METHODS = ('manual', 'model')
+LABEL_FIELDS = tuple(ENUMS) + ('origin_country', 'annotator', 'label_method', 'notes', 'annotated_at')
+# Keep the existing CSV/template API compatible for saved manual review sheets.
+MANUAL_FIELDS = LABEL_FIELDS
 IDENTITY_FIELDS = ('sample_id', 'record_hash', 'run_id', 'frame_id', 'cell_id', 'fold')
-CSV_FIELDS = IDENTITY_FIELDS + ('source_decision', 'resolved_cited_case', 'source_locator', 'source_sha256') + MANUAL_FIELDS
+CSV_FIELDS = IDENTITY_FIELDS + ('source_decision', 'resolved_cited_case', 'source_locator', 'source_sha256') + LABEL_FIELDS
 MAX_ROWS = 10000
 MAX_CELL_TEXT = 16384
 SHA256 = re.compile(r'^[0-9a-f]{64}$')
@@ -153,19 +156,20 @@ def template(samples_path, out_csv):
     writer = csv.DictWriter(content, fieldnames=CSV_FIELDS)
     writer.writeheader()
     for rec in samples['records']:
-        writer.writerow(dict(_csv_identity(rec), **{key: '' for key in MANUAL_FIELDS}))
+        writer.writerow(dict(_csv_identity(rec), **{key: '' for key in LABEL_FIELDS}))
     _atomic_csv(output, content.getvalue().encode('utf-8'))
     return {'schema': 'quality_label_template_v1', 'run_id': samples['run_id'], 'frame_id': samples['frame_id'],
             'samples_hash': canonical_hash(samples), 'rows': len(by_id), 'path': str(output),
-            'label_method_required': 'manual', 'manual_columns': list(MANUAL_FIELDS)}
+            'label_methods_allowed': list(LABEL_METHODS), 'label_columns': list(LABEL_FIELDS),
+            'manual_columns': list(MANUAL_FIELDS)}
 
 
-def _validate_manual(row, rec):
+def _validate_label(row, rec):
     label = {}
-    for key in MANUAL_FIELDS:
+    for key in LABEL_FIELDS:
         value = row.get(key) or ''
         if not isinstance(value, str):
-            raise ValueError('Manual labels must be text: ' + key)
+            raise ValueError('Review labels must be text: ' + key)
         label[key] = value.strip()
     for key, value in label.items():
         if len(value) > MAX_CELL_TEXT or '\x00' in value:
@@ -177,13 +181,27 @@ def _validate_manual(row, rec):
         raise ValueError('origin_country requires an origin assessment')
     if not any(label[key] for key in ENUMS):
         return None
-    if not label['annotator'] or label['label_method'] != 'manual':
-        raise ValueError('Labels require a named annotator and label_method=manual')
+    if not label['annotator']:
+        raise ValueError('Labels require a named annotator (human name or model identity)')
+    if label['label_method'] not in LABEL_METHODS:
+        raise ValueError('Labels require label_method=manual or model')
+    if label['label_method'] == 'model' and not label['notes']:
+        raise ValueError('Model labels require notes with a rationale and evidence references')
     try:
         datetime.datetime.fromisoformat(label['annotated_at'].replace('Z', '+00:00'))
     except (TypeError, ValueError):
         raise ValueError('Labels require ISO annotated_at') from None
     return dict(sample_id=rec['sample_id'], record_hash=rec['record_hash'], **label)
+
+
+def _method_counts(labels):
+    counts = Counter(row['label_method'] for row in labels)
+    return {method: counts[method] for method in LABEL_METHODS}
+
+
+def _method_name(counts):
+    present = [method for method, count in counts.items() if count]
+    return present[0] if len(present) == 1 else 'mixed' if present else 'manual'
 
 
 def import_labels(samples_path, labels_csv, out_json):
@@ -196,7 +214,7 @@ def import_labels(samples_path, labels_csv, out_json):
     with labels_csv.open(encoding='utf-8-sig', newline='') as stream:
         reader = csv.DictReader(stream, strict=True)
         fields = reader.fieldnames or []
-        if len(fields) != len(set(fields)) or set(('sample_id', 'record_hash') + MANUAL_FIELDS) - set(fields):
+        if len(fields) != len(set(fields)) or set(('sample_id', 'record_hash') + LABEL_FIELDS) - set(fields):
             raise ValueError('Label CSV has missing or duplicate columns')
         for row in reader:
             rows_seen += 1
@@ -211,13 +229,15 @@ def import_labels(samples_path, labels_csv, out_json):
             for key in identity:
                 if key in row and row[key] != identity[key]:
                     raise ValueError('Label/sample identity mismatch: %s/%s' % (sid, key))
-            label = _validate_manual(row, rec)
+            label = _validate_label(row, rec)
             if label:
                 label['label_hash'] = canonical_hash(label)
                 labels.append(label)
+    method_counts = _method_counts(labels)
     payload = {'schema': 'quality_labels_v1', 'run_id': samples['run_id'], 'frame_id': samples['frame_id'],
                'samples_hash': canonical_hash(samples), 'source_labels_sha256': hashlib.sha256(labels_csv.read_bytes()).hexdigest(),
-               'imported_at': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'label_method': 'manual',
+               'imported_at': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+               'label_method': _method_name(method_counts), 'label_counts_by_method': method_counts,
                'sampled_records': len(by_id), 'csv_rows': rows_seen, 'labelled_records': len(labels), 'records': labels}
     payload['content_hash'] = canonical_hash(payload)
     write_bounded_json(output, payload, inputs=(samples_path, labels_csv))
@@ -234,8 +254,8 @@ def _load_labels(value, samples, by_id):
         raise ValueError('Labels no longer match the sampling frame')
     if canonical_hash({k: v for k, v in labels.items() if k != 'content_hash'}) != labels.get('content_hash'):
         raise ValueError('Imported label document hash mismatch')
-    if labels.get('label_method') != 'manual' or not isinstance(labels.get('records'), list):
-        raise ValueError('Only imported manual labels may be evaluated')
+    if labels.get('label_method') not in (*LABEL_METHODS, 'mixed') or not isinstance(labels.get('records'), list):
+        raise ValueError('Only imported manual/model labels may be evaluated')
     by_label = {}
     for row in labels['records']:
         if not isinstance(row, dict):
@@ -245,9 +265,14 @@ def _load_labels(value, samples, by_id):
             raise ValueError('Duplicate, unexpected or changed sample label: ' + str(sid))
         if canonical_hash({k: v for k, v in row.items() if k != 'label_hash'}) != row.get('label_hash'):
             raise ValueError('Imported label record hash mismatch: ' + sid)
-        if _validate_manual(row, by_id[sid]) is None:
+        if _validate_label(row, by_id[sid]) is None:
             raise ValueError('Imported label record is wholly unlabelled: ' + sid)
         by_label[sid] = row
+    method_counts = _method_counts(by_label.values())
+    if labels['label_method'] != _method_name(method_counts):
+        raise ValueError('Imported label method disagrees with its records')
+    if 'label_counts_by_method' in labels and labels['label_counts_by_method'] != method_counts:
+        raise ValueError('Imported label method counts disagree with its records')
     return labels, by_label
 
 
@@ -255,8 +280,53 @@ def _ratio(num, den):
     return num/den if den else None
 
 
+def _joint_edge_validity(records, labels, method):
+    counts, weights = Counter(), Counter()
+    for rec in records:
+        row = labels.get(rec['sample_id'], {})
+        mention, identity = row.get('case_mention'), row.get('judgment_identity')
+        if mention == 'no' or identity == 'incorrect':
+            category = 'incorrect'
+        elif mention == 'yes' and identity == 'correct':
+            category = 'correct'
+        elif 'unverifiable' in (mention, identity):
+            category = 'unverifiable'
+        elif 'unknown' in (mention, identity):
+            category = 'unknown'
+        else:
+            category = 'unlabelled'
+        counts[category] += 1
+        weights[category] += 1/rec['pi']
+    total_n, total_weight = len(records), sum(weights.values())
+    verified_n = counts['correct'] + counts['incorrect']
+    verified_weight = weights['correct'] + weights['incorrect']
+    unresolved_n, unresolved_weight = total_n - verified_n, total_weight - verified_weight
+    allowed = method != 'mixed'
+    return {
+        'rule': 'correct if case_mention=yes AND judgment_identity=correct; incorrect if case_mention=no OR judgment_identity=incorrect; otherwise unresolved',
+        'sampled_n': total_n, 'correct_n': counts['correct'], 'incorrect_n': counts['incorrect'],
+        'unknown_n': counts['unknown'], 'unverifiable_n': counts['unverifiable'],
+        'unlabelled_n': counts['unlabelled'], 'verified_n': verified_n, 'unresolved_n': unresolved_n,
+        'categories': {category: {'n': counts[category], 'inverse_pi_weight': weights[category]}
+                       for category in ('correct', 'incorrect', 'unknown', 'unverifiable', 'unlabelled')},
+        'sample_verified_coverage': _ratio(verified_n, total_n),
+        'inverse_pi_verified_coverage': _ratio(verified_weight, total_weight),
+        'raw_verified_rate': _ratio(counts['correct'], verified_n) if allowed else None,
+        'weighted_verified_rate': _ratio(weights['correct'], verified_weight) if allowed else None,
+        'sample_correct_fraction_bounds': {
+            'lower': _ratio(counts['correct'], total_n) if allowed else None,
+            'upper': _ratio(counts['correct'] + unresolved_n, total_n) if allowed else None},
+        'inverse_pi_correct_fraction_bounds': {
+            'lower': _ratio(weights['correct'], total_weight) if allowed else None,
+            'upper': _ratio(weights['correct'] + unresolved_weight, total_weight) if allowed else None},
+        'bounds_scope': 'Unresolved sampled records assigned incorrect/correct; not population bounds or confidence intervals',
+        'rate_scope': 'labelled_verifiable_subset_only' if allowed else 'mixed_review_methods_no_pooled_rate'}
+
+
 def _fold(records, labels):
     total_weight = sum(1/rec['pi'] for rec in records)
+    method_counts = _method_counts(labels[rec['sample_id']] for rec in records if rec['sample_id'] in labels)
+    method = _method_name(method_counts) if any(method_counts.values()) else 'unlabelled'
     dimensions = {}
     for key, categories in ENUMS.items():
         counts, weights = Counter(), Counter()
@@ -283,12 +353,16 @@ def _fold(records, labels):
             detail['inverse_pi_labelled_category_shares'] = {category: _ratio(weights[category], labelled_weight) for category in categories}
         else:
             good = 'yes' if key == 'case_mention' else 'correct'
-            detail['raw_verified_rate'] = _ratio(counts[good], verified_n)
-            detail['weighted_verified_rate'] = _ratio(weights[good], verified_weight)
+            detail['raw_verified_rate'] = _ratio(counts[good], verified_n) if method != 'mixed' else None
+            detail['weighted_verified_rate'] = _ratio(weights[good], verified_weight) if method != 'mixed' else None
+            if method == 'mixed':
+                detail['rate_scope'] = 'mixed_review_methods_no_pooled_rate'
         dimensions[key] = detail
     reviewed = sum(rec['sample_id'] in labels for rec in records)
     return {'sampled_n': len(records), 'reviewed_rows': reviewed, 'row_label_completion': _ratio(reviewed, len(records)),
-            'inverse_pi_sample_weight': total_weight, 'dimensions': dimensions}
+            'inverse_pi_sample_weight': total_weight, 'label_method': method,
+            'label_counts_by_method': method_counts, 'dimensions': dimensions,
+            'joint_edge_validity': _joint_edge_validity(records, labels, method)}
 
 
 def evaluate(samples_path, labels_json):
@@ -297,9 +371,21 @@ def evaluate(samples_path, labels_json):
     folds = {fold: _fold([rec for rec in samples['records'] if rec['fold'] == fold], by_label)
              for fold in ('train', 'holdout')}
     overall = _fold(samples['records'], by_label)
+    by_method = {}
+    for method in LABEL_METHODS:
+        method_labels = {sid: row for sid, row in by_label.items() if row['label_method'] == method}
+        by_method[method] = {
+            'label_method': method, 'labelled_n': len(method_labels),
+            'sample_coverage': _fold(samples['records'], method_labels),
+            'folds': {fold: _fold([rec for rec in samples['records'] if rec['fold'] == fold], method_labels)
+                      for fold in ('train', 'holdout')}}
     complete = all(d['verified_n'] == d['sampled_n'] for d in overall['dimensions'].values()) and bool(by_id)
     warnings = ['Rates describe the labelled, verifiable subset and are not population calibration.',
                 'Train and holdout are reported separately; treatment roles are descriptive categories.']
+    if by_method['model']['labelled_n']:
+        warnings.append('Model-reviewed precision is based on model assessments, not independent human validation or ground truth.')
+    if overall['label_method'] == 'mixed':
+        warnings.append('Mixed human/model correctness rates are suppressed; use by_label_method for separate rates and full-frame coverage.')
     if not complete:
         warnings.append('Incomplete or unresolved labels prevent population accuracy claims; retain the full sampled-frame coverage denominator.')
     if not folds['holdout']['sampled_n']:
@@ -307,6 +393,9 @@ def evaluate(samples_path, labels_json):
     return {'schema': 'quality_evaluation_v1', 'run_id': samples['run_id'], 'frame_id': samples['frame_id'],
             'samples_hash': canonical_hash(samples), 'labels_hash': label_document['content_hash'],
             'frame_N': samples['frame_N'], 'sampled_n': len(by_id), 'labelled_n': len(by_label),
+            'label_method': overall['label_method'], 'label_counts_by_method': overall['label_counts_by_method'],
+            'manual_reviewed_n': by_method['manual']['labelled_n'], 'model_reviewed_n': by_method['model']['labelled_n'],
+            'by_label_method': by_method,
             'cells': samples['cells'], 'weighting': 'inverse_inclusion_probability_1_over_pi',
             'folds': folds, 'sample_coverage': overall, 'all_dimensions_verified': complete,
             'population_calibration_status': 'not_calibrated', 'population_inference_allowed': False,

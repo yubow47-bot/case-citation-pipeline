@@ -255,6 +255,32 @@ class StatusTests(unittest.TestCase):
         self.assertEqual(quality["manual_accuracy"], "not_assessed")
         self.assertEqual(quality["packets"][2]["declared_population_calibration_status"], "not_calibrated")
 
+    def test_declared_model_review_provenance_does_not_change_database_manual_counts(self):
+        primary = self.quality_package()
+        label_path = self.root / primary["labels"]
+        labels = json.loads(label_path.read_text(encoding="utf-8"))
+        labels.update(label_method="model", labelled_records=1,
+                      label_counts_by_method={"manual": 0, "model": 1},
+                      records=[{"sample_id": "fixture-model-assessment", "label_method": "model"}])
+        labels["content_hash"] = project_status.metadata_hash({k: v for k, v in labels.items() if k != "content_hash"})
+        label_path.write_text(json.dumps(labels), encoding="utf-8")
+        evaluation_path = self.root / primary["evaluation"]
+        evaluation = json.loads(evaluation_path.read_text(encoding="utf-8"))
+        evaluation.update(label_method="model", labelled_n=1, manual_reviewed_n=0, model_reviewed_n=1,
+                          label_counts_by_method={"manual": 0, "model": 1}, labels_hash=labels["content_hash"])
+        evaluation_path.write_text(json.dumps(evaluation), encoding="utf-8")
+        self.pointer(quality=primary)
+        report = self.report()
+        quality = report["declared_manual_review"]
+        self.assertEqual(quality["binding_status"], "matches_declared_metadata")
+        label_summary = next(p for p in quality["packets"] if p["kind"] == "labels")
+        self.assertEqual(label_summary["declared_label_method"], "model")
+        self.assertEqual(label_summary["declared_label_counts_by_method"], {"manual": 0, "model": 1})
+        evaluation_summary = next(p for p in quality["packets"] if p["kind"] == "evaluation")
+        self.assertEqual(evaluation_summary["declared_manual_reviewed_n"], 0)
+        self.assertEqual(evaluation_summary["declared_model_reviewed_n"], 1)
+        self.assertEqual(report["database"]["runs"][0]["manual_calibration"]["linked_label_records"], 0)
+
     def test_stale_sample_or_labels_metadata_is_attention(self):
         primary = self.quality_package()
         self.pointer(quality=primary)

@@ -1,4 +1,4 @@
-"""Tiny offline fixtures for hash-bound manual labels, coverage and sampling weights."""
+"""Offline fixtures for hash-bound human/model labels, coverage and weights."""
 import copy
 import csv
 import json
@@ -59,6 +59,12 @@ class LabelsTests(unittest.TestCase):
                    annotated_at='2026-10-14T12:00:00-04:00', notes='Checked cited text')
         return row
 
+    def model(self, row, **dimensions):
+        row.update(dimensions, annotator='gpt-review-fixture', label_method='model',
+                   annotated_at='2026-10-15T12:00:00-04:00',
+                   notes='Checked original source span and target member citations; fixture evidence a1')
+        return row
+
     def imported(self, rows):
         self.write_csv(rows)
         return labels.import_labels(self.samples_path, self.csv_path, self.output_path)
@@ -73,9 +79,12 @@ class LabelsTests(unittest.TestCase):
         result = self.imported(self.read_csv())
         self.assertEqual(result['labelled_records'], 0)
         evaluation = labels.evaluate(self.samples_path, self.output_path)
+        self.assertEqual(evaluation['label_method'], 'unlabelled')
         self.assertFalse(evaluation['population_inference_allowed'])
         self.assertFalse(evaluation['dd_or_weight_updates'])
         self.assertEqual(evaluation['population_calibration_status'], 'not_calibrated')
+        self.assertEqual(evaluation['sample_coverage']['joint_edge_validity']['unlabelled_n'], 4)
+        self.assertIsNone(evaluation['sample_coverage']['joint_edge_validity']['raw_verified_rate'])
         for fold in evaluation['folds'].values():
             self.assertEqual(fold['sampled_n'], 2)
             self.assertIsNone(fold['dimensions']['case_mention']['raw_verified_rate'])
@@ -111,19 +120,142 @@ class LabelsTests(unittest.TestCase):
         self.assertEqual(dims['origin']['unverifiable_n'], 1)
         self.assertIsNone(dims['origin']['weighted_verified_rate'])
 
-    def test_partial_dimension_requires_manual_provenance(self):
+    def test_partial_dimension_requires_reviewer_provenance(self):
         rows = self.read_csv()
         rows[0]['judgment_identity'] = 'correct'
         with self.assertRaisesRegex(ValueError, 'annotator'):
             self.imported(rows)
         self.assertFalse(self.output_path.exists())
 
-    def test_automated_label_method_is_rejected(self):
+    def test_explicit_model_labels_keep_provenance_and_weighted_partial_coverage(self):
+        rows = self.read_csv()
+        self.model(rows[0], case_mention='yes', judgment_identity='correct', treatment_role='mentioned')
+        self.model(rows[1], case_mention='unverifiable', judgment_identity='unknown')
+        self.model(rows[2], case_mention='no', judgment_identity='incorrect')
+        document = self.imported(rows)
+        self.assertEqual(document['label_method'], 'model')
+        self.assertEqual(document['label_counts_by_method'], {'manual': 0, 'model': 3})
+        self.assertEqual(document['records'][0]['annotator'], 'gpt-review-fixture')
+        report = labels.evaluate(self.samples_path, document)
+        self.assertEqual(report['manual_reviewed_n'], 0)
+        self.assertEqual(report['model_reviewed_n'], 3)
+        train = report['folds']['train']['dimensions']['case_mention']
+        self.assertEqual(train['raw_verified_rate'], .5)
+        self.assertAlmostEqual(train['weighted_verified_rate'], 50/51)
+        holdout = report['by_label_method']['model']['folds']['holdout']['dimensions']['case_mention']
+        self.assertEqual(holdout['sampled_n'], 2)
+        self.assertEqual(holdout['unverifiable_n'], 1)
+        self.assertEqual(holdout['unlabelled_n'], 1)
+        self.assertIsNone(holdout['raw_verified_rate'])
+        human = report['by_label_method']['manual']['sample_coverage']['dimensions']['case_mention']
+        self.assertEqual(human['sampled_n'], 4)
+        self.assertEqual(human['labelled_n'], 0)
+        self.assertIsNone(human['raw_verified_rate'])
+        self.assertFalse(report['population_inference_allowed'])
+        self.assertEqual(report['population_calibration_status'], 'not_calibrated')
+        self.assertTrue(any('not independent human validation' in text for text in report['warnings']))
+
+    def test_unknown_and_blank_label_methods_are_rejected(self):
+        for method in ('', 'automatic', 'human', 'mixed'):
+            with self.subTest(method=method):
+                rows = self.read_csv()
+                self.manual(rows[0], case_mention='yes')
+                rows[0]['label_method'] = method
+                with self.assertRaisesRegex(ValueError, 'label_method'):
+                    self.imported(rows)
+
+    def test_model_labels_require_identity_timestamp_and_rationale(self):
+        for field, value, error in [('annotator', '', 'annotator'),
+                                    ('annotated_at', 'tomorrow', 'ISO'),
+                                    ('notes', '', 'rationale')]:
+            with self.subTest(field=field):
+                rows = self.read_csv()
+                self.model(rows[0], case_mention='yes')
+                rows[0][field] = value
+                with self.assertRaisesRegex(ValueError, error):
+                    self.imported(rows)
+
+    def test_mixed_review_methods_have_separate_rates_and_no_pooled_precision(self):
         rows = self.read_csv()
         self.manual(rows[0], case_mention='yes')
-        rows[0]['label_method'] = 'model'
-        with self.assertRaisesRegex(ValueError, 'manual'):
-            self.imported(rows)
+        self.model(rows[2], case_mention='no')
+        report = labels.evaluate(self.samples_path, self.imported(rows))
+        self.assertEqual(report['label_method'], 'mixed')
+        self.assertEqual(report['label_counts_by_method'], {'manual': 1, 'model': 1})
+        combined = report['sample_coverage']['dimensions']['case_mention']
+        self.assertEqual(combined['verified_n'], 2)
+        self.assertEqual(combined['sample_label_completion'], .5)
+        self.assertIsNone(combined['raw_verified_rate'])
+        self.assertIsNone(combined['weighted_verified_rate'])
+        self.assertEqual(combined['rate_scope'], 'mixed_review_methods_no_pooled_rate')
+        self.assertIsNone(report['sample_coverage']['joint_edge_validity']['raw_verified_rate'])
+        self.assertIsNone(report['sample_coverage']['joint_edge_validity']['sample_correct_fraction_bounds']['lower'])
+        self.assertIsNone(report['folds']['train']['dimensions']['case_mention']['raw_verified_rate'])
+        human = report['by_label_method']['manual']['sample_coverage']['dimensions']['case_mention']
+        model = report['by_label_method']['model']['sample_coverage']['dimensions']['case_mention']
+        self.assertEqual(human['raw_verified_rate'], 1)
+        self.assertEqual(model['weighted_verified_rate'], 0)
+        self.assertEqual(human['sampled_n'], 4)
+        self.assertEqual(model['sample_verified_coverage'], .25)
+
+    def test_joint_edge_validity_uses_each_sample_once_and_keeps_unresolved_weight(self):
+        rows = self.read_csv()
+        self.model(rows[0], case_mention='yes', judgment_identity='correct')
+        self.model(rows[1], case_mention='no', judgment_identity='unknown')
+        self.model(rows[2], case_mention='yes', judgment_identity='unverifiable')
+        self.model(rows[3], case_mention='unknown', judgment_identity='correct')
+        report = labels.evaluate(self.samples_path, self.imported(rows))
+        joint = report['sample_coverage']['joint_edge_validity']
+        self.assertEqual(joint['sampled_n'], 4)
+        self.assertEqual(joint['correct_n'], 1)
+        self.assertEqual(joint['incorrect_n'], 1)
+        self.assertEqual(joint['unknown_n'], 1)
+        self.assertEqual(joint['unverifiable_n'], 1)
+        self.assertEqual(joint['unresolved_n'], 2)
+        self.assertEqual(joint['raw_verified_rate'], .5)
+        self.assertEqual(joint['weighted_verified_rate'], .5)
+        self.assertEqual(joint['sample_verified_coverage'], .5)
+        self.assertAlmostEqual(joint['inverse_pi_verified_coverage'], 100/102)
+        self.assertEqual(joint['sample_correct_fraction_bounds'], {'lower': .25, 'upper': .75})
+        self.assertAlmostEqual(joint['inverse_pi_correct_fraction_bounds']['lower'], 50/102)
+        self.assertAlmostEqual(joint['inverse_pi_correct_fraction_bounds']['upper'], 52/102)
+        self.assertEqual(report['folds']['train']['joint_edge_validity']['raw_verified_rate'], 1)
+        self.assertEqual(report['folds']['holdout']['joint_edge_validity']['raw_verified_rate'], 0)
+        self.assertEqual(report['by_label_method']['model']['sample_coverage']['joint_edge_validity'], joint)
+
+    def test_document_review_method_and_counts_must_match_record_provenance(self):
+        rows = self.read_csv()
+        self.model(rows[0], case_mention='yes')
+        document = self.imported(rows)
+        for field, value in [('label_method', 'manual'),
+                             ('label_counts_by_method', {'manual': 1, 'model': 0})]:
+            with self.subTest(field=field):
+                altered = copy.deepcopy(document)
+                altered[field] = value
+                altered['content_hash'] = canonical_hash({k: v for k, v in altered.items() if k != 'content_hash'})
+                with self.assertRaisesRegex(ValueError, 'method'):
+                    labels.evaluate(self.samples_path, altered)
+
+    def test_legacy_manual_document_without_method_counts_remains_readable(self):
+        rows = self.read_csv()
+        self.manual(rows[0], case_mention='yes')
+        document = self.imported(rows)
+        document.pop('label_counts_by_method')
+        document['content_hash'] = canonical_hash({k: v for k, v in document.items() if k != 'content_hash'})
+        report = labels.evaluate(self.samples_path, document)
+        self.assertEqual(report['label_method'], 'manual')
+        self.assertEqual(report['manual_reviewed_n'], 1)
+        self.assertEqual(report['model_reviewed_n'], 0)
+        self.assertEqual(report['sample_coverage']['dimensions']['case_mention']['raw_verified_rate'], 1)
+
+    def test_model_labels_still_bind_to_original_run_frame_and_record_hash(self):
+        for field in ('run_id', 'frame_id', 'record_hash'):
+            with self.subTest(field=field):
+                rows = self.read_csv()
+                self.model(rows[0], case_mention='yes')
+                rows[0][field] = 'changed'
+                with self.assertRaisesRegex(ValueError, 'identity mismatch'):
+                    self.imported(rows)
 
     def test_bad_timestamp_is_rejected(self):
         rows = self.read_csv()

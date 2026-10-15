@@ -344,9 +344,15 @@ def review_package(root, declared, pointer_value, package_id):
                         summary[array + "_count"] = len(data[array])
                 for field in ("status", "label_status", "labelled", "labeled", "reviewed_count",
                               "frame_N", "sample_n", "sampled_n", "labelled_n", "labelled_records",
+                              "label_method", "manual_reviewed_n", "model_reviewed_n",
                               "population_calibration_status", "population_inference_allowed"):
                     if isinstance(data.get(field), (str, int, bool)):
                         summary["declared_" + field] = data[field]
+                method_counts = data.get("label_counts_by_method")
+                if isinstance(method_counts, dict) and set(method_counts) <= {"manual", "model"} and all(
+                        isinstance(count, int) and not isinstance(count, bool) and count >= 0
+                        for count in method_counts.values()):
+                    summary["declared_label_counts_by_method"] = method_counts
             except (OSError, ValueError) as exc:
                 summary.update(status="unreadable", error=str(exc))
         if summary["status"] in ("missing", "unreadable"):

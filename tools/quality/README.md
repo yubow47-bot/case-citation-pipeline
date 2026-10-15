@@ -55,8 +55,25 @@ dimensions independently:
 | `origin` | correct, incorrect, unknown, unverifiable |
 
 For any labeled dimension, also fill `annotator`, ISO datetime `annotated_at`
-and `label_method=manual`. Use `origin_country` for a verified country.
-Record uncertainty rather than converting machine output into a human label.
+and an explicit `label_method`:
+
+- `manual`: a human reviewer's name in `annotator`.
+- `model`: the actual model identifier in `annotator`, for example
+  `gpt-6.1-sol (max)`. `notes` must contain the individual assessment's rationale
+  and evidence references. These are model assessments, with no human review implied.
+
+The CSV columns and sample hashes are the same for both methods. A filename such
+as `manual_labels.csv` does not determine provenance; each filled row must declare
+its method. A separate `model_labels.csv` keeps a model review easy to identify.
+The import and evaluation commands do not call a model or create labels.
+
+`case_mention` assesses whether the source actually mentions a judicial case.
+`judgment_identity` assesses the specific resolved judgment, including court level,
+numbers and merged aliases. `treatment_role` describes the source's treatment of
+the target. `origin` assesses an explicit predicted country. A production
+`UNDETERMINED` origin is an abstention: use `origin=unknown`, not `correct`.
+`origin_country` may record a country evidenced during review, including on an
+unknown assessment; explain an abstention or missing evidence in `notes`.
 
 ```powershell
 python tools/quality/quality.py import-labels --samples audit/findings/quality/samples.json --labels audit/findings/quality/manual_labels.csv --output audit/findings/quality/labels.json
@@ -64,15 +81,34 @@ python tools/quality/quality.py evaluate --samples audit/findings/quality/sample
 ```
 
 Import rejects unknown/duplicate IDs, changed record hashes, invalid values and
-labels without manual provenance. Evaluation checks sample/label bindings and
+labels without reviewer provenance. Evaluation checks sample/label bindings and
 reports coverage and rates using `1/pi`, separately for train and holdout.
 Blank labels remain in the coverage denominator. Unknown and unverifiable
 answers remain separate and are excluded from correctness denominators.
 Treatment is reported as categories, not precision.
 
-Rates describe only the labeled, verifiable subset; they cannot establish
-population accuracy when labels are missing. With zero human labels, accuracy
-is null and status is `not_calibrated`. Older CanLII measurements do not validate
+The report declares `label_method`, `manual_reviewed_n`, `model_reviewed_n` and
+`label_counts_by_method`. `by_label_method.manual` and `by_label_method.model`
+each contain overall and train/holdout results, retaining the full sampled-frame
+coverage denominator. Mixed human/model correctness rates are suppressed in
+the aggregate; inspect the separate method reports.
+
+`joint_edge_validity` counts a sampled edge as correct only when
+`case_mention=yes` **and** `judgment_identity=correct`. A `no` mention or
+`incorrect` identity makes it incorrect; other combinations stay unresolved.
+Its precision is correct divided by correct plus incorrect, with a separate
+`1/pi` estimate, coverage, and unknown/unverifiable/unlabeled counts. It does not
+multiply marginal rates. Each sampled edge has one weight, regardless of its
+number of mentions or group members. The optional correct-fraction bounds assign
+all unresolved sampled edges to incorrect/correct; they are sample bounds,
+not population confidence intervals.
+
+Rates describe only the reviewed, verifiable subset. Model-reviewed precision
+is an estimate based on model assessments, not independent human validation or
+ground truth. A fixed holdout fold alone does not make a review independent or
+blinded. With zero labels of either type, precision is null. Population
+calibration remains `not_calibrated`, population inference stays disabled, and
+no DD or confidence weights change. Older CanLII measurements do not validate
 a new run's identities, treatment or origin.
 
 ## French supplement
