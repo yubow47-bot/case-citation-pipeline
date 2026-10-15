@@ -62,7 +62,8 @@ SHAPE_ORDER = list(shapes.SHAPE_ORDER)
 FALLBACK_SHAPE = "shape_paren_year_abbr_page"
 
 
-COLUMNS = ["citation_en", "document_date_en", "unofficial_text_en"]   # §7.5
+from corpus_fields import POLICY_EN, POLICIES, projection, select_record
+COLUMNS = ["citation_en", "document_date_en", "unofficial_text_en"]   # Legacy policy
 COURTS = tuple(c for c in os.environ.get("PIPELINE_COURTS", "SCC,ONCA,BCCA").split(",") if c)  # 2026-09-18 用户裁定 BCCA 并入主线语料范围；PIPELINE_COURTS 仍可覆盖（临时/实验用）
 
 # 规格 §7.3 输出字段（封版顺序）
@@ -462,7 +463,7 @@ CAND_LIMIT = 20000
 
 
 def run_corpus(court, out_root, batch_size=500, year_from=None,
-               limit_batches=None, corpus_dir=None):
+               limit_batches=None, corpus_dir=None, text_policy=POLICY_EN):
     """单语料分批抽取（§7.7）。续跑：读 progress.json 从 last_batch+1 开始；
     目标批次文件已存在则覆盖重跑（上次写了文件未更新进度的情形）。
 
@@ -474,19 +475,24 @@ def run_corpus(court, out_root, batch_size=500, year_from=None,
     last_done = -1
     if os.path.exists(prog_path):
         with open(prog_path, encoding="utf-8") as f:
-            last_done = json.load(f).get("last_batch", -1)
+            progress = json.load(f)
+            last_done = progress.get("last_batch", -1)
+            if progress.get('text_policy', POLICY_EN) != text_policy:
+                raise ValueError('Cannot resume extraction with another text_policy')
 
     stats = {"court": court, "docs_total": 0, "docs_extracted": 0,
              "raw_rows": 0, "kept_rows": 0, "superseded_rows": 0,
              "candidates": 0, "candidates_flagged_cross_boundary": 0,
              "candidates_blocked_by_boundary_guard": 0,
-             "per_shape_kept": {}, "batches": 0}
+             "per_shape_kept": {}, "batches": 0, "text_policy": text_policy,
+             "docs_by_language": {"en": 0, "fr": 0}, "docs_without_text": 0}
     pf = pq.ParquetFile(os.path.join(corpus_dir or os.path.join(ROOT, "corpus"),
                                      court + ".parquet"))
     t0 = time.perf_counter()
     idx = -1
     doc_index = -1
-    for batch in pf.iter_batches(batch_size=batch_size, columns=COLUMNS):
+    columns = projection(pf.schema_arrow.names)
+    for batch in pf.iter_batches(batch_size=batch_size, columns=columns):
         idx += 1
         if limit_batches is not None and idx >= limit_batches:
             break
@@ -497,16 +503,21 @@ def run_corpus(court, out_root, batch_size=500, year_from=None,
         d = batch.to_pydict()
         rows_out = []
         cands_out = []
-        for cite, date, text in zip(d["citation_en"], d["document_date_en"],
-                                    d["unofficial_text_en"]):
+        for j in range(batch.num_rows):
+            selected = select_record({field: d[field][j] for field in columns}, text_policy)
+            cite, date, text = selected['citation'], selected['date'], selected['text']
             doc_index += 1
             stats["docs_total"] += 1
             if not text:
+                stats['docs_without_text'] += 1
                 continue
+            if not cite.strip():
+                raise ValueError('Source text has no source citation: %s row %d' % (court,doc_index))
             year = decision_year(date)
             if year_from and year and int(year) < year_from:
                 continue                                    # §7.6 显式过滤
             stats["docs_extracted"] += 1
+            stats['docs_by_language'][selected['language']] += 1
             kept, superseded = process_text(
                 text, source_decision_citation(court, cite), year, stats=stats)
             stats["raw_rows"] += len(kept) + len(superseded)
@@ -537,13 +548,13 @@ def run_corpus(court, out_root, batch_size=500, year_from=None,
         write_batch(batch_path(run_dir, idx), rows_out)
         write_batch(cand_batch_path(run_dir, idx), cands_out, schema=CAND_SCHEMA)
         stats["batches"] = idx + 1
-        _atomic_write_json(prog_path, {"last_batch": idx})   # 后写进度（§7.7）
+        _atomic_write_json(prog_path, {"last_batch": idx, "text_policy": text_policy})
     stats["wall_s"] = round(time.perf_counter() - t0, 1)
     return stats
 
 
 # --------------------------------------------------------------------- merge
-def merge(out_root, courts=COURTS):
+def merge(out_root, courts=COURTS, text_policy=None):
     """全部批次 → extracted.csv（kept）+ extracted_superseded.csv（败者）
     + candidates.csv（candidates-2.0 全候选，两语料合流）。
     流式逐批读写；kept/superseded 按 superseded_by 列拆分。返回计数（供 manifest）。"""
@@ -570,6 +581,11 @@ def merge(out_root, courts=COURTS):
             run_dir = os.path.join(out_root, court)
             if not os.path.isdir(run_dir):
                 continue
+            progress_path = os.path.join(run_dir, 'progress.json')
+            if text_policy is not None and os.path.exists(progress_path):
+                with open(progress_path, encoding='utf-8') as progress_file:
+                    if json.load(progress_file).get('text_policy', POLICY_EN) != text_policy:
+                        raise ValueError('Cannot merge batches from another text_policy')
             names = sorted(n for n in os.listdir(run_dir)
                            if re.fullmatch(r"batch_\d{4}\.csv", n))
             bc = counts["by_court"].setdefault(
@@ -645,6 +661,7 @@ def write_manifest(out_root, run_stats, merge_counts, args):
         "params": {"batch_size": args.batch_size,
                    "year_from": args.year_from,
                    "limit_batches": args.limit_batches,
+                   "text_policy": getattr(args, 'text_policy', POLICY_EN),
                    "courts": args.corpus},
         "corpus": {c: {"sha256": sha256_file(
             os.path.join(getattr(args, "corpus_dir", None)
@@ -708,6 +725,8 @@ def main():
                     help="显式判决年份下限（§7.6：默认不设）")
     ap.add_argument("--limit-batches", type=int, default=None,
                     help="只跑每语料前 N 批（烟雾测试用）")
+    ap.add_argument('--text-policy', choices=POLICIES, default=POLICY_EN,
+                    help='english_only keeps historical scope; en_then_fr falls back only when English is absent')
     ap.add_argument("--merge", action="store_true", help="只做合并")
     ap.add_argument("--fixture-check", action="store_true")
     args = ap.parse_args()
@@ -720,11 +739,11 @@ def main():
     os.makedirs(args.out, exist_ok=True)
     if not args.merge:
         run_stats = [run_corpus(c, args.out, args.batch_size, args.year_from,
-                                args.limit_batches, args.corpus_dir)
+                                args.limit_batches, args.corpus_dir, args.text_policy)
                      for c in args.corpus]
     else:
         run_stats = []
-    merge_counts = merge(args.out, args.corpus)
+    merge_counts = merge(args.out, args.corpus, args.text_policy)
     manifest = write_manifest(args.out, run_stats, merge_counts, args)
     print(json.dumps({"run": run_stats, "merge": merge_counts,
                       "manifest": os.path.join(args.out, "manifest.json")},
