@@ -4,6 +4,9 @@
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Corpus: a2aj/canadian-case-law](https://img.shields.io/badge/corpus-a2aj%2Fcanadian--case--law-yellow)](https://huggingface.co/datasets/a2aj/canadian-case-law)
+
+Version **v1.1.0**. See [what changed](CHANGELOG.md). The earlier `v1.0.0` tag remains available.
+
 Courts cite earlier cases in many different ways. This project finds those citations, groups references to the same case, and counts how many different judgments cite it. Each counted link can be checked against a passage in the source judgment.
 
 The current dataset covers the Supreme Court of Canada (SCC), the Court of Appeal for Ontario (ONCA), and the Court of Appeal for British Columbia (BCCA). The judgment text comes from the public [a2aj Canadian case law dataset](https://huggingface.co/datasets/a2aj/canadian-case-law).
@@ -12,7 +15,7 @@ The current dataset covers the Supreme Court of Canada (SCC), the Court of Appea
 | --- | --- |
 | What problem does it solve? | One case can have a court citation, several law-report references, and different names. These need to be linked before counting. |
 | What does it produce? | Citation tables, case groups, counts, source passages, and local search tools. |
-| How accurate is it? | The historical audit of **run_20261002_tables2 (2026-10-02 run)** estimated **87.0% real case-citation links overall**, **98.9% at DD 5–9**, and **100% at DD 10+**. See the [exact T6 audit](audit/findings/canlii_crosscheck/run_20261002_tables2/t6_calibration.md) and sample sizes below. These figures do **not** validate the current run's accuracy. |
+| How accurate is it? | A [2026-10-15 model review of 270 links](audit/findings/quality_model_review_20261015/README.md) found **93.9% case mentions** and **90.9% valid case-and-identity links**, weighted among records the model could decide. Those decisions cover **95.3%** and **77.1%** of sample weight, respectively; these are not full-pipeline accuracy scores. The separate historical [T6 CanLII audit](audit/findings/canlii_crosscheck/run_20261002_tables2/t6_calibration.md), for **run_20261002_tables2 (2026-10-02)**, estimated **87.0% real case-citation links overall**, **98.9% at DD 5–9**, and **100% at DD 10+**. |
 
 A citation means that a judgment mentions a case. It does not by itself mean that the court approved, followed, or relied on that case. This is research data, not legal advice. Read [the counting and usage guide](docs/USAGE.md) before quoting a result.
 
@@ -149,7 +152,20 @@ The [research tool](tools/research/README.md) saves the query, parameters, count
 
 ## How well it works
 
-These are **historical results for run_20261002_tables2**, the run dated **2026-10-02**. They have not been repeated as a precision estimate for the current run.
+### Current source-text model review
+
+On 2026-10-15, a model assessed all **270 links** in a fixed sample from `run_20261015_identity_review`. It read source evidence and checked both whether a case was mentioned and whether the link pointed to the right judgment.
+
+| Question | Model decisions | Weighted score among decided records | Share of sample weight decided |
+| --- | --- | ---: | ---: |
+| Does the source mention a case? | 265 yes, 3 no, 2 unknown | 93.9% | 95.3% |
+| Is it a case mention linked to the right judgment? | 118 correct, 18 incorrect, 134 unknown | 90.9% | 77.1% |
+
+Weights account for different chances of selection. Unknowns count as neither correct nor incorrect, so the scores describe only the records the model could decide. In particular, **90.9% is not an accuracy estimate for the whole pipeline**. All 270 records received model assessments; none received manual labels in this review. The recorded model was `gpt-6.1-sol`, with 77 assessments at Max and 193 at Medium reasoning effort. See the [review results, raw rates, and reproducible commands](audit/findings/quality_model_review_20261015/README.md).
+
+### Historical CanLII comparison
+
+These are **historical results for run_20261002_tables2**, the run dated **2026-10-02**. The current model review uses a different method and evidence; the two sets of scores are not directly comparable.
 
 The [T6 audit](audit/findings/canlii_crosscheck/run_20261002_tables2/t6_calibration.md) checked **215 links** by reading source text. The links were sampled within a comparison set of **360 judgments** across three courts and three time periods per court. Results were weighted by the number of links in each sampling category; they are not simple percentages of the sample.
 
@@ -213,7 +229,7 @@ The last command needs a completed pipeline run for comparison. The full step or
 ## Next steps
 
 - Repeat the citation audit on the current run.
-- Measure case-identity accuracy and calibrate the DD cut-off.
+- Improve coverage of unresolved case identities and calibrate the DD cut-off.
 - Review unresolved citation styles and expand court coverage.
 - Evaluate optional vector search and answers with source references.
 

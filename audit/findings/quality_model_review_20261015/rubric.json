@@ -1,0 +1,38 @@
+{
+  "schema": "model_review_rubric_v1",
+  "version": "source-edge-and-group-v1",
+  "reviewer_type": "model",
+  "configured_model": "gpt-6.1-sol",
+  "reasoning_effort": "max",
+  "run_id": "run_20261015_identity_review",
+  "sample_path": "audit/findings/quality_20261015/samples.json",
+  "unit": "One sampled source-judgment to resolved-judgment-group edge; review every counted occurrence and distinct identity-bearing member supplied in the packet.",
+  "case_mention": {
+    "yes": "At least one counted original passage genuinely refers to a judgment, regardless of agreement.",
+    "no": "The counted passages refer only to nonjudgment material or extraction lookalikes.",
+    "unknown": "Readable source does not settle whether the authority is a judgment.",
+    "unverifiable": "Necessary source evidence is missing, corrupt or inaccessible."
+  },
+  "judgment_identity": {
+    "correct": "The actual cited judgment matches the target group and every distinct identity-bearing group member is supported as that same judgment by native original/header evidence, explicit printed parallel citations, or exact complete citation identity with documented normalization and an auditable equivalence chain.",
+    "incorrect": "Positive evidence establishes the wrong authority or a group combining distinct judgments, including verified different court levels.",
+    "unknown": "Readable evidence does not establish the target identity or equivalence of group members. Mere group membership, similar names or production identity status are insufficient; multiple members alone are not a fault.",
+    "unverifiable": "Necessary identity evidence is missing, corrupt or inaccessible."
+  },
+  "treatment_role": "Assess the current source judgment context across all counted occurrences. Use supportive/applied/distinguished/criticized/overruled/procedural/mentioned; use unknown for unresolved or incompatible roles and record each role in notes. Do not turn quoted or reported conduct into the current court stance.",
+  "origin": "Assess the pipeline country claim against explicit source/native evidence. UNDETERMINED is an abstention, labelled unknown rather than correct. A source court country does not establish target country; reporter publication country alone is insufficient. Record an explicitly established country separately if available.",
+  "joint_edge_validity": "Correct only when case_mention=yes AND judgment_identity=correct; incorrect when case_mention=no OR judgment_identity=incorrect; other rows remain unknown/unverifiable.",
+  "reporting": "Raw and inverse-pi weighted rates among decidable sample records, paired with decisive coverage over the entire fixed sample. Keep original train/holdout and separate dimensions. No pooled human/model precision, independent-human-validation claim, numerical model confidence, or population-calibration claim.",
+  "required_row_provenance": [
+    "sample_id",
+    "record_hash",
+    "packet_record_sha256",
+    "rubric_version",
+    "annotator/configured model",
+    "label_method=model",
+    "annotated_at",
+    "original source spans",
+    "specific member keys and native/parallel identity evidence or missing links",
+    "individual rationale for each dimension"
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "schema": "source_based_model_review_270_v1",
+  "status": "complete",
+  "created_at": "2026-10-15T22:12:56.074151+00:00",
+  "run_id": "run_20261015_identity_review",
+  "frame_id": "393a03290bac2a1ba60a4d2528ddfe7527e9fc112e24213e391374f4eead498f",
+  "input_fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+  "samples_path": "audit/findings/quality_20261015/samples.json",
+  "samples_sha256": "537c030837b4a33a6ca8d6f6b59853aa6bb701b99df56daee2872443055444a9",
+  "rubric_version": "source-edge-and-group-v1",
+  "rubric_sha256": "a88e8a14833c36e0a8a96c9988450cf5958fe76c4878803bce1d52d98a341b67",
+  "execution_changes_sha256": "32de3ee0dd71a552abd497da2f3bffcc84e29a303af380a950b71b6477287fbc",
+  "packet_manifest_sha256": "8fbc74f18250c0fbb20c8fedaa0fbe809ccc29537ee9832733826d3b1086c139",
+  "packet_directory": "data/experiments/quality_review270_20261015",
+  "reviewer_type": "model",
+  "configured_model": "gpt-6.1-sol",
+  "reviewed_records": 270,
+  "counted_occurrences_reviewed": 440,
+  "member_count_convention": "reviewed_members is validated as either all supplied physical member rows or distinct complete merge keys; duplicate court-partition rows do not create distinct judgment identities.",
+  "reviewers": {
+    "gpt-6.1-sol:max:/root/review_01": 30,
+    "gpt-6.1-sol:max:/root/review_02": 20,
+    "gpt-6.1-sol:max:/root/review_03": 27,
+    "gpt-6.1-sol:medium:/root/review_medium_02": 70,
+    "gpt-6.1-sol:medium:/root/review_medium_03": 63,
+    "gpt-6.1-sol:medium:/root/review_medium_01": 60
+  },
+  "reasoning_efforts": {
+    "max": 77,
+    "medium": 193
+  },
+  "folds": {
+    "holdout": 58,
+    "train": 212
+  },
+  "fixed_sample_inverse_pi_weight": 490577.0,
+  "label_counts": {
+    "case_mention": {
+      "yes": 265,
+      "unknown": 2,
+      "no": 3
+    },
+    "judgment_identity": {
+      "correct": 118,
+      "unknown": 134,
+      "incorrect": 18
+    },
+    "treatment_role": {
+      "supportive": 124,
+      "applied": 61,
+      "procedural": 16,
+      "mentioned": 48,
+      "unknown": 9,
+      "distinguished": 9,
+      "criticized": 3
+    },
+    "origin": {
+      "correct": 92,
+      "unknown": 178
+    }
+  },
+  "checkpoint_preservation": [
+    {
+      "batch": 1,
+      "completed_max_records_preserved": 30,
+      "checkpoint_sha256": "7c9ef3f8468744beeb7333d4027dfffd8b929b2c4c41c671ce4ad721b59b671f",
+      "final_review_sha256": "b9223e6cb9dae17b603a913546f87df86ee4af8ece85e0310c3a886cd8bbdd9f",
+      "original_bytes_retained_as_prefix": true
+    },
+    {
+      "batch": 2,
+      "completed_max_records_preserved": 20,
+      "checkpoint_sha256": "edfc46f083e37c9aed3caf6fe9e7e2f5bb50617acb869680d7680c502a43fda4",
+      "final_review_sha256": "6642747cc451f18ecdaa83967e01f5a89b8a44652ae36c680dba4ebb19f15b79",
+      "original_bytes_retained_as_prefix": true
+    },
+    {
+      "batch": 3,
+      "completed_max_records_preserved": 27,
+      "checkpoint_sha256": "1cb315efdb142deb9e719665aae30f4c26452b32a36751e96902f448df14aff9",
+      "final_review_sha256": "61b432ce4d2d73eb83a681fee60e15caf5b71316e35bbeecbe54daf0511c7965",
+      "original_bytes_retained_as_prefix": true
+    }
+  ],
+  "implementation_commit": "fc67782",
+  "current_code_commit": "fc677821e072615d1f5333f8a0f0d9875e3e9e9c",
+  "files": {
+    "reviews.jsonl": {
+      "bytes": 608613,
+      "sha256": "ddd9454d2e3cbc7fad6daf38c3318e5de9f6820b0305135bff8e264759ce8706"
+    },
+    "model_labels.csv": {
+      "bytes": 319133,
+      "sha256": "03dc422115fa442e936ff6fbc025ee898377d29caf0e8a88bbf746f1133c9294"
+    },
+    "rubric.json": {
+      "bytes": 3232,
+      "sha256": "a88e8a14833c36e0a8a96c9988450cf5958fe76c4878803bce1d52d98a341b67"
+    },
+    "execution_changes.json": {
+      "bytes": 7463,
+      "sha256": "32de3ee0dd71a552abd497da2f3bffcc84e29a303af380a950b71b6477287fbc"
+    },
+    "evidence_manifest.json": {
+      "bytes": 74037,
+      "sha256": "8fbc74f18250c0fbb20c8fedaa0fbe809ccc29537ee9832733826d3b1086c139"
+    },
+    "model_labels.json": {
+      "bytes": 288962,
+      "sha256": "4613a1577e211a8405204f1852b9b898e77ead512721035719be9c941504ab0f"
+    },
+    "evaluation.json": {
+      "bytes": 116556,
+      "sha256": "56a430c978f694be4f4927a1114c8f15b2773d709cacbc6e6c47c2e179649169"
+    },
+    "summary.json": {
+      "bytes": 9108,
+      "sha256": "ffa952908a55e458fd2586e029d2bef769c04514d563ab66305e1cb8f6c2c33e"
+    },
+    "README.md": {
+      "bytes": 3504,
+      "sha256": "3f97bf9e31b109a50c43294dc6a8d9d2f529d2c3db324e79d785be03bc0e5ba8"
+    }
+  },
+  "limits": [
+    "Model assessments, not human labels or independent ground truth.",
+    "Unresolved labels remain explicit. Decidable-subset precision must be read together with coverage.",
+    "Original production data and fixed sample selection were not changed."
+  ],
+  "evaluated_at": "2026-10-15T22:14:29.481177+00:00",
+  "checks": {
+    "original_sample_hash_unchanged": true,
+    "fixed_270_ids_and_record_hashes": true,
+    "packet_row_hashes": true,
+    "max_checkpoints_unchanged": true,
+    "all_440_occurrences_referenced": true,
+    "valid_model_import": true,
+    "quality_tests_passed": 84,
+    "status_tests_passed": 26
+  }
+}

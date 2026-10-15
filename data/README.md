@@ -31,3 +31,5 @@ The original outputs for `run_20261003_v16f`, `run_20261002_tables2` and `run_20
 [Published retirement receipts](../audit/findings/repository_cleanup_20261015/retired_runs.json) preserve the manifests, hashes and deletion records. Historical CanLII accuracy belongs to its named historical sample; it does not establish current-run precision.
 
 See the [audit retention policy](../audit/findings/README.md), [current release receipt](../audit/findings/project_review_20261015/release_summary_final.json), and [public usage notes](../docs/USAGE.md).
+
+The fixed 270-record main sample now has explicit model reviews, with the local active pointer selecting their labels and evaluation. See the [model review results](../audit/findings/quality_model_review_20261015/README.md). The separate French supplement retains its own review frame.

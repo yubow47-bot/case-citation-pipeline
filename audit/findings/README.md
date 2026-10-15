@@ -21,3 +21,5 @@ The two CanLII comparison files and two small NSCA coverage/sampling files are r
 See [the per-file inventory](repository_cleanup_20261015/artifact_inventory.json) and [the retired-run receipts](repository_cleanup_20261015/retired_runs.json). Retired runs cannot be replayed from their receipts alone.
 
 Do not use broad `git add -f` on this directory. Publish a new result only after checking its contents, scope and provenance.
+
+`quality_model_review_20261015/` publishes the fixed protocol, model-labelled CSV/JSON, individual rationales, evidence manifest and evaluated results. The larger raw evidence batches remain under ignored `data/experiments/`; no database or full-corpus copy is committed.
