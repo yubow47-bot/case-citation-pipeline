@@ -9,6 +9,7 @@ import csv, os, random, re, sys, collections, math
 sys.path.insert(0, os.path.dirname(__file__))
 from canlii_client import get, calls_made, StopError, ROOT
 from t2_compare import wilson, nk
+from artifact_reader import rows as artifact_rows
 
 csv.field_size_limit(10 ** 9)
 RUN = os.environ.get("CROSSCHECK_RUN", "run_20261002_tables2")  # 旧 run 已移到 D:\_cases_offload
@@ -27,7 +28,7 @@ def main():
     mappable = set(canlii2ours.values())
 
     grp = {}
-    for r in csv.DictReader(open(os.path.join(R, "decide_out", "cross_court", "decided.csv"), encoding="utf-8")):
+    for r in artifact_rows(os.path.join(R, "decide_out", "cross_court", "decided.csv")):
         so = r["self_citation_of"]
         if so and so in tmap and tmap[so]["canlii_id"] and r["is_primary"] in ("1", "True", "true", ""):
             g = r["merged_group_id"]
@@ -46,7 +47,7 @@ def main():
 
     ours = collections.defaultdict(set)
     want = {g for g, _ in picks}
-    for r in csv.DictReader(open(os.path.join(R, "decide_out", "cross_court", "effective_sources.csv"), encoding="utf-8")):
+    for r in artifact_rows(os.path.join(R, "decide_out", "cross_court", "effective_sources.csv")):
         if r["merged_group_id"] in want and r["status"] == "counted":
             ours[r["merged_group_id"]].add(r["source_decision"])
 

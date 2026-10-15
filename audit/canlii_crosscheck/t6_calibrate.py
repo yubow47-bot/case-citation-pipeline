@@ -11,6 +11,7 @@
 import csv, math, os, sys, collections, random
 sys.path.insert(0, os.path.dirname(__file__))
 from canlii_client import ROOT
+from artifact_reader import rows as artifact_rows
 
 csv.field_size_limit(10 ** 9)
 RUN = os.environ.get("CROSSCHECK_RUN", "run_20261002_tables2")
@@ -51,7 +52,7 @@ def main():
 
     # 被引组的 DD：ours_only 的 cited_id 就是组；both_* 用 t2 记的配上组（取最大 DD）
     groups_dd = {}
-    for r in csv.DictReader(open(os.path.join(R, "select_out", "selected.csv"), encoding="utf-8")):
+    for r in artifact_rows(os.path.join(R, "select_out", "selected.csv")):
         if r["is_primary"] == "true":
             groups_dd[r["merged_group_id"]] = int(r["distinct_decisions_count"])
     pair_by = {(p["source"], p["cited_id"]): p for p in pairs}
@@ -72,11 +73,11 @@ def main():
     cite2g = collections.defaultdict(set)
     srcs = {r["source_decision"] for r in labels}
     edges = collections.defaultdict(set)
-    for e in csv.DictReader(open(os.path.join(R, "edges", "citation_edges.csv"), encoding="utf-8")):
+    for e in artifact_rows(os.path.join(R, "edges", "citation_edges.csv")):
         if e["source_decision"] in srcs:
             edges[e["source_decision"]].add(e["resolved_cited_case"])
     want = set().union(*edges.values())
-    for m in csv.DictReader(open(os.path.join(R, "select_out", "selected.csv"), encoding="utf-8")):
+    for m in artifact_rows(os.path.join(R, "select_out", "selected.csv")):
         if m["merged_group_id"] in want:
             cite2g[m["canonical_string"]].add(m["merged_group_id"])
 

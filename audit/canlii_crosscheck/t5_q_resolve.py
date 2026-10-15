@@ -14,6 +14,7 @@ import csv, json, os, re, sys, collections
 sys.path.insert(0, os.path.dirname(__file__))
 from canlii_client import ROOT
 from t2_compare import nk, nname, STOP
+from artifact_reader import rows as artifact_rows
 
 csv.field_size_limit(10 ** 9)
 RUN = os.environ.get("CROSSCHECK_RUN", "run_20261002_tables2")
@@ -38,12 +39,12 @@ def main():
                     texts[k] = r["unofficial_text_en"] or ""
     # 每个来源判决：我们的边指向的组 -> 组内全部引证（归一化）
     edges = collections.defaultdict(set)
-    for r in csv.DictReader(open(os.path.join(R, "edges", "citation_edges.csv"), encoding="utf-8")):
+    for r in artifact_rows(os.path.join(R, "edges", "citation_edges.csv")):
         if r["source_decision"] in srcs:
             edges[r["source_decision"]].add(r["resolved_cited_case"])
     want = set().union(*edges.values())
     gcites = collections.defaultdict(set)
-    for r in csv.DictReader(open(os.path.join(R, "select_out", "selected.csv"), encoding="utf-8")):
+    for r in artifact_rows(os.path.join(R, "select_out", "selected.csv")):
         if r["merged_group_id"] in want:
             gcites[r["merged_group_id"]].add(nk(r["canonical_string"]))
 

@@ -27,6 +27,12 @@ import os
 import shutil
 import sys
 from collections import Counter
+from itertools import zip_longest
+
+try:
+    from .legacy_inputs import classified_paths, open_csv
+except ImportError:
+    from legacy_inputs import classified_paths, open_csv
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 csv.field_size_limit(10 ** 9)
@@ -35,18 +41,18 @@ WATCH = ["jurisdiction", "citation_kind", "lookup_mode", "rejected_reason",
          "jurisdiction_confidence", "disambiguated_by", "vol_missing", "series_prefix"]
 
 
-def snapshot(dest):
+def snapshot(dest, source_dir=None):
+    paths = classified_paths(source_dir or os.path.join(ROOT, "data", "classify_out"), COURTS)
     for c in COURTS:
-        src = os.path.join(ROOT, "data", "classify_out", c, "classified.csv")
-        if not os.path.exists(src):
-            continue
+        src = paths[c]
         os.makedirs(os.path.join(dest, c), exist_ok=True)
-        shutil.copy2(src, os.path.join(dest, c, "classified.csv"))
-        print("快照 %s -> %s" % (src, os.path.join(dest, c, "classified.csv")))
+        destination = os.path.join(dest, c, os.path.basename(src))
+        shutil.copy2(src, destination)
+        print("快照 %s -> %s" % (src, destination))
 
 
 def rows(path):
-    with io.open(path, encoding="utf-8", newline="") as f:
+    with open_csv(path) as f:
         for i, r in enumerate(csv.DictReader(f)):
             yield i, r
 
@@ -62,16 +68,15 @@ def main():
                     help="改名已逐条复核并说明（如 #58 收回借名）：此时只有「丢了名字」才算回归")
     a = ap.parse_args()
     if a.snapshot:
-        snapshot(a.snapshot)
+        snapshot(a.snapshot, a.after)
         return
 
+    old_paths = classified_paths(a.before, COURTS)
+    new_paths = classified_paths(a.after, COURTS)
     bad = 0
     for c in COURTS:
-        p_old = os.path.join(a.before, c, "classified.csv")
-        p_new = os.path.join(a.after, c, "classified.csv")
-        if not (os.path.exists(p_old) and os.path.exists(p_new)):
-            print("[%s] 缺一边，跳过" % c)
-            continue
+        p_old = old_paths[c]
+        p_new = new_paths[c]
         buckets, examples = Counter(), {}
         other, other_ex = Counter(), {}
         n = 0
@@ -80,7 +85,11 @@ def main():
         n2 = 0
         old_iter = rows(p_old)
         new_iter = rows(p_new)
-        for (i, o), (j, nw) in zip(old_iter, new_iter):
+        for old_item, new_item in zip_longest(old_iter, new_iter):
+            if old_item is None or new_item is None:
+                raise SystemExit("[%s] 输入行数不同；拒绝把截断比较当成零回归" % c)
+            i, o = old_item
+            j, nw = new_item
             n2 += 1
             assert i == j
             on, nn = (o.get("candidate_case_name") or ""), (nw.get("candidate_case_name") or "")

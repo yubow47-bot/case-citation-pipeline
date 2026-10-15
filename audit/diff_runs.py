@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 """两次 run 的差分验收（沿用 #85 教训：同时查「既有键变大」与「全新键出现」）。
 用法：python audit/diff_runs.py OLD_RUN NEW_RUN"""
-import csv, os, sys, collections
+import csv, os, sys, collections, gzip
 csv.field_size_limit(10**9)
 old, new = sys.argv[1], sys.argv[2]
 
 def rows(p):
-    with open(p, encoding="utf-8", newline="") as f:
+    if not os.path.isfile(p) and os.path.isfile(p + '.gz'):
+        p += '.gz'
+    opener = gzip.open if p.endswith('.gz') else open
+    with opener(p, 'rt', encoding="utf-8-sig", newline="") as f:
         return list(csv.DictReader(f))
 
 # 1 候选层：旧候选必须是新候选的子集（同 candidate_id、同关键字段）
@@ -38,5 +41,5 @@ for court in sorted(os.listdir(os.path.join(new, "merge_out"))):
 # 3 裁定/边
 for rel in (("decide_out", "cross_court", "decided.csv"), ("edges", "edges.csv")):
     po, pn = os.path.join(old, *rel), os.path.join(new, *rel)
-    if os.path.exists(po) and os.path.exists(pn):
+    if (os.path.exists(po) or os.path.exists(po + '.gz')) and (os.path.exists(pn) or os.path.exists(pn + '.gz')):
         print(rel[-1], "行数 旧 %d 新 %d" % (len(rows(po)), len(rows(pn))))

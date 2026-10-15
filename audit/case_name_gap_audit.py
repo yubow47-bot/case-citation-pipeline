@@ -54,7 +54,14 @@ def segment(pre):
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--top", type=int, default=25)
+    ap.add_argument("--dir", default=os.path.join(ROOT, "data", "classify_out"),
+                    help="Explicit classification snapshot; missing courts fail, CSV.gz supported")
     a = ap.parse_args()
+    try:
+        from .legacy_inputs import classified_paths, open_csv
+    except ImportError:
+        from legacy_inputs import classified_paths, open_csv
+    paths = classified_paths(a.dir)
 
     first_word = Counter()
     marker_hits = Counter()
@@ -67,10 +74,8 @@ def main():
     total = 0
 
     for court in ("SCC", "ONCA"):
-        path = os.path.join(ROOT, "data", "classify_out", court, "classified.csv")
-        if not os.path.exists(path):
-            continue
-        with io.open(path, encoding="utf-8", newline="") as f:
+        path = paths[court]
+        with open_csv(path) as f:
             for r in csv.DictReader(f):
                 total += 1
                 if (r.get("candidate_case_name") or "").strip():

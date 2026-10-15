@@ -132,11 +132,14 @@ def new_name(pre, mode):
 
 
 def _rows(d):
+    try:
+        from .legacy_inputs import classified_paths, open_csv
+    except ImportError:
+        from legacy_inputs import classified_paths, open_csv
+    paths = classified_paths(d)
     for court in ("SCC", "ONCA"):
-        p = os.path.join(d, court, "classified.csv")
-        if not os.path.exists(p):
-            continue
-        with io.open(p, encoding="utf-8", newline="") as f:
+        p = paths[court]
+        with open_csv(p) as f:
             for r in csv.DictReader(f):
                 yield court, r
 

@@ -11,7 +11,10 @@ sys.path.insert(0, os.path.dirname(__file__))
 from canlii_client import get, calls_made, ROOT
 import pyarrow.parquet as pq
 
-DB = {"SCC": "csc-scc", "ONCA": "onca", "BCCA": "bcca"}
+DB = {"SCC": "csc-scc", "ONCA": "onca", "BCCA": "bcca", "NSCA": "nsca"}
+# CROSSCHECK_COURTS=NSCA limits a run to those courts and merges the result into the existing
+# files, so the original SCC/ONCA/BCCA sample stays exactly as it was.
+ONLY = [c for c in os.environ.get("CROSSCHECK_COURTS", "").split(",") if c]
 OUT = os.path.join(ROOT, "audit", "findings", "canlii_crosscheck")
 os.makedirs(OUT, exist_ok=True)
 
@@ -41,6 +44,8 @@ def nrep(s):
 def main():
     rows, summary = [], collections.Counter()
     for court, db in DB.items():
+        if ONLY and court not in ONLY:
+            continue
         cat = catalog(db)
         ids = {}
         rep_idx, name_idx = collections.defaultdict(set), collections.defaultdict(set)
@@ -79,11 +84,13 @@ def main():
                              "citation_en": cit, "canlii_id": cid, "basis": basis})
                 summary[(court, (y // 10 * 10) if y else 0, basis)] += 1
         summary[(court, "catalog_size", "")] = len(cat)
-    with open(os.path.join(ROOT, "data", "canlii_cache", "crosscheck", "t1_map.csv"), "w",
-              newline="", encoding="utf-8") as f:
+    mp = os.path.join(ROOT, "data", "canlii_cache", "crosscheck", "t1_map.csv")
+    if ONLY:
+        rows = [r for r in csv.DictReader(open(mp, encoding="utf-8")) if r["court"] not in ONLY] + rows
+    with open(mp, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader(); w.writerows(rows)
-    with open(os.path.join(OUT, "t1_coverage.csv"), "w", newline="", encoding="utf-8") as f:
+    with open(os.path.join(OUT, "t1_coverage%s.csv" % ("_" + "_".join(ONLY) if ONLY else "")), "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f); w.writerow(["court", "decade", "basis", "n"])
         for k in sorted(summary, key=str):
             w.writerow(list(k) + [summary[k]])

@@ -14,6 +14,7 @@ canlii_only 的自动初裁（只做能机械判定的，其余进人工队列�
 import csv, json, math, os, re, sys, collections, random
 sys.path.insert(0, os.path.dirname(__file__))
 from canlii_client import get, ROOT
+from artifact_reader import rows as artifact_rows
 import pyarrow.parquet as pq
 
 csv.field_size_limit(10 ** 9)
@@ -21,7 +22,7 @@ RUN = os.environ.get("CROSSCHECK_RUN", "run_20261002_tables2")  # 旧 run 已移
 R = os.path.join(ROOT, "data", RUN)
 C = os.path.join(ROOT, "data", "canlii_cache", "crosscheck")
 OUT = os.path.join(ROOT, "audit", "findings", "canlii_crosscheck", RUN)
-DB = {"SCC": "csc-scc", "ONCA": "onca", "BCCA": "bcca"}
+DB = {"SCC": "csc-scc", "ONCA": "onca", "BCCA": "bcca", "NSCA": "nsca"}
 CA = {"CA", "ON", "BC", "QC", "AB", "NS", "MB", "SK", "NB", "NL", "YK", "NT", "PE", "NU"}
 STOP = {"r", "the", "re", "in", "of", "and", "v", "her", "his", "majesty", "queen", "king",
         "canada", "attorney", "general", "a", "ltd", "inc", "co", "reference"}
@@ -76,22 +77,21 @@ def main():
 
     edges = collections.defaultdict(dict)          # src -> gid -> edge row
     side = collections.defaultdict(dict)           # src -> gid -> 'tentative'/'self_excluded:<reason>'
-    for r in csv.DictReader(open(os.path.join(R, "edges", "citation_edges.csv"), encoding="utf-8")):
+    for r in artifact_rows(os.path.join(R, "edges", "citation_edges.csv")):
         if r["source_decision"] in srcs:
             edges[r["source_decision"]][r["resolved_cited_case"]] = r
     for fn, tag in (("tentative_edges.csv", "tentative"), ("self_excluded_edges.csv", "self_excluded")):
-        for r in csv.DictReader(open(os.path.join(R, "edges", fn), encoding="utf-8")):
+        for r in artifact_rows(os.path.join(R, "edges", fn)):
             if r["source_decision"] in srcs:
                 side[r["source_decision"]][r["resolved_cited_case"]] = tag + ":" + r.get("exclusion_reason", "")
     eff = collections.defaultdict(dict)            # src -> gid -> status/reason (excluded rows)
-    for r in csv.DictReader(open(os.path.join(R, "decide_out", "cross_court", "effective_sources.csv"),
-                                 encoding="utf-8")):
+    for r in artifact_rows(os.path.join(R, "decide_out", "cross_court", "effective_sources.csv")):
         if r["source_decision"] in srcs and r["status"] != "counted":
             eff[r["source_decision"]][r["merged_group_id"]] = r["status"] + ":" + r["exclusion_reason"]
     need = {g for d in (edges, side, eff) for m in d.values() for g in m}
 
     groups = collections.defaultdict(lambda: {"keys": set(), "names": set(), "years": set(), "jur": set(), "kinds": set()})
-    for r in csv.DictReader(open(os.path.join(R, "decide_out", "cross_court", "decided.csv"), encoding="utf-8")):
+    for r in artifact_rows(os.path.join(R, "decide_out", "cross_court", "decided.csv")):
         g = r["merged_group_id"]
         if g not in need:
             continue
@@ -108,7 +108,7 @@ def main():
         G["kinds"].add(r["citation_kind"])
 
     cands = collections.defaultdict(set)           # src -> nk(raw_string) extracted
-    for r in csv.DictReader(open(os.path.join(R, "extract_out", "candidates.csv"), encoding="utf-8")):
+    for r in artifact_rows(os.path.join(R, "extract_out", "candidates.csv")):
         if r["source_decision_citation"] in srcs:
             cands[r["source_decision_citation"]].add(nk(r["raw_string"]))
 
@@ -218,7 +218,7 @@ def main():
         w = csv.writer(f); w.writerow(["stratum", "source", "canlii_id", "title", "citation", "code", "form"])
         w.writerows(queue)
 
-    order = sorted(agg, key=lambda k: (["SCC", "ONCA", "BCCA"].index(k.split("_")[0]), k))
+    order = sorted(agg, key=lambda k: (["SCC", "ONCA", "BCCA", "NSCA"].index(k.split("_")[0]), k))
     L = ["# T2 边级对比（自动部分）", "",
          "口径：CanLII 覆盖率 = 我们配上的 CanLII 被引案 / CanLII 被引案；"
          "CanLII 对我们的覆盖 = 被 CanLII 配上的我们的边 / 我们的边中「来源地未判定为境外」者"

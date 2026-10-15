@@ -11,6 +11,7 @@ import csv, json, os, re, sys, random, collections
 sys.path.insert(0, os.path.dirname(__file__))
 from canlii_client import ROOT
 from t2_compare import nk, nname, cite_regex, STOP, DB
+from artifact_reader import rows as artifact_rows
 import pyarrow.parquet as pq
 
 csv.field_size_limit(10 ** 9)
@@ -57,12 +58,12 @@ def main():
     gids = {p["cited_id"] for p in picks if p["kind"] == "ours_only"}
 
     edges = collections.defaultdict(dict)
-    for r in csv.DictReader(open(os.path.join(R, "edges", "citation_edges.csv"), encoding="utf-8")):
+    for r in artifact_rows(os.path.join(R, "edges", "citation_edges.csv")):
         if r["source_decision"] in need_src:
             edges[r["source_decision"]][r["resolved_cited_case"]] = r
     grp = collections.defaultdict(lambda: {"cites": set(), "names": set()})
     want = {g for s in need_src for g in edges[s]} | {g for p in picks for g in (p.get("matched_groups") or "").split(";") if g}
-    for r in csv.DictReader(open(os.path.join(R, "select_out", "selected.csv"), encoding="utf-8")):
+    for r in artifact_rows(os.path.join(R, "select_out", "selected.csv")):
         g = r["merged_group_id"]
         if g in want:
             grp[g]["cites"].add(r["canonical_string"])

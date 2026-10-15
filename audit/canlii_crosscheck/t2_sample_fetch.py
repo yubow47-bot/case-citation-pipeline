@@ -10,11 +10,15 @@ sys.path.insert(0, os.path.dirname(__file__))
 from canlii_client import get, calls_made, StopError, ROOT
 
 SEED, N = 20260927, 40
-DB = {"SCC": "csc-scc", "ONCA": "onca", "BCCA": "bcca"}
+DB = {"SCC": "csc-scc", "ONCA": "onca", "BCCA": "bcca", "NSCA": "nsca"}
+# CROSSCHECK_COURTS=NSCA limits a run to those courts and merges the result into the existing
+# files, so the original SCC/ONCA/BCCA sample stays exactly as it was.
+ONLY = [c for c in os.environ.get("CROSSCHECK_COURTS", "").split(",") if c]
 ERAS = {
     "SCC": [(1875, 1949), (1950, 1999), (2000, 2026)],
     "ONCA": [(1998, 2006), (2007, 2015), (2016, 2026)],
     "BCCA": [(1999, 2007), (2008, 2016), (2017, 2026)],
+    "NSCA": [(1993, 2002), (2003, 2012), (2013, 2026)],
 }
 C = os.path.join(ROOT, "data", "canlii_cache", "crosscheck")
 
@@ -28,6 +32,8 @@ def main():
     rng = random.Random(SEED)
     out, stats = [], collections.Counter()
     for court, eras in ERAS.items():
+        if ONLY and court not in ONLY:
+            continue
         for lo, hi in eras:
             frame = [r for r in rows if r["court"] == court and r["canlii_id"]
                      and r["year"] and lo <= int(r["year"]) <= hi]
@@ -57,10 +63,13 @@ def main():
             stats[(stratum, "taken")] = taken
             print(stratum, dict((k[1], v) for k, v in stats.items() if k[0] == stratum),
                   "calls so far", calls_made(), flush=True)
-    with open(os.path.join(C, "t2_sample.csv"), "w", newline="", encoding="utf-8") as f:
+    sp = os.path.join(C, "t2_sample.csv")
+    if ONLY:
+        out = [r for r in csv.DictReader(open(sp, encoding="utf-8")) if r["court"] not in ONLY] + out
+    with open(sp, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(out[0]))
         w.writeheader(); w.writerows(out)
-    with open(os.path.join(ROOT, "audit", "findings", "canlii_crosscheck", "t2_sampling.csv"),
+    with open(os.path.join(ROOT, "audit", "findings", "canlii_crosscheck", "t2_sampling%s.csv" % ("_" + "_".join(ONLY) if ONLY else "")),
               "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f); w.writerow(["stratum", "measure", "n"])
         for k in sorted(stats):
