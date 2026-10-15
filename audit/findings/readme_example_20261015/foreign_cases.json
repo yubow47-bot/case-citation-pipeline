@@ -1,0 +1,1609 @@
+{
+  "schema": "readme_foreign_case_example_v1",
+  "run_id": "run_20261015_identity_review",
+  "input_fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+  "ranking_command": "python tools/research/research.py ask --intent ranking --origin FOREIGN --top 5 --evidence-limit 0 --language en --output implementation/readme_foreign_ranking_20261015.json",
+  "parameters": {
+    "court": null,
+    "year_from": null,
+    "year_to": null,
+    "origin": "FOREIGN",
+    "min_dd": 0,
+    "kept_only": false,
+    "group_id": null,
+    "top": 5,
+    "evidence_limit": 0,
+    "with_text": false,
+    "language": "en",
+    "text_policy": "en_then_fr"
+  },
+  "ranking_packet": {
+    "schema_version": "research-packet-v2",
+    "status": "supported",
+    "question": null,
+    "intent": "ranking",
+    "question_interpretation": "explicit_fixed_intent",
+    "analysis_tool_identity": {
+      "core.py_sha256": "c582632477b467aab9a3a90a46361e8f747fbf1e53e4f1d341f38d2a3d862f91",
+      "research.py_sha256": "cdadb56aad4725e9c19647c4cce8c9c4c2e9f805cb653ab254b8f8f888339485"
+    },
+    "parameters": {
+      "court": null,
+      "year_from": null,
+      "year_to": null,
+      "origin": "FOREIGN",
+      "min_dd": 0,
+      "kept_only": false,
+      "group_id": null,
+      "top": 5,
+      "evidence_limit": 0,
+      "with_text": false,
+      "language": "en",
+      "text_policy": "en_then_fr"
+    },
+    "run_identity": {
+      "run_id": "run_20261015_identity_review",
+      "input_fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+      "manifest_sha256_canonical_json": "9e12295a90463f68d155586ff26d4452c93e2f998fdfcf1d1c5c5ed877802b81",
+      "manifest": {
+        "generated_at": "2026-10-15T01:13:22",
+        "status": "complete",
+        "failed_step": "",
+        "schema_versions": {
+          "extract_legacy_kept_superseded": "v1.4 (frozen, diagnostic only)",
+          "extract_candidates": "candidates-2.2 + explicit English/French fallback scope (row offsets unchanged)",
+          "classify": "8 + parse/arbitration evidence columns",
+          "merge": "9 + in-source arbitration, identity keys v2",
+          "decide": "14 (qualified document aliases; proof-bound exact identity separations)",
+          "select": "11 (threshold semantics unchanged)",
+          "registry": "3 (native English/French metadata/header proof; canonical source identity)"
+        },
+        "params": {
+          "batch_size": 500,
+          "year_from": null,
+          "limit_batches": null,
+          "courts": [
+            "SCC",
+            "ONCA",
+            "BCCA"
+          ],
+          "anchor_corpus": [],
+          "corpus_dir": "D:\\cases data analisis\\corpus",
+          "text_policy": "en_then_fr",
+          "registry_gate": "registered",
+          "compact": true,
+          "storage_budget_gb": 12,
+          "mixed_key_holdout": true,
+          "select_config": "select_config.yaml (verbatim in select manifest)",
+          "threshold_dd_semantics": "unchanged (constraint 6)",
+          "reused_upstream": {
+            "source_run": "D:\\cases data analisis\\data\\run_20261014_reliable_final",
+            "source_input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+            "source_output_fingerprint": "7cc1e8dc936d0b0554b4e62c14e901d77948acb7c4f7f15b99db3d37390dd2ad",
+            "source_manifest_sha256": "09803eb185bf3834aa5bc9ee97e1874dab1b6f77675f4c9f0a82cd9905e5cbe5",
+            "upstream_files": 233
+          },
+          "full_scope": {
+            "batch_size": 500,
+            "year_from": null,
+            "limit_batches": null,
+            "courts": [
+              "SCC",
+              "ONCA",
+              "BCCA"
+            ],
+            "anchor_corpus": [],
+            "corpus_dir": "D:\\cases data analisis\\corpus",
+            "text_policy": "en_then_fr"
+          }
+        },
+        "input_identity": {
+          "fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+          "files": {
+            "pipeline/artifacts.py": "a80ee0141807213778018999dd7880bc7888ff3b8a21e6022e21e4f882e933b8",
+            "pipeline/classify.py": "e6522661a45af54a28c55a546daf067c593b4461b557b428146563f9728a0125",
+            "pipeline/corpus_fields.py": "8121d6485dc5f23778a17d659a5fd54e5fb2faf841928b9959d2049ce1b240a2",
+            "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+            "pipeline/decide.py": "79d1adc1c54483e7b1c5f62bab88d540dc7efc80431898eb2633d36b5041f25a",
+            "pipeline/edges.py": "42b8f44922a4973ec15f9e882eeb392d2206be38697db74e995bae0ccd68ffa4",
+            "pipeline/extract.py": "9a0efcfef661ef8365c8157c8e0c0594c31be7f6fb431a2d122c44ce5baa1ddb",
+            "pipeline/identity_courts.py": "3f95f4812ab46ef93548bd3f46f4a651915a1882919023bace26fefec2ae422c",
+            "pipeline/merge.py": "27c9e37469407203c7dd16e06417d37f2fa7048f2e4c2468982ddfdec290166a",
+            "pipeline/normalize.py": "34c4412372ba7ff8a18c61bce91437e3d2a93ed6ab6d916b6317f268f552f080",
+            "pipeline/registry.py": "22a922657fc64a97289b9bf48ff1d3514a0e6ced188b93de1e047cd2cda68e0c",
+            "pipeline/registry_report.py": "9e2880456cbadb52bd3f27c5ce052e7e793e5d0dfe0a45e1304c5156696e0b40",
+            "pipeline/replay_decide.py": "bab5c68a4126ebff7e49e9ad7e83ce001584711cb30ef99a3009babbb873c5a2",
+            "pipeline/run_all.py": "259ae7ecbfba072d1bee99299717d0a453bfca294273b89886a1c75de8f6aea4",
+            "pipeline/select_layer.py": "e915c88456155620f2ec94d8f5046dd09be26b7418722b7e5d9749d35fe32d25",
+            "pipeline/shapes.py": "48bd8d53d9d123f8f278f131864ebfcb92d18e0ace074afbc921037088211765",
+            "pipeline/trace_source.py": "71a655882c5e70937ec687f6a3b931dab6c9835d15e9329d5e981b4325f2fb17",
+            "decisions/bilingual_neutral_codes.csv": "dc4240597e1a066435250bab6787c54f91083e6aac08f202395022a9e9959baf",
+            "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+            "decisions/case_origin_manual.csv": "d2cb7f9f1e4bac148145c4acf51e73e31036097092cf4bd35c3ea46365e495ab",
+            "decisions/court_designations.csv": "6434a63cf0597c31f33741b9e33bfcf30aa98cccaa45f0f030a817d969bee2fc",
+            "decisions/court_or_reporter_scope.csv": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+            "decisions/id_prefixes.csv": "87bac5c7fedd863682ddc9f2768d78023e40b6e8eac6cb63894550fefdf60e2b",
+            "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+            "decisions/identity_court_facts.csv": "3ee854278bc0de607245382616fe48e62a67ca60833d7f38c46b68ddd0154e4f",
+            "decisions/identity_court_scope.csv": "33cfeb2644f0c5b941c032f296d495b12ae6d3cff67caa57165dc13df404737a",
+            "decisions/identity_separations.csv": "ae4df66364aa44e18d9cec29f77904bccb1c67fd4563ff87f9c9828608e41991",
+            "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+            "decisions/non_citation_words.csv": "6cd582bec8cd8d7181e00f21578b5a5121d2dbd6b6720281dfbd1d1eb20e3bb0",
+            "decisions/reporter_jurisdiction.csv": "4c8bf48a395656f8cfee995633f63406c12adbfffd471d462da32e995be7d6f8",
+            "decisions/reporter_origin_scope.csv": "141a6edae0c2fa8ec1a1575ac8847b6a2f980fac20b1df458d1fde4bce49d019",
+            "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+            "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916",
+            "tools/storage.py": "8017de5225023f6e343d2d0c83420b0b3f52fd161038b212062f9f8b45acee38",
+            "tools/check_run.py": "434cd62f20e9218b77bd4ff775124eed4dde8772ded6003158665a23170d3241",
+            "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+            "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+            "corpus/BCCA.parquet": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3"
+          },
+          "params": {
+            "batch_size": 500,
+            "year_from": null,
+            "limit_batches": null,
+            "courts": [
+              "SCC",
+              "ONCA",
+              "BCCA"
+            ],
+            "anchor_corpus": [],
+            "corpus_dir": "D:\\cases data analisis\\corpus",
+            "text_policy": "en_then_fr",
+            "registry_gate": "registered",
+            "compact": true,
+            "storage_budget_gb": 12,
+            "mixed_key_holdout": true,
+            "select_config": "select_config.yaml (verbatim in select manifest)",
+            "threshold_dd_semantics": "unchanged (constraint 6)",
+            "reused_upstream": {
+              "source_run": "D:\\cases data analisis\\data\\run_20261014_reliable_final",
+              "source_input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+              "source_output_fingerprint": "7cc1e8dc936d0b0554b4e62c14e901d77948acb7c4f7f15b99db3d37390dd2ad",
+              "source_manifest_sha256": "09803eb185bf3834aa5bc9ee97e1874dab1b6f77675f4c9f0a82cd9905e5cbe5",
+              "upstream_files": 233
+            },
+            "full_scope": {
+              "batch_size": 500,
+              "year_from": null,
+              "limit_batches": null,
+              "courts": [
+                "SCC",
+                "ONCA",
+                "BCCA"
+              ],
+              "anchor_corpus": [],
+              "corpus_dir": "D:\\cases data analisis\\corpus",
+              "text_policy": "en_then_fr"
+            }
+          }
+        },
+        "input_identity_verified_unchanged": true,
+        "dependency_versions": {
+          "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+          "pyarrow": "25.0.0",
+          "yaml": "6.0.3"
+        },
+        "steps_done": [
+          "build_registry",
+          "decide_SCC",
+          "decide_ONCA",
+          "decide_BCCA",
+          "decide_cross",
+          "registry_report",
+          "select",
+          "edges"
+        ],
+        "note": "complete 之外的 status（running/failed）对下游不是可消费的完整批次；失败目录保留，重试用新目录。status=complete 要求收尾时输入身份与启动时逐字节一致（R2-10）",
+        "storage_preflight": {
+          "root": "D:\\cases data analisis",
+          "project_bytes": 5830115749,
+          "estimated_peak_bytes": 1266517510,
+          "projected_peak_bytes": 7096633259,
+          "max_project_bytes": 12884901888,
+          "free_bytes": 56602750976,
+          "free_after_peak_bytes": 55336233466,
+          "min_free_bytes": 2147483648,
+          "allowed": true
+        },
+        "steps_reused": [
+          "extract",
+          "classify_SCC",
+          "classify_ONCA",
+          "classify_BCCA",
+          "merge_SCC",
+          "merge_ONCA",
+          "merge_BCCA"
+        ],
+        "replay": {
+          "protocol": "verified-upstream-replay-v1",
+          "source_input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+          "source_output_fingerprint": "7cc1e8dc936d0b0554b4e62c14e901d77948acb7c4f7f15b99db3d37390dd2ad",
+          "allowed_downstream_changes": [
+            "decisions/identity_court_facts.csv",
+            "decisions/identity_separations.csv",
+            "pipeline/decide.py",
+            "pipeline/edges.py",
+            "pipeline/registry.py",
+            "pipeline/registry_report.py",
+            "pipeline/replay_decide.py",
+            "pipeline/run_all.py",
+            "tools/check_run.py",
+            "tools/storage.py"
+          ],
+          "fresh_upstream_execution": false
+        },
+        "storage_compaction": {
+          "run": "D:\\cases data analisis\\data\\run_20261015_identity_review",
+          "status": "finalizing",
+          "manifest_sha256": "116b021b29371d454b1b736f71ffb0d334bdecca90b7d31155d225c2b7fefcbb",
+          "before_bytes": 995544754,
+          "after_bytes_before_receipt": 568851483,
+          "saved_bytes": 426693271,
+          "csv_files_compacted": 29,
+          "files": [
+            {
+              "path": "select_out\\dd_profile.csv.gz",
+              "logical_bytes": 163,
+              "sha256": "f5d6ce19c2562f77ff6a16fd5ecda14a3718f3984055772e0283c2767402749f",
+              "compressed_bytes": 139
+            },
+            {
+              "path": "select_out\\selected.csv.gz",
+              "logical_bytes": 84669064,
+              "sha256": "c055e82caa29976a6ac41386deb7af2dff5966dae5d2a671aca6ced15ac8a583",
+              "compressed_bytes": 8074790
+            },
+            {
+              "path": "registry\\decision_own_citations.csv.gz",
+              "logical_bytes": 36077950,
+              "sha256": "3c164d0d97e15e4b79ff0e52c383548301f3b41bbb84d6afa721191b89fd40b7",
+              "compressed_bytes": 8496563
+            },
+            {
+              "path": "registry\\decision_registry.csv.gz",
+              "logical_bytes": 2812099,
+              "sha256": "d1eff9e36fd03b817a4698134b96451f71d1a0a01d04472a7be0a6d947a2c7a4",
+              "compressed_bytes": 239228
+            },
+            {
+              "path": "registry\\registry_crosscheck.csv.gz",
+              "logical_bytes": 811259,
+              "sha256": "f6363bf1dbfcf1fb487b8ff602a9170f0bb27aef31174ab1ae5cd8bd53b063f1",
+              "compressed_bytes": 54638
+            },
+            {
+              "path": "edges\\citation_edges.csv.gz",
+              "logical_bytes": 81248737,
+              "sha256": "50f7a8401ab2c5e3ec8e690eaafadfed4e2ed3821ff871649110a0bd939a0a47",
+              "compressed_bytes": 7247755
+            },
+            {
+              "path": "edges\\foreign_edges.csv.gz",
+              "logical_bytes": 184955,
+              "sha256": "41780b009e3120cef95a97d838ad63254420f18d1e356553c6203934ff52a63d",
+              "compressed_bytes": 20589
+            },
+            {
+              "path": "edges\\self_excluded_edges.csv.gz",
+              "logical_bytes": 486679,
+              "sha256": "033dcb5cd807ad32a2890379e21679ceb1eaf3186ebcd3d52b7e387779bddda5",
+              "compressed_bytes": 36417
+            },
+            {
+              "path": "edges\\tentative_edges.csv.gz",
+              "logical_bytes": 32233,
+              "sha256": "c72a961d7711a7a44b941b0b50c4ec338e344eacc654c037256586b7e45f18e1",
+              "compressed_bytes": 5111
+            },
+            {
+              "path": "decide_out\\cross_court\\decided.csv.gz",
+              "logical_bytes": 83134873,
+              "sha256": "60371d1218ec76398c1bfc9bf52d47466bce876d23ffa1b35fa111b980403b2c",
+              "compressed_bytes": 8029056
+            },
+            {
+              "path": "decide_out\\cross_court\\decision_ids.csv.gz",
+              "logical_bytes": 20064471,
+              "sha256": "e696acd6951fbf48f9c8210cc2d41da2d2f6a09d900c30c540b13894ecf105b1",
+              "compressed_bytes": 3352074
+            },
+            {
+              "path": "decide_out\\cross_court\\effective_sources.csv.gz",
+              "logical_bytes": 34637850,
+              "sha256": "92e20719dd828fdb1f8a581400205eb9b12218fcc6de22597cfd10a8cf506720",
+              "compressed_bytes": 4369299
+            },
+            {
+              "path": "decide_out\\cross_court\\mixed_identity_holdouts.csv.gz",
+              "logical_bytes": 106,
+              "sha256": "766a71a97cf8ae7453102b57a1cf203976d038d3645c3c329fb9ddbb5c10280f",
+              "compressed_bytes": 90
+            },
+            {
+              "path": "decide_out\\cross_court\\typo_over_registered.csv.gz",
+              "logical_bytes": 3590,
+              "sha256": "431fb31295a7191ac148700f0bfb546f0e1341164d5e56eaf7cb417f04db54b1",
+              "compressed_bytes": 916
+            },
+            {
+              "path": "decide_out\\SCC\\decided.csv.gz",
+              "logical_bytes": 36465267,
+              "sha256": "cba3c8c6a74ea4f3630115925d99ff10503c46ab7c0f19a8ce2fd08d4f85eff4",
+              "compressed_bytes": 3611016
+            },
+            {
+              "path": "decide_out\\SCC\\decision_ids.csv.gz",
+              "logical_bytes": 6978550,
+              "sha256": "bfc901626ddd16a649541e3917137275767df0f379818156db37a445129cbdba",
+              "compressed_bytes": 1300327
+            },
+            {
+              "path": "decide_out\\SCC\\effective_sources.csv.gz",
+              "logical_bytes": 12821842,
+              "sha256": "342aecbf7dc48405c7340b46a322297e698479bba6930d06d007b8af5fd09581",
+              "compressed_bytes": 1778961
+            },
+            {
+              "path": "decide_out\\SCC\\mixed_identity_holdouts.csv.gz",
+              "logical_bytes": 106,
+              "sha256": "766a71a97cf8ae7453102b57a1cf203976d038d3645c3c329fb9ddbb5c10280f",
+              "compressed_bytes": 90
+            },
+            {
+              "path": "decide_out\\SCC\\typo_over_registered.csv.gz",
+              "logical_bytes": 543,
+              "sha256": "df96bfebca418f74fca4127fba0c8dba61e4f38c37f0cc4fb3e1f01393acc251",
+              "compressed_bytes": 235
+            },
+            {
+              "path": "decide_out\\ONCA\\decided.csv.gz",
+              "logical_bytes": 22459352,
+              "sha256": "4ed53b980e2d130ffa1a6150cadcbbe3ac8ec6b612ce666755cf15581cfa644c",
+              "compressed_bytes": 2236582
+            },
+            {
+              "path": "decide_out\\ONCA\\decision_ids.csv.gz",
+              "logical_bytes": 6329086,
+              "sha256": "a1888ee3421309bef1bf2ba9d8bee8a715a8ab0bba41c46377f183cc7193de34",
+              "compressed_bytes": 984567
+            },
+            {
+              "path": "decide_out\\ONCA\\effective_sources.csv.gz",
+              "logical_bytes": 10782353,
+              "sha256": "2479487189a1c33df5c216ee8c0ae62e9015efdb36db512a0dbab48214114e39",
+              "compressed_bytes": 1222252
+            },
+            {
+              "path": "decide_out\\ONCA\\mixed_identity_holdouts.csv.gz",
+              "logical_bytes": 106,
+              "sha256": "766a71a97cf8ae7453102b57a1cf203976d038d3645c3c329fb9ddbb5c10280f",
+              "compressed_bytes": 90
+            },
+            {
+              "path": "decide_out\\ONCA\\typo_over_registered.csv.gz",
+              "logical_bytes": 3323,
+              "sha256": "a3d9f29677793d71b23bb4d06ef2681210f96d89c13c7cbe369dbe10758915d2",
+              "compressed_bytes": 860
+            },
+            {
+              "path": "decide_out\\BCCA\\decided.csv.gz",
+              "logical_bytes": 23832786,
+              "sha256": "577aceaebaf3d2c10ae1bad4c3ceef29de70022f2d294f3d9a0b4cab48567dc6",
+              "compressed_bytes": 2453662
+            },
+            {
+              "path": "decide_out\\BCCA\\decision_ids.csv.gz",
+              "logical_bytes": 6756903,
+              "sha256": "96cf2850dd4ae174308bee0a5a4b00c7503205389be1099de05ed94fb4966b5c",
+              "compressed_bytes": 993505
+            },
+            {
+              "path": "decide_out\\BCCA\\effective_sources.csv.gz",
+              "logical_bytes": 11906262,
+              "sha256": "163ea2be12a9bd175071ba44834654248819970674c9afeffcc9e4693d9025ed",
+              "compressed_bytes": 1298460
+            },
+            {
+              "path": "decide_out\\BCCA\\mixed_identity_holdouts.csv.gz",
+              "logical_bytes": 106,
+              "sha256": "766a71a97cf8ae7453102b57a1cf203976d038d3645c3c329fb9ddbb5c10280f",
+              "compressed_bytes": 90
+            },
+            {
+              "path": "decide_out\\BCCA\\typo_over_registered.csv.gz",
+              "logical_bytes": 114,
+              "sha256": "a25f7410ed99c5111ae7c2b2667a6ee6ee11abe85b470cf9e3d6ada2e6af791d",
+              "compressed_bytes": 95
+            }
+          ],
+          "completed_at": "2026-10-15T05:13:16.650362+00:00"
+        },
+        "output_identity": {
+          "files": {
+            "compact_receipt.json": "c2e395c210b057bebbc980f2e5a0f89dc70d2455fcb72a26cf619f43b8c3fc2b",
+            "reused_upstream.json": "6d4ea157a34a328ecb31990a61691705296d5b748d7278e56d71fac4cbed24c3",
+            "reused_upstream_manifest.json": "09803eb185bf3834aa5bc9ee97e1874dab1b6f77675f4c9f0a82cd9905e5cbe5",
+            "step_build_registry.log": "a450e18af55f96271f0fe0b17e58fa47866e5ba529f13dc2516dc51d18cb4644",
+            "step_decide_BCCA.log": "b259f5f974a9c6d78bbb27d99df0946cd312030ec2b1c43f404ef780f8e1c2cb",
+            "step_decide_ONCA.log": "7ca9d0c95df2343575efe902236c47fd5e7ed08189632acd78e2ca52a99c4ebd",
+            "step_decide_SCC.log": "901c67b9801e73777e6d52ed8ec6a93b74c447892fa4e66f25a5f5cd781bd7e1",
+            "step_decide_cross.log": "40b379fa770834d1f83fc23a2eb96de8095439a53fe05c71e4249c2ea63b8c28",
+            "step_edges.log": "df05dd00eb2b766fd52784efd0aac5b05b2822c44a61c325e83f59cc89094389",
+            "step_registry_report.log": "1d24e3fe57dbc57872a6367854407c88d105bef26a582eba1315d5b495fc494b",
+            "step_select.log": "e407f3d03b9ace7be44b60879da51a3715ec6c08f96120602a2e907908d43c0e",
+            "classify_out/BCCA/classified.csv.gz": "4bdcf98b96e394d0c041c61b8041d2f8bce400bc0111909d525c490a689cc7c6",
+            "classify_out/BCCA/manifest.json": "34038f65ca8ae8baaa9616602de533ac1db00ef4bfec1e5db7b15a4c372bbcc9",
+            "classify_out/ONCA/classified.csv.gz": "d2bd867e04d33302832861b163f3a4d5bcc15d0df11eb6d1817471824b459d45",
+            "classify_out/ONCA/manifest.json": "cb85b5e668813d826872e6e79c83e7863d67ddbe79884dffcf2df71b326aac9b",
+            "classify_out/SCC/classified.csv.gz": "44e697b2d5655ffe5414d63a6f661d815bc9a81227f5f5236fb37a82d4fb2dd5",
+            "classify_out/SCC/manifest.json": "baff98e88eeb1685ccbc74fa478cd1b19d6c39b16914d5965b6b625c1779da39",
+            "decide_out/BCCA/decided.csv.gz": "bb8a6a7c93e0c2d8b511b7cec252d373a6a45884b2f3665acbcf7ee22b7f15be",
+            "decide_out/BCCA/decision_ids.csv.gz": "b62d1e2d04a6ba4cdeb92b2b64bb9c9a4b3a9d2953d57a89eab1c409a1416f2f",
+            "decide_out/BCCA/effective_sources.csv.gz": "49bc5a50f1e85aed0bf95e6d58f5f9f14128b3318087c46c90a8917a2b96d23b",
+            "decide_out/BCCA/manifest.json": "85ffe0db5b766e709becbb53ac99e8e6635f8ce9bf4f8860e97dc48fc64b66da",
+            "decide_out/BCCA/mixed_identity_holdouts.csv.gz": "682ca79258a08d6100d6fef90b9fc1c2844c70fe98ae6810426171293362bbdf",
+            "decide_out/BCCA/typo_over_registered.csv.gz": "a87cbbd93adbffcc430e2aabadf9d63fe131194b35e044e9b68be1c35d6569d0",
+            "decide_out/cross_court/decided.csv.gz": "dbe3cc6a5f6aaf3398194251a52be80a6a88cd691c3054a782f070bbaf32ccbe",
+            "decide_out/cross_court/decision_ids.csv.gz": "39ea196d4b7706ade2295e76857266fc1f5840b041d95708d03d06b5f1d29eec",
+            "decide_out/cross_court/effective_sources.csv.gz": "2658d73861e1faebd3451c2f34536fbbe022ea690adaad3126c165d7b9b9b929",
+            "decide_out/cross_court/manifest.json": "2e46d1d86faf9883ff5ee47e94f79239c975bc0f3e4195c4380837f15cc6aca4",
+            "decide_out/cross_court/mixed_identity_holdouts.csv.gz": "682ca79258a08d6100d6fef90b9fc1c2844c70fe98ae6810426171293362bbdf",
+            "decide_out/cross_court/typo_over_registered.csv.gz": "c39630c8c4c163232b04957c26e910a06a077f7762dd573cae13b82a014053f8",
+            "decide_out/ONCA/decided.csv.gz": "d6e9d6bd6780f64a760eab08820d21ba08436dcf0442243259d712cd62569001",
+            "decide_out/ONCA/decision_ids.csv.gz": "a81b61db22a1f887c0ed1a686042cb8c01b25cb41df16848c278eb4c31bc9eb1",
+            "decide_out/ONCA/effective_sources.csv.gz": "42353479b76909851020658a09acfbe42566d83b3be2e0df25c39252613fc131",
+            "decide_out/ONCA/manifest.json": "8367f380751102748276bce06cfaaeaa8c78b63a37a6842fc1fc2a15ab21022f",
+            "decide_out/ONCA/mixed_identity_holdouts.csv.gz": "682ca79258a08d6100d6fef90b9fc1c2844c70fe98ae6810426171293362bbdf",
+            "decide_out/ONCA/typo_over_registered.csv.gz": "b4cb13f11251fbebb98663137cce2d8828a2143f07df24014233edef06160bce",
+            "decide_out/SCC/decided.csv.gz": "4b7d9ec456c4664352f84cd1c6fba8ee9cdfda8264c9afbd48a956635be84f65",
+            "decide_out/SCC/decision_ids.csv.gz": "7bb2e3c56d206a3a6525fd7d581eb9e9dd10a77de7dd40dfa3009a2326ef5bcf",
+            "decide_out/SCC/effective_sources.csv.gz": "e42b12e0ebe11eeb1f55614165f262c0f88317570238d67ff4da9491ab0f24c9",
+            "decide_out/SCC/manifest.json": "d75b74e16c5e749bbd553ae2826f3d1fbd4c136849bb6a8c2dc6f030269b3871",
+            "decide_out/SCC/mixed_identity_holdouts.csv.gz": "682ca79258a08d6100d6fef90b9fc1c2844c70fe98ae6810426171293362bbdf",
+            "decide_out/SCC/typo_over_registered.csv.gz": "844e8e3ed535be014513f01fb2d781fcaf9147f848ab39e7a0f9823873da5297",
+            "edges/citation_edges.csv.gz": "3dd0658e8ceb23fd26c1762710b40ef651d7ac1d150b3b98202a1eeb0a211a2f",
+            "edges/foreign_edges.csv.gz": "98f514c7074d42eff7f369b81f56bbd574e87f98491102d425e569c0a6d9db7a",
+            "edges/manifest.json": "179656395509772ece92ee47e22fa49dcc08507fbe661f441b161dcebebdb843",
+            "edges/self_excluded_edges.csv.gz": "580a63701c40c9fe50350f8be0db5c411c7cc7ecc842a57b417e5292936187e8",
+            "edges/tentative_edges.csv.gz": "f3bce943783b07d7be54017f4ce4e524a8aff2e0ce8eb37ef977636509dfcab9",
+            "extract_out/candidates.csv.gz": "48c040a846caead4ef97b2bd7058cac5f726c2bb69f7de25f714fe83ec2c9cd7",
+            "extract_out/extracted.csv.gz": "c839a7900a4a77f01dafbeb485084c4fdf39bcf5ce0149ac655794d920ece653",
+            "extract_out/extracted_superseded.csv.gz": "a4fa954b0be28074dc53b5fd475a44f5583239ff13c02d6cbe4cbc0e3b52f184",
+            "extract_out/manifest.json": "a742ea52192da98e3205e842a62373fb08be9cb2eec8db66db7ba3d2d976494b",
+            "extract_out/BCCA/batch_0000.csv.gz": "bf51ff2dadc9823e61187a60a460c48efce282252220c1f6907320d6c7030627",
+            "extract_out/BCCA/batch_0001.csv.gz": "0804a89fe5a529f70308680f9007e537e5bd955d681b0d9a6bd58f1880b4b8e6",
+            "extract_out/BCCA/batch_0002.csv.gz": "5e7a81e1a937623c1b1bbc663fb4e383defd99a40a23b8989f097f9f64bc284f",
+            "extract_out/BCCA/batch_0003.csv.gz": "2ee43914ec0ff8482e12e8bd9d8f0dafb5a09f2926046be570f43993ddbd2fa0",
+            "extract_out/BCCA/batch_0004.csv.gz": "b29330591f6fce1f482f23086463dbefc046289167dd3fa938fa7a440faa9add",
+            "extract_out/BCCA/batch_0005.csv.gz": "7b49cd1f448dcdc363ae3c96ad8c03b60fa1cf2949fcb4d117d6c0fd6ced77aa",
+            "extract_out/BCCA/batch_0006.csv.gz": "718b5c129c3e2e93d1fe4204b5baa2b4eda16d4853e9898a04c060d75658f628",
+            "extract_out/BCCA/batch_0007.csv.gz": "f9953a0fc7bf2e8952605da175b4ecc079509899d810a41722da64c09174d698",
+            "extract_out/BCCA/batch_0008.csv.gz": "2da2115a4813fe7fb812a8511ab74c0121b1f9526d484bf2859a8531298662ba",
+            "extract_out/BCCA/batch_0009.csv.gz": "0f64db6807cef8fbece6310f55a73e7cc629157200fd5f78c3ff1c1a85a4a699",
+            "extract_out/BCCA/batch_0010.csv.gz": "f90f5d54c2dd045fba90f80f91ff5d72bdf081e8038a102408c65130e358d300",
+            "extract_out/BCCA/batch_0011.csv.gz": "c7d821b98ed39ec08ca811eb8eb1bee13ee76af87aea6761e3283c4699356569",
+            "extract_out/BCCA/batch_0012.csv.gz": "cd602e9a7b6599db3e8889a8be496c3e34c60c12567942c8b0d43b71c38cbc84",
+            "extract_out/BCCA/batch_0013.csv.gz": "27d0ea3aeb79faa134e2aefb62cb2613b474d2efb9f6a10903463740254e2216",
+            "extract_out/BCCA/batch_0014.csv.gz": "1cb25d965da0ccc1efdbe4439c6920574e90955af27446208d2d72896f3a3e9c",
+            "extract_out/BCCA/batch_0015.csv.gz": "75ae10b73741395ec7b0a8a20d09fdbf1a2ffb7c979ceb799808ff27567689c0",
+            "extract_out/BCCA/batch_0016.csv.gz": "1df02792a16460d90df75829584ec275ccd7ea42fb96a6f3fc8699b68ebd4be0",
+            "extract_out/BCCA/batch_0017.csv.gz": "6282beca7751626a06dfdde31fafc4a01d9cd8a907ae4816bba56c5f0964a8e2",
+            "extract_out/BCCA/batch_0018.csv.gz": "f3f2c7cd6bea6747ba3c39fc1bf567b7962586dd57e15c89d92aa628c26bf844",
+            "extract_out/BCCA/batch_0019.csv.gz": "5d46e0ab172b5f70c33b5b9aedacf42047bd1affd458c2119e62ffabc1fab9a4",
+            "extract_out/BCCA/batch_0020.csv.gz": "b3e5978f3b72eb8bb8ad38538c0747f97a6927c0e40438834fa7de18b249af01",
+            "extract_out/BCCA/batch_0021.csv.gz": "b6d8c5f390908288de6b95ef0db80b9da2b1ee92501e730abe9c93d2ab38f6b4",
+            "extract_out/BCCA/batch_0022.csv.gz": "d835c3ef7887f108a801b52031befefcdd6875d1952f629aab1e474a1abcc6ae",
+            "extract_out/BCCA/batch_0023.csv.gz": "4223386b67991fa29031224c5982fba787024983e322061b6d9e3cf9c48293ca",
+            "extract_out/BCCA/batch_0024.csv.gz": "43b34197447fa1f1f77ed4328b78cf7368bde24b5dbd44abe1aa0fd6a193d28f",
+            "extract_out/BCCA/batch_0025.csv.gz": "c5002607c1309a2d40ca64cd7ac282abbe4d3d5583c6900a4f537ab2b06999b0",
+            "extract_out/BCCA/batch_0026.csv.gz": "b9506ec5ae693ae17433fd2838b968f47a0fd1d3cbee42ad8eecce716b90890e",
+            "extract_out/BCCA/batch_0027.csv.gz": "8327563e1004e4093aa072451f78e4911ad46a70a81b96ffda514a3d177ff5ad",
+            "extract_out/BCCA/batch_0028.csv.gz": "ca5cf5881c120f39339e1df5a3836335eed4ddfdf79a6bbadaa190491b21c0a1",
+            "extract_out/BCCA/batch_0029.csv.gz": "44c9b28224c6a21d315566cebcbf1e0389fd26a1a15056c97c91ddfd68854f9a",
+            "extract_out/BCCA/cand_batch_0000.csv.gz": "a55b9fdc7b131124bbcfef5fbc6f8ef338f9c238e7cfed5357b17d3bb34ac83c",
+            "extract_out/BCCA/cand_batch_0001.csv.gz": "9414fb017d437399ee06371275bd11c5455d4a47b5903c1dd31c7523412b69ff",
+            "extract_out/BCCA/cand_batch_0002.csv.gz": "b50fa3f6d22d19b436f2698eba29f1f2f378f1f587a796410ad28736790f7acb",
+            "extract_out/BCCA/cand_batch_0003.csv.gz": "71bec9cd6a45ce7d77c38cd5852d1c22d641c127e78e39c16eb3f6dca93433c5",
+            "extract_out/BCCA/cand_batch_0004.csv.gz": "915f21fc2666251401eedb9adbd4adfe5fb6e29779dcb8280c3d1cab4c4afc95",
+            "extract_out/BCCA/cand_batch_0005.csv.gz": "b76839640333b8d9a0e1e793ed4b0d012778fcfb19c71922edc94ca084c7674e",
+            "extract_out/BCCA/cand_batch_0006.csv.gz": "42a25e50384003740f46f2a5dc9ba65b7e76e2003cbb3a36bb775b4aa74d5422",
+            "extract_out/BCCA/cand_batch_0007.csv.gz": "23cf47e2d6d1add253543f709d5f8c89c0c07aacba4bb2067c47e34c62857766",
+            "extract_out/BCCA/cand_batch_0008.csv.gz": "3710f1ada6906b4c8416f0328a5650d03ed938bb7bfafbea6fb556a2a1f32617",
+            "extract_out/BCCA/cand_batch_0009.csv.gz": "02298486591c96dc17450279ecf73046d6f3017177147194b9700fe8dcd21f44",
+            "extract_out/BCCA/cand_batch_0010.csv.gz": "2c2e057db26dabf168a2724d39b05fc2eba527c0aec02e7423c87fc8eb261fde",
+            "extract_out/BCCA/cand_batch_0011.csv.gz": "d31569d2b0f7c3407beb02b35197e41746aaa918b531c38b02abcd8a6be6f5de",
+            "extract_out/BCCA/cand_batch_0012.csv.gz": "5040599a9aed04bcf38f433b443268dd48d5a8442f9cc02793c65168af376f73",
+            "extract_out/BCCA/cand_batch_0013.csv.gz": "e36b3daa2debebf0c9b95766553bd6b66ca916775f66121e2f32498e50a3dec9",
+            "extract_out/BCCA/cand_batch_0014.csv.gz": "3e93c3e5f81de26e38023934bc5342a144a2eb9f7b35a91d51c347916b2290c3",
+            "extract_out/BCCA/cand_batch_0015.csv.gz": "2863c7489779a3025d69cb2fc9371be6c6e57298f23ca469dea376f8d710ff17",
+            "extract_out/BCCA/cand_batch_0016.csv.gz": "dcee242e83e153d4422a9b245e27751a1feb579cb4274c4cfa5a1b16e9deaacc",
+            "extract_out/BCCA/cand_batch_0017.csv.gz": "446c1f8e7900a01aefba5e6cba6e20827aa1eec0d3db5369ed64f9edc50ce151",
+            "extract_out/BCCA/cand_batch_0018.csv.gz": "1a9d88d2a56cd344b4a6b23cec026a44039a96d6337f681f36dabd3165068988",
+            "extract_out/BCCA/cand_batch_0019.csv.gz": "ce35499fbdbc492f3d808cc3ccdccf73925a846b850338c0c47f3038a8577904",
+            "extract_out/BCCA/cand_batch_0020.csv.gz": "4e0f7a63c7e145eaaf8ba4fbc53d4dc68bcf655b1cf5e1907224add193d89dcd",
+            "extract_out/BCCA/cand_batch_0021.csv.gz": "1bcfabb665a80186aa4b6781af348142b320f988e84b8c56b1da44e91a003cce",
+            "extract_out/BCCA/cand_batch_0022.csv.gz": "37146919dc0fb6715226d80ec2bf98f538ebef8be80e017ae0d42675031534a6",
+            "extract_out/BCCA/cand_batch_0023.csv.gz": "aaa928ab9026939fbb57783c836bb0f05257eaa852679db6811c3a3d2a2d1fe9",
+            "extract_out/BCCA/cand_batch_0024.csv.gz": "de36bad1ec69d50c391ac3f3317fbb191173116f83d68296a5874a2a4f0db194",
+            "extract_out/BCCA/cand_batch_0025.csv.gz": "93fbc1202e8944c2c96be75afb1b3fa036b3f443eeede6940e6dfa6170219cad",
+            "extract_out/BCCA/cand_batch_0026.csv.gz": "1ae128ce3598258fa4807b35d4b0e87bcd6843cbc039d1c3d9abb7d090a068e8",
+            "extract_out/BCCA/cand_batch_0027.csv.gz": "9d315aa435823c1db7a0b950dbf5683ffadf66126eb380ceee2b278f6b201025",
+            "extract_out/BCCA/cand_batch_0028.csv.gz": "61104d07fc989c49084d158796424068435525b3810617baa8e0574724130f9b",
+            "extract_out/BCCA/cand_batch_0029.csv.gz": "828326a493ebaf1738dd131a532ff59d92b7a653dba89a5bdf94e3997e3f8e85",
+            "extract_out/BCCA/progress.json": "534d16b940f34854c86e0d749ba0386cb2987a9eaeef78a4e36d3ce4897f64be",
+            "extract_out/ONCA/batch_0000.csv.gz": "2bfe6e123eb5b6a4af352ec4cc416859ab8297bff1c7b908a30092231ea17f8c",
+            "extract_out/ONCA/batch_0001.csv.gz": "631958cca3b7fd7c9312169a6e546f7a908350bb3a5f4f79cea317807a02a70b",
+            "extract_out/ONCA/batch_0002.csv.gz": "edcea1f9f3f7364bb7892e887e316d49be8f07118b37dac3ef79a59fa08c0857",
+            "extract_out/ONCA/batch_0003.csv.gz": "a44f1ff2420c1fa509b0122b55593a482afa831c565684f4c1f6ccfc03e47ffd",
+            "extract_out/ONCA/batch_0004.csv.gz": "5ceaf5b0691005e4b1a7e920ad3bfbd1b165f93d5edb5f99ffde4e49b6bd608d",
+            "extract_out/ONCA/batch_0005.csv.gz": "159b3e3c96e4166d93157edad02bc58421612321495411760015b74aa07afe94",
+            "extract_out/ONCA/batch_0006.csv.gz": "692fda259d7788c1e1ef87b56eb8d14b37e6b83427af8ebaab8a7382cd0a4eaf",
+            "extract_out/ONCA/batch_0007.csv.gz": "f6ccdc0ebc55b9c1d12e802356aa27ba8880113b2ce74c3697c2c3af83d5c122",
+            "extract_out/ONCA/batch_0008.csv.gz": "7e6384757c1a85143a939beb3fe69f082249b46ee77cd29f056b0982770552a5",
+            "extract_out/ONCA/batch_0009.csv.gz": "93a4f8e82de4dafcbd9f369a8ed0cfbb1fc51a9e129580ae11409b5d742ce430",
+            "extract_out/ONCA/batch_0010.csv.gz": "1c820bdbf188aba0f40285214005322c38c8d3eee7b515886381ade3b547408f",
+            "extract_out/ONCA/batch_0011.csv.gz": "cdd32f9a0e179cb52e79616a227d085e5e038263fb50516ed8b51da6964d4918",
+            "extract_out/ONCA/batch_0012.csv.gz": "bf585e363465e69cf968a83797a17d08d6f4175013f952a22ec15a1520444625",
+            "extract_out/ONCA/batch_0013.csv.gz": "63fee216cc1500ec82b9cae10ee72cf0e84dc8611f450be97086aa0214c0934c",
+            "extract_out/ONCA/batch_0014.csv.gz": "9d23186b179daefbc1d4f847cea4bdc95fe674d9e2125323c7938bc2de0ea5e6",
+            "extract_out/ONCA/batch_0015.csv.gz": "03e321c06a8f8112e3a07c59b740f82af59857294f36fcff096d2bbd408e100b",
+            "extract_out/ONCA/batch_0016.csv.gz": "6847947c3e096c48e1b09a0298d807fb154dea2809b4883c0700adac2cd96537",
+            "extract_out/ONCA/batch_0017.csv.gz": "22f9d2035b18a1acbc4bd9557ee68ad1b826035de20bcf34f168c4be133fad42",
+            "extract_out/ONCA/batch_0018.csv.gz": "71a80c0779200aba8e8ef81c32730e15cdce3f144af21f10329feca771372d23",
+            "extract_out/ONCA/batch_0019.csv.gz": "2ab6f144db3391f1da154acfdde4420446285a4a0f206acac0737b03397ecb1d",
+            "extract_out/ONCA/batch_0020.csv.gz": "7d3e1559fbe1820bd96a207f8b836500bbcf2bfa095756d55e62a7110d77b994",
+            "extract_out/ONCA/batch_0021.csv.gz": "4fa06e4ffc655665e00a1cb685aa50e06ae789bbe025f84cbee423aa31e4e843",
+            "extract_out/ONCA/batch_0022.csv.gz": "336de5eebbf0460336e633bd93205101f00514c3a7fa9a9c143d5e13161cdc9b",
+            "extract_out/ONCA/batch_0023.csv.gz": "095ddce9ba7a223867e17821a4581638fe3d8cd8c80b632ba7e9127888e49ca9",
+            "extract_out/ONCA/batch_0024.csv.gz": "f1acfb5e1e1fa85312f2058fe9e1be39efa6a8372ac4a858fe70bcfdc573674e",
+            "extract_out/ONCA/batch_0025.csv.gz": "8c1f28916b30e3617ec7542d8e9fff52adf428c1a124d3aa242e6a1db34f4eca",
+            "extract_out/ONCA/batch_0026.csv.gz": "1210af62923c596070e386e4990910553a507ec43e80eb328b2a30b482b37065",
+            "extract_out/ONCA/batch_0027.csv.gz": "8ee617c0265881ec16585baf07f81b6f28622f60fc285e93e4f82722e8df025d",
+            "extract_out/ONCA/batch_0028.csv.gz": "33f4d7944eb0ae5dae750e0954b7f60e1aa81fda99c162cd22c525861e505131",
+            "extract_out/ONCA/batch_0029.csv.gz": "5266899bb220b651d836ada4813a39dd39acb59c09c0f3700aefcb5048544d7f",
+            "extract_out/ONCA/batch_0030.csv.gz": "58c2ce3681ddecb709c964ec916207518b772a9e6b73a4ea19b0cbab2a5b8079",
+            "extract_out/ONCA/batch_0031.csv.gz": "98de1151fb038f9ebc5aa95188b71818ad6fc514e69fa859776d264673f5d9d1",
+            "extract_out/ONCA/batch_0032.csv.gz": "5206812814ada95628b03f15ef855aec827d61f084981d792e6fdbba0680f650",
+            "extract_out/ONCA/batch_0033.csv.gz": "1dc1aa858f0324ab1d0fff578667e4264c584740881400ab0cd000b30dd4ce29",
+            "extract_out/ONCA/batch_0034.csv.gz": "711cbdd93cfb63bad592a4c20515e67180e14c1550736f514a26c58541984cb9",
+            "extract_out/ONCA/batch_0035.csv.gz": "2018f45e0ac93ec40273b040f511161e83547553b9016171eda2ca9cd42e8c99",
+            "extract_out/ONCA/batch_0036.csv.gz": "a797abf41969027f3bf505f4c49453360d12365b85f872216284df859164d358",
+            "extract_out/ONCA/batch_0037.csv.gz": "a347635bfa7b7a9d2e7d6117d9bfa8770624c8c0656900dbca34af1b32956117",
+            "extract_out/ONCA/batch_0038.csv.gz": "a93dee9284f750abe8aa355a8ec8c0718cd9d7def87115c74ca221d1a8093129",
+            "extract_out/ONCA/batch_0039.csv.gz": "82b3c07f99cf048e6cc7469c649bd543e3f3d4eda6395e99eb533ec7d4d3b4e1",
+            "extract_out/ONCA/batch_0040.csv.gz": "62bebbbae50dfcfc746c8d447f17ee90a99799fcacec4d49a517a32994c4d5a3",
+            "extract_out/ONCA/batch_0041.csv.gz": "7b57fcdfc6215955b7545583f72d2e1b21d46d0968f1522b21e2b173c52c1865",
+            "extract_out/ONCA/batch_0042.csv.gz": "dee7c867d6ff14b437cbed4cb7b25fa6476fed52ff3a68ad85964f8d9f197f5e",
+            "extract_out/ONCA/batch_0043.csv.gz": "6f6fb472543f6075c6ef527447b4ec5dd07d746eb3a00d33437df814901eb56d",
+            "extract_out/ONCA/batch_0044.csv.gz": "104e0a8d2f6a3bed7043c7743ecd1ea725c40bd1a3e5543518ca8ad280478c6e",
+            "extract_out/ONCA/batch_0045.csv.gz": "aca124f19b500053490f5b7b517e37d7e257036a0cf3fb3b66b6b7468ca25502",
+            "extract_out/ONCA/batch_0046.csv.gz": "97e3a85290e1104db890fd1c32f2ceb3e005cfbea3636558f981450c3ee45693",
+            "extract_out/ONCA/batch_0047.csv.gz": "9ef1bbb25f6735387cf0078a3d59312b1871dd66e28a324145364451172e2cfb",
+            "extract_out/ONCA/batch_0048.csv.gz": "edc6f5fe1a6e94496ae30e2b36b28fc809c2a1387ed4a3f620d35c11cbae1d9b",
+            "extract_out/ONCA/cand_batch_0000.csv.gz": "c97bf6bf14b8a28d4a5cd74fff3e04a2dc28067319bc070b63d0e537ba96567c",
+            "extract_out/ONCA/cand_batch_0001.csv.gz": "5dddb2aadbb5f6766f3db4c647e0958f4d3f7f6089de89f9c3a4d40b521a9043",
+            "extract_out/ONCA/cand_batch_0002.csv.gz": "7d36c58940316b6da4b6612f8d6badc7952ceacada0957e2c6ca176157f544a6",
+            "extract_out/ONCA/cand_batch_0003.csv.gz": "ab0bbd2e2087a0335d52f8a20746316aee1b78a11849903845a9e21efb003052",
+            "extract_out/ONCA/cand_batch_0004.csv.gz": "1b3db3ea97f5cb0cac2d49c87d86c6742a746f8224cc545a4e2ac30d3c80c799",
+            "extract_out/ONCA/cand_batch_0005.csv.gz": "6612b8f3287def3989146b80aa6c7846703b05c36159701591a84e81bf00b575",
+            "extract_out/ONCA/cand_batch_0006.csv.gz": "e64ca6264e3709709ce527edcdcc9c14bd1a61e8d2d9f408c06a9d02f63cc1b3",
+            "extract_out/ONCA/cand_batch_0007.csv.gz": "6dfdd6a245e03be985b183813f57412ab2332233e9f42a2e237ef14686183202",
+            "extract_out/ONCA/cand_batch_0008.csv.gz": "b4bc6026bb6affc576eb27626fe2c6922a480223ea5e9ede4643c0daec5e1671",
+            "extract_out/ONCA/cand_batch_0009.csv.gz": "dd1b078a63f9fc1c0d92e935b7a11ec43019c91e7c91f9043cfb9afced45345f",
+            "extract_out/ONCA/cand_batch_0010.csv.gz": "ac5025f042cae144fe42d2016faf1f3e2a978edbd413439f9574a2d50ecdc47e",
+            "extract_out/ONCA/cand_batch_0011.csv.gz": "a23c207c5495bfa78b0b8b8ce2b5292e02a0d5f2bc66de7c7e882b200b3b8770",
+            "extract_out/ONCA/cand_batch_0012.csv.gz": "55bb57486cf738e3f93adf7c6c233d217bb3e0d338ff060e9156d39972ab3023",
+            "extract_out/ONCA/cand_batch_0013.csv.gz": "1160b30aebb9ecdb3b681c516abcc021058cb9473ea1bac633b431cdd11d3675",
+            "extract_out/ONCA/cand_batch_0014.csv.gz": "90d6b28b67616659f5c429886cdada6e3081494b5a3ea71bb8f3ccc046344b23",
+            "extract_out/ONCA/cand_batch_0015.csv.gz": "541b4b7f2209019f551cfe154b8bec21c7b11a7036d30a9f1e3fed426602e113",
+            "extract_out/ONCA/cand_batch_0016.csv.gz": "08e2a8ddf26960b1693fe7430acb0d67ef1ab0f0ec7b1698fc4d034199090b8a",
+            "extract_out/ONCA/cand_batch_0017.csv.gz": "a603820588574887272235c5054efcf7ccfa44c6baf85a12f39d2004938c2d15",
+            "extract_out/ONCA/cand_batch_0018.csv.gz": "070dffcd0e4651e0c191c00049a0d4c3fa5a51812f8092c523b91d983f6197bd",
+            "extract_out/ONCA/cand_batch_0019.csv.gz": "e26d2ebbd481e4f53e14860cfb2167cd9b1e333e44fbbb328d41016aa01b444f",
+            "extract_out/ONCA/cand_batch_0020.csv.gz": "d6df9d567f9cecccaea5ec0d3107b98788058996cf9d95552d98bdfb668d320d",
+            "extract_out/ONCA/cand_batch_0021.csv.gz": "de608256d81faf09a8bf16c231fc80afc2f69e71e0ce55886012f53e6db798bc",
+            "extract_out/ONCA/cand_batch_0022.csv.gz": "2734af83bbbbaf0bf38661a375303d1e256b63684f0e217fe7df587bd34e680a",
+            "extract_out/ONCA/cand_batch_0023.csv.gz": "a6095735de9278759436603ec426be9d18d3312237c3c104cfb60e97e5f3de71",
+            "extract_out/ONCA/cand_batch_0024.csv.gz": "821c826d30f45f8ee6e12ff9f9069b7e7124ea1d946bd028b6d3de00afff3812",
+            "extract_out/ONCA/cand_batch_0025.csv.gz": "0c30f2b1be9176358461782202150c2307cf97ac303a86ca4083ac2b96c34e48",
+            "extract_out/ONCA/cand_batch_0026.csv.gz": "511e572d29ce1fec7471af2957a0e822b632cb03436eecef811503867cdd1364",
+            "extract_out/ONCA/cand_batch_0027.csv.gz": "8f9f269d6e7751e7e365c2f7a8ef2c85249be8b349c3c3f52dd6dc4bb6b06208",
+            "extract_out/ONCA/cand_batch_0028.csv.gz": "ade86671009f9637afc9531ecb2545fdf4fa4109475d6e4bcb6380b483c230e7",
+            "extract_out/ONCA/cand_batch_0029.csv.gz": "5f36e7736b5b20d37c423eab0373149184222d16915715edfa17f48a2193593f",
+            "extract_out/ONCA/cand_batch_0030.csv.gz": "680d6b8bef8206c7d7972c8b0b7fc58d0a3b91a1cb54746cc75bbaac40c95035",
+            "extract_out/ONCA/cand_batch_0031.csv.gz": "61b3f1f0d0f7fecf8d2093a78ca32e36fc37e0451fdd70ad6e488168c962c327",
+            "extract_out/ONCA/cand_batch_0032.csv.gz": "32d27039a1f5255f019e7afd0b3748dc6aefc42c491ca3abe78f376c8c6c6fc3",
+            "extract_out/ONCA/cand_batch_0033.csv.gz": "0ea0cff9ebb59c6543c8745e919f00876d60a503fb695f0231f42aafc296dc4c",
+            "extract_out/ONCA/cand_batch_0034.csv.gz": "75aca906dc4e545b5890c35563feb6f2975fd510560217190dd84bbcd328cb36",
+            "extract_out/ONCA/cand_batch_0035.csv.gz": "36d278319635036372f566c8a8bc2eb57cfe705f1e21c88c0f82af71ebf24f63",
+            "extract_out/ONCA/cand_batch_0036.csv.gz": "63ecbd1da125eea30f373fe3fbde2ccbc69f63c890b4530482b546f5b2043212",
+            "extract_out/ONCA/cand_batch_0037.csv.gz": "5ca23b72ebfebbefe8ba8f52c0e724ce8dac72cbb8d72d14de36cec1e304912f",
+            "extract_out/ONCA/cand_batch_0038.csv.gz": "73c93ee26dac50e7e098cd1fa4f5e6da66799788d37f49dc2ac277f5211cd434",
+            "extract_out/ONCA/cand_batch_0039.csv.gz": "dfa782ecccd46aff565059d64b66f4e6ec37fbb5c5ea665e3835873d5f02a005",
+            "extract_out/ONCA/cand_batch_0040.csv.gz": "3f8a24517cdb7c46da621e586533bcaadaf8d145d92ad86edf0794b6cab9ae33",
+            "extract_out/ONCA/cand_batch_0041.csv.gz": "15a93607ccfae953cfd8665dd21f6c48032727f7ae6b30ccbe30c0c67a0ce5dc",
+            "extract_out/ONCA/cand_batch_0042.csv.gz": "03b819b646a7332a70f0f4041f576ac14ecdef2c6daa9a633c330b9d6c6379f3",
+            "extract_out/ONCA/cand_batch_0043.csv.gz": "9da87b65700679a5387902f3417d39b5bb13ae572462a3a8f1a16f599cb1cc64",
+            "extract_out/ONCA/cand_batch_0044.csv.gz": "a7447d3cdbb02092b48f525bb769d8d434992865f860229d3e1e5cf104476c8c",
+            "extract_out/ONCA/cand_batch_0045.csv.gz": "f51190ad4b988131713c23fa33b7efc12d66a837d721ccc5c13fd53f176cf1cd",
+            "extract_out/ONCA/cand_batch_0046.csv.gz": "bdbfad007cc5b1d85029789e3555349d1af8d79da35971cc7050fdae8024df63",
+            "extract_out/ONCA/cand_batch_0047.csv.gz": "42825b901e59e69b473482607a9801e143091897230bb84e77ff12868fbf8ba2",
+            "extract_out/ONCA/cand_batch_0048.csv.gz": "4c33d15846819088156c468ee8942db8e0bdf39a16cfd75547470fde78649b4c",
+            "extract_out/ONCA/progress.json": "6d1938405c867995be158f6bdc851113402c47f9a3a5215d9a8bb4db3a3c50c6",
+            "extract_out/SCC/batch_0000.csv.gz": "6bf743686f69801dd51d190f9a01277841de7ea763e39e1f6aa2c62e9399ef92",
+            "extract_out/SCC/batch_0001.csv.gz": "373f7db62cc7a5b2908d97c13510ae9eb924d60787b4d689b69080f46213f3f7",
+            "extract_out/SCC/batch_0002.csv.gz": "5c7989994757d43949b0bbbc16126ca10c28c4c29311b580020e16996507f3e2",
+            "extract_out/SCC/batch_0003.csv.gz": "8107f8668aebece19824f4f131d1a203448cf0c1a44919cf98f2d7b7723198a3",
+            "extract_out/SCC/batch_0004.csv.gz": "84d03e49c34d5486c3ec9602fd66460296179b31c29f013cf71d078ba2ccee7e",
+            "extract_out/SCC/batch_0005.csv.gz": "bea7dbfce7ff337e6b4a69b6c21e0f26b4705833c96ff5b8e95f032b219a4b43",
+            "extract_out/SCC/batch_0006.csv.gz": "f158232c0242c1937bf808eb332c62d2b65380f5dde54d173303b48ded78de01",
+            "extract_out/SCC/batch_0007.csv.gz": "41081e0cf62c013a26232e83f57c0840fc4ac587c176844f7a69a29ccf5b2ce3",
+            "extract_out/SCC/batch_0008.csv.gz": "07ceb6fce0265c3519c5ea00f2425c2c007a310cf1e1be0052a7dac0f6cebf1a",
+            "extract_out/SCC/batch_0009.csv.gz": "6410dda82e02b4ae1da566f096dbb140ecd339980cd36989251e08ab374160b9",
+            "extract_out/SCC/batch_0010.csv.gz": "66d82c6587bae47d48ae76f4864be7ca8b1a93a8bfb0f201d6579296b1f34fc5",
+            "extract_out/SCC/batch_0011.csv.gz": "3a388855f0fec95f4caf9eecfbcfae9c38933fecd3a6d10b12032bf5d8f63913",
+            "extract_out/SCC/batch_0012.csv.gz": "613b17c123af61a61504532b7cd4e39a01f264e89f23afa645357cbf5f03a7b2",
+            "extract_out/SCC/batch_0013.csv.gz": "bdb00e393f6442fe043985b72a063b964428add8ecc0a1b5abe968a0249716f9",
+            "extract_out/SCC/batch_0014.csv.gz": "f60065af76991ee8b8e08d562f30223a73e2a62fc0880d3348601136aaffa942",
+            "extract_out/SCC/batch_0015.csv.gz": "3deed2e3f0ec94895aa9f28480e0d80a0238a493fd6a2302d6efc2de25d83420",
+            "extract_out/SCC/batch_0016.csv.gz": "f0eff7a5fe76f3efc6c5c59c3410c8388c8e62c9b716b7578968790f83b367aa",
+            "extract_out/SCC/batch_0017.csv.gz": "1ec1a095ad2c6294b27a5ad0f2fb5c5803ed9cbf9a33a05910450261fff8090c",
+            "extract_out/SCC/batch_0018.csv.gz": "fbfe07685c9d62c286e92112e79261d7c738483c6c90b6f26ebe1bcccde7f0e5",
+            "extract_out/SCC/batch_0019.csv.gz": "b7f2cbc3667a04e7d33673105a4e485e0d338f5057d73cfd8f1f734213d53eeb",
+            "extract_out/SCC/batch_0020.csv.gz": "a658b5b168012ff533eeacf5ede1bd1bf020f2ba903bc2386f753576b97e99ff",
+            "extract_out/SCC/batch_0021.csv.gz": "70b585f469b600c42c6d51c8097c780ff6964a24412777f7aeae84c5390a36de",
+            "extract_out/SCC/cand_batch_0000.csv.gz": "469ff28b7f3318113cad55139f170506c65ab661169a76ff5f2cd86bfac174ed",
+            "extract_out/SCC/cand_batch_0001.csv.gz": "0b0ded0685f7dbcc834847c28f298af22340826c98ccccb9b2c5bd0073c6a995",
+            "extract_out/SCC/cand_batch_0002.csv.gz": "efa4f2e5ce79e7b6ee64f3651244d880d61e673ea2a8339fcfc4cad96e782f2d",
+            "extract_out/SCC/cand_batch_0003.csv.gz": "652ff7bb859d35e9c883e7a6a0f5cc8bfc6e7402b4475adfc41499bd25b2c937",
+            "extract_out/SCC/cand_batch_0004.csv.gz": "66934d085f7c5a89ac02ef0ab75cbbb793f4ca562661e6587a9039dea84f956b",
+            "extract_out/SCC/cand_batch_0005.csv.gz": "4e19c01e201ecff96e26c63285584a546fe4794ed8a1749076af5fe498c4b836",
+            "extract_out/SCC/cand_batch_0006.csv.gz": "a5abc86fb57536d09fdf3f1a36a6fc54cc611ef76cddab2da4aca2d6a01819ea",
+            "extract_out/SCC/cand_batch_0007.csv.gz": "6ade373e384a20f351e2c2f21047a61c9a55f319cfb900a729022c193223297e",
+            "extract_out/SCC/cand_batch_0008.csv.gz": "b6dc45050fe4170a835771d90c9fd50b7a70672df63db0638928edd5987338e8",
+            "extract_out/SCC/cand_batch_0009.csv.gz": "9ada43f85f2386e0d2cbd3f825c8ba3c5d8fd73b74c88cb03c4c4bb023f5ba3f",
+            "extract_out/SCC/cand_batch_0010.csv.gz": "619522675efe92ebe24a42e7b38840d82904efb710e587053e8b889a471ba94b",
+            "extract_out/SCC/cand_batch_0011.csv.gz": "e7d7979a78d8287e4a6afa16521aa1fac335385b84109c6a8e53af850efbe0d9",
+            "extract_out/SCC/cand_batch_0012.csv.gz": "29f0cde520ef9b6843f5514a8b8839b2bb3346060c91c493b11c4757b9ca5366",
+            "extract_out/SCC/cand_batch_0013.csv.gz": "e4a45e40a9ccd103e4f027f4934847cac5b32d2ccafcdd054c875c82ca9606bd",
+            "extract_out/SCC/cand_batch_0014.csv.gz": "10bde36e016387caa3e0166f488b9b32720ae792a357e9513e764c5753c6cb72",
+            "extract_out/SCC/cand_batch_0015.csv.gz": "9e3ec563939d7b75681746a377534a34ae0e1654cdf168044acacd1d5b3cccf3",
+            "extract_out/SCC/cand_batch_0016.csv.gz": "63cf8fa505306c21dc77d8db76aaabec0660d6f76ec49ced6374291c6e01a90e",
+            "extract_out/SCC/cand_batch_0017.csv.gz": "d964542d4fbe59565d15316006c2d3b427032fd17ef3bbe164a2b489a3f3346b",
+            "extract_out/SCC/cand_batch_0018.csv.gz": "c5d8fdf85906181e4888831756088c7995da0aff3d40c9ae27b1df09f22ddf6a",
+            "extract_out/SCC/cand_batch_0019.csv.gz": "84cd48b03cb9dbdcc312bb0582de3a4281184267977fd4371694cd4f882ad78b",
+            "extract_out/SCC/cand_batch_0020.csv.gz": "baedfcc3f2d49a17eff82d3a5c1a08fc543172f28d3c29e7863442b9c74c1770",
+            "extract_out/SCC/cand_batch_0021.csv.gz": "81037c32e7e40cd53705e904995ad4e20eb53e4e6eb1024a30711ff128062233",
+            "extract_out/SCC/progress.json": "ced024649c7155e37088e28ef70000ea3e53a4d0e5c6bf95c02d3c7c28688150",
+            "merge_out/BCCA/decision_ids.csv.gz": "39a67d46fa60f39c7fe296df1deedba0ff80c60a862e85a160e19c78417e7fb3",
+            "merge_out/BCCA/folded_log.csv.gz": "1156448da19050efc06f39b8a73d36c1260461d7ce67edcb2bffd1d814bdb244",
+            "merge_out/BCCA/key_mapping.csv.gz": "5a667436ed2ae166737959823a8e679c6ad2080cabaef7b43f7d35f5e3d19a32",
+            "merge_out/BCCA/manifest.json": "50ce966d8e21222a6bf253035d7ecacace7b8ba084cfa3f83297326d90d0faa7",
+            "merge_out/BCCA/mentions_candidates.csv.gz": "25b093bfe308e6accd771856af28985f9ca8a0cf2347d73c8cd0f3bbc33e1fe6",
+            "merge_out/BCCA/merged.csv.gz": "9f5cfb8145b2813ff678716ae1520e3d02a22373334615965d21824240e6d583",
+            "merge_out/ONCA/decision_ids.csv.gz": "aaf1f4458d1661036e3a5f356c5e3bc7ec8adffe87ddf433c41a7d1e5b7260dd",
+            "merge_out/ONCA/folded_log.csv.gz": "349590196e95a6e46162aa1e6ec3618748a25d079f29c05d94693c4ad46ad62b",
+            "merge_out/ONCA/key_mapping.csv.gz": "e023bced4296b9d45ba351dd1d6124ebacd601e7e59fcd2a99cb23a6dab65b45",
+            "merge_out/ONCA/manifest.json": "057f277d7d91a542c61f24f259040ab104e98a95eeb27e68e926dd98ee6cde38",
+            "merge_out/ONCA/mentions_candidates.csv.gz": "37e51b495bb60ee5cc912a01cb3ef63af11a3e5687ba6084a20520932bad3dda",
+            "merge_out/ONCA/merged.csv.gz": "d89d42c8ef7dac3e3faf4da167511856a1e5dc986522b18af6d0ac8eea65da4e",
+            "merge_out/SCC/decision_ids.csv.gz": "3b7da96e89030fd3dd4b7040f832deb51c1cd920ff99f5e70373481a4b10348c",
+            "merge_out/SCC/folded_log.csv.gz": "0b2be2f9edd3130afe42db16c15e106c74aa6612cfdc808f7cd25f050e6a07cd",
+            "merge_out/SCC/key_mapping.csv.gz": "c9f4b29c076e3baec15ffa9ad69dd8cd02eb98f9e21077514425c57f1dafe7bd",
+            "merge_out/SCC/manifest.json": "6561a2c9f28a144625c2edb0b55ed0d780abfd7d6f6c7f3dd70bb8a5df6ace32",
+            "merge_out/SCC/mentions_candidates.csv.gz": "4744922a157fa550366648db2d8fcbd85265832ebd292149b2d34a91d0cc28e4",
+            "merge_out/SCC/merged.csv.gz": "eaf2936373b2566fe6b8938f1ca8db21e8c1c729685287842d10150ad08e7481",
+            "registry/ceiling.json": "f9fa1fcfbff80ba97ee173633c04fffaa37761a4f8923c88b75cfbc188e4dfaf",
+            "registry/decision_own_citations.csv.gz": "cd07d7448815c43a1e0d3d79fa680cbf15e054957aa54c2f46a874c59db0e4e2",
+            "registry/decision_registry.csv.gz": "6a7c34aee31e2d3473d88e4fdaf04aef5849888f249ce0136f7d304d24c99397",
+            "registry/manifest.json": "8d8983161782f88a01db92785db3522cca20a4f87ce746750abbdcdf1f1f79af",
+            "registry/registry_crosscheck.csv.gz": "a8076bbde7ae596089544da7aed4a2603a06981b883d0b6984e25ffc1f6cddc1",
+            "select_out/dd_profile.csv.gz": "9af860a957f8d4c2cc20cfce763fdb5bca4a70657284bb24db605c967e027618",
+            "select_out/manifest.json": "010d978a90058bd4214741ba73b85332df35a98b8b4f4f8eb914d4a9c122bbda",
+            "select_out/selected.csv.gz": "9e567a632851f5d968d19ac2d0b36159bbd529d3370763c6db9b95fbd215a899"
+          },
+          "fingerprint": "d6deb5d3cf3007c76841152e59a4fb97adedc855e0a6958492d4402c804a6cef"
+        }
+      },
+      "source_directory": "D:\\cases data analisis\\data\\run_20261015_identity_review",
+      "source": {
+        "mode": "sqlite_readonly",
+        "db_path": "D:\\cases data analisis\\data\\foundation\\research.db",
+        "db_bytes": 2620174336,
+        "db_mtime_ns": 1792042503440164400,
+        "db_file_hash": null,
+        "db_file_hash_note": "Large database is not rehashed or copied; imported artifact hashes and one read snapshot are recorded",
+        "imported_at": "2026-10-15T05:15:09.854547+00:00",
+        "imported_artifacts": [
+          {
+            "relative_path": "corpus/BCCA.parquet",
+            "sha256": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3",
+            "row_count": 14703
+          },
+          {
+            "relative_path": "corpus/ONCA.parquet",
+            "sha256": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+            "row_count": 24089
+          },
+          {
+            "relative_path": "corpus/SCC.parquet",
+            "sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+            "row_count": 10891
+          },
+          {
+            "relative_path": "decide_out/cross_court/effective_sources.csv",
+            "sha256": "92e20719dd828fdb1f8a581400205eb9b12218fcc6de22597cfd10a8cf506720",
+            "row_count": 495654
+          },
+          {
+            "relative_path": "decisions/bilingual_neutral_codes.csv",
+            "sha256": "dc4240597e1a066435250bab6787c54f91083e6aac08f202395022a9e9959baf",
+            "row_count": 46
+          },
+          {
+            "relative_path": "decisions/case_origin.csv",
+            "sha256": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+            "row_count": 203
+          },
+          {
+            "relative_path": "decisions/case_origin_manual.csv",
+            "sha256": "d2cb7f9f1e4bac148145c4acf51e73e31036097092cf4bd35c3ea46365e495ab",
+            "row_count": 32
+          },
+          {
+            "relative_path": "decisions/court_designations.csv",
+            "sha256": "6434a63cf0597c31f33741b9e33bfcf30aa98cccaa45f0f030a817d969bee2fc",
+            "row_count": 16
+          },
+          {
+            "relative_path": "decisions/court_or_reporter_scope.csv",
+            "sha256": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+            "row_count": 12
+          },
+          {
+            "relative_path": "decisions/id_prefixes.csv",
+            "sha256": "87bac5c7fedd863682ddc9f2768d78023e40b6e8eac6cb63894550fefdf60e2b",
+            "row_count": 15
+          },
+          {
+            "relative_path": "decisions/identifier_systems.csv",
+            "sha256": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+            "row_count": 16
+          },
+          {
+            "relative_path": "decisions/identity_court_facts.csv",
+            "sha256": "3ee854278bc0de607245382616fe48e62a67ca60833d7f38c46b68ddd0154e4f",
+            "row_count": 3
+          },
+          {
+            "relative_path": "decisions/identity_court_scope.csv",
+            "sha256": "33cfeb2644f0c5b941c032f296d495b12ae6d3cff67caa57165dc13df404737a",
+            "row_count": 2
+          },
+          {
+            "relative_path": "decisions/identity_separations.csv",
+            "sha256": "ae4df66364aa44e18d9cec29f77904bccb1c67fd4563ff87f9c9828608e41991",
+            "row_count": 1
+          },
+          {
+            "relative_path": "decisions/neutral_court_codes.csv",
+            "sha256": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+            "row_count": 327
+          },
+          {
+            "relative_path": "decisions/non_citation_words.csv",
+            "sha256": "6cd582bec8cd8d7181e00f21578b5a5121d2dbd6b6720281dfbd1d1eb20e3bb0",
+            "row_count": 76
+          },
+          {
+            "relative_path": "decisions/reporter_jurisdiction.csv",
+            "sha256": "4c8bf48a395656f8cfee995633f63406c12adbfffd471d462da32e995be7d6f8",
+            "row_count": 201
+          },
+          {
+            "relative_path": "decisions/reporter_origin_scope.csv",
+            "sha256": "141a6edae0c2fa8ec1a1575ac8847b6a2f980fac20b1df458d1fde4bce49d019",
+            "row_count": 40
+          },
+          {
+            "relative_path": "decisions/series_prefix.csv",
+            "sha256": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+            "row_count": 4
+          },
+          {
+            "relative_path": "edges/citation_edges.csv",
+            "sha256": "50f7a8401ab2c5e3ec8e690eaafadfed4e2ed3821ff871649110a0bd939a0a47",
+            "row_count": 490577
+          },
+          {
+            "relative_path": "merge_out/BCCA/mentions_candidates.csv",
+            "sha256": "6d2867c97ab39b692fdf57197c999b3ba8fa348ae635629db6f6d0bdb9da5d07",
+            "row_count": null
+          },
+          {
+            "relative_path": "merge_out/ONCA/mentions_candidates.csv",
+            "sha256": "cccdfc5d25ff7a228e91c25c363b78e1425036026d519f572f445de23c33517a",
+            "row_count": null
+          },
+          {
+            "relative_path": "merge_out/SCC/mentions_candidates.csv",
+            "sha256": "6c0731407adb68c758edfe5a68eeba2f31f61ec577c9627172d06019441215a0",
+            "row_count": null
+          },
+          {
+            "relative_path": "registry/decision_own_citations.csv",
+            "sha256": "3c164d0d97e15e4b79ff0e52c383548301f3b41bbb84d6afa721191b89fd40b7",
+            "row_count": null
+          },
+          {
+            "relative_path": "run_manifest.json",
+            "sha256": "312830e39e4e49c132c19e19a81b3aed51b9734cd4c159a277cae7d8e75fc431",
+            "row_count": null
+          },
+          {
+            "relative_path": "select_out/manifest.json",
+            "sha256": "010d978a90058bd4214741ba73b85332df35a98b8b4f4f8eb914d4a9c122bbda",
+            "row_count": null
+          },
+          {
+            "relative_path": "select_out/selected.csv",
+            "sha256": "c055e82caa29976a6ac41386deb7af2dff5966dae5d2a671aca6ced15ac8a583",
+            "row_count": 261029
+          }
+        ],
+        "run_sources": [
+          {
+            "run_id": "run_20261015_identity_review",
+            "logical_path": "corpus/BCCA.parquet",
+            "actual_path": "D:\\cases data analisis\\corpus\\BCCA.parquet",
+            "sha256": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3",
+            "physical_sha256": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3",
+            "size_bytes": 186876782,
+            "compression": "none"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "logical_path": "corpus/ONCA.parquet",
+            "actual_path": "D:\\cases data analisis\\corpus\\ONCA.parquet",
+            "sha256": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+            "physical_sha256": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+            "size_bytes": 183138908,
+            "compression": "none"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "logical_path": "corpus/SCC.parquet",
+            "actual_path": "D:\\cases data analisis\\corpus\\SCC.parquet",
+            "sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+            "physical_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+            "size_bytes": 365204389,
+            "compression": "none"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "logical_path": "decide_out/cross_court/effective_sources.csv",
+            "actual_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\decide_out\\cross_court\\effective_sources.csv.gz",
+            "sha256": "92e20719dd828fdb1f8a581400205eb9b12218fcc6de22597cfd10a8cf506720",
+            "physical_sha256": "2658d73861e1faebd3451c2f34536fbbe022ea690adaad3126c165d7b9b9b929",
+            "size_bytes": 4369299,
+            "compression": "gzip"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "logical_path": "edges/citation_edges.csv",
+            "actual_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\edges\\citation_edges.csv.gz",
+            "sha256": "50f7a8401ab2c5e3ec8e690eaafadfed4e2ed3821ff871649110a0bd939a0a47",
+            "physical_sha256": "3dd0658e8ceb23fd26c1762710b40ef651d7ac1d150b3b98202a1eeb0a211a2f",
+            "size_bytes": 7247755,
+            "compression": "gzip"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "logical_path": "merge_out/BCCA/mentions_candidates.csv",
+            "actual_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\BCCA\\mentions_candidates.csv.gz",
+            "sha256": "6d2867c97ab39b692fdf57197c999b3ba8fa348ae635629db6f6d0bdb9da5d07",
+            "physical_sha256": "25b093bfe308e6accd771856af28985f9ca8a0cf2347d73c8cd0f3bbc33e1fe6",
+            "size_bytes": 14645077,
+            "compression": "gzip"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "logical_path": "merge_out/ONCA/mentions_candidates.csv",
+            "actual_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\ONCA\\mentions_candidates.csv.gz",
+            "sha256": "cccdfc5d25ff7a228e91c25c363b78e1425036026d519f572f445de23c33517a",
+            "physical_sha256": "37e51b495bb60ee5cc912a01cb3ef63af11a3e5687ba6084a20520932bad3dda",
+            "size_bytes": 12480749,
+            "compression": "gzip"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "logical_path": "merge_out/SCC/mentions_candidates.csv",
+            "actual_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\SCC\\mentions_candidates.csv.gz",
+            "sha256": "6c0731407adb68c758edfe5a68eeba2f31f61ec577c9627172d06019441215a0",
+            "physical_sha256": "4744922a157fa550366648db2d8fcbd85265832ebd292149b2d34a91d0cc28e4",
+            "size_bytes": 19421092,
+            "compression": "gzip"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "logical_path": "registry/decision_own_citations.csv",
+            "actual_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\registry\\decision_own_citations.csv.gz",
+            "sha256": "3c164d0d97e15e4b79ff0e52c383548301f3b41bbb84d6afa721191b89fd40b7",
+            "physical_sha256": "cd07d7448815c43a1e0d3d79fa680cbf15e054957aa54c2f46a874c59db0e4e2",
+            "size_bytes": 8496563,
+            "compression": "gzip"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "logical_path": "run_manifest.json",
+            "actual_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\run_manifest.json",
+            "sha256": "312830e39e4e49c132c19e19a81b3aed51b9734cd4c159a277cae7d8e75fc431",
+            "physical_sha256": "312830e39e4e49c132c19e19a81b3aed51b9734cd4c159a277cae7d8e75fc431",
+            "size_bytes": 46053,
+            "compression": "none"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "logical_path": "select_out/manifest.json",
+            "actual_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\select_out\\manifest.json",
+            "sha256": "010d978a90058bd4214741ba73b85332df35a98b8b4f4f8eb914d4a9c122bbda",
+            "physical_sha256": "010d978a90058bd4214741ba73b85332df35a98b8b4f4f8eb914d4a9c122bbda",
+            "size_bytes": 1173,
+            "compression": "none"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "logical_path": "select_out/selected.csv",
+            "actual_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\select_out\\selected.csv.gz",
+            "sha256": "c055e82caa29976a6ac41386deb7af2dff5966dae5d2a671aca6ced15ac8a583",
+            "physical_sha256": "9e567a632851f5d968d19ac2d0b36159bbd529d3370763c6db9b95fbd215a899",
+            "size_bytes": 8074790,
+            "compression": "gzip"
+          }
+        ],
+        "run_components": [
+          {
+            "run_id": "run_20261015_identity_review",
+            "component": "acceptance",
+            "generation": 2,
+            "status": "ready",
+            "source_fingerprint": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "details_json": "{\"run_id\": \"run_20261015_identity_review\", \"status\": \"passed\", \"scope\": \"keyword_integrity_not_semantic_accuracy\", \"checks\": {\"bad_primary\": 0, \"member_disagreement\": 0, \"duplicate_edges\": 0, \"edge_dd_mismatch\": 0, \"edges_without_document\": 0, \"effective_edge_mismatch\": 0, \"edge_effective_mismatch\": 0, \"foreign_key_violations\": 0}, \"profiles\": 124313, \"edge_passages\": 490577, \"methods\": 1519, \"components\": {\"import\": \"ready\", \"relations\": \"ready\", \"cases\": \"ready\", \"edges\": \"ready\", \"methods\": \"ready\"}, \"vectors\": {\"cases\": \"missing\", \"methods\": \"stale\", \"edges\": \"missing\"}}",
+            "updated_at": "2026-10-15T05:35:03.394001+00:00"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "component": "cases",
+            "generation": 1,
+            "status": "ready",
+            "source_fingerprint": "cfb4310386f7c8e153c29b9359ab3f2c8df709a95194bc9f3327f7bc11747748",
+            "details_json": "{\"run_id\": \"run_20261015_identity_review\", \"profiles\": 124313, \"with_context\": 122059, \"candidate_mentions_excluded_by_final_edges\": 10913, \"source_fingerprint\": \"cfb4310386f7c8e153c29b9359ab3f2c8df709a95194bc9f3327f7bc11747748\", \"text_policy\": \"en_then_fr\"}",
+            "updated_at": "2026-10-15T05:20:26.250190+00:00"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "component": "edges",
+            "generation": 1,
+            "status": "ready",
+            "source_fingerprint": "cfb4310386f7c8e153c29b9359ab3f2c8df709a95194bc9f3327f7bc11747748",
+            "details_json": "{\"run_id\": \"run_20261015_identity_review\", \"edges\": 490577, \"passages\": 490577, \"edges_without_passage\": 0, \"source_fingerprint\": \"cfb4310386f7c8e153c29b9359ab3f2c8df709a95194bc9f3327f7bc11747748\", \"text_policy\": \"en_then_fr\"}",
+            "updated_at": "2026-10-15T05:22:39.145879+00:00"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "component": "import",
+            "generation": 1,
+            "status": "ready",
+            "source_fingerprint": "5510ae941ae8701304120bad7f06fd2c2982e30d90db2f318c016ed8fbc97a16",
+            "details_json": "{\"rows\": {\"members\": 261029, \"citation_edges\": 490577, \"effective_associations\": 495654}, \"groups\": 230449, \"checks\": {\"bad_primary\": 0, \"member_disagreement\": 0, \"duplicate_edges\": 0, \"edge_dd_mismatch\": 0, \"edges_without_document\": 0, \"effective_edge_mismatch\": 0, \"edge_effective_mismatch\": 0, \"foreign_key_violations\": 0}, \"output_seal\": {\"status\": \"verified\", \"files_verified\": 281, \"fingerprint\": \"d6deb5d3cf3007c76841152e59a4fb97adedc855e0a6958492d4402c804a6cef\"}}",
+            "updated_at": "2026-10-15T05:17:55.768755+00:00"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "component": "methods",
+            "generation": 2,
+            "status": "ready",
+            "source_fingerprint": "fb657941ea3b60a255e1a0694e028ded262a0ce7354e64b1f99b95e24bcf75f8",
+            "details_json": "{\"records\": 1519, \"by_layer\": {\"unknown\": 455, \"classification\": 386, \"orchestration\": 28, \"adjudication\": 286, \"edges\": 4, \"extraction\": 170, \"merging\": 57, \"selection\": 93, \"all\": 13, \"decision_tables\": 8, \"verification\": 9, \"pitfalls\": 10}, \"commit\": \"670bb47\", \"sources\": {\"audit/findings/canlii_crosscheck/REPORT.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\canlii_crosscheck\\\\REPORT.md\", \"sha256\": \"4ebd679b9070f3ef2d4cf00422712d1a2c44b9d1844af964bff1db0fdec468b7\"}, \"audit/findings/canlii_crosscheck/run_20261002_tables2/t2_summary.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\canlii_crosscheck\\\\run_20261002_tables2\\\\t2_summary.md\", \"sha256\": \"3e844b5766bc91c01f56d999ac9325ab6e18b531c7767d14740fea3d5ad44221\"}, \"audit/findings/canlii_crosscheck/run_20261002_tables2/t3_summary.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\canlii_crosscheck\\\\run_20261002_tables2\\\\t3_summary.md\", \"sha256\": \"3d9a01cea7b9a1e9f12be07f83e789ac899335da29dc5b551a4405d6bdbfecc1\"}, \"audit/findings/canlii_crosscheck/run_20261002_tables2/t6_calibration.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\canlii_crosscheck\\\\run_20261002_tables2\\\\t6_calibration.md\", \"sha256\": \"53a9603361499a60a5363dc5a02a8b933a3c2921dc30dd63d897d43992adb4e2\"}, \"audit/findings/canlii_crosscheck/run_20261007_rerun/t2_summary.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\canlii_crosscheck\\\\run_20261007_rerun\\\\t2_summary.md\", \"sha256\": \"0cd4ec5a3ef1f6b8e8c8439888c4d6f148631f5091b4358d6c760ead1e48a24e\"}, \"audit/findings/canlii_crosscheck/t2_summary.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\canlii_crosscheck\\\\t2_summary.md\", \"sha256\": \"c99f1b378a2f78345c166a35708af2e97d3cc34e2ab05036a33023ed7ff6da33\"}, \"audit/findings/canlii_crosscheck/t3_summary.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\canlii_crosscheck\\\\t3_summary.md\", \"sha256\": \"3d9a01cea7b9a1e9f12be07f83e789ac899335da29dc5b551a4405d6bdbfecc1\"}, \"audit/findings/case_origin_review.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\case_origin_review.md\", \"sha256\": \"8d761bc4049737357da7eca4fe9e5b3d6e0d0deaa3f946041a57623cc624c542\"}, \"audit/findings/citator-audit.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\citator-audit.md\", \"sha256\": \"5b5a2871be09b808a7892e5ebb48968ee15a416c4cc22a87dca7bc8f896e14f8\"}, \"audit/findings/court_designations_six_verification_2026-10-02.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\court_designations_six_verification_2026-10-02.md\", \"sha256\": \"2019f367b4a7a3746dbb00124fc7cf52a56bff58795923557fa50501067aa8f6\"}, \"audit/findings/debt4_debt6_verification_2026-09-15.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\debt4_debt6_verification_2026-09-15.md\", \"sha256\": \"c814749f2027e748ba99ae2a03785203a47672422246dda0b70dcb17f6057db7\"}, \"audit/findings/disambiguation_report.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\disambiguation_report.md\", \"sha256\": \"a4f0ed281955aa7c047e9d331a44596ca8d82495c7c456313824420e7265494d\"}, \"audit/findings/fca_au_authority_2026-10-02.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\fca_au_authority_2026-10-02.md\", \"sha256\": \"6c6a1d78a91dfb879840ce34600d4e83bc4ea90364654e7db3cf02d6da91d9dd\"}, \"audit/findings/findings_local.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\findings_local.md\", \"sha256\": \"36f81c99e0d0ed7bb14cfc96d2db567c28d3654e55e340c6626e580e4407db02\"}, \"audit/findings/findings_remote.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\findings_remote.md\", \"sha256\": \"d4ecbb605e41a2cecb399efeee067f175f5ebc6517501ffe51116fac1a9fca1c\"}, \"audit/findings/jurisdiction_channels/README.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\jurisdiction_channels\\\\README.md\", \"sha256\": \"1f629d8c4b0673cee5b2ed062ea4d33bdc286d7759b02db2e1a9d856989e0dea\"}, \"audit/findings/jurisdiction_precision_20261002/collection_head.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\jurisdiction_precision_20261002\\\\collection_head.md\", \"sha256\": \"e67ab1c5a770e65d1495266424d167e5979069110d04a445e6f71da843e7cfd5\"}, \"audit/findings/jurisdiction_precision_20261002/collection_special.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\jurisdiction_precision_20261002\\\\collection_special.md\", \"sha256\": \"5d6a6dbad04bbffdaac9522cdf14bed523af1aafdcb74ef2b275043dd4274bf6\"}, \"audit/findings/jurisdiction_precision_20261002/collection_tail.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\jurisdiction_precision_20261002\\\\collection_tail.md\", \"sha256\": \"ff57c38ce855e10f2882242ee26dffdfad34e999d0c549ce8e814c5922d29bad\"}, \"audit/findings/jurisdiction_precision_20261002/final_review.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\jurisdiction_precision_20261002\\\\final_review.md\", \"sha256\": \"6fa961b59e69930e257c07931c784c6909b1ad01b8374137372531c3c84f28a6\"}, \"audit/findings/jurisdiction_precision_20261002/review_plan.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\jurisdiction_precision_20261002\\\\review_plan.md\", \"sha256\": \"373a92224a9eb62cf7eedc794aabe1cf9d551ad8d7c7315a016e04cd9f18b538\"}, \"audit/findings/name_variant_report.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\name_variant_report.md\", \"sha256\": \"3c2d7b037cbf223d77ab02830bb0bdca8cc1e21d610ea3987a2982cff677f30b\"}, \"audit/findings/neutral_foreign_proposal.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\neutral_foreign_proposal.md\", \"sha256\": \"b4d4fe1e2574643d761443b749343a7eb5db700d8d24a78e9fbae92ac5afb3f6\"}, \"audit/findings/prior_art_audit_citation_census.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\prior_art_audit_citation_census.md\", \"sha256\": \"ad5b53104f18f07e1808e8ee72d71c42e180d52b90b5baed3c08ac3dcae2bb80\"}, \"audit/findings/problem_verification_2026-09-11.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\problem_verification_2026-09-11.md\", \"sha256\": \"e82f7193a8a3fb1d9586264fd7c8491034c7ca60ee4437fefd59362b29ae884d\"}, \"audit/findings/project_review_20261014/problem_entries_115_118.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\project_review_20261014\\\\problem_entries_115_118.md\", \"sha256\": \"189e4e79073df72ed7d0b30ca76fb2e16e90a4cc573f2b36d441a7131758c0da\"}, \"audit/findings/r21_group_reshuffle_pairs.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\r21_group_reshuffle_pairs.md\", \"sha256\": \"ef91889dccd0451a89a9a7ed9fc19d61e15c0a8e46402b78002f2c8fd6d4d079\"}, \"audit/findings/r3_reporter_origin_british.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\r3_reporter_origin_british.md\", \"sha256\": \"15d94646edec1564deab8db79f876203d2fc8986c5daae815c2a0c034eedb796\"}, \"audit/findings/r3_reporter_origin_canadian.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\r3_reporter_origin_canadian.md\", \"sha256\": \"20acfa514e989c1e21bf69afd21f35ac0446ef6c6018fa7c10404a90b7a29b46\"}, \"audit/findings/r3_reporter_origin_other.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\r3_reporter_origin_other.md\", \"sha256\": \"8796fa0b26aaac345c4a10432cee5d1c07f827c53269895ba9dd39954a34b9ac\"}, \"audit/findings/r3_stage1_targets_british.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\r3_stage1_targets_british.md\", \"sha256\": \"2f79edec0322782f29946ca244482b17665977cb483763abfc09633ce65f6a1a\"}, \"audit/findings/r3_stage1_targets_canadian.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\r3_stage1_targets_canadian.md\", \"sha256\": \"eab2019fa9cfb63680459bdd45fed997b20cf556f3efc5054c26a465fc616ba3\"}, \"audit/findings/r3_stage1_targets_other.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\r3_stage1_targets_other.md\", \"sha256\": \"dd7f3fc5d50cf06fd6685bb2b217daa1405fe41000a5354a49d877c9124327eb\"}, \"audit/findings/r4_case_batch_unresolved.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\r4_case_batch_unresolved.md\", \"sha256\": \"1f5f21ba86dd8feb6b0788e22a194bdc36d07c8db712a29869a681db11fd0f0e\"}, \"audit/findings/reporter_excluded.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\reporter_excluded.md\", \"sha256\": \"85939fe4248998bad07c38be3f6a47d53eb7535ed0dfbf9ae361355cfd2dfb1e\"}, \"audit/findings/reporter_handoff.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\findings\\\\reporter_handoff.md\", \"sha256\": \"21842bf1b248fea89b26a2cd7c4d1591a23d3e72b4a3cae8d285f3a29698a2d4\"}, \"audit/flp_toolchain/FLP_CAPABILITY_AUDIT.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\flp_toolchain\\\\FLP_CAPABILITY_AUDIT.md\", \"sha256\": \"e4be5d5258df28f8c76e9dd0a348cbbc643acb306520680e3237fbb961ab7d98\"}, \"audit/README.md\": {\"path\": \"D:\\\\cases data analisis\\\\audit\\\\README.md\", \"sha256\": \"9dc1790a609d03216f4a0863f6819f251b3b2e054652d91d0b3baac3aec76373\"}, \"decisions/bilingual_neutral_codes.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\bilingual_neutral_codes.csv\", \"sha256\": \"dc4240597e1a066435250bab6787c54f91083e6aac08f202395022a9e9959baf\"}, \"decisions/case_origin.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\case_origin.csv\", \"sha256\": \"cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc\"}, \"decisions/case_origin_manual.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\case_origin_manual.csv\", \"sha256\": \"d2cb7f9f1e4bac148145c4acf51e73e31036097092cf4bd35c3ea46365e495ab\"}, \"decisions/court_designations.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\court_designations.csv\", \"sha256\": \"6434a63cf0597c31f33741b9e33bfcf30aa98cccaa45f0f030a817d969bee2fc\"}, \"decisions/court_or_reporter_scope.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\court_or_reporter_scope.csv\", \"sha256\": \"0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd\"}, \"decisions/id_prefixes.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\id_prefixes.csv\", \"sha256\": \"87bac5c7fedd863682ddc9f2768d78023e40b6e8eac6cb63894550fefdf60e2b\"}, \"decisions/identifier_systems.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\identifier_systems.csv\", \"sha256\": \"bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081\"}, \"decisions/identity_court_facts.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\identity_court_facts.csv\", \"sha256\": \"3ee854278bc0de607245382616fe48e62a67ca60833d7f38c46b68ddd0154e4f\"}, \"decisions/identity_court_scope.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\identity_court_scope.csv\", \"sha256\": \"33cfeb2644f0c5b941c032f296d495b12ae6d3cff67caa57165dc13df404737a\"}, \"decisions/identity_separations.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\identity_separations.csv\", \"sha256\": \"ae4df66364aa44e18d9cec29f77904bccb1c67fd4563ff87f9c9828608e41991\"}, \"decisions/neutral_court_codes.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\neutral_court_codes.csv\", \"sha256\": \"90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72\"}, \"decisions/non_citation_words.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\non_citation_words.csv\", \"sha256\": \"6cd582bec8cd8d7181e00f21578b5a5121d2dbd6b6720281dfbd1d1eb20e3bb0\"}, \"decisions/README.md\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\README.md\", \"sha256\": \"e87e64bc6f4169d25bdddee99df38fa6082e42df8414c5bccaa26e24769e36d6\"}, \"decisions/reporter_jurisdiction.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\reporter_jurisdiction.csv\", \"sha256\": \"4c8bf48a395656f8cfee995633f63406c12adbfffd471d462da32e995be7d6f8\"}, \"decisions/reporter_origin_scope.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\reporter_origin_scope.csv\", \"sha256\": \"141a6edae0c2fa8ec1a1575ac8847b6a2f980fac20b1df458d1fde4bce49d019\"}, \"decisions/series_prefix.csv\": {\"path\": \"D:\\\\cases data analisis\\\\decisions\\\\series_prefix.csv\", \"sha256\": \"4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e\"}, \"docs/FOLLOWUP_20261015.zh.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\FOLLOWUP_20261015.zh.md\", \"sha256\": \"928bc9a1c22598f12e2d60bab69958194558635a477d2fe8bb0fb35ed7403f13\"}, \"docs/method_cards/00_new_court_playbook.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\method_cards\\\\00_new_court_playbook.md\", \"sha256\": \"6997934ab3514fbb2d0a794fbdfb3dc62106fd3ec437abbedf056c7da53bd123\"}, \"docs/method_cards/01_extraction.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\method_cards\\\\01_extraction.md\", \"sha256\": \"d5932b5962e98d256a1be6240ebf5685b560b6bc57f177bd036e4fb4ec54ab4e\"}, \"docs/method_cards/02_classification.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\method_cards\\\\02_classification.md\", \"sha256\": \"bfaa531990a519b687876694fc11cd87338030afa564fabcb2c6792d096ea4b7\"}, \"docs/method_cards/03_merging.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\method_cards\\\\03_merging.md\", \"sha256\": \"0b73fda0af293b304a4b3f687b40966fb42421850d819dd2a610d23a8ef37234\"}, \"docs/method_cards/04_adjudication.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\method_cards\\\\04_adjudication.md\", \"sha256\": \"9ec80f7f4bd1db98e9b71502e4cf56781e48ef61b223820df517d9983752408e\"}, \"docs/method_cards/05_selection_and_edges.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\method_cards\\\\05_selection_and_edges.md\", \"sha256\": \"5d0ff17706d64a41273004718cb6315846497d0fee7d39791c0c0fc1f176bbeb\"}, \"docs/method_cards/06_decision_tables.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\method_cards\\\\06_decision_tables.md\", \"sha256\": \"facac21865fa1b3b01d5d7e323f0385cbb8a8fc766f60344fb9446df725bb214\"}, \"docs/method_cards/07_verification_gates.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\method_cards\\\\07_verification_gates.md\", \"sha256\": \"f5c59fe726e5367e1eb70b16187c43a34eb74aa3a1ae1bb13286c9000d42290c\"}, \"docs/method_cards/08_pitfalls_by_layer.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\method_cards\\\\08_pitfalls_by_layer.md\", \"sha256\": \"4aa265a44ebe9ba81df470d8a35259c38d52219941d5e3c53ada60bcfc861ed9\"}, \"docs/method_cards/README.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\method_cards\\\\README.md\", \"sha256\": \"038f7e27d891b4fd20483b87b4c819a36e43e5078239faf40bf65743d736412c\"}, \"docs/PROJECT_REVIEW_20261014.zh.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\PROJECT_REVIEW_20261014.zh.md\", \"sha256\": \"803999665e086226276592b0348d37fafbc09d21524fe71e3af9cfc6299b3042\"}, \"docs/RELIABLE_RELEASE_20261014.zh.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\RELIABLE_RELEASE_20261014.zh.md\", \"sha256\": \"30d19c3f4b496b43eaf2b1849da393918243e238f52c7242e52c8c9d44ea30ee\"}, \"docs/technical_specification.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\technical_specification.md\", \"sha256\": \"b337a6688007bc41c291786683be1a2db3de6757d520b01db03b2a27c3c5919e\"}, \"docs/USAGE.md\": {\"path\": \"D:\\\\cases data analisis\\\\docs\\\\USAGE.md\", \"sha256\": \"b1cf3445288d50a29d9456d45aea6112b56a9f90458e7c5c7438281a2a4ced49\"}, \"implementation/demo_candidate_cases.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\demo_candidate_cases.md\", \"sha256\": \"0bbfa800914a77a5e2680bda5c487634262d1ca0214870e9a8eddacb8c798fcf\"}, \"implementation/demo_examples.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\demo_examples.md\", \"sha256\": \"c2730b498038c3be923adeec6788c7b21e2ea9855a0757b282b2d0dbb5e464a2\"}, \"implementation/demo_repair_progress.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\demo_repair_progress.md\", \"sha256\": \"c6f456a908c6f59ca22e9650a52cdd23505b7aebe3c60a914db02f77a4b8b027\"}, \"implementation/diff_report.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\diff_report.md\", \"sha256\": \"8950b18471a40c17d81eae3f03ca26ee94bd67e5def9931679bfd6fa94b2b192\"}, \"implementation/exp_bcca_citt_findings.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\exp_bcca_citt_findings.md\", \"sha256\": \"4ef7d24f3c07af6b461123a85284fdd9c6c86cf9a24c607e0ac2adb10a23c537\"}, \"implementation/plan_auto_label_calibration_2026-10-02.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\plan_auto_label_calibration_2026-10-02.md\", \"sha256\": \"607ad247f64a9e2e7a4e01f23a48d3fd0a844b1126537b5ff7c27ce04b157df6\"}, \"implementation/plan_canlii_crosscheck_2026-09-27.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\plan_canlii_crosscheck_2026-09-27.md\", \"sha256\": \"510e6aa2c85a1fa620a8a1c5baf25039b27355f05b297c52e90098e41066cc49\"}, \"implementation/plan_case_identity_106_109_2026-10-03.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\plan_case_identity_106_109_2026-10-03.md\", \"sha256\": \"bd09047cc983c83920d0eb615f5b03a72d6b401ddcf176641a2e048fa84e2ba3\"}, \"implementation/plan_data_foundation_and_retrieval_2026-10-03.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\plan_data_foundation_and_retrieval_2026-10-03.md\", \"sha256\": \"c3d0d051cfb892707743676e1a64cded5bf5f7fb3042a5e4c9474e18bf2c14c5\"}, \"implementation/plan_experience_library_2026-10-02.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\plan_experience_library_2026-10-02.md\", \"sha256\": \"388f29ecd5ccb456ea3583fe60cb20108e1e3743dd1ae8e3684f270891566570\"}, \"implementation/plan_gold_debt_2026-09-15.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\plan_gold_debt_2026-09-15.md\", \"sha256\": \"39316a6fea796d2384bfd147368dce4855dfc3d9fb3855cd231a571c139f27dd\"}, \"implementation/plan_recall_edges_2026-10-07.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\plan_recall_edges_2026-10-07.md\", \"sha256\": \"d70d55fa007ceb49fbbd40096b599d7e5e509eadb7f9c945aaea66cb86bfa790\"}, \"implementation/prompt_21_fix.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\prompt_21_fix.md\", \"sha256\": \"26681e08961151ba941d089a332068bd010a4b0b62b4b555d24e419519e9fd94\"}, \"implementation/prompt_88_89_registry.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\prompt_88_89_registry.md\", \"sha256\": \"21f7267f343030edf692d0b52e5290d558a3bf5b56b89e4769db99ff652afd96\"}, \"implementation/prompt_88_phase2_mixedkey.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\prompt_88_phase2_mixedkey.md\", \"sha256\": \"a138cc42aebcba4105c5e632d6808b1469dea6bc014978bbe86b9b49fe56dce2\"}, \"implementation/prompt_switch_r21a.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\prompt_switch_r21a.md\", \"sha256\": \"3a2203d5a724d02a3bd99caa31d4628ee0430fd912a63c6e02549d46d620dd13\"}, \"implementation/r21_fix_report.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\r21_fix_report.md\", \"sha256\": \"98ef99dbe2e9c394f07b6bc96deaf51509b296bda0701cd4b1faec09e0ec069b\"}, \"implementation/r3_session_report.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\r3_session_report.md\", \"sha256\": \"d0b5012be64f1476a7bd05a4214a8be81f6afcac4b3944fba4bf96e71fe2fed0\"}, \"implementation/README_zh_draft.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\README_zh_draft.md\", \"sha256\": \"9bf042ffa71e41511864a207c7a31fd7e9b5c0924e5676bca49c935eb363f940\"}, \"implementation/report_88_89_registry.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\report_88_89_registry.md\", \"sha256\": \"8be52a6257f36dfc22e7199f75c7799baafee2be04c34f2754132f135963f9ac\"}, \"implementation/research_ideas.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\research_ideas.md\", \"sha256\": \"1e2bec0574d288a2bd70b43175845856dd9b9f9d4ca38aac96b3fb1d4511b549\"}, \"implementation/工作日记索引_2026-09-18.md\": {\"path\": \"D:\\\\cases data analisis\\\\implementation\\\\工作日记索引_2026-09-18.md\", \"sha256\": \"6a55a7499665398aa69a318368c947dd0bb9d3355c44a22d8ca77479b9fccf50\"}, \"pipeline/artifacts.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\artifacts.py\", \"sha256\": \"a80ee0141807213778018999dd7880bc7888ff3b8a21e6022e21e4f882e933b8\"}, \"pipeline/classify.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\classify.py\", \"sha256\": \"e6522661a45af54a28c55a546daf067c593b4461b557b428146563f9728a0125\"}, \"pipeline/corpus_fields.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\corpus_fields.py\", \"sha256\": \"8121d6485dc5f23778a17d659a5fd54e5fb2faf841928b9959d2049ce1b240a2\"}, \"pipeline/coverage_report.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\coverage_report.py\", \"sha256\": \"712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8\"}, \"pipeline/decide.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\decide.py\", \"sha256\": \"79d1adc1c54483e7b1c5f62bab88d540dc7efc80431898eb2633d36b5041f25a\"}, \"pipeline/edges.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\edges.py\", \"sha256\": \"42b8f44922a4973ec15f9e882eeb392d2206be38697db74e995bae0ccd68ffa4\"}, \"pipeline/extract.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\extract.py\", \"sha256\": \"9a0efcfef661ef8365c8157c8e0c0594c31be7f6fb431a2d122c44ce5baa1ddb\"}, \"pipeline/identity_courts.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\identity_courts.py\", \"sha256\": \"3f95f4812ab46ef93548bd3f46f4a651915a1882919023bace26fefec2ae422c\"}, \"pipeline/merge.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\merge.py\", \"sha256\": \"27c9e37469407203c7dd16e06417d37f2fa7048f2e4c2468982ddfdec290166a\"}, \"pipeline/normalize.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\normalize.py\", \"sha256\": \"34c4412372ba7ff8a18c61bce91437e3d2a93ed6ab6d916b6317f268f552f080\"}, \"pipeline/registry.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\registry.py\", \"sha256\": \"22a922657fc64a97289b9bf48ff1d3514a0e6ced188b93de1e047cd2cda68e0c\"}, \"pipeline/registry_report.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\registry_report.py\", \"sha256\": \"9e2880456cbadb52bd3f27c5ce052e7e793e5d0dfe0a45e1304c5156696e0b40\"}, \"pipeline/replay_decide.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\replay_decide.py\", \"sha256\": \"bab5c68a4126ebff7e49e9ad7e83ce001584711cb30ef99a3009babbb873c5a2\"}, \"pipeline/run_all.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\run_all.py\", \"sha256\": \"259ae7ecbfba072d1bee99299717d0a453bfca294273b89886a1c75de8f6aea4\"}, \"pipeline/select_layer.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\select_layer.py\", \"sha256\": \"e915c88456155620f2ec94d8f5046dd09be26b7418722b7e5d9749d35fe32d25\"}, \"pipeline/shapes.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\shapes.py\", \"sha256\": \"48bd8d53d9d123f8f278f131864ebfcb92d18e0ace074afbc921037088211765\"}, \"pipeline/trace_source.py\": {\"path\": \"D:\\\\cases data analisis\\\\pipeline\\\\trace_source.py\", \"sha256\": \"71a655882c5e70937ec687f6a3b931dab6c9835d15e9329d5e981b4325f2fb17\"}}}",
+            "updated_at": "2026-10-15T05:32:48.605530+00:00"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "component": "relations",
+            "generation": 1,
+            "status": "ready",
+            "source_fingerprint": "13786dac8ec53c3be47c05a5d1a774276f6a907f252bae05678224b87ef21ca1",
+            "details_json": "{\"run_id\": \"run_20261015_identity_review\", \"edges\": 490577, \"by_relation\": {\"other_judgment\": 490572, \"same_case_history\": 5}, \"own_citations_file\": true, \"sources\": {\"registry/decision_own_citations.csv\": {\"path\": \"D:\\\\cases data analisis\\\\data\\\\run_20261015_identity_review\\\\registry\\\\decision_own_citations.csv.gz\", \"sha256\": \"3c164d0d97e15e4b79ff0e52c383548301f3b41bbb84d6afa721191b89fd40b7\", \"logical_path\": \"registry/decision_own_citations.csv\", \"physical_sha256\": \"cd07d7448815c43a1e0d3d79fa680cbf15e054957aa54c2f46a874c59db0e4e2\", \"size_bytes\": 8496563, \"compression\": \"gzip\"}}}",
+            "updated_at": "2026-10-15T05:18:10.218146+00:00"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "component": "vectors_cases",
+            "generation": 1,
+            "status": "missing",
+            "source_fingerprint": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "details_json": "{\"status\": \"missing\", \"reason\": \"offline keyword build; vector generation skipped\"}",
+            "updated_at": "2026-10-15T05:23:23.332152+00:00"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "component": "vectors_edges",
+            "generation": 1,
+            "status": "missing",
+            "source_fingerprint": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "details_json": "{\"status\": \"missing\", \"reason\": \"offline keyword build; vector generation skipped\"}",
+            "updated_at": "2026-10-15T05:23:23.364346+00:00"
+          },
+          {
+            "run_id": "run_20261015_identity_review",
+            "component": "vectors_methods",
+            "generation": 1,
+            "status": "stale",
+            "source_fingerprint": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+            "details_json": "{\"status\": \"missing\", \"reason\": \"offline keyword build; vector generation skipped\"}",
+            "updated_at": "2026-10-15T05:32:08.016757+00:00"
+          }
+        ],
+        "lifecycle_metadata": "recorded",
+        "output_seal_verification": "manifest fingerprint verified; database query does not rehash all historical run output files",
+        "text_policy": "en_then_fr",
+        "selection": {
+          "mode": "active_pointer",
+          "pointer_path": "D:\\cases data analisis\\data\\active_run.json",
+          "pointer_sha256": "550f7f12d753bd892fe8138d16e3907dec44f5e8f685b2bb1b9634d654031310",
+          "pointer_bytes": 948,
+          "run_id_verified": true,
+          "input_fingerprint_verified": true,
+          "source_directory_verified": true
+        }
+      },
+      "structural_validation": {
+        "duplicate_edges": 0,
+        "missing_groups": 0,
+        "invalid_edge_contract": 0,
+        "invalid_mention_count": 0
+      }
+    },
+    "query_plan": [
+      {
+        "label": "full_table_summary",
+        "sql": "WITH doc_parts AS (\n SELECT source_id,court,substr(decision_date,1,10) date_token,\n CAST(substr(decision_date,1,4) AS INTEGER) y,CAST(substr(decision_date,6,2) AS INTEGER) m,\n CAST(substr(decision_date,9,2) AS INTEGER) day,\n CASE WHEN trim(citation)<>'' AND trim(source_id)<>'' AND source_id<>court||'_'\n THEN 1 ELSE 0 END valid_source_id,trim(citation)='' empty_citation,trim(decision_date)='' empty_date\n FROM documents WHERE run_id=?\n), doc_years AS (\n SELECT source_id,court,valid_source_id,empty_citation,empty_date,\n CASE WHEN date_token GLOB '[1-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'\n AND m BETWEEN 1 AND 12 AND day BETWEEN 1 AND CASE\n WHEN m=2 THEN CASE WHEN y%4=0 AND (y%100<>0 OR y%400=0) THEN 29 ELSE 28 END\n WHEN m IN (4,6,9,11) THEN 30 ELSE 31 END THEN y END year\n FROM doc_parts\n), d AS (\n SELECT source_id,CASE WHEN COUNT(DISTINCT court)=1 THEN MIN(court) ELSE 'UNKNOWN' END court,\n CASE WHEN COUNT(year)=COUNT(*) AND COUNT(DISTINCT year)=1 THEN MIN(year) END year,\n COUNT(*) corpus_rows,MIN(valid_source_id) valid_source_id,\n SUM(empty_citation) empty_citation_rows,SUM(empty_date) empty_date_rows\n FROM doc_years GROUP BY source_id\n), b AS (\n SELECT e.*,g.name group_name,g.dd global_dd,g.kept,\n COALESCE(d.court,'UNKNOWN') source_court,d.year source_year,\n CASE WHEN d.year IS NOT NULL THEN CAST(d.year/10 AS INTEGER)*10 END decade,\n CASE WHEN e.edge_support='supported' AND e.foreign_status IN ('FOREIGN','DOMESTIC_CA')\n AND e.origin_country<>'' THEN 1 ELSE 0 END origin_known,\n CASE WHEN e.group_origin_status='DETERMINED' AND e.group_origin_country<>'' THEN 1 ELSE 0 END group_origin_known,\n CASE WHEN d.source_id IS NULL THEN 1 ELSE 0 END missing_document_metadata\n FROM citation_edges e NOT INDEXED CROSS JOIN case_groups g ON g.run_id=e.run_id AND g.group_id=e.resolved_cited_case\n LEFT JOIN d ON d.source_id=e.source_decision AND d.valid_source_id=1 WHERE e.run_id=? AND g.dd>=? AND e.foreign_status=?)\nSELECT COUNT(*) citation_edges,COUNT(DISTINCT source_decision) citing_source_ids,\n COUNT(DISTINCT resolved_cited_case) cited_groups,COALESCE(SUM(CAST(mention_count AS INTEGER)),0) printed_mentions,\n COALESCE(SUM(origin_known),0) origin_determined_edges,COALESCE(SUM(1-origin_known),0) origin_unknown_edges,\n COALESCE(SUM(foreign_status='FOREIGN'),0) foreign_edges,\n COALESCE(SUM(foreign_status='DOMESTIC_CA'),0) domestic_edges,\n COALESCE(SUM(foreign_status='CONFLICT'),0) origin_conflict_edges,\n COALESCE(SUM(edge_support='heuristic_only'),0) heuristic_only_edges,\n COUNT(DISTINCT CASE WHEN group_origin_known=1 THEN resolved_cited_case END) group_origin_determined,\n COALESCE(SUM(missing_document_metadata),0) edges_missing_document_metadata,\n COALESCE(SUM(source_year IS NULL),0) edges_unknown_source_year FROM b",
+        "parameters": [
+          "run_20261015_identity_review",
+          "run_20261015_identity_review",
+          0,
+          "FOREIGN"
+        ]
+      },
+      {
+        "label": "origin_scope_before_origin_filter",
+        "sql": "WITH doc_parts AS (\n SELECT source_id,court,substr(decision_date,1,10) date_token,\n CAST(substr(decision_date,1,4) AS INTEGER) y,CAST(substr(decision_date,6,2) AS INTEGER) m,\n CAST(substr(decision_date,9,2) AS INTEGER) day,\n CASE WHEN trim(citation)<>'' AND trim(source_id)<>'' AND source_id<>court||'_'\n THEN 1 ELSE 0 END valid_source_id,trim(citation)='' empty_citation,trim(decision_date)='' empty_date\n FROM documents WHERE run_id=?\n), doc_years AS (\n SELECT source_id,court,valid_source_id,empty_citation,empty_date,\n CASE WHEN date_token GLOB '[1-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'\n AND m BETWEEN 1 AND 12 AND day BETWEEN 1 AND CASE\n WHEN m=2 THEN CASE WHEN y%4=0 AND (y%100<>0 OR y%400=0) THEN 29 ELSE 28 END\n WHEN m IN (4,6,9,11) THEN 30 ELSE 31 END THEN y END year\n FROM doc_parts\n), d AS (\n SELECT source_id,CASE WHEN COUNT(DISTINCT court)=1 THEN MIN(court) ELSE 'UNKNOWN' END court,\n CASE WHEN COUNT(year)=COUNT(*) AND COUNT(DISTINCT year)=1 THEN MIN(year) END year,\n COUNT(*) corpus_rows,MIN(valid_source_id) valid_source_id,\n SUM(empty_citation) empty_citation_rows,SUM(empty_date) empty_date_rows\n FROM doc_years GROUP BY source_id\n), b AS (\n SELECT e.*,g.name group_name,g.dd global_dd,g.kept,\n COALESCE(d.court,'UNKNOWN') source_court,d.year source_year,\n CASE WHEN d.year IS NOT NULL THEN CAST(d.year/10 AS INTEGER)*10 END decade,\n CASE WHEN e.edge_support='supported' AND e.foreign_status IN ('FOREIGN','DOMESTIC_CA')\n AND e.origin_country<>'' THEN 1 ELSE 0 END origin_known,\n CASE WHEN e.group_origin_status='DETERMINED' AND e.group_origin_country<>'' THEN 1 ELSE 0 END group_origin_known,\n CASE WHEN d.source_id IS NULL THEN 1 ELSE 0 END missing_document_metadata\n FROM citation_edges e NOT INDEXED CROSS JOIN case_groups g ON g.run_id=e.run_id AND g.group_id=e.resolved_cited_case\n LEFT JOIN d ON d.source_id=e.source_decision AND d.valid_source_id=1 WHERE e.run_id=? AND g.dd>=?)\nSELECT COUNT(*) citation_edges,COUNT(DISTINCT source_decision) citing_source_ids,\n COUNT(DISTINCT resolved_cited_case) cited_groups,COALESCE(SUM(CAST(mention_count AS INTEGER)),0) printed_mentions,\n COALESCE(SUM(origin_known),0) origin_determined_edges,COALESCE(SUM(1-origin_known),0) origin_unknown_edges,\n COALESCE(SUM(foreign_status='FOREIGN'),0) foreign_edges,\n COALESCE(SUM(foreign_status='DOMESTIC_CA'),0) domestic_edges,\n COALESCE(SUM(foreign_status='CONFLICT'),0) origin_conflict_edges,\n COALESCE(SUM(edge_support='heuristic_only'),0) heuristic_only_edges,\n COUNT(DISTINCT CASE WHEN group_origin_known=1 THEN resolved_cited_case END) group_origin_determined,\n COALESCE(SUM(missing_document_metadata),0) edges_missing_document_metadata,\n COALESCE(SUM(source_year IS NULL),0) edges_unknown_source_year FROM b",
+        "parameters": [
+          "run_20261015_identity_review",
+          "run_20261015_identity_review",
+          0
+        ]
+      },
+      {
+        "label": "document_denominators",
+        "sql": "WITH doc_parts AS (\n SELECT source_id,court,substr(decision_date,1,10) date_token,\n CAST(substr(decision_date,1,4) AS INTEGER) y,CAST(substr(decision_date,6,2) AS INTEGER) m,\n CAST(substr(decision_date,9,2) AS INTEGER) day,\n CASE WHEN trim(citation)<>'' AND trim(source_id)<>'' AND source_id<>court||'_'\n THEN 1 ELSE 0 END valid_source_id,trim(citation)='' empty_citation,trim(decision_date)='' empty_date\n FROM documents WHERE run_id=?\n), doc_years AS (\n SELECT source_id,court,valid_source_id,empty_citation,empty_date,\n CASE WHEN date_token GLOB '[1-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'\n AND m BETWEEN 1 AND 12 AND day BETWEEN 1 AND CASE\n WHEN m=2 THEN CASE WHEN y%4=0 AND (y%100<>0 OR y%400=0) THEN 29 ELSE 28 END\n WHEN m IN (4,6,9,11) THEN 30 ELSE 31 END THEN y END year\n FROM doc_parts\n), d AS (\n SELECT source_id,CASE WHEN COUNT(DISTINCT court)=1 THEN MIN(court) ELSE 'UNKNOWN' END court,\n CASE WHEN COUNT(year)=COUNT(*) AND COUNT(DISTINCT year)=1 THEN MIN(year) END year,\n COUNT(*) corpus_rows,MIN(valid_source_id) valid_source_id,\n SUM(empty_citation) empty_citation_rows,SUM(empty_date) empty_date_rows\n FROM doc_years GROUP BY source_id\n)\n SELECT court source_court,CASE WHEN year IS NOT NULL THEN CAST(year/10 AS INTEGER)*10 END decade,\n SUM(valid_source_id) corpus_source_ids,SUM(corpus_rows) corpus_document_rows,\n COUNT(*) corpus_source_ids_including_placeholders,\n SUM(valid_source_id=1 AND year IS NULL) source_ids_unknown_year,\n SUM(valid_source_id=1 AND corpus_rows>1) duplicate_source_ids,\n SUM(CASE WHEN valid_source_id=0 THEN corpus_rows ELSE 0 END) invalid_source_id_document_rows,\n SUM(empty_citation_rows) empty_citation_document_rows,SUM(empty_date_rows) empty_date_document_rows\n FROM d GROUP BY 1,2 ORDER BY 1,2",
+        "parameters": [
+          "run_20261015_identity_review"
+        ]
+      },
+      {
+        "label": "full_corpus_metadata_diagnostics",
+        "sql": "WITH doc_parts AS (\n SELECT source_id,court,substr(decision_date,1,10) date_token,\n CAST(substr(decision_date,1,4) AS INTEGER) y,CAST(substr(decision_date,6,2) AS INTEGER) m,\n CAST(substr(decision_date,9,2) AS INTEGER) day,\n CASE WHEN trim(citation)<>'' AND trim(source_id)<>'' AND source_id<>court||'_'\n THEN 1 ELSE 0 END valid_source_id,trim(citation)='' empty_citation,trim(decision_date)='' empty_date\n FROM documents WHERE run_id=?\n), doc_years AS (\n SELECT source_id,court,valid_source_id,empty_citation,empty_date,\n CASE WHEN date_token GLOB '[1-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'\n AND m BETWEEN 1 AND 12 AND day BETWEEN 1 AND CASE\n WHEN m=2 THEN CASE WHEN y%4=0 AND (y%100<>0 OR y%400=0) THEN 29 ELSE 28 END\n WHEN m IN (4,6,9,11) THEN 30 ELSE 31 END THEN y END year\n FROM doc_parts\n), d AS (\n SELECT source_id,CASE WHEN COUNT(DISTINCT court)=1 THEN MIN(court) ELSE 'UNKNOWN' END court,\n CASE WHEN COUNT(year)=COUNT(*) AND COUNT(DISTINCT year)=1 THEN MIN(year) END year,\n COUNT(*) corpus_rows,MIN(valid_source_id) valid_source_id,\n SUM(empty_citation) empty_citation_rows,SUM(empty_date) empty_date_rows\n FROM doc_years GROUP BY source_id\n)\n SELECT COALESCE(SUM(corpus_rows),0) corpus_document_rows,\n COALESCE(SUM(empty_citation_rows),0) empty_citation_document_rows,\n COALESCE(SUM(empty_date_rows),0) empty_date_document_rows,\n COALESCE(SUM(CASE WHEN valid_source_id=0 THEN corpus_rows ELSE 0 END),0) invalid_source_id_document_rows,\n COALESCE(SUM(valid_source_id),0) valid_corpus_source_ids FROM d",
+        "parameters": [
+          "run_20261015_identity_review"
+        ]
+      },
+      {
+        "label": "ranking_full_table_then_limit",
+        "sql": "WITH doc_parts AS (\n SELECT source_id,court,substr(decision_date,1,10) date_token,\n CAST(substr(decision_date,1,4) AS INTEGER) y,CAST(substr(decision_date,6,2) AS INTEGER) m,\n CAST(substr(decision_date,9,2) AS INTEGER) day,\n CASE WHEN trim(citation)<>'' AND trim(source_id)<>'' AND source_id<>court||'_'\n THEN 1 ELSE 0 END valid_source_id,trim(citation)='' empty_citation,trim(decision_date)='' empty_date\n FROM documents WHERE run_id=?\n), doc_years AS (\n SELECT source_id,court,valid_source_id,empty_citation,empty_date,\n CASE WHEN date_token GLOB '[1-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'\n AND m BETWEEN 1 AND 12 AND day BETWEEN 1 AND CASE\n WHEN m=2 THEN CASE WHEN y%4=0 AND (y%100<>0 OR y%400=0) THEN 29 ELSE 28 END\n WHEN m IN (4,6,9,11) THEN 30 ELSE 31 END THEN y END year\n FROM doc_parts\n), d AS (\n SELECT source_id,CASE WHEN COUNT(DISTINCT court)=1 THEN MIN(court) ELSE 'UNKNOWN' END court,\n CASE WHEN COUNT(year)=COUNT(*) AND COUNT(DISTINCT year)=1 THEN MIN(year) END year,\n COUNT(*) corpus_rows,MIN(valid_source_id) valid_source_id,\n SUM(empty_citation) empty_citation_rows,SUM(empty_date) empty_date_rows\n FROM doc_years GROUP BY source_id\n), b AS (\n SELECT e.*,g.name group_name,g.dd global_dd,g.kept,\n COALESCE(d.court,'UNKNOWN') source_court,d.year source_year,\n CASE WHEN d.year IS NOT NULL THEN CAST(d.year/10 AS INTEGER)*10 END decade,\n CASE WHEN e.edge_support='supported' AND e.foreign_status IN ('FOREIGN','DOMESTIC_CA')\n AND e.origin_country<>'' THEN 1 ELSE 0 END origin_known,\n CASE WHEN e.group_origin_status='DETERMINED' AND e.group_origin_country<>'' THEN 1 ELSE 0 END group_origin_known,\n CASE WHEN d.source_id IS NULL THEN 1 ELSE 0 END missing_document_metadata\n FROM citation_edges e NOT INDEXED CROSS JOIN case_groups g ON g.run_id=e.run_id AND g.group_id=e.resolved_cited_case\n LEFT JOIN d ON d.source_id=e.source_decision AND d.valid_source_id=1 WHERE e.run_id=? AND g.dd>=? AND e.foreign_status=?)\n\n SELECT resolved_cited_case group_id,group_name,global_dd,COUNT(*) filtered_dd,\n SUM(origin_known) origin_determined_edges,SUM(edge_support='heuristic_only') heuristic_only_edges,\n MAX(group_origin_country) group_origin_country,MAX(group_origin_status) group_origin_status,\n MAX(group_foreign_status) group_foreign_status\n FROM b GROUP BY resolved_cited_case,group_name,global_dd\n ORDER BY filtered_dd DESC,group_id LIMIT ?",
+        "parameters": [
+          "run_20261015_identity_review",
+          "run_20261015_identity_review",
+          0,
+          "FOREIGN",
+          5
+        ]
+      }
+    ],
+    "exact_results": {
+      "summary": {
+        "citation_edges": 1082,
+        "citing_source_ids": 763,
+        "cited_groups": 460,
+        "printed_mentions": 2009,
+        "origin_determined_edges": 1082,
+        "origin_unknown_edges": 0,
+        "foreign_edges": 1082,
+        "domestic_edges": 0,
+        "origin_conflict_edges": 0,
+        "heuristic_only_edges": 0,
+        "group_origin_determined": 460,
+        "edges_missing_document_metadata": 0,
+        "edges_unknown_source_year": 0,
+        "origin_coverage": 1.0,
+        "origin_unknown_rate": 0.0,
+        "heuristic_only_rate": 0.0,
+        "foreign_share_all_edges": 1.0,
+        "foreign_share_determined_edges": 1.0,
+        "group_origin_coverage": 1.0
+      },
+      "rows": [
+        {
+          "group_id": "XC-G006640",
+          "group_name": "Anns v. Merton London Borough Council",
+          "global_dd": 173,
+          "filtered_dd": 173,
+          "origin_determined_edges": 173,
+          "heuristic_only_edges": 0,
+          "group_origin_country": "GB",
+          "group_origin_status": "DETERMINED",
+          "group_foreign_status": "FOREIGN"
+        },
+        {
+          "group_id": "XC-G002463",
+          "group_name": "Donoghue v. Stevenson",
+          "global_dd": 108,
+          "filtered_dd": 108,
+          "origin_determined_edges": 108,
+          "heuristic_only_edges": 0,
+          "group_origin_country": "GB",
+          "group_origin_status": "DETERMINED",
+          "group_foreign_status": "FOREIGN"
+        },
+        {
+          "group_id": "XC-G001161",
+          "group_name": "Salomon v. Salomon & Co",
+          "global_dd": 52,
+          "filtered_dd": 52,
+          "origin_determined_edges": 52,
+          "heuristic_only_edges": 0,
+          "group_origin_country": "GB",
+          "group_origin_status": "DETERMINED",
+          "group_foreign_status": "FOREIGN"
+        },
+        {
+          "group_id": "XC-G001075",
+          "group_name": "Makin v. Attorney‑General for New South Wales",
+          "global_dd": 43,
+          "filtered_dd": 43,
+          "origin_determined_edges": 43,
+          "heuristic_only_edges": 0,
+          "group_origin_country": "AU",
+          "group_origin_status": "DETERMINED",
+          "group_foreign_status": "FOREIGN"
+        },
+        {
+          "group_id": "XC-G001657",
+          "group_name": "Ibrahim v. The King",
+          "global_dd": 41,
+          "filtered_dd": 41,
+          "origin_determined_edges": 41,
+          "heuristic_only_edges": 0,
+          "group_origin_country": "HK",
+          "group_origin_status": "DETERMINED",
+          "group_foreign_status": "FOREIGN"
+        }
+      ],
+      "document_denominators": [
+        {
+          "source_court": "BCCA",
+          "decade": 1990,
+          "corpus_source_ids": 771,
+          "corpus_document_rows": 771,
+          "corpus_source_ids_including_placeholders": 771,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "BCCA",
+          "decade": 2000,
+          "corpus_source_ids": 6335,
+          "corpus_document_rows": 6335,
+          "corpus_source_ids_including_placeholders": 6335,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "BCCA",
+          "decade": 2010,
+          "corpus_source_ids": 4573,
+          "corpus_document_rows": 4573,
+          "corpus_source_ids_including_placeholders": 4573,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "BCCA",
+          "decade": 2020,
+          "corpus_source_ids": 3024,
+          "corpus_document_rows": 3024,
+          "corpus_source_ids_including_placeholders": 3024,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "ONCA",
+          "decade": 1990,
+          "corpus_source_ids": 1060,
+          "corpus_document_rows": 1060,
+          "corpus_source_ids_including_placeholders": 1060,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "ONCA",
+          "decade": 2000,
+          "corpus_source_ids": 7834,
+          "corpus_document_rows": 7834,
+          "corpus_source_ids_including_placeholders": 7834,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "ONCA",
+          "decade": 2010,
+          "corpus_source_ids": 9268,
+          "corpus_document_rows": 9268,
+          "corpus_source_ids_including_placeholders": 9268,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "ONCA",
+          "decade": 2020,
+          "corpus_source_ids": 5927,
+          "corpus_document_rows": 5927,
+          "corpus_source_ids_including_placeholders": 5927,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 1870,
+          "corpus_source_ids": 76,
+          "corpus_document_rows": 76,
+          "corpus_source_ids_including_placeholders": 76,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 1880,
+          "corpus_source_ids": 389,
+          "corpus_document_rows": 389,
+          "corpus_source_ids_including_placeholders": 389,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 1890,
+          "corpus_source_ids": 718,
+          "corpus_document_rows": 718,
+          "corpus_source_ids_including_placeholders": 718,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 1900,
+          "corpus_source_ids": 727,
+          "corpus_document_rows": 727,
+          "corpus_source_ids_including_placeholders": 727,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 1910,
+          "corpus_source_ids": 683,
+          "corpus_document_rows": 683,
+          "corpus_source_ids_including_placeholders": 683,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 1920,
+          "corpus_source_ids": 734,
+          "corpus_document_rows": 734,
+          "corpus_source_ids_including_placeholders": 734,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 1930,
+          "corpus_source_ids": 613,
+          "corpus_document_rows": 613,
+          "corpus_source_ids_including_placeholders": 613,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 1940,
+          "corpus_source_ids": 486,
+          "corpus_document_rows": 486,
+          "corpus_source_ids_including_placeholders": 486,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 1950,
+          "corpus_source_ids": 654,
+          "corpus_document_rows": 654,
+          "corpus_source_ids_including_placeholders": 654,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 1960,
+          "corpus_source_ids": 881,
+          "corpus_document_rows": 881,
+          "corpus_source_ids_including_placeholders": 881,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 1970,
+          "corpus_source_ids": 1115,
+          "corpus_document_rows": 1115,
+          "corpus_source_ids_including_placeholders": 1115,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 1980,
+          "corpus_source_ids": 988,
+          "corpus_document_rows": 988,
+          "corpus_source_ids_including_placeholders": 988,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 1990,
+          "corpus_source_ids": 1119,
+          "corpus_document_rows": 1119,
+          "corpus_source_ids_including_placeholders": 1119,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 2000,
+          "corpus_source_ids": 735,
+          "corpus_document_rows": 735,
+          "corpus_source_ids_including_placeholders": 735,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 2010,
+          "corpus_source_ids": 670,
+          "corpus_document_rows": 670,
+          "corpus_source_ids_including_placeholders": 670,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        },
+        {
+          "source_court": "SCC",
+          "decade": 2020,
+          "corpus_source_ids": 303,
+          "corpus_document_rows": 303,
+          "corpus_source_ids_including_placeholders": 303,
+          "source_ids_unknown_year": 0,
+          "duplicate_source_ids": 0,
+          "invalid_source_id_document_rows": 0,
+          "empty_citation_document_rows": 0,
+          "empty_date_document_rows": 0
+        }
+      ],
+      "origin_coverage_context": {
+        "applied_origin_filter": "FOREIGN",
+        "filters_before_origin_filter": {
+          "court": null,
+          "year_from": null,
+          "year_to": null,
+          "origin": null,
+          "min_dd": 0,
+          "kept_only": false,
+          "group_id": null
+        },
+        "summary_before_origin_filter": {
+          "citation_edges": 490577,
+          "citing_source_ids": 38776,
+          "cited_groups": 228102,
+          "printed_mentions": 705476,
+          "origin_determined_edges": 213764,
+          "origin_unknown_edges": 276813,
+          "foreign_edges": 1082,
+          "domestic_edges": 212682,
+          "origin_conflict_edges": 0,
+          "heuristic_only_edges": 30881,
+          "group_origin_determined": 58688,
+          "edges_missing_document_metadata": 0,
+          "edges_unknown_source_year": 0,
+          "origin_coverage": 0.4357399551956166,
+          "origin_unknown_rate": 0.5642600448043834,
+          "heuristic_only_rate": 0.06294832411629571,
+          "foreign_share_all_edges": 0.0022055660986960253,
+          "foreign_share_determined_edges": 0.0050616567803746185,
+          "group_origin_coverage": 0.25728840606395387
+        },
+        "meaning": "Only origin is removed; court/date/DD/kept/group constraints remain. Unknown origin is not foreign and is not extrapolated."
+      },
+      "full_corpus_metadata_diagnostics": {
+        "corpus_document_rows": 49683,
+        "empty_citation_document_rows": 0,
+        "empty_date_document_rows": 0,
+        "invalid_source_id_document_rows": 0,
+        "valid_corpus_source_ids": 49683
+      },
+      "ranking_limit": 5
+    },
+    "answer": "Run run_20261015_identity_review: 1082 citation edges, 763 citing source IDs, 460 cited judgment groups. Origin determined for 1082/1082 edges; 0 unknown, including 0 heuristic-only edges. Ranked by distinct source judgment IDs in the selected scope: XC-G006640 (Anns v. Merton London Borough Council): 173; XC-G002463 (Donoghue v. Stevenson): 108; XC-G001161 (Salomon v. Salomon & Co): 52; XC-G001075 (Makin v. Attorney‑General for New South Wales): 43; XC-G001657 (Ibrahim v. The King): 41. Before the origin filter, with all other filters unchanged: 490577 edges, 276813 unknown origin (including conflicts), 30881 heuristic-only. Foreign is 1082/490577 of all edges and 1082/213764 of origin-determined edges; a zero denominator means undefined. Unknown origin is not foreign and cannot be extrapolated as foreign. Counts show mentions, and do not establish whether a court followed a judgment.",
+    "evidence": [],
+    "capabilities": {
+      "answer_mode": "offline_templates",
+      "supported_intents": [
+        "count",
+        "court_decade",
+        "ranking",
+        "case_citations",
+        "group_lookup"
+      ],
+      "unsupported": [
+        "legal advice",
+        "why a judgment followed/distinguished another",
+        "holdings or legal reasoning synthesis",
+        "automatic case-name identity resolution",
+        "unrestricted natural language / arbitrary SQL",
+        "model-generated answers"
+      ],
+      "counting_meaning": "An edge means a source judgment mentions a cited judgment identity group. It does not mean followed, relied on, agreed with, or binding authority.",
+      "coverage_meaning": "Origin coverage is an edge-level denominator. Heuristic-only edges remain unknown even when their group origin is determined. Determined-only country shares cannot be extrapolated to unknown origins.",
+      "date_meaning": "Source judgment date chosen under the recorded corpus text policy; printed citation years are not used as judgment dates.",
+      "document_denominator_meaning": "Imported/supplied corpus metadata rows and distinct valid source IDs within court/date filters; empty-citation/empty/COURT_ IDs are excluded from source-ID denominators but retained in raw diagnostics. These are metadata-universe denominators, not counts of nonempty texts processed. Origin/DD/group filters affect the edge numerator only. Legacy absent text_policy is English-only; bilingual sources are never counted twice by a fallback.",
+      "sampling_meaning": "Evidence is a deterministic bounded preview, not a random sample or the basis for reported totals.",
+      "accuracy": "Structural validation is not semantic citation/identity accuracy; no fresh human calibration is implied."
+    },
+    "warnings": [
+      "Origin-filtered coverage describes the returned subset only. See origin_coverage_context for unknown/heuristic/conflict coverage before the origin filter within the same other constraints; unknown origin is not foreign."
+    ],
+    "storage": {
+      "copies_of_corpus_or_database": 0,
+      "persistent_query_cache_bytes": 0
+    },
+    "packet_sha256": "13742f56ca71e1533315f9acb036aef73cd9a0f884fb9499a61c534f447900ef"
+  },
+  "display_citations_query": "SELECT g.group_id,g.name,g.dd,g.origin_country,m.canonical_string FROM case_groups g JOIN members m ON m.run_id=g.run_id AND m.row_number=g.primary_row WHERE g.run_id=? AND g.group_id IN (?,?,?,?,?) ORDER BY g.dd DESC",
+  "display_citations_parameters": [
+    "run_20261015_identity_review",
+    "XC-G006640",
+    "XC-G002463",
+    "XC-G001161",
+    "XC-G001075",
+    "XC-G001657"
+  ],
+  "display_rows": [
+    {
+      "group_id": "XC-G006640",
+      "name": "Anns v. Merton London Borough Council",
+      "dd": 173,
+      "origin_country": "GB",
+      "canonical_string": "[1978] A.C. 728"
+    },
+    {
+      "group_id": "XC-G002463",
+      "name": "Donoghue v. Stevenson",
+      "dd": 108,
+      "origin_country": "GB",
+      "canonical_string": "[1932] A.C. 562"
+    },
+    {
+      "group_id": "XC-G001161",
+      "name": "Salomon v. Salomon & Co",
+      "dd": 52,
+      "origin_country": "GB",
+      "canonical_string": "[1897] A.C. 22"
+    },
+    {
+      "group_id": "XC-G001075",
+      "name": "Makin v. Attorney‑General for New South Wales",
+      "dd": 43,
+      "origin_country": "AU",
+      "canonical_string": "[1894] A.C. 57"
+    },
+    {
+      "group_id": "XC-G001657",
+      "name": "Ibrahim v. The King",
+      "dd": 41,
+      "origin_country": "HK",
+      "canonical_string": "[1914] A.C. 599"
+    }
+  ],
+  "interpretation": "DD counts distinct source judgment IDs mentioning each group. The origin filter includes only supported foreign-origin edges; it does not measure approval or reliance. These five are the highest ranked among 460 groups with such edges in this run."
+}

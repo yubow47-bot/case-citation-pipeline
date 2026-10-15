@@ -1,5 +1,10 @@
 # Changes
 
+## v1.1.1 — 2026-10-15
+
+- Restored the README's methodology, worked citation example, and foreign-case research example. Updated the example using the current run and published the query evidence.
+- Clarified current capabilities and historical measurements while retaining both original workflow diagrams.
+
 ## v1.1.0 — 2026-10-15
 
 - Added an experimental tool for short citations, including ibid., supra, and quoted names. It records possible treatment words and their source context alongside citation links. It does not change production counts.
