@@ -23,6 +23,125 @@ def resolve(text, anchors=(), **kwargs):
 
 
 class ShortformTests(unittest.TestCase):
+    def test_quoted_short_references_require_the_same_reliable_scope(self):
+        text = '“R. v. Smith, 2001 SCC 2. Smith, supra. Ibid., at para. 3.” Smith, supra.'
+        records = resolve(text, [anchor(text, '2001 SCC 2')])
+        self.assertEqual([r['target_group_id'] for r in records], ['case-a', 'case-a', None])
+        self.assertEqual(records[0]['resolution_basis'], 'same_quotation_named_antecedent')
+        self.assertEqual(records[1]['resolution_basis'], 'same_quotation_resolved_short_reference')
+        self.assertEqual(records[2]['resolution_basis'], 'quoted_antecedent_barrier')
+        self.assertEqual(records[0]['quotation_scope']['scope_id'], records[1]['quotation_scope']['scope_id'])
+        text = 'R. v. Smith, 2001 SCC 2. “Smith, supra.”'
+        result = resolve(text, [anchor(text, '2001 SCC 2')])[0]
+        self.assertEqual(result['resolution_status'], 'blocked')
+        self.assertEqual(result['candidate_target_ids'], ['case-a'])
+
+    def test_nested_or_uncertain_quotes_preserve_candidates_without_links(self):
+        text = '“R. v. Smith, 2001 SCC 2. «Smith, supra.»”\n“Smith, supra.\nSmith, supra.'
+        records = resolve(text, [anchor(text, '2001 SCC 2')])
+        self.assertTrue(all(r['target_group_id'] is None for r in records))
+        self.assertTrue(all(r['candidate_target_ids'] == ['case-a'] for r in records))
+        self.assertTrue(records[1]['quotation_scope']['uncertain'])
+        self.assertIsNone(records[2]['quotation_scope'])
+
+    def test_stray_and_mixed_quotes_do_not_block_later_numbered_paragraphs(self):
+        text = ('R. v. Smith, 2001 SCC 2. An explanation was " sun in his eyes.\n'
+                '[22] Smith, supra. A "Monday morning quarterback” approach.\n'
+                '[23] Smith, supra.')
+        records = resolve(text, [anchor(text, '2001 SCC 2')])
+        self.assertEqual([r['target_group_id'] for r in records], ['case-a', 'case-a'])
+
+    def test_initialled_and_parenthesized_titles_keep_their_printed_punctuation(self):
+        text = ('R. v. D.(S.), 2001 SCC 2. R. v. B. (K.G.), 2002 SCC 3. '
+                'D.(S.), supra. R. v. B.(K.G.), supra. D.(T.), supra.')
+        records = resolve(text, [anchor(text, '2001 SCC 2', name='R. v. D.(S.)'),
+                                 anchor(text, '2002 SCC 3', name='R. v. B. (K.G.)', target='case-b', mention_id='b')])
+        self.assertEqual([r['target_group_id'] for r in records], ['case-a', 'case-b', None])
+        self.assertEqual(records[0]['raw'], 'D.(S.), supra')
+        self.assertEqual(records[1]['raw'], 'R. v. B.(K.G.), supra')
+
+    def test_named_punctuation_and_quote_scope_cannot_bypass_sentence_or_note_boundaries(self):
+        text = 'Smith, 2001 SCC 2. Smith. Supra. “Smith, supra note 99.”'
+        first, second = resolve(text, [anchor(text, '2001 SCC 2')])
+        self.assertIsNone(first['target_group_id'])
+        self.assertEqual(first['raw'], 'Supra')
+        self.assertIsNone(second['target_group_id'])
+        text = '“Smith, 2001 SCC 2. Smith, supra note 99.”'
+        result = resolve(text, [anchor(text, '2001 SCC 2')])[0]
+        self.assertIsNone(result['target_group_id'])
+        self.assertEqual(result['resolution_status'], 'blocked')
+
+    def test_generic_coparty_suffix_does_not_discard_a_named_coparty(self):
+        text = ('Bize v. Dickason and Another, 2001 SCC 2. '
+                'Cooper v. Phibbs, Cooper, and Others, 2002 SCC 3. '
+                'Bize v. Dickason, supra. Cooper v. Phibbs, supra.')
+        records = resolve(text, [anchor(text, '2001 SCC 2', name='Bize v. Dickason and Another'),
+                                 anchor(text, '2002 SCC 3', name='Cooper v. Phibbs, Cooper, and Others',
+                                        target='case-b', mention_id='b')])
+        self.assertEqual(records[0]['target_group_id'], 'case-a')
+        self.assertIsNone(records[1]['target_group_id'])
+
+    def test_ibid_attached_to_a_case_sourced_quotation_requires_a_printed_bridge(self):
+        text = ('Dans Starson c. Swayze, 2003 CSC 32, au paragraphe 115, la Cour suprême '
+                'a reconnu que « le poids relève de la Commission. » Par contre, la cour '
+                'a ajouté que « la preuve doit avoir des indices de fiabilité. » Ibid.')
+        result = resolve(text, [anchor(text, '2003 CSC 32', name='Starson c. Swayze')])[0]
+        self.assertEqual(result['target_group_id'], 'case-a')
+        self.assertEqual(result['resolution_basis'], 'citation_attached_quotation_ibid')
+        bridge = result['quote_bridge']
+        self.assertEqual(text[bridge['owner_start']:bridge['owner_end']], bridge['owner_raw'])
+        self.assertEqual(bridge['owner_mention_ids'], ['full-a'])
+        self.assertTrue(bridge['quotation_scope']['closed'])
+        text = ('Oakes, 2001 SCC 2. In Oakes, the Court explained that the Charter '
+                'protects “a free and democratic society” (ibid.).')
+        result = resolve(text, [anchor(text, '2001 SCC 2', name='Oakes')])[0]
+        self.assertEqual(result['target_group_id'], 'case-a')
+        self.assertEqual(result['quote_bridge']['owner_kind'], 'case_name')
+
+    def test_quote_attachment_does_not_skip_books_other_sources_or_arbitrary_prose(self):
+        snippets = [
+            'Smith, 2001 SCC 2. A witness said “the object was red” (ibid.).',
+            'Smith, 2001 SCC 2. The Court stated that Professor Jones wrote “a new rule” (ibid.).',
+            'Smith, 2001 SCC 2. A lengthy discussion ended “a new rule” (ibid.).',
+            'Smith, 2001 SCC 2. The Court explained that “as Professor Jones wrote, a rule” (ibid.).',
+            'Smith, 2001 SCC 2. The Court explained that “R. v. Other is relevant” (ibid.).',
+            'Smith, 2001 SCC 2. The Court explained that “a new rule” is relevant.\nIbid.',
+        ]
+        for text in snippets:
+            with self.subTest(text=text):
+                result = resolve(text, [anchor(text, '2001 SCC 2', name='Smith')])[0]
+                self.assertIsNone(result['target_group_id'])
+        text = ('Smith, 2001 SCC 2. The Court explained that “a new rule” '
+                '(Unknown, 2002 XYZ 3) (ibid.).')
+        result = resolve(text, [anchor(text, '2001 SCC 2', name='Smith'),
+                                 anchor(text, '2002 XYZ 3', target=None, name='Unknown', mention_id='unknown')])[0]
+        self.assertIsNone(result['target_group_id'])
+
+    def test_nested_article_titles_cannot_seed_case_short_references(self):
+        text = ('Author, “Rethinking «Baker» and all the wider jurisprudential implications for the courts”, '
+                '(2001), 51 U.T.L.J. 193. Baker, supra.')
+        enriched = enrich_anchors(text, [anchor(text, '(2001), 51 U.T.L.J. 193', name='Baker v. Canada')])
+        self.assertFalse(enriched[0]['short_identity_seed_allowed'])
+        self.assertIsNone(resolve(text, enriched)[0]['target_group_id'])
+
+    def test_page_only_id_after_anonymous_reporter_is_not_a_case_identity(self):
+        text = "Comyn's Digest: secondary evidence is admissible.\n2 T.R. 201; Id. p. 430."
+        first = anchor(text, '2 T.R. 201', name='')
+        first['citation_kind'] = 'reporter'
+        result = resolve(text, [first])[0]
+        self.assertEqual(result['resolution_status'], 'blocked')
+        self.assertEqual(result['resolution_basis'], 'reporter_id_substitution')
+        self.assertEqual(result['candidate_target_ids'], ['case-a'])
+
+    def test_quote_attachment_does_not_assign_an_unknown_named_speaker_to_a_case(self):
+        for speaker in ('Brown explained', 'Jones J. stated', 'The Court stated the rule. Later, Jones J. said',
+                        'A manual described the proposition as'):
+            text = ('Smith v. Crown, 2001 SCC 2. Smith at para. 1. '
+                    + speaker + ': “the rule governs” (ibid.).')
+            with self.subTest(speaker=speaker):
+                result = resolve(text, [anchor(text, '2001 SCC 2', name='Smith v. Crown')])[0]
+                self.assertIsNone(result['target_group_id'])
+
     def test_unicode_offsets_pinpoints_chain_and_determinism(self):
         text = "É😀 Smith, 2001 SCC 2. Ibid., at para. 12. Id. at 14."
         anchors = [anchor(text, "Smith, 2001 SCC 2")]

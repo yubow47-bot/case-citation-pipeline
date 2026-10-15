@@ -8,8 +8,9 @@ heuristics, not a parser. Signals inside supplied citation spans are ignored.
 Clause membership supplies candidates, never a target by itself. Small directional
 rules recognize a predicate's object or passive subject, including source-seeded
 case-name mentions. Candidate, target and contextual mention IDs remain distinct.
-Attribution evidence preserves the exact original spans used by each rule; speaker
-identity remains unknown. Edge summaries keep every evidence item and possible
+Attribution evidence preserves the exact original spans used by each rule. Explicit
+speakers and bounded reporting contexts are kept separate from the evaluated case;
+unresolved speakers remain unknown. Edge summaries keep every evidence item and possible
 label conflict instead of selecting a winning treatment. Procedural affirmed /
 reversed cues are separate from substantive treatment suggestions. Coverage counts
 assigned lexical evidence, not verified treatment or human review.
@@ -21,6 +22,9 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+
+from tools.citation_context.scopes import (quotation_scopes, quote_scope_at,
+                                            quote_scope_evidence)
 
 
 _VOCABULARY = {
@@ -38,7 +42,7 @@ _VOCABULARY = {
 }
 _SIGNALS = [(label, re.compile(r"(?<!\w)(?:" + pattern + r")(?!\w)", re.I))
             for label, pattern in _VOCABULARY.items()]
-_SENTENCE = re.compile(r'[.!?](?=\s+(?:[A-ZÀ-ÖØ-Þ\d]|["“«])|$)|\n[ \t]*\n|\n(?=[ \t]*(?:\[\d{1,5}\]|\d{1,3}[.)]?[ \t]+(?=[A-ZÀ-ÖØ-Þ])))')
+_SENTENCE = re.compile(r'[.!?]["”»]{0,3}(?=\s+(?:[A-ZÀ-ÖØ-Þ\d]|["“«])|$)|\n[ \t]*\n|\n(?=[ \t]*(?:\[\d{1,5}\]|\d{1,3}[.)]?[ \t]+(?=[A-ZÀ-ÖØ-Þ])))')
 _ABBREVIATION = re.compile(r"(?<!\w)(?:[A-Za-zÀ-ÖØ-öø-ÿ]|Inc|Ltd|Corp|Dr|Mr|Mrs|Ms|Mme|Me|No|Nos|para|paras|art|al|JJ|CJ|LJ)\.", re.I)
 _CLAUSE = re.compile(r";|(?:,\s*)?\b(?:but|however|whereas|mais|cependant|tandis\s+que)\b", re.I)
 _AND = re.compile(r"\b(?:and|et)\b", re.I)
@@ -57,7 +61,9 @@ _LEGAL_OBJECT = r"(?:decisions?|judgments?|cases?|reasoning|rules?|principles?|t
 _DIRECT_OBJECT = re.compile(r"[\s(\[\"“«]*(?:" + _ADVERB + r"\s+)*(?:" + _DETERMINER + r"\s*)?", re.I)
 _CONTENT_OBJECT = re.compile(
     r"\s*(?:" + _ADVERB + r"\s+)*(?:" + _DETERMINER + r"\s+)?" + _LEGAL_OBJECT +
+    r"(?:\s+for\s+(?:[^\W\d_]+\s+){0,4}[^\W\d_]+)?"
     r"(?:\s+(?:set\s+out|stated|enunciated|established|articulated|described|expressed))?"
+    r"(?:\s+by\s+(?:the\s+)?(?:Supreme\s+Court\s+of\s+Canada|Court\s+of\s+Appeal|Court))?"
     r"\s+(?:in|from|of|dans|de|du|des)\s+(?:" + _DETERMINER + r"\s+(?:case|decision|judgment|arrêt)\s+(?:of|in|de)\s+)?", re.I)
 _PASSIVE_BRIDGE = re.compile(
     r"[\s,():\-–—]*(?:(?:which|that|qui)\s+)?"
@@ -72,16 +78,54 @@ _DOCTRINE_BRIDGE = re.compile(
     r"\s*(?:principles?|rules?|tests?|doctrine|approach|reasoning|principes?|règles?|critères?)?\s*"
     r"(?:(?:will|would|can|could|may|might|should|must|ought\s+to|does|did|not|never|also|still)\s+)*", re.I)
 _MODAL = re.compile(r"\b(?:will|would|should|could|may|might|must|ought|if|when|si|devrait|pourrait)\b(?:\W+\w+){0,6}\W*$", re.I)
-_REPORTED_INTRO = re.compile(r"(?:^|[,;:]\s*|\b(?:example|exemple)\s*,\s*)(?:in|dans)\s*$", re.I)
-_ACTOR_BRIDGE = r"\s+(?:(?:has|have|had|did|does|not|never|also|then|previously|recently|expressly|directly|subsequently|consistently)\s+){0,4}"
+_REPORTED_INTRO = re.compile(r"(?:^|[,;:]\s*|\b(?:example|exemple)\s*,\s*|\b(?:this|the|our)\s+court\s+)(?:in|dans)\s*$", re.I)
+_ACTOR_BRIDGE = r"\s+(?:(?:has|have|had|did|does|would|will|should|could|can|may|must|was|were|is|are|able\s+to|to|not|never|also|then|first|now|here|therefore|accordingly|previously|recently|expressly|directly|subsequently|consistently)\s+){0,5}"
 _CAPITALIZED_WORD = r"[A-ZÀ-ÖØ-Þ][\w'’\-]*"
 _NAMED_COURT_ACTOR = re.compile(
     r"(?<!\w)(?P<actor>(?:(?:the|The)\s+)?(?:" + _CAPITALIZED_WORD +
     r"\s+){1,5}Court(?:\s+of\s+" + _CAPITALIZED_WORD +
     r"(?:\s+" + _CAPITALIZED_WORD + r"){0,2})?)" + _ACTOR_BRIDGE + r"$")
 _REPORTED_JUDGE_ACTOR = re.compile(
-    r"(?<!\w)(?P<actor>(?:the\s+)?(?:trial|motions?|lower|appeal|appellate|chambers)\s+judge)" +
+    r"(?<!\w)(?P<actor>(?:the\s+)?(?:trial|motions?|application|lower|appeal|appellate|chambers)\s+judge)" +
     _ACTOR_BRIDGE + r"$", re.I)
+_REPORTED_JUDGE_GERUND = re.compile(
+    r"(?<!\w)(?P<actor>(?:the\s+)?(?:trial|motions?|application|lower|appeal|appellate|chambers)\s+judge)"
+    r"\s+(?:concluded|began|completed)\s+(?:his|her|the)\s+analysis\s+by\s+$", re.I)
+_REPORTED_COURT_ERROR = re.compile(
+    r"(?<!\w)(?P<actor>(?:the\s+)?(?:majority|minority)\s+of\s+(?:the\s+)?Court\s+of\s+Appeal)"
+    r"\s+erred\s+in\s+$", re.I)
+_NAMED_JUDGE_ACTOR = re.compile(
+    r"(?<!\w)(?P<actor>(?:Mr\.?\s+Justice\s+" + _CAPITALIZED_WORD +
+    r"|" + _CAPITALIZED_WORD + r"\s+(?:J\.A\.|C\.J\.C\.|C\.J\.|J\.)))" +
+    _ACTOR_BRIDGE + r"$")
+_CURRENT_ACTOR = re.compile(
+    r"(?<!\w)(?P<actor>I|we|nous|je|this\s+Court|our\s+Court|notre\s+Cour|la\s+présente\s+Cour)" +
+    _ACTOR_BRIDGE + r"$", re.I)
+_PRONOUN_ACTOR = re.compile(
+    r"(?<!\w)(?P<actor>he|she|it|they|some|others|il|elle|ils|elles)" +
+    _ACTOR_BRIDGE + r"$", re.I)
+_PARTY_ACTOR = re.compile(
+    r"(?<!\w)(?P<actor>(?:(?:the|a|an|le|la|les)\s+)?(?:appellant|respondent|plaintiff|defendant|applicant|counsel|party|parties|appelant\w*|intimé\w*|demandeur\w*|défendeur\w*|avocat\w*))" +
+    _ACTOR_BRIDGE + r"$", re.I)
+_LOWER_COURT_ACTOR = re.compile(
+    r"(?<!\w)(?P<actor>(?:the\s+)?(?:trial|lower|appellate|appeal)\s+court)" +
+    _ACTOR_BRIDGE + r"$", re.I)
+_POST_ACTOR = re.compile(
+    r"\s*,\s*(?P<actor>he|she|it|they|I|we|the\s+(?:Supreme\s+Court(?:\s+of\s+Canada)?|Court|trial\s+judge|motion\s+judge))"
+    r"\s+(?:(?:also|then|further|expressly|had|has)\s+){0,3}(?:held|noted|said|stated|concluded|found|observed)\b", re.I)
+_OTHER_REASONING = re.compile(r"\b(?P<actor>(?:his|her|their|its)\s+(?:reasons|analysis|judgment|decision))\b[^.;]{0,100}?\b(?:in|to)\s*$", re.I)
+_INDIRECT_ACTOR = re.compile(r"\b(?P<actor>him|her|them)\s+to\s*$", re.I)
+_CASE_SUBJECT_REPORT = re.compile(r"\s+(?:involved|concerned|dealt\s+with|addressed|arose|held|stated|decided|said|explained)\b", re.I)
+_HISTORICAL_CASE = re.compile(r"\b(?:in|dans)\s+(?:(?:the|le|la)\s+)?(?:\d{4}\s+)?(?:case|decision|judgment|arrêt)\s+(?:of|in|de)\s*$", re.I)
+_QUOTE_INTRO = re.compile(r"\b(?:said|stated|held|wrote|explained|observed|noted|quoted|quoting|following\s+(?:passage|analysis|words)|as\s+follows|déclaré|écrit|suivant)\b", re.I)
+# The selected corpus stores each extracted paragraph on one line.
+_PARAGRAPH = re.compile(r"\r?\n")
+_SPEAKER_RESET = re.compile(r"\b(?:I|we|nous|je|this\s+Court|our\s+Court|the\s+(?:appellant|respondent|applicant|trial\s+judge|motion\s+judge))\s+(?:(?:now|here|therefore|accordingly|also)\s+){0,2}(?:apply|follow|adopt|distinguish|consider|discuss|conclude|find|hold|submit|argue|would|will|must|have|are|am)\b", re.I)
+_ATTEMPTED_ACTION = re.compile(r"\befforts\b[^.;!?]{0,100}\bto\b[^.;!?]{0,100}$", re.I)
+_REJECTED_APPLICATION = re.compile(
+    r"\s+(?:[\w'’\-]+\s+){0,3}(?:approach|test|rule|principle|reasoning|framework)"
+    r"\s+(?:is|would\s+be)\s+not\s+(?:analytically\s+)?sound\b", re.I)
+_SUGGESTED_ERROR = re.compile(r"\b(?:the\s+)?suggestion\s+that\b[^.;!?\n]{0,140}\berred\s+in\s*$", re.I)
 _GENERIC_COURT_WORDS = frozenset("the this our court supreme appeal appeals superior justice high provincial federal district of".split())
 _CURRENT_COURTS = {"SCC": "supreme court of canada", "ONCA": "ontario court of appeal",
                    "BCCA": "british columbia court of appeal"}
@@ -188,22 +232,6 @@ def _clauses(text, start, end, mentions):
         yield _trim(text, cursor, end)
 
 
-def _quote_ranges(text):
-    ranges = []
-    for opening, closing in [('"', '"'), ('“', '”'), ('«', '»')]:
-        cursor = 0
-        while True:
-            start = text.find(opening, cursor)
-            if start < 0:
-                break
-            end = text.find(closing, start + 1)
-            if end < 0:
-                break
-            ranges.append((start, end + 1))
-            cursor = end + 1
-    return ranges
-
-
 def _name_start(text, mention, clause_start):
     """Include a supplied case title immediately preceding a citation-only span."""
     start = mention["start"]
@@ -213,6 +241,12 @@ def _name_start(text, mention, clause_start):
         a, b = evidence.get("start"), evidence.get("end")
         if (isinstance(a, int) and isinstance(b, int) and clause_start <= a < b <= start
                 and start - b <= 60 and _PUNCTUATION_GAP.fullmatch(text[b:start])):
+            # Supplied local-title spans can include an introductory court
+            # phrase. Keep that phrase available as reporting evidence rather
+            # than swallowing it into the grammatical case-name unit.
+            introduction = re.match(r"(?:this|the|our)\s+Court\s+(?:in|dans)\s+", text[a:b], re.I)
+            if introduction:
+                a += introduction.end()
             start = min(start, a)
     # Older packages have no source_aliases. Exact supplied title tokens are a
     # compatible fallback, not a newly guessed surname or case identity.
@@ -287,36 +321,151 @@ def _predicate_targets(text, units, signal_start, signal_end, label):
     return [], "no_supported_predicate_target", None
 
 
-def _reported_context(text, units, selected, clause_start, signal_start):
+def _span_evidence(text, kind, start, end, **extra):
+    return {"kind": kind, "start": start, "end": end, "raw": text[start:end], **extra}
+
+
+def _scope_id(position, scopes):
+    scope = quote_scope_at(position, scopes)
+    return scope["scope_id"] if scope else None
+
+
+def _reporting_seeds(text, mentions, sentences, scopes):
+    """Explicit source cases, bounded to a paragraph and quotation voice.
+
+    A source case is not a treatment target just because it introduces a passage.
+    Ambiguous names and differing parallel targets retain their candidates without
+    choosing an owner. No nearest-citation fallback is used.
+    """
+    paragraph_ends = [m.start() for m in _PARAGRAPH.finditer(text)] + [len(text)]
+    seeds = []
+    for a, b in sentences:
+        units = _mention_units(text, [m for m in mentions if _overlaps(m, a, b)], a)
+        for index, unit in enumerate(units):
+            if all(_noncase(m) for m in unit["mentions"]):
+                continue
+            unit_scope = quote_scope_at(unit["start"], scopes)
+            prefix_start = max(a, unit["start"] - 100)
+            if unit_scope:
+                prefix_start = max(prefix_start, unit_scope["content_start"])
+            prefix = text[prefix_start:unit["start"]]
+            prefix = re.sub(r'^\s*["“«]?\s*(?:\[\d{1,5}\]|\d{1,3}\.?)?\s*', "", prefix)
+            historical = _HISTORICAL_CASE.search(prefix)
+            introduction = _REPORTED_INTRO.search(prefix) or historical
+            subject_report = (not prefix.strip(' \t\r\n"“«') and
+                              _CASE_SUBJECT_REPORT.match(text, unit["end"], min(b, unit["end"] + 80)))
+            if not introduction and not subject_report:
+                continue
+            source_units = [unit]
+            for following in units[index + 1:]:
+                gap = text[source_units[-1]["end"]:following["start"]]
+                coordinated = re.search(r"\b(?:and|or|et|ou)\b|&", gap, re.I)
+                parallel = all(m.get("kind") == "full" and re.match(r"\[?\d{4}\b", m["raw"])
+                               for m in following["mentions"])
+                if (len(gap) > 80 or not _LIST_GAP.fullmatch(gap) or
+                        not (coordinated or parallel) or
+                        _scope_id(following["start"], scopes) != _scope_id(unit["start"], scopes)):
+                    break
+                source_units.append(following)
+            source_mentions = [m for item in source_units for m in item["mentions"]]
+            targets = sorted({target for m in source_mentions for target in _candidate_targets(m)})
+            linked = {_treatment_target(m) for m in source_mentions}
+            target = next(iter(linked)) if len(linked) == 1 and None not in linked else None
+            # The introduction itself is exact evidence, including the case name.
+            evidence_start = unit["start"]
+            if introduction:
+                evidence_start = unit["start"] - len(prefix) + introduction.start()
+            evidence_end = source_units[-1]["end"]
+            mention_ids = [m["mention_id"] for m in source_mentions]
+            seeds.append({
+                "start": evidence_start, "end": evidence_end,
+                "sentence_end": b,
+                "paragraph_end": next(end for end in paragraph_ends if end >= evidence_end),
+                "scope_id": _scope_id(unit["start"], scopes), "target_group_id": target,
+                "mention_ids": mention_ids, "candidate_target_ids": targets,
+                "evidence": _span_evidence(text, "reported_case_introduction", evidence_start, evidence_end,
+                                           mention_ids=mention_ids, target_group_id=target),
+                "rule": "historical_case_introduction" if historical else "explicit_case_introduction" if introduction else "case_subject_report",
+            })
+    return sorted(seeds, key=lambda item: (item["end"], item["start"]))
+
+
+def _quotation_owners(text, scopes, seeds):
+    """A colon introduction may own a balanced quote across a paragraph break.
+
+    Nested quotations need their own explicit introduction. Outer ownership is
+    never silently transferred to a different quoted author.
+    """
+    owners = {}
+    for scope in scopes:
+        opening = scope["start"]
+        eligible = []
+        for seed in seeds:
+            if not 0 <= opening - seed["end"] <= 1000 or seed["scope_id"] != scope.get("parent_scope_id"):
+                continue
+            tail = text[seed["end"]:opening]
+            before_colon = tail[:tail.rfind(":")]
+            masked = _ABBREVIATION.sub(lambda match: match.group()[:-1] + " ", before_colon)
+            if (not re.search(r":\s*$", tail) or _SPEAKER_RESET.search(tail) or
+                    _PARAGRAPH.search(before_colon) or _SENTENCE.search(masked) or
+                    not (_QUOTE_INTRO.search(tail) or re.fullmatch(r"[\s,;:()[\]\d.\-–—]*", tail))):
+                continue
+            eligible.append(seed)
+        if eligible:
+            owners[scope["scope_id"]] = eligible[-1]
+    return owners
+
+
+def _owner_at(text, signal_start, signal_end, selected, seeds, scope, quote_owners):
     selected_ids = {m["mention_id"] for unit in selected for m in unit["mentions"]}
-    for unit in units:
-        if unit["end"] > signal_start or any(m["mention_id"] in selected_ids for m in unit["mentions"]):
-            continue
-        prefix = text[max(clause_start, unit["start"] - 50):unit["start"]]
-        if _REPORTED_INTRO.search(prefix):
-            return [m["mention_id"] for m in unit["mentions"]]
-    return []
+    scope_id = scope["scope_id"] if scope else None
+    eligible = [seed for seed in seeds if seed["scope_id"] == scope_id and
+                0 <= signal_start - seed["end"] <= 2400 and signal_start <= seed["paragraph_end"] and
+                not selected_ids.intersection(seed["mention_ids"])]
+    if eligible:
+        seed = eligible[-1]
+        resets = _SPEAKER_RESET.finditer(text[seed["end"]:signal_end])
+        if not any(seed["end"] + match.start() >= seed["sentence_end"] for match in resets):
+            return seed
+    return quote_owners.get(scope_id) if scope else None
 
 
-def _reported_actor(text, clause_start, signal_start, source_id):
-    """Recognize explicit lower-court actors, leaving pronouns/generic Court unknown."""
-    start = max(clause_start, signal_start - 140)
+def _actor_context(text, clause_start, signal_start, signal_end, selected, source_id):
+    """Identify explicit syntax; pronouns supply a guard, never a guessed identity."""
+    start = max(clause_start, signal_start - 180)
     prefix = text[start:signal_start]
-    for pattern in (_REPORTED_JUDGE_ACTOR, _NAMED_COURT_ACTOR):
+    current_name = _CURRENT_COURTS.get(source_id.split("_", 1)[0])
+    for pattern, speaker in ((_REPORTED_JUDGE_ACTOR, "reported_judge"),
+                             (_REPORTED_JUDGE_GERUND, "reported_judge"),
+                             (_REPORTED_COURT_ERROR, "reported_court"),
+                             (_NAMED_JUDGE_ACTOR, "reported_judge"),
+                             (_LOWER_COURT_ACTOR, "reported_court"),
+                             (_NAMED_COURT_ACTOR, "reported_court"),
+                             (_PARTY_ACTOR, "party"), (_CURRENT_ACTOR, "current_court"),
+                             (_PRONOUN_ACTOR, "unknown"), (_OTHER_REASONING, "unknown"),
+                             (_INDIRECT_ACTOR, "unknown")):
         match = pattern.search(prefix)
         if not match:
             continue
-        actor = match.group("actor")
-        words = [word.casefold() for word in _WORD.findall(actor)]
+        words = [word.casefold() for word in _WORD.findall(match.group("actor"))]
         if pattern is _NAMED_COURT_ACTOR:
-            if not set(words) - _GENERIC_COURT_WORDS:
-                continue
             normalized = " ".join(words[1:] if words[0] == "the" else words)
-            if normalized == _CURRENT_COURTS.get(source_id.split("_", 1)[0]):
+            if normalized == current_name:
+                speaker = "current_court"
+            elif not set(words) - _GENERIC_COURT_WORDS:
                 continue
         a, b = start + match.start("actor"), start + match.end("actor")
-        return {"kind": "reported_actor", "start": a, "end": b, "raw": text[a:b]}
-    return None
+        return speaker, _span_evidence(text, "speaker" if speaker == "current_court" else "reported_actor", a, b)
+    # Fronted participles put the actor after the treatment object.
+    if selected and text[signal_start:signal_end].casefold().endswith("ing"):
+        end = max(unit["end"] for unit in selected)
+        match = _POST_ACTOR.match(text[end:min(len(text), end + 180)])
+        if match:
+            a, b = end + match.start("actor"), end + match.end("actor")
+            actor = text[a:b].casefold()
+            speaker = "current_court" if actor in ("i", "we") else "reported_court" if "court" in actor else "reported_judge" if "judge" in actor else "unknown"
+            return speaker, _span_evidence(text, "speaker" if speaker == "current_court" else "reported_actor", a, b)
+    return "unknown", None
 
 
 def _attribution_evidence(text, selected, rule, direction, signal_start, signal_end, actor=None):
@@ -332,19 +481,18 @@ def _attribution_evidence(text, selected, rule, direction, signal_start, signal_
 
 
 def suggest_treatments(text: str, mentions: list[dict], *, source_id: str,
-                       run_id: str, text_sha256: str) -> list[dict]:
+                       run_id: str, text_sha256: str, quote_scopes=None) -> list[dict]:
     """Return evidence-bearing, unverified lexical suggestions; never mutate inputs."""
     mentions = _valid_mentions(text, mentions)
-    quotes = _quote_ranges(text)
+    scopes = quotation_scopes(text) if quote_scopes is None else quote_scopes
+    sentences = list(_sentences(text, mentions))
+    reporting_seeds = _reporting_seeds(text, mentions, sentences, scopes)
+    quote_owners = _quotation_owners(text, scopes, reporting_seeds)
     observations = []
-    for sentence_start, sentence_end in _sentences(text, mentions):
+    for sentence_start, sentence_end in sentences:
         sentence_text = text[sentence_start:sentence_end]
         sentence_mentions = [m for m in mentions if _overlaps(m, sentence_start, sentence_end)]
         context_flags = []
-        if _PARTY.search(sentence_text):
-            context_flags.append("party_submission")
-        if _REPORTED.search(sentence_text):
-            context_flags.append("quoted_or_reported")
         if _DISSENT.search(sentence_text):
             context_flags.append("dissent")
         for start, end in _clauses(text, sentence_start, sentence_end, sentence_mentions):
@@ -356,9 +504,12 @@ def suggest_treatments(text: str, mentions: list[dict], *, source_id: str,
                     signal_start, signal_end = match.span()
                     if any(_overlaps(m, signal_start, signal_end) for m in mentions):
                         continue
-                    flags = ["experimental", "lexical_signal_only", "speaker_unattributed"] + context_flags
-                    if any(a <= signal_start < b for a, b in quotes):
+                    flags = ["experimental", "lexical_signal_only"] + context_flags
+                    scope = quote_scope_at(signal_start, scopes)
+                    if scope:
                         flags.append("quoted_or_reported")
+                        if scope.get("uncertain"):
+                            flags.append("quotation_scope_uncertain")
                     before = text[max(start, signal_start - 75):signal_start]
                     # Limit negation to a short local window, and never infer polarity.
                     before = " ".join(before.split()[-6:])
@@ -370,9 +521,10 @@ def suggest_treatments(text: str, mentions: list[dict], *, source_id: str,
                     if label == "applied" and _RELIEF_APPLICATION.match(text[signal_start:min(end, signal_start + 220)]):
                         flags.append("relief_application")
                     selected, rule, direction = _predicate_targets(text, units, signal_start, signal_end, label)
-                    actor = _reported_actor(text, start, signal_start, source_id) if rule == "active_object" else None
-                    if actor:
-                        flags.extend(("reported_actor_context", "quoted_or_reported"))
+                    if any(_scope_id(unit["start"], scopes) != (scope["scope_id"] if scope else None) for unit in selected):
+                        selected, rule, direction = [], "no_supported_predicate_target", None
+                        flags.append("quotation_target_scope_mismatch")
+                    speaker, actor = _actor_context(text, start, signal_start, signal_end, selected, source_id)
                     history_prefix = text[start:signal_start]
                     procedural_history = label in _PROCEDURAL and (
                         not history_prefix.strip() or re.search(r"[,;:(]\s*$", history_prefix))
@@ -380,7 +532,7 @@ def suggest_treatments(text: str, mentions: list[dict], *, source_id: str,
                         # "Alpha, affirmed Beta" is a citation-history relation:
                         # Beta may be the affirming court's decision, not its object.
                         # Preserve both candidates instead of reversing it by guess.
-                        selected, rule, direction, actor = [], "procedural_citation_history", None, None
+                        selected, rule, direction = [], "procedural_citation_history", None
                         flags.append("procedural_history_direction_uncertain")
                     predicate_mentions = [m for unit in selected for m in unit["mentions"]]
                     predicate_candidates = sorted({target for m in predicate_mentions for target in _candidate_targets(m)})
@@ -389,11 +541,65 @@ def suggest_treatments(text: str, mentions: list[dict], *, source_id: str,
                         flags.append("unresolved_context_mention")
                     if any(_target(m) and _treatment_target(m) is None for m in local_mentions):
                         flags.append("noncase_authority_candidate")
-                    reported_ids = _reported_context(text, units, selected, start, signal_start)
-                    if reported_ids:
+                    owner = _owner_at(text, signal_start, signal_end, selected, reporting_seeds, scope, quote_owners)
+                    # An explicit new voice stops narrative ownership. Inside a
+                    # quotation, "we" is the quoted author's voice, not ours.
+                    if (owner and not scope and actor and actor["start"] >= owner["end"] and
+                            speaker in ("current_court", "party") and
+                            (sentence_start >= owner["sentence_end"] or start > owner["end"] or
+                             re.search(r"\b(?:now|here|in\s+this\s+case|present\s+appeal)\b", text[owner["end"]:signal_start], re.I))):
+                        owner = None
+                    # Historical source cases can follow the target, as in
+                    # "applied Alpha in the 1973 case of Beta".
+                    if not owner:
+                        selected_ids = {m["mention_id"] for unit in selected for m in unit["mentions"]}
+                        owner = next((seed for seed in reporting_seeds if seed["start"] >= signal_end and
+                                      seed["end"] <= end and seed["scope_id"] == (scope["scope_id"] if scope else None) and
+                                      not selected_ids.intersection(seed["mention_ids"]) and
+                                      seed["rule"] == "historical_case_introduction"), None)
+                    reported_ids = owner["mention_ids"][:] if owner else []
+                    if owner:
                         flags.extend(("reported_decision_context", "quoted_or_reported"))
+                    # Party/reporting cues are local to this clause and voice.
+                    # A later "but we applied ..." does not inherit them.
+                    context_start = max(start, scope["content_start"]) if scope else start
+                    prefix = text[context_start:signal_start]
+                    party_match = _PARTY.search(prefix)
+                    if party_match:
+                        flags.append("party_submission")
+                        speaker = "party"
+                        actor = _span_evidence(text, "party_submission", context_start + party_match.start(), context_start + party_match.end())
+                    elif speaker == "party":
+                        flags.append("party_submission")
+                    if _REPORTED.search(prefix):
+                        flags.append("quoted_or_reported")
+                    if actor and speaker not in ("current_court", "party"):
+                        flags.extend(("reported_actor_context", "quoted_or_reported"))
+                        if speaker == "unknown":
+                            flags.append("unresolved_actor")
+                    if owner and speaker not in ("reported_court", "reported_judge", "party"):
+                        speaker = "reported_case" if owner["target_group_id"] else "unknown"
+                    if scope:
+                        # Even an explicit I/we inside a quote cannot identify
+                        # the current court as that passage's speaker.
+                        speaker = "reported_case" if owner and owner["target_group_id"] else "unknown"
+                    if speaker == "unknown":
+                        flags.append("speaker_unattributed")
                     if _MODAL.search(text[max(start, signal_start - 100):signal_start]):
                         flags.append("conditional_or_modal")
+                    attempted = _ATTEMPTED_ACTION.search(text[max(start, signal_start - 180):signal_start])
+                    if attempted:
+                        flags.append("attempted_action_context")
+                    selected_end = max((unit["end"] for unit in selected), default=signal_end)
+                    rejection = (_REJECTED_APPLICATION.match(text, selected_end, min(end, selected_end + 140))
+                                 if label == "applied" and selected and text[signal_start:signal_end].casefold() == "applying" else None)
+                    if rejection and _PARAGRAPH.search(text[signal_start:rejection.end()]):
+                        rejection = None
+                    if rejection:
+                        flags.append("rejected_application_context")
+                    suggested_error = _SUGGESTED_ERROR.search(text[max(start, signal_start - 180):signal_start])
+                    if suggested_error:
+                        flags.append("alleged_error_context")
                     if rule == "doctrinal_subject":
                         flags.append("doctrinal_applicability")
                     if unresolved:
@@ -420,10 +626,24 @@ def suggest_treatments(text: str, mentions: list[dict], *, source_id: str,
                         if any(_treatment_target(m) is None and not _noncase(m) for m in local_mentions):
                             status = "ambiguous"
                             flags.append("unresolved_target")
-                    if target and any(flag in flags for flag in ("negated", "party_submission", "quoted_or_reported", "dissent", "relief_application", "conditional_or_modal", "doctrinal_applicability")):
+                    if target and any(flag in flags for flag in ("negated", "party_submission", "quoted_or_reported", "dissent", "relief_application", "conditional_or_modal", "doctrinal_applicability", "attempted_action_context", "rejected_application_context", "alleged_error_context")):
                         status = "context_required"
                     mention_ids = [m["mention_id"] for m in local_mentions]
                     target_mention_ids = [m["mention_id"] for m in predicate_mentions if _treatment_target(m) == target] if target else []
+                    context_ids = list(dict.fromkeys([mid for mid in mention_ids if mid not in target_mention_ids] + reported_ids))
+                    speaker_evidence = [owner["evidence"]] if owner and speaker == "reported_case" else [actor] if actor else []
+                    ownership_basis = {"rule": owner["rule"], "evidence": [owner["evidence"]]} if owner else None
+                    attribution_basis = _attribution_evidence(text, selected, rule, direction, signal_start, signal_end, actor)
+                    if attempted:
+                        a = max(start, signal_start - 180) + attempted.start()
+                        attribution_basis["evidence"].append(_span_evidence(text, "attempted_action_context", a, signal_end))
+                    if rejection:
+                        attribution_basis["evidence"].append(_span_evidence(text, "rejected_application_context", signal_start, rejection.end()))
+                    if suggested_error:
+                        a = max(start, signal_start - 180) + suggested_error.start()
+                        attribution_basis["evidence"].append(_span_evidence(text, "alleged_error_context", a, signal_end))
+                    if owner:
+                        attribution_basis["evidence"].append(owner["evidence"])
                     observation = {
                         "source_id": source_id, "run_id": run_id, "text_sha256": text_sha256,
                         "target_group_id": target, "mention_ids": mention_ids,
@@ -431,18 +651,24 @@ def suggest_treatments(text: str, mentions: list[dict], *, source_id: str,
                         "evidence_start": start, "evidence_end": end,
                         "evidence_text": text[start:end], "signal_start": signal_start,
                         "signal_end": signal_end, "signal_text": text[signal_start:signal_end],
-                        "flags": sorted(set(flags)), "method": "lexical-v2",
+                        "flags": sorted(set(flags)), "method": "lexical-v3",
                         "provenance": "machine_suggestion", "assignment_reason": reason,
-                        "attribution_scope": "reported_decision" if reported_ids or actor else "local_predicate" if selected else "unknown",
-                        "speaker_attribution": "unknown", "negated": negated,
-                        "reported_actor": actor,
+                        "attribution_scope": "quoted_statement" if scope else "party_submission" if "party_submission" in flags else "reported_decision" if owner or "reported_actor_context" in flags else "local_predicate" if selected else "unknown",
+                        "speaker_attribution": speaker, "speaker_evidence": speaker_evidence,
+                        "context_owner_group_id": owner["target_group_id"] if owner else None,
+                        "context_owner_mention_ids": reported_ids,
+                        "context_owner_candidate_target_ids": owner["candidate_target_ids"][:] if owner else [],
+                        "context_owner_basis": ownership_basis,
+                        "quote_scope": quote_scope_evidence(scope) if scope else None,
+                        "negated": negated,
+                        "reported_actor": actor if actor and actor["kind"] != "speaker" else None,
                         "candidate_mention_ids": mention_ids[:],
                         "predicate_candidate_mention_ids": [m["mention_id"] for m in predicate_mentions],
                         "predicate_candidate_target_ids": predicate_candidates,
                         "target_mention_ids": target_mention_ids,
-                        "context_mention_ids": [mid for mid in mention_ids if mid not in target_mention_ids],
+                        "context_mention_ids": context_ids,
                         "reported_context_mention_ids": reported_ids,
-                        "attribution_basis": _attribution_evidence(text, selected, rule, direction, signal_start, signal_end, actor),
+                        "attribution_basis": attribution_basis,
                     }
                     observation["observation_id"] = _stable_id("obs_", {
                         key: observation[key] for key in ("source_id", "run_id", "text_sha256", "label",
@@ -463,6 +689,7 @@ def summarize_edges(mentions: list[dict], observations: list[dict], *, source_id
         ambiguous = [o for o in observations if o.get("target_group_id") is None and target in o.get("candidate_target_ids", [])]
         contextual = [o for o in observations if o.get("target_group_id") not in (None, target)
                       and target in o.get("candidate_target_ids", [])]
+        reported_sources = [o for o in observations if o.get("context_owner_group_id") == target]
         mention_ids = list(dict.fromkeys(m["mention_id"] for m in linked))
         covered = sorted({mid for o in assigned for mid in _assigned_mentions(o) if mid in mention_ids})
         uncovered = [mid for mid in mention_ids if mid not in covered]
@@ -512,6 +739,8 @@ def summarize_edges(mentions: list[dict], observations: list[dict], *, source_id
             "observation_ids": list(dict.fromkeys(o["observation_id"] for o in assigned)),
             "ambiguous_observation_ids": list(dict.fromkeys(o["observation_id"] for o in ambiguous)),
             "context_observation_ids": list(dict.fromkeys(o["observation_id"] for o in contextual)),
+            "reported_source_observation_ids": [o["observation_id"] for o in reported_sources],
+            "reported_source_signals": [_signal_evidence(o) for o in reported_sources],
             "covered_mention_ids": covered, "uncovered_mention_ids": uncovered,
             "unknown_mention_ids": uncovered[:], "unknown_mention_count": len(uncovered),
             "mention_treatments": mention_treatments, "label_conflicts": conflicts,
@@ -522,6 +751,7 @@ def summarize_edges(mentions: list[dict], observations: list[dict], *, source_id
                 "procedural_evidence": [_signal_evidence(o) for o in procedural],
                 "candidate_evidence": [_signal_evidence(o) for o in ambiguous],
                 "context_evidence": [_signal_evidence(o) for o in contextual],
+                "reported_source_evidence": [_signal_evidence(o) for o in reported_sources],
                 "label_conflicts": conflicts, "unknown_mention_count": len(uncovered),
             },
             "coverage_status": "no_suggestions" if not covered else "partial_suggestions" if uncovered else "suggestions_for_all_mentions",
@@ -558,6 +788,14 @@ def _signal_evidence(observation):
         "candidate_mention_ids": observation.get("candidate_mention_ids", observation.get("mention_ids", [])),
         "assignment_reason": observation.get("assignment_reason"),
         "attribution_scope": observation.get("attribution_scope", "unknown"),
+        "speaker_attribution": observation.get("speaker_attribution", "unknown"),
+        "speaker_evidence": observation.get("speaker_evidence", []),
+        "context_owner_group_id": observation.get("context_owner_group_id"),
+        "context_owner_mention_ids": observation.get("context_owner_mention_ids", []),
+        "context_owner_candidate_target_ids": observation.get("context_owner_candidate_target_ids", []),
+        "context_owner_basis": observation.get("context_owner_basis"),
+        "quote_scope": observation.get("quote_scope"),
+        "attribution_basis": observation.get("attribution_basis"),
         "reported_actor": observation.get("reported_actor"),
         "provenance": "machine_suggestion",
     }

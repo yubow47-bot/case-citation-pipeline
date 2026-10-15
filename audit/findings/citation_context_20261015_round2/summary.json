@@ -1,0 +1,1827 @@
+{
+  "schema": "citation_context_development_receipt_v3",
+  "created_at": "2026-10-15T21:04:19.384237+00:00",
+  "run_id": "run_20261015_identity_review",
+  "input_fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+  "baseline_package": "data/experiments/citation_context_expanded120_final_20261015",
+  "local_package": "data/experiments/citation_context_quote_scope120_final_20261015",
+  "cohort": "audit/findings/citation_context_20261015/cohort120.json",
+  "summary": {
+    "document_rows": 120,
+    "source_judgments": 120,
+    "full_linked_mentions": 4303,
+    "full_unlinked_barriers": 42,
+    "short_references": 578,
+    "short_by_kind": {
+      "supra": 475,
+      "ibid": 32,
+      "id": 31,
+      "precite": 40
+    },
+    "short_resolved": 301,
+    "short_by_status": {
+      "resolved": 301,
+      "blocked": 43,
+      "unresolved": 198,
+      "ambiguous": 36
+    },
+    "short_by_basis": {
+      "named_unique_prior_antecedent": 299,
+      "apparent_noncase_reference": 25,
+      "immediate_context_barrier": 39,
+      "quoted_short_reference": 2,
+      "named_or_explicit_note_antecedent_required": 155,
+      "multiple_named_authorities": 2,
+      "all_caps_id_nonreference_risk": 13,
+      "citation_attached_quotation_ibid": 5,
+      "case_title_without_prior_anchor": 4,
+      "unrecognized_or_compound_case_name": 6,
+      "reporter_id_substitution": 3,
+      "named_prior_normalized_short_party": 25
+    },
+    "short_by_kind_status": {
+      "ibid": {
+        "unresolved": 25,
+        "blocked": 2,
+        "resolved": 5
+      },
+      "id": {
+        "unresolved": 14,
+        "blocked": 17
+      },
+      "precite": {
+        "unresolved": 26,
+        "resolved": 9,
+        "ambiguous": 1,
+        "blocked": 4
+      },
+      "supra": {
+        "resolved": 287,
+        "blocked": 20,
+        "unresolved": 133,
+        "ambiguous": 35
+      }
+    },
+    "quoted_short_references": 2,
+    "quoted_short_resolved": 0,
+    "case_name_mentions": 3670,
+    "case_name_by_status": {
+      "resolved": 1795,
+      "blocked": 1090,
+      "ambiguous": 785
+    },
+    "case_name_resolved": 1795,
+    "observations": 4010,
+    "observations_by_status": {
+      "context_required": 3712,
+      "ambiguous": 295,
+      "suggested": 3
+    },
+    "observations_by_speaker": {
+      "unknown": 3601,
+      "current_court": 154,
+      "reported_case": 100,
+      "reported_judge": 86,
+      "reported_court": 21,
+      "party": 48
+    },
+    "observations_with_context_owner": 109,
+    "edges_with_suggestions": 3,
+    "edges_with_procedural_signals": 0,
+    "document_target_edges": 2698,
+    "new_production_edges": 0,
+    "production_dd_changed": false
+  },
+  "comparison": {
+    "markers_retained": 578,
+    "previous_resolved_targets_retained": 213,
+    "newly_resolved": 88,
+    "newly_resolved_by_kind": {
+      "supra": 83,
+      "ibid": 5
+    },
+    "changed_assignments": [
+      {
+        "source_id": "BCCA_2007bcca260",
+        "kind": "ibid",
+        "marker_start": 22707,
+        "marker_end": 22712,
+        "before_status": "unresolved",
+        "after_status": "blocked",
+        "before_target": null,
+        "after_target": null,
+        "basis": "quoted_short_reference"
+      },
+      {
+        "source_id": "BCCA_2006bcca119",
+        "kind": "supra",
+        "marker_start": 40376,
+        "marker_end": 40381,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G024807",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "BCCA_1999bcca502",
+        "kind": "supra",
+        "marker_start": 12298,
+        "marker_end": 12303,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G013860",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "BCCA_2023bcca200",
+        "kind": "ibid",
+        "marker_start": 103226,
+        "marker_end": 103231,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "immediate_context_barrier"
+      },
+      {
+        "source_id": "BCCA_2003bcca366",
+        "kind": "supra",
+        "marker_start": 23030,
+        "marker_end": 23035,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G016656",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "BCCA_2003bcca366",
+        "kind": "supra",
+        "marker_start": 27181,
+        "marker_end": 27186,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G016656",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "BCCA_2003bcca584",
+        "kind": "supra",
+        "marker_start": 4092,
+        "marker_end": 4097,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_or_explicit_note_antecedent_required"
+      },
+      {
+        "source_id": "ONCA_2018onca407",
+        "kind": "ibid",
+        "marker_start": 22505,
+        "marker_end": 22510,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G022989",
+        "basis": "citation_attached_quotation_ibid"
+      },
+      {
+        "source_id": "ONCA_c41386c41394",
+        "kind": "supra",
+        "marker_start": 27998,
+        "marker_end": 28003,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G079040",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_2008onca182",
+        "kind": "supra",
+        "marker_start": 31914,
+        "marker_end": 31919,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G014909",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_2008onca489",
+        "kind": "supra",
+        "marker_start": 22671,
+        "marker_end": 22676,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G013178",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_2008onca489",
+        "kind": "supra",
+        "marker_start": 40338,
+        "marker_end": 40343,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G025998",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_2008onca489",
+        "kind": "supra",
+        "marker_start": 74922,
+        "marker_end": 74927,
+        "before_status": "unresolved",
+        "after_status": "ambiguous",
+        "before_target": null,
+        "after_target": null,
+        "basis": "unrecognized_or_compound_case_name"
+      },
+      {
+        "source_id": "ONCA_2011onca795",
+        "kind": "supra",
+        "marker_start": 12299,
+        "marker_end": 12304,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G092432",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_2013onca687",
+        "kind": "ibid",
+        "marker_start": 5376,
+        "marker_end": 5381,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G025899",
+        "basis": "citation_attached_quotation_ibid"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 15989,
+        "marker_end": 15994,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G109418",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 65986,
+        "marker_end": 65991,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G071570",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 68716,
+        "marker_end": 68721,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 69992,
+        "marker_end": 69997,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G078212",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 74969,
+        "marker_end": 74974,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G123259",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 107565,
+        "marker_end": 107570,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G078212",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 107660,
+        "marker_end": 107665,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G014554",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 107703,
+        "marker_end": 107708,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G078212",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 107761,
+        "marker_end": 107766,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 107820,
+        "marker_end": 107825,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G078212",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 107845,
+        "marker_end": 107850,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G014554",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 108043,
+        "marker_end": 108048,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 108204,
+        "marker_end": 108209,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 108263,
+        "marker_end": 108268,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G078212",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 108462,
+        "marker_end": 108467,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 108619,
+        "marker_end": 108624,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G078212",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 108745,
+        "marker_end": 108750,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "ibid",
+        "marker_start": 111128,
+        "marker_end": 111133,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "immediate_context_barrier"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 115954,
+        "marker_end": 115959,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 117246,
+        "marker_end": 117251,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G014554",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 117272,
+        "marker_end": 117277,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G078212",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 117397,
+        "marker_end": 117402,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G078212",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 117609,
+        "marker_end": 117614,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G078212",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 117668,
+        "marker_end": 117673,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G014554",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 118233,
+        "marker_end": 118238,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G014554",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 118291,
+        "marker_end": 118296,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 118616,
+        "marker_end": 118621,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 118816,
+        "marker_end": 118821,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 119038,
+        "marker_end": 119043,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 120278,
+        "marker_end": 120283,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 120471,
+        "marker_end": 120476,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 120593,
+        "marker_end": 120598,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 121972,
+        "marker_end": 121977,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 122024,
+        "marker_end": 122029,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G120477",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 122573,
+        "marker_end": 122578,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G108555",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 123432,
+        "marker_end": 123437,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G108555",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 123572,
+        "marker_end": 123577,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 123620,
+        "marker_end": 123625,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G108555",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 123643,
+        "marker_end": 123648,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 123727,
+        "marker_end": 123732,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G108555",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 123794,
+        "marker_end": 123799,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 123895,
+        "marker_end": 123900,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G108555",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 124335,
+        "marker_end": 124340,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 124510,
+        "marker_end": 124515,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c29531c30585c30643c34151",
+        "kind": "supra",
+        "marker_start": 124763,
+        "marker_end": 124768,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G007747",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_1936scr598",
+        "kind": "supra",
+        "marker_start": 3249,
+        "marker_end": 3254,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_or_explicit_note_antecedent_required"
+      },
+      {
+        "source_id": "SCC_2006scc58",
+        "kind": "ibid",
+        "marker_start": 125346,
+        "marker_end": 125351,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "immediate_context_barrier"
+      },
+      {
+        "source_id": "SCC_2006scc58",
+        "kind": "ibid",
+        "marker_start": 125564,
+        "marker_end": 125569,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "immediate_context_barrier"
+      },
+      {
+        "source_id": "SCC_2026scc22",
+        "kind": "ibid",
+        "marker_start": 143025,
+        "marker_end": 143030,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G009370",
+        "basis": "citation_attached_quotation_ibid"
+      },
+      {
+        "source_id": "SCC_2026scc22",
+        "kind": "ibid",
+        "marker_start": 143546,
+        "marker_end": 143551,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G009370",
+        "basis": "citation_attached_quotation_ibid"
+      },
+      {
+        "source_id": "SCC_2026scc22",
+        "kind": "ibid",
+        "marker_start": 154050,
+        "marker_end": 154055,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G020095",
+        "basis": "citation_attached_quotation_ibid"
+      },
+      {
+        "source_id": "SCC_189424scr1",
+        "kind": "precite",
+        "marker_start": 48207,
+        "marker_end": 48216,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_or_explicit_note_antecedent_required"
+      },
+      {
+        "source_id": "SCC_18795scr318",
+        "kind": "id",
+        "marker_start": 15048,
+        "marker_end": 15051,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "immediate_context_barrier"
+      },
+      {
+        "source_id": "SCC_18795scr318",
+        "kind": "id",
+        "marker_start": 71448,
+        "marker_end": 71451,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "immediate_context_barrier"
+      },
+      {
+        "source_id": "SCC_188411scr537",
+        "kind": "precite",
+        "marker_start": 51176,
+        "marker_end": 51183,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_or_explicit_note_antecedent_required"
+      },
+      {
+        "source_id": "SCC_19971scr607",
+        "kind": "supra",
+        "marker_start": 161120,
+        "marker_end": 161125,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G008505",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19971scr607",
+        "kind": "supra",
+        "marker_start": 163365,
+        "marker_end": 163370,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G008505",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19971scr607",
+        "kind": "supra",
+        "marker_start": 165169,
+        "marker_end": 165174,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G008505",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19971scr607",
+        "kind": "supra",
+        "marker_start": 182359,
+        "marker_end": 182364,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G015671",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 277596,
+        "marker_end": 277601,
+        "before_status": "blocked",
+        "after_status": "ambiguous",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 286405,
+        "marker_end": 286410,
+        "before_status": "blocked",
+        "after_status": "ambiguous",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 294504,
+        "marker_end": 294509,
+        "before_status": "blocked",
+        "after_status": "ambiguous",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 334289,
+        "marker_end": 334294,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_or_explicit_note_antecedent_required"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 338341,
+        "marker_end": 338346,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_or_explicit_note_antecedent_required"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 343143,
+        "marker_end": 343148,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_or_explicit_note_antecedent_required"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 346281,
+        "marker_end": 346286,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G003813",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 346323,
+        "marker_end": 346328,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G010041",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 348718,
+        "marker_end": 348723,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_or_explicit_note_antecedent_required"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 359654,
+        "marker_end": 359659,
+        "before_status": "blocked",
+        "after_status": "ambiguous",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 361825,
+        "marker_end": 361830,
+        "before_status": "blocked",
+        "after_status": "ambiguous",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 362769,
+        "marker_end": 362774,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G012333",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 364137,
+        "marker_end": 364142,
+        "before_status": "blocked",
+        "after_status": "ambiguous",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 365619,
+        "marker_end": 365624,
+        "before_status": "blocked",
+        "after_status": "ambiguous",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 365656,
+        "marker_end": 365661,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G013052",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 365834,
+        "marker_end": 365839,
+        "before_status": "blocked",
+        "after_status": "ambiguous",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 367067,
+        "marker_end": 367072,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G012333",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 367095,
+        "marker_end": 367100,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G013052",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 368105,
+        "marker_end": 368110,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_or_explicit_note_antecedent_required"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 368141,
+        "marker_end": 368146,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_or_explicit_note_antecedent_required"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 369411,
+        "marker_end": 369416,
+        "before_status": "blocked",
+        "after_status": "ambiguous",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 376972,
+        "marker_end": 376977,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G013052",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 377061,
+        "marker_end": 377066,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G009469",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19973scr3",
+        "kind": "supra",
+        "marker_start": 392940,
+        "marker_end": 392945,
+        "before_status": "blocked",
+        "after_status": "ambiguous",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 12162,
+        "marker_end": 12167,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_or_explicit_note_antecedent_required"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 12915,
+        "marker_end": 12920,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_or_explicit_note_antecedent_required"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "ibid",
+        "marker_start": 26508,
+        "marker_end": 26513,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "immediate_context_barrier"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 39724,
+        "marker_end": 39729,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "named_or_explicit_note_antecedent_required"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 48184,
+        "marker_end": 48189,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G148163",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 48932,
+        "marker_end": 48937,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G125113",
+        "basis": "named_prior_normalized_short_party"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 50104,
+        "marker_end": 50109,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G149122",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 55887,
+        "marker_end": 55892,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G006017",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 94425,
+        "marker_end": 94430,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G144862",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 95270,
+        "marker_end": 95275,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G144862",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 95459,
+        "marker_end": 95464,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G144862",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 95753,
+        "marker_end": 95758,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G144862",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 96980,
+        "marker_end": 96985,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G144862",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 98423,
+        "marker_end": 98428,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G144862",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 110372,
+        "marker_end": 110377,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G125029",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 112108,
+        "marker_end": 112113,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G125083",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 126928,
+        "marker_end": 126933,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G125028",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 127130,
+        "marker_end": 127135,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G149122",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 127977,
+        "marker_end": 127982,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G149122",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 131031,
+        "marker_end": 131036,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G001700",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 131128,
+        "marker_end": 131133,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G149122",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_19821scr347",
+        "kind": "supra",
+        "marker_start": 136505,
+        "marker_end": 136510,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G149122",
+        "basis": "named_unique_prior_antecedent"
+      }
+    ],
+    "previous_quoted_blockers": 100,
+    "previous_quoted_blockers_after_status": {
+      "resolved": 56,
+      "unresolved": 20,
+      "blocked": 14,
+      "ambiguous": 10
+    },
+    "previous_suggestions": [
+      {
+        "source_id": "BCCA_2007bcca144",
+        "signal_start": 14388,
+        "label": "followed",
+        "before_target": "XC-G015827",
+        "after_target": "XC-G015827",
+        "after_status": "context_required",
+        "speaker": "unknown",
+        "context_owner": null
+      },
+      {
+        "source_id": "BCCA_2013bcca177",
+        "signal_start": 15231,
+        "label": "applied",
+        "before_target": "XC-G005745",
+        "after_target": "XC-G005745",
+        "after_status": "context_required",
+        "speaker": "reported_case",
+        "context_owner": "XC-G006499"
+      },
+      {
+        "source_id": "BCCA_2012bcca85",
+        "signal_start": 16334,
+        "label": "distinguished",
+        "before_target": "XC-G012270",
+        "after_target": "XC-G012270",
+        "after_status": "context_required",
+        "speaker": "reported_case",
+        "context_owner": "XC-G034815"
+      },
+      {
+        "source_id": "ONCA_c38114m28623",
+        "signal_start": 25789,
+        "label": "applied",
+        "before_target": "XC-G071022",
+        "after_target": "XC-G071022",
+        "after_status": "context_required",
+        "speaker": "reported_court",
+        "context_owner": "XC-G071046"
+      },
+      {
+        "source_id": "ONCA_2021onca523",
+        "signal_start": 8749,
+        "label": "followed",
+        "before_target": "XC-G075497",
+        "after_target": "XC-G075497",
+        "after_status": "context_required",
+        "speaker": "unknown",
+        "context_owner": null
+      },
+      {
+        "source_id": "SCC_2002scc33",
+        "signal_start": 131236,
+        "label": "distinguished",
+        "before_target": "XC-G017618",
+        "after_target": "XC-G017618",
+        "after_status": "context_required",
+        "speaker": "reported_case",
+        "context_owner": "XC-G024329"
+      },
+      {
+        "source_id": "SCC_19941scr601",
+        "signal_start": 27067,
+        "label": "applied",
+        "before_target": "XC-G006415",
+        "after_target": "XC-G006415",
+        "after_status": "context_required",
+        "speaker": "unknown",
+        "context_owner": null
+      },
+      {
+        "source_id": "SCC_19941scr601",
+        "signal_start": 89662,
+        "label": "applied",
+        "before_target": "XC-G006253",
+        "after_target": "XC-G006253",
+        "after_status": "context_required",
+        "speaker": "unknown",
+        "context_owner": null
+      },
+      {
+        "source_id": "SCC_2013scc70",
+        "signal_start": 11672,
+        "label": "applied",
+        "before_target": "XC-G081066",
+        "after_target": "XC-G081066",
+        "after_status": "suggested",
+        "speaker": "unknown",
+        "context_owner": null
+      },
+      {
+        "source_id": "SCC_2013scc70",
+        "signal_start": 44895,
+        "label": "distinguished",
+        "before_target": "XC-G011572",
+        "after_target": "XC-G011572",
+        "after_status": "context_required",
+        "speaker": "reported_case",
+        "context_owner": "XC-G014720"
+      },
+      {
+        "source_id": "SCC_2013scc70",
+        "signal_start": 59484,
+        "label": "applied",
+        "before_target": "XC-G004867",
+        "after_target": "XC-G004867",
+        "after_status": "context_required",
+        "speaker": "reported_case",
+        "context_owner": "XC-G005537"
+      },
+      {
+        "source_id": "SCC_2013scc70",
+        "signal_start": 95274,
+        "label": "followed",
+        "before_target": "XC-G162636",
+        "after_target": "XC-G162636",
+        "after_status": "context_required",
+        "speaker": "unknown",
+        "context_owner": null
+      },
+      {
+        "source_id": "SCC_19971scr607",
+        "signal_start": 177771,
+        "label": "distinguished",
+        "before_target": "XC-G009962",
+        "after_target": "XC-G009962",
+        "after_status": "context_required",
+        "speaker": "unknown",
+        "context_owner": null
+      },
+      {
+        "source_id": "SCC_19971scr607",
+        "signal_start": 259097,
+        "label": "applied",
+        "before_target": "XC-G009962",
+        "after_target": "XC-G009962",
+        "after_status": "context_required",
+        "speaker": "unknown",
+        "context_owner": null
+      }
+    ],
+    "remaining_short_references": [
+      {
+        "kind": "ibid",
+        "status": "blocked",
+        "basis": "apparent_noncase_reference",
+        "count": 1
+      },
+      {
+        "kind": "ibid",
+        "status": "blocked",
+        "basis": "quoted_short_reference",
+        "count": 1
+      },
+      {
+        "kind": "ibid",
+        "status": "unresolved",
+        "basis": "immediate_context_barrier",
+        "count": 25
+      },
+      {
+        "kind": "id",
+        "status": "blocked",
+        "basis": "all_caps_id_nonreference_risk",
+        "count": 13
+      },
+      {
+        "kind": "id",
+        "status": "blocked",
+        "basis": "quoted_short_reference",
+        "count": 1
+      },
+      {
+        "kind": "id",
+        "status": "blocked",
+        "basis": "reporter_id_substitution",
+        "count": 3
+      },
+      {
+        "kind": "id",
+        "status": "unresolved",
+        "basis": "immediate_context_barrier",
+        "count": 14
+      },
+      {
+        "kind": "precite",
+        "status": "ambiguous",
+        "basis": "unrecognized_or_compound_case_name",
+        "count": 1
+      },
+      {
+        "kind": "precite",
+        "status": "blocked",
+        "basis": "apparent_noncase_reference",
+        "count": 4
+      },
+      {
+        "kind": "precite",
+        "status": "unresolved",
+        "basis": "case_title_without_prior_anchor",
+        "count": 3
+      },
+      {
+        "kind": "precite",
+        "status": "unresolved",
+        "basis": "named_or_explicit_note_antecedent_required",
+        "count": 23
+      },
+      {
+        "kind": "supra",
+        "status": "ambiguous",
+        "basis": "multiple_named_authorities",
+        "count": 2
+      },
+      {
+        "kind": "supra",
+        "status": "ambiguous",
+        "basis": "named_unique_prior_antecedent",
+        "count": 28
+      },
+      {
+        "kind": "supra",
+        "status": "ambiguous",
+        "basis": "unrecognized_or_compound_case_name",
+        "count": 5
+      },
+      {
+        "kind": "supra",
+        "status": "blocked",
+        "basis": "apparent_noncase_reference",
+        "count": 20
+      },
+      {
+        "kind": "supra",
+        "status": "unresolved",
+        "basis": "case_title_without_prior_anchor",
+        "count": 1
+      },
+      {
+        "kind": "supra",
+        "status": "unresolved",
+        "basis": "named_or_explicit_note_antecedent_required",
+        "count": 132
+      }
+    ],
+    "rejected_application_and_reported_error_examples": [
+      {
+        "source_id": "BCCA_2023bcca200",
+        "signal_start": 104305,
+        "label": "applied",
+        "target_group_id": "XC-G048400",
+        "status": "context_required",
+        "speaker_attribution": "unknown",
+        "flags": [
+          "experimental",
+          "lexical_signal_only",
+          "rejected_application_context",
+          "speaker_unattributed"
+        ],
+        "attribution_basis": {
+          "direction": "after",
+          "evidence": [
+            {
+              "end": 104313,
+              "kind": "lexical_predicate",
+              "raw": "applying",
+              "start": 104305
+            },
+            {
+              "end": 104325,
+              "kind": "predicate_candidate",
+              "mention_ids": [
+                "m-8a091548115a00f30f68dd7c"
+              ],
+              "raw": "Vavilov",
+              "start": 104318,
+              "target_group_id": "XC-G048400"
+            },
+            {
+              "end": 104375,
+              "kind": "rejected_application_context",
+              "raw": "applying the Vavilov reasonableness approach is not analytically sound",
+              "start": 104305
+            }
+          ],
+          "rule": "active_object"
+        }
+      },
+      {
+        "source_id": "SCC_2010scc52",
+        "signal_start": 4271,
+        "label": "applied",
+        "target_group_id": "XC-G005772",
+        "status": "context_required",
+        "speaker_attribution": "reported_court",
+        "flags": [
+          "alleged_error_context",
+          "experimental",
+          "lexical_signal_only",
+          "quoted_or_reported",
+          "reported_actor_context"
+        ],
+        "attribution_basis": {
+          "direction": "after",
+          "evidence": [
+            {
+              "end": 4279,
+              "kind": "lexical_predicate",
+              "raw": "applying",
+              "start": 4271
+            },
+            {
+              "end": 4366,
+              "kind": "predicate_candidate",
+              "mention_ids": [
+                "m-e5533117d76c0d8672679c5b"
+              ],
+              "raw": "Corbett v. The Queen, [1975] 2 S.C.R. 275",
+              "start": 4325,
+              "target_group_id": "XC-G005772"
+            },
+            {
+              "end": 4261,
+              "kind": "reported_actor",
+              "raw": "the majority of the Court of Appeal",
+              "start": 4226
+            },
+            {
+              "end": 4279,
+              "kind": "alleged_error_context",
+              "raw": "The suggestion that the majority of the Court of Appeal erred in applying",
+              "start": 4206
+            }
+          ],
+          "rule": "active_object"
+        }
+      }
+    ]
+  },
+  "checks": {
+    "unit_tests_passed": 104,
+    "artifact_hashes": true,
+    "code_hashes": true,
+    "same_source_texts": true,
+    "production_edge_counts_and_dd_unchanged": true,
+    "unique_record_ids": true,
+    "reference_checks": {
+      "edges": 10529,
+      "mentions": 55839,
+      "observations": 8775
+    },
+    "scope_references_and_spans": true,
+    "html_fragment_links": 27391,
+    "html_missing_fragment_targets": 0,
+    "html_duplicate_ids": 0,
+    "rejected_application_and_reported_error_preserve_targets": true
+  },
+  "code_sha256": {
+    "cohort.py": "75b346ece9d9e9201edfc6a0ee048c3ea459d6a06f09b995784b614dc8de698c",
+    "context.py": "d80074a61970934d93a96bae4e4de7ebb5bebb31d0f63d548348e4fb08a93ed4",
+    "data.py": "837ac87bf8f63e40dc7116bf2a793442805fe8401b22c9cb8fe30d6bbac9d3e2",
+    "report.py": "a088baa49888bb70ef0d4d2655baf8a1522dda2c9407d5f2c957b5588af3872c",
+    "scopes.py": "d11bf599a1684b36cdbe58cce001b0ded044c84ee5c992f12071a41dba613142",
+    "shortforms.py": "e9c8f3a43a00f2244c3c8e05deb1fe349f5517e213a6aa8a106a555d2f992c29",
+    "treatment.py": "cae42e34461dd777c027f8bea605664caac4be0454a528680f515d6dc3c21095",
+    "__init__.py": "b4ee23c5390da4faa53ab5514d937eae45b8d853d05016a18a8a02f6e8b65bf4"
+  },
+  "files": {
+    "documents.jsonl": {
+      "bytes": 1788849,
+      "sha256": "442d94e14b0147c92d2bde364dfc1352aa3e232addd656d5e61c1abd83dad6ad"
+    },
+    "mentions.jsonl": {
+      "bytes": 16375871,
+      "sha256": "a43f4e637f3aa8b66ec12608154fda592d2cc739cfe735085c5746843e3e33a1"
+    },
+    "observations.jsonl": {
+      "bytes": 7448399,
+      "sha256": "e7a47dc61e4807ffd274192ae943a86a554fef863fc579738e7840505c830a3b"
+    },
+    "edges.jsonl": {
+      "bytes": 7402665,
+      "sha256": "0b7984504c21ce765e57e41ec6b3560f8e6e509619782ad60f71cc1d65e7aed3"
+    },
+    "report.html": {
+      "bytes": 17192872,
+      "sha256": "aedf71d4cb4150f28246009d790567e950588b5a62c8f2785350e5dd46219b5f"
+    }
+  },
+  "limitations": [
+    "Exploratory, deliberately balanced 120-document cohort; counts are rule outputs, not accuracy estimates.",
+    "Quotation scopes are paragraph-bounded and uncertain boundaries stay explicit; unmarked/multiline quotation structure is incomplete.",
+    "Existing production identities are inherited. Source-case ownership and lexical Treatment remain machine evidence requiring contextual interpretation."
+  ]
+}

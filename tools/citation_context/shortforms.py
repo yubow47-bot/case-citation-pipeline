@@ -3,7 +3,8 @@
 These rules produce review evidence, never production citation edges. Offsets
 always refer to the original Python Unicode string. Named references search all
 earlier full anchors in the document; ibid/id accept a short citation-like gap.
-Quotation, footnote and non-case detection are deliberately lexical approximations.
+An explicit local case source can also bridge an attached quotation. Quotation,
+footnote and non-case detection are deliberately lexical approximations.
 """
 from __future__ import annotations
 
@@ -12,8 +13,13 @@ import json
 import re
 import unicodedata
 
+try:
+    from .scopes import quotation_scopes, quote_scope_at, quote_scope_for_span, quote_scope_evidence
+except ImportError:
+    from scopes import quotation_scopes, quote_scope_at, quote_scope_for_span, quote_scope_evidence
 
-DETECTOR = "rules-v2"
+
+DETECTOR = "rules-v3"
 MAX_IMMEDIATE_GAP = 220
 _MARKER = re.compile(
     r"(?<!\w)(?P<ibid>ibid\.?)(?!\w)|(?<!\w)(?P<id>id\.)(?![A-Za-z])|"
@@ -139,7 +145,7 @@ def _local_title(text, anchor, lower):
 
 def _quoted_title_before(text, anchor, quote_ranges):
     """Quoted article/book titles immediately followed by a citation cannot seed a case."""
-    for start, end in reversed(quote_ranges):
+    for start, end in sorted(quote_ranges, key=lambda span: span[1], reverse=True):
         if end > anchor["start"]:
             continue
         gap = text[end:anchor["start"]]
@@ -151,7 +157,7 @@ def _quoted_title_before(text, anchor, quote_ranges):
     return None
 
 
-def enrich_anchors(text: str, anchors: list[dict]) -> list[dict]:
+def enrich_anchors(text: str, anchors: list[dict], *, quote_scopes=None) -> list[dict]:
     """Copy anchors and add auditable source aliases without altering production identity.
 
     ``source_aliases`` contains original ``start/end/raw/origin`` evidence. A
@@ -160,7 +166,8 @@ def enrich_anchors(text: str, anchors: list[dict]) -> list[dict]:
     Reapplying this helper is safe; callers may persist its additive fields.
     """
     result = sorted((dict(a) for a in anchors), key=lambda a: (a["start"], a["end"]))
-    quotes = _quoted_ranges(text)
+    quote_scopes = quotation_scopes(text) if quote_scopes is None else quote_scopes
+    quotes = [(s["start"], s["end"]) for s in quote_scopes if s["closed"]]
     previous_end = 0
     for index, anchor in enumerate(result):
         if not (isinstance(anchor["start"], int) and isinstance(anchor["end"], int)
@@ -191,6 +198,7 @@ def enrich_anchors(text: str, anchors: list[dict]) -> list[dict]:
             start, end = (anchor["end"] + p for p in declaration.span("name"))
             evidence.append({"start": start, "end": end, "raw": text[start:end], "origin": "explicit_shortname"})
         anchor["source_aliases"] = evidence
+        anchor["quotation_scope"] = quote_scope_evidence(quote_scope_for_span(anchor["start"], anchor["end"], quote_scopes))
         previous_end = max(previous_end, anchor["end"])
     return result
 
@@ -217,7 +225,7 @@ def _aliases(anchor):
         if tokens and any(t.isalpha() for t in tokens) and " ".join(tokens) not in _GENERIC_NAMES:
             result[tokens] = False
     for value in values:
-        shortened = value
+        shortened = re.sub(r"\s+(?:and\s+(?:another|others)|et\s+al\.?)\s*$", "", value, flags=re.I)
         while re.search(r"\([^()]*\)", shortened):
             shortened = re.sub(r"\([^()]*\)", " ", shortened)
         if "(" in shortened or ")" in shortened:
@@ -246,17 +254,7 @@ def _citation_gap(value):
 
 
 def _quoted_ranges(text):
-    # Do not interpret apostrophes as quotation marks in party names or French.
-    stack, spans = [], []
-    pairs = {"“": "”", "«": "»", '"': '"'}
-    for i, char in enumerate(text):
-        if stack and char == stack[-1][0]:
-            _, start = stack.pop()
-            spans.append((start, i + 1))
-        elif char in pairs:
-            stack.append((pairs[char], i))
-    spans.extend((start, len(text)) for _, start in stack)
-    return sorted(spans)
+    return [(scope["start"], scope["end"]) for scope in quotation_scopes(text)]
 
 
 def _in_quote(position, ranges):
@@ -340,8 +338,17 @@ def _named_candidates(text, marker_start, earlier, shorts=(), evidence=None):
                 start = prefix_start + words[-len(alias)].start()
                 if start >= 2 and text[start - 1] in "-–'’" and text[start - 2].isalpha():
                     continue  # Do not match a suffix inside another party's name.
-                # Only whitespace/comma may separate the name from its marker.
-                if re.fullmatch(r"[\s,]*", text[prefix_start + words[-1].end():marker_start]):
+                tail = text[prefix_start + words[-1].end():marker_start]
+                suffix = re.match(r"[.)]*", tail).group()
+                # Preserve printed initial/corporate punctuation and balanced
+                # closing qualifiers, never cross ``Smith. Supra.`` sentences.
+                name = text[start:prefix_start + words[-1].end()] + suffix
+                suffix_ok = (not suffix or
+                             ("." not in suffix or len(normalized[-1]) == 1
+                              or normalized[-1] in {"inc", "ltd", "corp", "co", "bros"})
+                             and ("(" in name if ")" in suffix else True)
+                             and _mask_qualifiers(name) is not None)
+                if suffix_ok and re.fullmatch(r"[\s,]*(?:\(\s*)?", tail[len(suffix):]):
                     matches.append((start, anchor, normalized_short, separator_normalized))
     if not matches:
         return [], marker_start, False, False
@@ -414,7 +421,7 @@ def _footnote_candidates(text, marker_start, note_number, earlier):
     return matches, noncase, explicit_section
 
 
-def _immediate(text, record, anchors, shorts, quote_ranges):
+def _immediate(text, record, anchors, shorts, quote_scopes):
     start = record["marker_start"]
     prior = [a for a in anchors if a["end"] <= start]
     prior.extend(s for s in shorts if s["end"] <= start)
@@ -422,10 +429,22 @@ def _immediate(text, record, anchors, shorts, quote_ranges):
         return
     prior.sort(key=lambda a: (a["end"], a["start"]))
     last = prior[-1]
+    scope = quote_scope_at(start, quote_scopes)
+    last_scope = quote_scope_for_span(last["start"], last["end"], quote_scopes)
+    same_quote = (scope and last_scope and scope["scope_id"] == last_scope["scope_id"]
+                  and scope["closed"] and not scope["uncertain"])
     gap = text[last["end"]:start]
     if not _citation_gap(gap):
         record["resolution_basis"] = "immediate_context_barrier"
         record["notes"].append("Intervening prose, an unknown authority, quotation, or distance blocks adjacency.")
+        return
+    if (scope or last_scope) and not same_quote:
+        _set_result(record, [last], "quotation_scope_antecedent_barrier", status="blocked")
+        return
+    if (record["kind"] == "id" and re.match(r"pp?\.?\s*\d", record.get("pinpoint") or "", re.I)
+            and last.get("citation_kind") == "reporter" and not _aliases(last)):
+        _set_result(record, [last], "reporter_id_substitution", status="blocked")
+        record["notes"].append("A page-only Id after an anonymous report reference may substitute another report page; no printed case title establishes the same case.")
         return
     if last.get("detector") == DETECTOR:
         if last["resolution_status"] != "resolved":
@@ -433,7 +452,8 @@ def _immediate(text, record, anchors, shorts, quote_ranges):
                         status="ambiguous" if last["resolution_status"] == "ambiguous" else "unresolved")
             record["candidate_target_ids"] = last["candidate_target_ids"][:]
             return
-        _set_result(record, [last], "immediate_resolved_short_reference")
+        _set_result(record, [last], "same_quotation_resolved_short_reference" if same_quote
+                    else "immediate_resolved_short_reference")
         return
     cluster = [last]
     boundary = last["start"]
@@ -453,24 +473,134 @@ def _immediate(text, record, anchors, shorts, quote_ranges):
         _set_result(record, cluster, "noncase_identity_seed_barrier", status="blocked")
     elif any(not a.get("target_group_id") for a in cluster):
         _set_result(record, cluster, "immediate_unlinked_authority_barrier", status="blocked")
-    elif any(_in_quote(a["start"], quote_ranges) for a in cluster):
+    elif any(quote_scope_at(a["start"], quote_scopes) for a in cluster) and not (
+            same_quote and all((local := quote_scope_for_span(a["start"], a["end"], quote_scopes))
+                               and local["scope_id"] == scope["scope_id"] for a in cluster)):
         _set_result(record, cluster, "quoted_antecedent_barrier", status="blocked")
     else:
-        _set_result(record, cluster, "immediate_full_citation_cluster")
+        _set_result(record, cluster, "same_quotation_full_citation_cluster" if same_quote
+                    else "immediate_full_citation_cluster")
+
+
+_CASE_REPORTING = re.compile(
+    r"\b(?:held|stated|said|explained|emphasized|recogniz(?:ed|es)|observed|concluded|"
+    r"a\s+(?:reconnu|dit|expliqu[eé]|soulign[eé]|ajout[eé]))\b", re.I)
+_COURT_ACTOR = re.compile(r"\b(?:court|cour|majority|majorit[eé])\b", re.I)
+_SOURCE_SWITCH = re.compile(
+    r"\b(?:according\s+to|citing|quoting|professor|prof\.|author|counsel|witness|"
+    r"appellant|respondent|demandeur|d[eé]fendeur|t[eé]moin)\b|"
+    r"\bas\s+[A-ZÀ-ÖØ-Þ][\w’-]+(?:\s+[A-ZÀ-ÖØ-Þ][\w’-]+){0,2}\s+(?:said|wrote)\b", re.I)
+_NAMED_REPORTER = re.compile(
+    r"\b(?P<actor>[A-ZÀ-ÖØ-Þ][\w’-]+(?:\s+(?:[A-ZÀ-ÖØ-Þ][\w’-]+|[A-Z]\."
+    r"(?:[A-Z]\.){0,2})){0,3})\s+(?:held|stated|said|explained|emphasized|observed|concluded|wrote)\b")
+
+
+def _new_named_reporter(outside, offset, owner, references):
+    for match in _NAMED_REPORTER.finditer(outside):
+        actor = _tokens(match.group("actor"))
+        if actor and set(actor) <= {"the", "this", "our", "court", "cour", "la", "le", "majority"}:
+            continue
+        start, end = (offset + p for p in match.span("actor"))
+        if not any(a["start"] <= start and end <= a["end"]
+                   and a.get("target_group_id") == owner["target_group_id"]
+                   and a.get("resolution_status") == "resolved" for a in references):
+            return True
+    return False
+
+
+def _quotation_attachment(text, record, anchors, shorts, named_mentions, quote_scopes):
+    """Link only a quote-attached ibid with an explicit local case-source bridge.
+
+    This is separate from adjacency: arbitrary intervening prose never becomes a
+    citation gap. A printed case name with a pinpoint, or an explicit court
+    reporting clause following a case reference, must own the quoted proposition.
+    """
+    marker = record["marker_start"]
+    paragraph_start = max(text.rfind("\n", 0, marker), text.rfind("\r", 0, marker)) + 1
+    if quote_scope_at(marker, quote_scopes):
+        return False
+    terminal = [s for s in quote_scopes if s["closed"] and not s["uncertain"]
+                and paragraph_start <= s["start"] < s["end"] <= marker
+                and re.fullmatch(r"[\s.,;:()\[\]]*", text[s["end"]:marker])]
+    if not terminal:
+        return False
+    quote = max(terminal, key=lambda scope: scope["end"])
+    references = [a for a in [*anchors, *shorts, *named_mentions]
+                  if paragraph_start <= a["start"] and a["end"] <= marker]
+    owners = []
+    for owner in references:
+        owner_kind = owner.get("kind", "full")
+        if (owner["end"] > quote["start"] or not owner.get("target_group_id")
+                or owner.get("resolution_status", "resolved" if owner_kind == "full" else None) != "resolved"
+                or owner.get("short_identity_seed_allowed") is False
+                or owner_kind == "full" and not _aliases(owner)
+                or quote_scope_at(owner["start"], quote_scopes)):
+            continue
+        local_quotes = [s for s in quote_scopes if owner["end"] <= s["start"] and s["end"] <= marker]
+        if not local_quotes or any(s["uncertain"] for s in local_quotes):
+            continue
+        first_quote = min(local_quotes, key=lambda scope: scope["start"])
+        intro = text[owner["end"]:first_quote["start"]]
+        if len(intro) > 320:
+            continue
+        pinpoint = _PIN.match(text, owner["end"])
+        named_pin = (owner_kind == "case_name" and pinpoint and pinpoint.end() <= first_quote["start"]
+                     and (re.fullmatch(r"[\s.,;:()\[\]…]*", text[pinpoint.end():first_quote["start"]])
+                          or _COURT_ACTOR.search(intro)))
+        reporting = _CASE_REPORTING.search(intro)
+        explicit_report = reporting and (_COURT_ACTOR.search(intro)
+                                         or owner_kind == "case_name" and reporting.start() < 24)
+        if not (named_pin or explicit_report):
+            continue
+        # An intervening reference, including an unresolved one, cannot silently
+        # be skipped. A repeated reference to this same target is harmless.
+        intervening = [a for a in references if owner["end"] <= a["start"]
+                       and a is not owner and a["start"] < marker]
+        if any(a.get("target_group_id") != owner["target_group_id"] for a in intervening):
+            continue
+        chars = list(text[owner["end"]:marker])
+        for scope in local_quotes:
+            chars[scope["start"] - owner["end"]:scope["end"] - owner["end"]] = " " * (scope["end"] - scope["start"])
+        outside = "".join(chars)
+        bodies = " ".join(text[s["content_start"]:s["content_end"]] for s in local_quotes)
+        if (_NONCASE.search(outside) or _SOURCE_SWITCH.search(outside)
+                or _SOURCE_SWITCH.search(bodies) or _VERSUS.search(outside) or _VERSUS.search(bodies)
+                or _new_named_reporter(outside, owner["end"], owner, references)):
+            continue
+        owners.append(owner)
+    if not owners:
+        return False
+    # Prefer the most recent explicit printed source clause. Earlier qualifying
+    # clauses must have the same target because of the intervening-reference gate.
+    owner = max(owners, key=lambda item: item["end"])
+    seed_ids = owner.get("antecedent_mention_ids") if owner.get("kind") == "case_name" else [owner["mention_id"]]
+    seeds = [a for a in anchors if a["mention_id"] in seed_ids]
+    if not seeds:
+        seeds = [owner]
+    _set_result(record, seeds, "citation_attached_quotation_ibid")
+    record["quote_bridge"] = {"owner_start": owner["start"], "owner_end": owner["end"],
+                              "owner_raw": owner["raw"], "owner_kind": owner.get("kind", "full"),
+                              "owner_mention_ids": seed_ids,
+                              "quotation_scope": quote_scope_evidence(quote)}
+    record["notes"].append("An explicit case reporting clause or exact named pinpoint citation owns the immediately preceding quotation in this paragraph; no arbitrary prose gap is treated as adjacency.")
+    return True
 
 
 def resolve_document(text: str, anchors: list[dict], *, source_id: str,
-                     run_id: str, text_sha256: str) -> list[dict]:
+                     run_id: str, text_sha256: str, quote_scopes=None) -> list[dict]:
     """Return all lexical short mentions with conservative resolution evidence.
 
     Anchors use original half-open ``start``/``end`` offsets. A nonempty target
     group makes an identity usable; unlinked anchors are retained as barriers.
     No caller objects are modified. Generic royal party names are never aliases.
     """
-    anchors = enrich_anchors(text, anchors)
-    quote_ranges = _quoted_ranges(text)
+    quote_scopes = quotation_scopes(text) if quote_scopes is None else quote_scopes
+    anchors = enrich_anchors(text, anchors, quote_scopes=quote_scopes)
+    marker_matches = list(_MARKER.finditer(text))
+    named_mentions = (resolve_named_mentions(text, anchors, quote_scopes=quote_scopes)
+                      if quote_scopes and any(m.lastgroup in {"ibid", "id"} for m in marker_matches) else [])
     records = []
-    for match in _MARKER.finditer(text):
+    for match in marker_matches:
         kind = match.lastgroup
         marker_start, marker_end = match.span()
         end = marker_end
@@ -489,12 +619,14 @@ def resolve_document(text: str, anchors: list[dict], *, source_id: str,
         record = _record(text, start, end, marker_start, marker_end, kind,
                          source_id, run_id, text_sha256)
         record.update(named_evidence)
+        scope = quote_scope_at(marker_start, quote_scopes)
+        record["quotation_scope"] = quote_scope_evidence(scope)
         if pin:
             record["pinpoint"] = pin.group().strip(" ,\t\r\n")
         if note:
             record["footnote_number"] = int(note.group(1))
         if normalized_short:
-            record["notes"].append("Matched an explicit short-party alias after removing balanced parentheses and/or trailing Inc/Ltd/Limited/Corp/Corporation; no surname or first-word expansion.")
+            record["notes"].append("Matched a printed party alias after removing balanced qualifiers, a corporate suffix, or terminal and Another/and Others/et al.; no surname or first-word expansion.")
         if named_evidence.get("case_title_separator_normalized"):
             record["notes"].append("Matched the complete royal case title with c./v. separator syntax normalized; every party-name token is unchanged.")
         local_prefix = text[max(0, marker_start - 100):marker_start]
@@ -508,16 +640,28 @@ def resolve_document(text: str, anchors: list[dict], *, source_id: str,
         elif kind == "id" and match.group().isupper():
             record["resolution_status"] = "blocked"
             record["resolution_basis"] = "all_caps_id_nonreference_risk"
-        elif _in_quote(marker_start, quote_ranges):
-            record["resolution_status"] = "blocked"
-            record["resolution_basis"] = "quoted_short_reference"
-            record["notes"].append("Lexical double-quote/guillemet heuristic; quotation attribution is not inferred.")
+        elif scope:
+            if kind in {"ibid", "id"} and scope["closed"] and not scope["uncertain"]:
+                _immediate(text, record, anchors, records, quote_scopes)
+                if record["resolution_status"] == "unresolved":
+                    record["resolution_status"] = "blocked"
+                    record["resolution_basis"] = "quoted_short_reference"
+            elif (named and not compound and not note and scope["closed"] and not scope["uncertain"]
+                  and all((local := quote_scope_for_span(a["start"], a["end"], quote_scopes))
+                          and local["scope_id"] == scope["scope_id"] for a in named)):
+                _set_result(record, named, "same_quotation_named_antecedent")
+            else:
+                _set_result(record, named, "quoted_short_reference", status="blocked")
+            record["notes"].append("Only an antecedent wholly inside the same reliable quotation scope can establish a quoted short-reference identity; speaker attribution remains separate.")
+        elif (kind in {"ibid", "id"} and _quotation_attachment(
+                text, record, anchors, records, named_mentions, quote_scopes)):
+            pass
         elif (_NONCASE.search(noncase_prefix) and not named
               and not _REFERENCE_TITLE.search(noncase_prefix)):
             record["resolution_status"] = "blocked"
             record["resolution_basis"] = "apparent_noncase_reference"
         elif kind in {"ibid", "id"}:
-            _immediate(text, record, anchors, records, quote_ranges)
+            _immediate(text, record, anchors, records, quote_scopes)
         elif compound:
             _set_result(record, named, "multiple_named_authorities" if multiple else "unrecognized_or_compound_case_name", status="ambiguous")
             if multiple:
@@ -560,8 +704,11 @@ def resolve_document(text: str, anchors: list[dict], *, source_id: str,
                 record["resolution_status"] = "blocked"
                 record["resolution_basis"] = "unlinked_antecedent_barrier"
                 record["target_group_id"] = None
-            elif any(a.get("mention_id") in antecedent_ids and _in_quote(a["start"], quote_ranges)
-                   for a in earlier):
+            elif any(a.get("mention_id") in antecedent_ids and quote_scope_at(a["start"], quote_scopes)
+                     and not (scope and (local := quote_scope_for_span(a["start"], a["end"], quote_scopes))
+                              and local["scope_id"] == scope["scope_id"]
+                              and scope["closed"] and not scope["uncertain"])
+                     for a in earlier):
                 record["resolution_status"] = "blocked"
                 record["resolution_basis"] = "quoted_antecedent_barrier"
                 record["target_group_id"] = None
@@ -572,7 +719,7 @@ def resolve_document(text: str, anchors: list[dict], *, source_id: str,
 
 
 def resolve_named_mentions(text: str, anchors: list[dict], *, exclude_spans=(),
-                           source_id="", run_id="", text_sha256=None) -> list[dict]:
+                           source_id="", run_id="", text_sha256=None, quote_scopes=None) -> list[dict]:
     """Find possible bare case names using exact aliases of prior full anchors.
 
     This optional layer is reported separately from marked short references.
@@ -580,7 +727,8 @@ def resolve_named_mentions(text: str, anchors: list[dict], *, exclude_spans=(),
     mentions. No first-word/surname aliases are created, generic geographical
     party names are excluded, and collisions and quotations remain explicit.
     """
-    anchors = enrich_anchors(text, anchors)
+    quote_scopes = quotation_scopes(text) if quote_scopes is None else quote_scopes
+    anchors = enrich_anchors(text, anchors, quote_scopes=quote_scopes)
     excluded = list(exclude_spans)
     excluded.extend((a["start"], a["end"]) for a in anchors)
     excluded.extend((e["start"], e["end"]) for a in anchors for e in a["source_aliases"])
@@ -593,7 +741,6 @@ def resolve_named_mentions(text: str, anchors: list[dict], *, exclude_spans=(),
                     or len(alias) == 1 and len(alias[0]) < 4):
                 continue
             by_first.setdefault(alias[0], {}).setdefault(alias, []).append(anchor)
-    quotes = _quoted_ranges(text)
     sha = text_sha256 or hashlib.sha256(text.encode("utf-8")).hexdigest()
     matches = []
     for index, word in enumerate(words):
@@ -629,13 +776,14 @@ def resolve_named_mentions(text: str, anchors: list[dict], *, exclude_spans=(),
         record = _record(text, start, end, None, None, "case_name", source_id, run_id, sha)
         _set_result(record, seeds, "exact_prior_source_case_alias")
         record["matched_alias"] = text[start:end]
+        record["quotation_scope"] = quote_scope_evidence(quote_scope_at(start, quote_scopes))
         before = text[max(0, start - 60):start]
         after = text[end:min(len(text), end + 40)]
         person_context = re.search(
             r"\b(?:mr|ms|mrs|justice|juge|monsieur|madame|mme|mlle|m)\.?\s*$", before, re.I)
         investigation_context = (re.match(r"\s+(?:investigation|enqu[eê]te)\b", after, re.I)
                                  or re.search(r"\benqu[eê]te(?:\s+sur)?\s+$", before, re.I))
-        if _in_quote(start, quotes):
+        if quote_scope_at(start, quote_scopes):
             _set_result(record, seeds, "quoted_case_name_reference", status="blocked")
         elif person_context or investigation_context:
             _set_result(record, seeds, "person_or_investigation_name_context", status="blocked")
@@ -644,7 +792,7 @@ def resolve_named_mentions(text: str, anchors: list[dict], *, exclude_spans=(),
             _set_result(record, seeds, "named_unlinked_authority", status="blocked")
         elif re.search(r"\b(?:v|vs|c)\.?\s*$", before, re.I):
             _set_result(record, seeds, "unrecognized_case_title", status="ambiguous")
-        elif any(_in_quote(a["start"], quotes) for a in seeds):
+        elif any(quote_scope_at(a["start"], quote_scopes) for a in seeds):
             _set_result(record, seeds, "quoted_antecedent_barrier", status="blocked")
         records.append(record)
     return records

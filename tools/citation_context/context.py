@@ -18,6 +18,7 @@ from tools.citation_context import VERSION
 from tools.citation_context.data import (open_active, original_documents, prepare_anchors,
                                          read_anchors, select_documents, stable_id, validate_pointer)
 from tools.citation_context.shortforms import enrich_anchors, resolve_document, resolve_named_mentions
+from tools.citation_context.scopes import quotation_scopes, quote_scope_at, quote_scope_evidence
 from tools.citation_context.treatment import suggest_treatments, summarize_edges
 
 MAX_PACKAGE_BYTES = 96 * 1024 * 1024
@@ -28,7 +29,23 @@ def json_text(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True)
 
 
-def contextualize(doc, text, mentions):
+def remap_mention_ids(record, id_map):
+    """Salt reference IDs inside nested evidence without changing original text."""
+    for key, value in record.items():
+        if isinstance(value, dict):
+            remap_mention_ids(value, id_map)
+        elif isinstance(value, list):
+            if key == "mention_ids" or key.endswith("_mention_ids"):
+                record[key] = [id_map.get(item, item) for item in value]
+            else:
+                for item in value:
+                    if isinstance(item, dict):
+                        remap_mention_ids(item, id_map)
+        elif isinstance(value, str) and (key == "mention_id" or key.endswith("_mention_id")):
+            record[key] = id_map.get(value, value)
+
+
+def contextualize(doc, text, mentions, quote_scopes=None):
     """Attach display windows and explicit adjacent parallel-reference event IDs."""
     previous = None
     for mention in mentions:
@@ -39,6 +56,8 @@ def contextualize(doc, text, mentions):
         mention.update(document_id=doc["document_id"], source_id=doc["source_id"], run_id=doc["run_id"],
                        text_sha256=doc["text_sha256"], text_field=doc["text_field"],
                        context={"start": before, "end": after, "text": text[before:after]})
+        position = mention.get("marker_start") if mention.get("marker_start") is not None else start
+        mention.setdefault("quotation_scope", quote_scope_evidence(quote_scope_at(position, quote_scopes or [])))
         same_event = (previous and mention["kind"] == previous["kind"] == "full" and
                       mention.get("target_group_id") and mention.get("target_group_id") == previous.get("target_group_id") and
                       0 <= start - previous["end"] <= 60 and
@@ -53,18 +72,16 @@ def build_package(source, documents, selection, pointer):
     out_docs, out_mentions, out_observations, out_edges = [], [], [], []
     running_bytes = 0
     for doc, text in original_documents(source, documents):
+        quote_scopes = quotation_scopes(text)
+        doc["quotation_scopes"] = [quote_scope_evidence(scope) for scope in quote_scopes]
         anchors = prepare_anchors(doc, text, anchors_by_doc[(doc["court"], int(doc["corpus_row"]))])
-        anchors = enrich_anchors(text, anchors)
-        short = resolve_document(text, anchors, source_id=doc["source_id"], run_id=source.run_id, text_sha256=doc["text_sha256"])
-        named = resolve_named_mentions(text, anchors, exclude_spans=[(m["start"], m["end"]) for m in anchors + short])
+        anchors = enrich_anchors(text, anchors, quote_scopes=quote_scopes)
+        short = resolve_document(text, anchors, source_id=doc["source_id"], run_id=source.run_id, text_sha256=doc["text_sha256"], quote_scopes=quote_scopes)
+        named = resolve_named_mentions(text, anchors, exclude_spans=[(m["start"], m["end"]) for m in anchors + short], quote_scopes=quote_scopes)
         additions = short + named
         id_map = {row["mention_id"]: stable_id("m-", doc["document_id"], row["mention_id"]) for row in additions}
         for row in additions:
-            row["mention_id"] = id_map[row["mention_id"]]
-            row["antecedent_mention_ids"] = [id_map.get(value, value) for value in row["antecedent_mention_ids"]]
-            if row.get("list_boundary_evidence"):
-                prior = row["list_boundary_evidence"]["mention_id"]
-                row["list_boundary_evidence"]["mention_id"] = id_map.get(prior, prior)
+            remap_mention_ids(row, id_map)
             edge = edges_by_key.get((doc["source_id"], row.get("target_group_id")))
             if row.get("target_group_id") and (row["resolution_status"] != "resolved" or not edge):
                 raise ValueError("Context reference cannot invent a production target or edge")
@@ -72,8 +89,8 @@ def build_package(source, documents, selection, pointer):
                        edge_support=edge["edge_support"] if edge else None,
                        counted_edge=bool(edge))
         mentions = sorted(anchors + additions, key=lambda row: (row["start"], row["end"], row["mention_id"]))
-        contextualize(doc, text, mentions)
-        observations = suggest_treatments(text, mentions, source_id=doc["source_id"], run_id=source.run_id, text_sha256=doc["text_sha256"])
+        contextualize(doc, text, mentions, quote_scopes)
+        observations = suggest_treatments(text, mentions, source_id=doc["source_id"], run_id=source.run_id, text_sha256=doc["text_sha256"], quote_scopes=quote_scopes)
         for observation in observations:
             observation["observation_id"] = stable_id("obs-", doc["document_id"], observation["observation_id"])
             observation["document_id"] = doc["document_id"]
@@ -92,23 +109,29 @@ def build_package(source, documents, selection, pointer):
                            reference_event_count=len({m["event_id"] for m in mentions if m.get("target_group_id") == target}))
         # Persist both directions of the evidence relationship for offline inspection.
         edge_ids = {edge["target_group_id"]: edge["edge_id"] for edge in summaries}
-        assigned, candidates = {}, {}
+        assigned, candidates, source_contexts = {}, {}, {}
         for observation in observations:
             observation["edge_id"] = edge_ids.get(observation.get("target_group_id"))
+            observation["context_owner_edge_id"] = edge_ids.get(observation.get("context_owner_group_id"))
+            observation["context_owner_candidate_edge_ids"] = [edge_ids[target] for target in observation.get("context_owner_candidate_target_ids", []) if target in edge_ids]
             observation["candidate_edge_ids"] = [edge_ids[target] for target in observation.get("candidate_target_ids", []) if target in edge_ids]
             for mention_id in observation.get("target_mention_ids", []):
                 assigned.setdefault(mention_id, []).append(observation["observation_id"])
             for mention_id in observation.get("candidate_mention_ids", observation.get("mention_ids", [])):
                 if mention_id not in observation.get("target_mention_ids", []):
                     candidates.setdefault(mention_id, []).append(observation["observation_id"])
+            for mention_id in observation.get("context_owner_mention_ids", []):
+                source_contexts.setdefault(mention_id, []).append(observation["observation_id"])
         for mention in mentions:
             mention["edge_id"] = edge_ids.get(mention.get("target_group_id"))
             mention["assigned_observation_ids"] = assigned.get(mention["mention_id"], [])
             mention["candidate_observation_ids"] = candidates.get(mention["mention_id"], [])
+            mention["source_context_observation_ids"] = source_contexts.get(mention["mention_id"], [])
         doc["counts"] = {"full_linked_mentions": sum(bool(m["target_group_id"]) for m in anchors),
                          "full_unlinked_barriers": sum(not m["target_group_id"] for m in anchors),
                          "short_references": len(short), "short_resolved": sum(m["resolution_status"] == "resolved" for m in short),
                          "case_name_mentions": len(named), "case_name_resolved": sum(m["resolution_status"] == "resolved" for m in named),
+                         "quotation_scopes": len(quote_scopes), "uncertain_quotation_scopes": sum(bool(scope.get("uncertain")) for scope in quote_scopes),
                          "treatment_observations": len(observations), "target_edges": len(summaries)}
         running_bytes += sum(len(json_text(value).encode("utf-8")) for value in [doc, *mentions, *observations, *summaries])
         if running_bytes > MAX_PACKAGE_BYTES // 2:
@@ -128,7 +151,7 @@ def build_package(source, documents, selection, pointer):
         "run_id": source.run_id, "input_fingerprint": source.manifest["input_identity"]["fingerprint"],
         "run_directory": str(source.run_dir), "db_path": source.provenance["db_path"],
         "active_pointer": pointer, "selection": selection, "experimental": True,
-        "configuration": {"shortforms": "rules-v2", "treatment": "lexical-directional-v2", "context_before": 220, "context_after": 240},
+        "configuration": {"shortforms": "rules-v3", "treatment": "lexical-context-v3", "quotation_scopes": "bounded-scopes-v1", "context_before": 220, "context_after": 240},
         "coverage": "Selected original document rows; arbitration-counted full spans, short-reference markers and source-seeded case names. Not all citations or independently verified treatment.",
         "limitations": [
             "Existing production identity decisions are inherited, including heuristic paths.",
@@ -147,9 +170,14 @@ def build_package(source, documents, selection, pointer):
             "short_resolved": sum(m["resolution_status"] == "resolved" for m in short),
             "short_by_status": dict(Counter(m["resolution_status"] for m in short)),
             "short_by_basis": dict(Counter(m["resolution_basis"] for m in short)),
+            "short_by_kind_status": {kind: dict(Counter(m["resolution_status"] for m in short if m["kind"] == kind)) for kind in sorted(SHORT_KINDS)},
+            "quoted_short_references": sum(bool(m.get("quotation_scope")) for m in short),
+            "quoted_short_resolved": sum(bool(m.get("quotation_scope")) and m["resolution_status"] == "resolved" for m in short),
             "case_name_mentions": len(named), "case_name_by_status": dict(Counter(m["resolution_status"] for m in named)),
             "case_name_resolved": sum(m["resolution_status"] == "resolved" for m in named),
             "observations": len(out_observations), "observations_by_status": dict(Counter(o["status"] for o in out_observations)),
+            "observations_by_speaker": dict(Counter(o.get("speaker_attribution", "unknown") for o in out_observations)),
+            "observations_with_context_owner": sum(bool(o.get("context_owner_group_id")) for o in out_observations),
             "edges_with_suggestions": sum(bool(e.get("treatment_suggestions")) for e in out_edges),
             "edges_with_procedural_signals": sum(bool(e.get("procedural_signals")) for e in out_edges),
             "document_target_edges": len(out_edges), "new_production_edges": 0, "production_dd_changed": False,
@@ -193,7 +221,7 @@ def inspect_package(args):
     if (folder / "manifest.json").stat().st_size > 1024 * 1024:
         raise ValueError("Package manifest exceeds size budget")
     manifest = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
-    if manifest.get("schema") not in (VERSION, "citation-context-v1"):
+    if manifest.get("schema") not in (VERSION, "citation-context-v1", "citation-context-v2"):
         raise ValueError("Unsupported context package")
     filename = args.table + ".jsonl"
     path = folder / filename
@@ -204,18 +232,37 @@ def inspect_package(args):
     if hashlib.sha256(raw).hexdigest() != expected.get("sha256"):
         raise ValueError("Package contents differ from manifest")
     result, total = [], 0
+    counts = {key: Counter() for key in ("kind", "status", "resolution_basis", "speaker_attribution")}
     for line in raw.decode("utf-8").splitlines():
         row = json.loads(line)
         if args.source and row.get("source_id") != args.source:
             continue
         if args.group and row.get("target_group_id") != args.group and args.group not in row.get("candidate_target_ids", []):
-            continue
+            if row.get("context_owner_group_id") != args.group and args.group not in row.get("context_owner_candidate_target_ids", []):
+                continue
         if args.unresolved and (row.get("kind") not in SHORT_KINDS or row.get("resolution_status") == "resolved"):
             continue
+        if getattr(args, "kind", None) and row.get("kind") not in args.kind:
+            continue
+        status = row.get("resolution_status", row.get("status"))
+        if getattr(args, "status", None) and status not in args.status:
+            continue
+        if getattr(args, "basis", None) and row.get("resolution_basis") != args.basis:
+            continue
+        if getattr(args, "speaker", None) and row.get("speaker_attribution") != args.speaker:
+            continue
+        if getattr(args, "quoted", False) and not (row.get("quotation_scope") or row.get("quote_scope")):
+            continue
         total += 1
-        if len(result) < args.limit:
+        for key in counts:
+            value = status if key == "status" else row.get(key)
+            if value is not None:
+                counts[key][str(value)] += 1
+        if not getattr(args, "summary_only", False) and len(result) < args.limit:
             result.append(row)
-    return {"run_id": manifest["run_id"], "table": args.table, "matching_records": total, "shown": len(result), "records": result}
+    return {"run_id": manifest["run_id"], "table": args.table, "matching_records": total,
+            "breakdown": {key: dict(sorted(value.items())) for key, value in counts.items() if value},
+            "shown": len(result), "records": result}
 
 
 def main(argv=None):
@@ -243,6 +290,12 @@ def main(argv=None):
     inspect.add_argument("--source")
     inspect.add_argument("--group")
     inspect.add_argument("--unresolved", action="store_true")
+    inspect.add_argument("--kind", action="append", choices=("full", "ibid", "id", "supra", "precite", "case_name"), help="Mention kind; repeatable")
+    inspect.add_argument("--status", action="append", help="Mention resolution status or observation status; repeatable")
+    inspect.add_argument("--basis", help="Exact short-reference resolution basis")
+    inspect.add_argument("--speaker", help="Exact observation speaker attribution")
+    inspect.add_argument("--quoted", action="store_true", help="Only records in detected reliable or uncertain quotation scopes")
+    inspect.add_argument("--summary-only", action="store_true", help="Count all matching records without printing individual records")
     inspect.add_argument("--limit", type=int, default=20)
     args = parser.parse_args(argv)
     if not 1 <= args.limit <= 200:
@@ -250,8 +303,14 @@ def main(argv=None):
     source = None
     try:
         if args.command == "inspect":
-            if args.unresolved and args.table != "mentions":
-                raise ValueError("--unresolved applies to the mentions table")
+            if (args.unresolved or args.kind or args.basis) and args.table != "mentions":
+                raise ValueError("--unresolved, --kind and --basis apply to the mentions table")
+            if args.speaker and args.table != "observations":
+                raise ValueError("--speaker applies to the observations table")
+            if args.status and args.table not in ("mentions", "observations"):
+                raise ValueError("--status applies to mentions or observations")
+            if args.quoted and args.table not in ("mentions", "observations"):
+                raise ValueError("--quoted applies to mentions or observations")
             result = inspect_package(args)
         else:
             if args.command == "build":

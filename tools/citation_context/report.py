@@ -26,8 +26,12 @@ _METRICS = {"document_rows": "文档行", "source_judgments": "来源判决",
             "short_references": "短引文", "observations": "词语信号",
             "short_resolved": "短引已链接（机器）", "case_name_resolved": "案名已链接（机器）",
             "case_name_mentions": "案名提及", "edges_with_suggestions": "带处理建议的边",
+            "quoted_short_references": "引号范围内短引", "quoted_short_resolved": "引号内已链接（机器）",
+            "observations_with_context_owner": "有明确引述来源的观察",
             "edges_with_procedural_signals": "带程序信号的边",
             "document_target_edges": "文档目标组", "new_production_edges": "新增生产边"}
+_SPEAKERS = {"current_court": "本院的明确表述", "party": "当事人主张", "reported_court": "转述法院",
+             "reported_judge": "转述法官", "reported_actor": "转述其他发言者", "reported_case": "转述案例", "unknown": "归属未明"}
 
 
 def _plain(value):
@@ -80,6 +84,30 @@ def _edge_link(record):
     return '<a href="#' + _h(record["edge_id"]) + '">' + target + '</a>' if record.get("edge_id") else target
 
 
+def _scope_view(scope):
+    if not scope:
+        return "未检测到引号范围"
+    state = "边界存疑" if scope.get("uncertain") else "闭合引号"
+    return state + " " + _h(scope.get("start")) + "–" + _h(scope.get("end")) + " · " + _h(scope.get("boundary_reason"))
+
+
+def _speaker_view(observation):
+    label = _SPEAKERS.get(observation.get("speaker_attribution"), observation.get("speaker_attribution", "归属未明"))
+    evidence = observation.get("speaker_evidence", [])
+    excerpts = " · ".join(_snippet(e.get("raw"), 200) + " [" + _h(e.get("start")) + "–" + _h(e.get("end")) + "]" for e in evidence)
+    return _h(label) + ("<br>" + excerpts if excerpts else "")
+
+
+def _owner_view(observation):
+    target = observation.get("context_owner_group_id")
+    if not target:
+        candidates = observation.get("context_owner_candidate_target_ids")
+        return "未确定" + ("；来源候选：" + _items(candidates) + "<br>来源提及：" + _antecedents(observation.get("context_owner_mention_ids")) if candidates else "")
+    edge = observation.get("context_owner_edge_id")
+    label = '<a href="#' + _h(edge) + '">' + _h(target) + '</a>' if edge else _h(target)
+    return label + "<br>来源提及：" + _antecedents(observation.get("context_owner_mention_ids"))
+
+
 def _label(value):
     return _h(_LABELS.get(value, value)) + " <small>" + _h(value) + "</small>"
 
@@ -115,8 +143,8 @@ def _mention_rows(mentions):
         rows.append('<tr id="' + _mention_anchor(mention.get("mention_id")) + '"><td>' + _status(mention.get("kind")) + "<br><small>" + _h(mention.get("mention_id")) + "</small></td>"
                     "<td><b>" + _snippet(mention.get("raw"), 300) + "</b><br><small>原文偏移 " + _h(mention.get("start")) + "–" + _h(mention.get("end")) + "</small></td>"
                     "<td>" + _status(mention.get("resolution_status")) + "<br><small>身份：" + _h(mention.get("identity_status")) + "<br>解析依据：" + _h(mention.get("resolution_basis")) + "<br>具体定位：" + _snippet(mention.get("pinpoint"), 200) + "<br>备注：" + _items(mention.get("notes"), 500) + "</small></td>"
-                    "<td class=mono>" + _edge_link(mention) + "<br><small>先行提及：" + _antecedents(mention.get("antecedent_mention_ids")) + "<br>候选目标：" + _items(mention.get("candidate_target_ids")) + "<br>已指派词语信号：" + _observation_links(mention.get("assigned_observation_ids")) + "</small></td>"
-                    "<td><div class=excerpt>" + _snippet(context.get("text", ""), 900) + "</div><small>窗口偏移 " + _h(context.get("start")) + "–" + _h(context.get("end")) + "</small></td></tr>")
+                    "<td class=mono>" + _edge_link(mention) + "<br><small>先行提及：" + _antecedents(mention.get("antecedent_mention_ids")) + "<br>候选目标：" + _items(mention.get("candidate_target_ids")) + "<br>已指派词语信号：" + _observation_links(mention.get("assigned_observation_ids")) + "<br>引述来源关系：" + _observation_links(mention.get("source_context_observation_ids")) + "</small></td>"
+                    "<td><div class=excerpt>" + _snippet(context.get("text", ""), 900) + "</div><small>窗口偏移 " + _h(context.get("start")) + "–" + _h(context.get("end")) + "<br>" + _scope_view(mention.get("quotation_scope")) + "</small></td></tr>")
     return '<div class=table-wrap><table><thead><tr><th>类型 / ID</th><th>原文提及</th><th>解析状态</th><th>目标组 / 先行提及</th><th>上下文窗口</th></tr></thead><tbody>' + "".join(rows) + "</tbody></table></div>"
 
 
@@ -126,10 +154,10 @@ def _observation_rows(observations):
     rows = []
     for observation in observations:
         rows.append('<tr id="' + _h(observation.get("observation_id")) + '"><td>' + _label(observation.get("label")) + "<br><small>" + _h(observation.get("observation_id")) + "</small></td>"
-                    "<td>" + _status(observation.get("status")) + "<br><small>" + _h(observation.get("assignment_reason")) + "<br>方向依据：" + _snippet(observation.get("attribution_basis"), 500) + "</small></td>"
-                    "<td class=mono>" + _edge_link(observation) + "<br><small>候选目标：" + _items(observation.get("candidate_target_ids")) + "<br>实际指派提及：" + _antecedents(observation.get("target_mention_ids")) + "<br>同句语境提及：" + _antecedents(observation.get("context_mention_ids")) + "</small></td>"
+                    "<td>" + _status(observation.get("status")) + "<br><small>" + _h(observation.get("assignment_reason")) + "<br>发言归属：" + _speaker_view(observation) + "<br>方向依据：" + _snippet(observation.get("attribution_basis"), 500) + "</small></td>"
+                    "<td class=mono>被评价目标：" + _edge_link(observation) + "<br><small>引述来源：" + _owner_view(observation) + "<br>候选目标：" + _items(observation.get("candidate_target_ids")) + "<br>实际指派提及：" + _antecedents(observation.get("target_mention_ids")) + "<br>同句语境提及：" + _antecedents(observation.get("context_mention_ids")) + "</small></td>"
                     "<td><div class=excerpt>" + _evidence(observation) + "</div><small>证据偏移 " + _h(observation.get("evidence_start")) + "–" + _h(observation.get("evidence_end")) + "；信号偏移 " + _h(observation.get("signal_start")) + "–" + _h(observation.get("signal_end")) + "</small></td>"
-                    "<td><small>" + _items(observation.get("flags")) + "</small></td></tr>")
+                    "<td><small>" + _items(observation.get("flags")) + "<br>" + _scope_view(observation.get("quote_scope")) + "</small></td></tr>")
     return '<div class=table-wrap><table><thead><tr><th>词语标签</th><th>建议状态</th><th>目标 / 候选</th><th>原文证据（高亮词语）</th><th>语境提示</th></tr></thead><tbody>' + "".join(rows) + "</tbody></table></div>"
 
 
@@ -148,7 +176,7 @@ def _edge_rows(edges, observations):
         rows.append('<tr id="' + _h(edge.get("edge_id", "")) + '"><td><b>' + _snippet(edge.get("name"), 220) + "</b><br><span class=mono>" + _h(edge.get("target_group_id")) + "</span><br><small>生产边标记：" + ("是" if edge.get("counted_edge") is True else "否 / 未提供") + "</small></td>"
                     "<td>完整 " + _h(edge.get("full_mention_count", 0)) + " / 短引 " + _h(edge.get("short_mention_count", 0)) + " / 案名 " + _h(edge.get("case_name_mention_count", 0)) + "<br><small>" + _antecedents(edge.get("mention_ids")) + "</small></td>"
                     "<td>" + _labels(direct) + "<br><small>以上仍为词语建议</small><br>需语境复核：" + _labels(contextual) + "<br>程序信号：" + _labels(procedural) + "<br><small>证据：" + _observation_links(edge.get("observation_ids")) + "<br>冲突：" + _snippet(edge.get("label_conflicts", []), 800) + "</small></td>"
-                    "<td>" + _h(edge.get("coverage_status")) + "<br><small>无已指派信号的提及：" + _items(edge.get("uncovered_mention_ids")) + "<br>歧义观察：" + _items(edge.get("ambiguous_observation_ids")) + "</small></td>"
+                    "<td>" + _h(edge.get("coverage_status")) + "<br><small>无已指派信号的提及：" + _items(edge.get("uncovered_mention_ids")) + "<br>歧义观察：" + _items(edge.get("ambiguous_observation_ids")) + "<br>作为引述来源（不计为本案处理）：" + _observation_links(edge.get("reported_source_observation_ids")) + "</small></td>"
                     "<td><small>" + _items(edge.get("flags")) + "</small></td></tr>")
     return '<div class=table-wrap><table><thead><tr><th>目标组</th><th>提及数</th><th>混合词语建议</th><th>词语覆盖 / 未知项</th><th>提示</th></tr></thead><tbody>' + "".join(rows) + "</tbody></table></div>"
 
@@ -185,7 +213,7 @@ def render_report(manifest: dict, documents: list[dict], mentions: list[dict],
     for index, document in enumerate(document_list):
         did = _plain(document.get("document_id"))
         doc_mentions, doc_observations, doc_edges = [group.get(did, []) for group in grouped]
-        generic = [o for o in doc_observations if not o.get("mention_ids") and not o.get("candidate_target_ids") and not o.get("target_group_id")]
+        generic = [o for o in doc_observations if not o.get("mention_ids") and not o.get("candidate_target_ids") and not o.get("target_group_id") and not o.get("context_owner_mention_ids")]
         linked_observations = [o for o in doc_observations if o not in generic]
         primary_signals = _observation_rows(linked_observations) if linked_observations else '<p class="empty">没有带局部引文的词语信号；通用信号见下方折叠区。</p>' if generic else _observation_rows([])
         generic_signals = '<details><summary>未链接的通用词语信号（' + str(len(generic)) + '，展开查看）</summary><p class="muted">这些词语附近没有可指派的局部引文。页面最多展示前 50 条，全部记录保存在 observations.jsonl。</p>' + _observation_rows(generic[:50]) + '</details>' if generic else ''
