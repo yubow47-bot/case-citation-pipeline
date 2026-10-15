@@ -4,6 +4,10 @@ Version 1.8 | v1.0 finalized 2026-08-29; v1.1 revisions: corpus snapshot policy 
 
 ## 0. What this document is
 
+The original outputs for the historical v16f, tables2 and selfcite runs have been retired; receipts and historical audit summaries are retained. See the [retirement record](../audit/findings/repository_cleanup_20261015/retired_runs.json). Historical counts below are not current-run measurements.
+
+**Operational addendum (2026-10-15).** The historical version notes and measurements above are dated snapshots. The accepted local run is selected by `data/active_run.json`; this follow-up is `run_20261015_identity_review`, with `en_then_fr` and decide schema 14. `identity_court_facts.csv` supplies exact native-provenance court facts; `identity_separations.csv` supplies exact key-to-document negative facts bound to the complete current qualified proof set. Neither permits a name-based court guess or changes raw extraction. See [the adjudication method card](method_cards/04_adjudication.md) for the current contracts and [the follow-up release receipt](../audit/findings/project_review_20261015/release_summary_final.json) for actual source-set, candidate, quality and storage verification. The independent TCC run is a separate scope. Current main and French probability frames have no human labels and no new calibrated precision.
+
 This document is the project's **only technical specification**. It is self-contained and does not depend on any earlier outline, discussion record or iteration. Reading it should be enough to start implementing directly, without going back to any other material.
 
 Every design decision in it comes with its rationale, including which alternatives were rejected and what exactly was wrong with them. This is deliberate: the first version of this project did not fail because a technical choice was wrong, but because the reasons for the choices were never recorded, so each later round re-argued the same questions and each time picked the cheapest option of the moment rather than the right one.
@@ -275,9 +279,11 @@ D:\cases data analisis\
 │
 └── data\                          gitignored. **The only root for machine output**; can be deleted entirely and rerun;
     │                              directory purposes, retention rules and rebuilding old runs in data/README.md
-    ├── run_20261003_selfcite\     ★ delivery run (five layers + edges + run_manifest.json, see §12)
-    ├── run_20261002_tables2\      previous baseline
-    ├── run_20260914_r4c\          v1.7 delivery run (R4 review depends on it; rebuildable from run_registry)
+    ├── active_run.json           selects the formal local run and accepted research DB (2026-10-14)
+    ├── run_20261015_identity_review\  current SCC/ONCA/BCCA release, sealed CSV.gz, EN then FR fallback
+    ├── run_20261015_tcc_identity_verify\ independent TCC validation, separate counting scope
+    ├── run_receipts/              receipts for retired historical baselines (see §12 for historical counts)
+    ├── run_receipts\             bounded manifests/logs for retired runs, including tables2
     ├── extract_out … coverage_out the six output directories of the old route (v1.4 deduplicated route); the `--golden` gate reads here
     ├── audit\                     audit-loop output (kept apart from production output, see 4.3)
     └── canlii_cache\              needed by build_case_origin.py --offline

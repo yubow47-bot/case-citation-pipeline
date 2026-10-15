@@ -1,9 +1,11 @@
 # Usage notes: what this data is, what it can answer, and what it cannot
 
-**In one sentence.** This is a table of **every cited case** extracted from the full text of judgments of three Canadian courts (SCC, ONCA, BCCA)
+**In one sentence.** This is a table of **observed case-citation candidates and counted mentions** extracted from the full text of judgments of three Canadian courts (SCC, ONCA, BCCA)
 — foreign and domestic citations alike — each with a case name, jurisdiction, place of origin and citation frequency. Its purpose is academic research: an
 auditable count of the complete picture of the cases a court has cited over its history. The data comes from three corpora only, **not from all Canadian courts**;
 please read every limitation below before using any number.
+
+**Snapshot note (2026-10-15).** Historical measurements below come from several explicitly named runs and are not a current aggregate. `data/active_run.json` selects the accepted local run; this follow-up publishes `run_20261015_identity_review`: three courts, 230,449 groups, 14,003 with DD ≥ 5 and 490,577 edges. `python tools/status.py` reports its database and component readiness. The immediately preceding `run_20261014_reliable_final` is retained as a compressed comparison baseline; the original outputs of v16f, tables2 and selfcite are retired, with receipts retained. The independent `run_20261015_tcc_identity_verify` and historical seven-court run are separate scopes. See the [first release receipt](../audit/findings/project_review_20261014/release_summary_final.json), [current release receipt](../audit/findings/project_review_20261015/release_summary_final.json) and [retirement records](../audit/findings/repository_cleanup_20261015/retired_runs.json). Use `python tools/check_run.py --run <directory>` to check actual artifacts. A citation edge records a mention, including procedural history where counted; it does not prove agreement or reliance. The old CanLII audit evaluates citation-link categories and does not independently validate every resolved group identity. Current main and independent French sample frames have no human labels and make no new precision claim.
 
 ---
 
@@ -11,11 +13,13 @@ please read every limitation below before using any number.
 
 It counts only mentions of a precedent **by the judgments in the three corpora**:
 
-| Corpus | Judgments | Judgment years | File |
+| Corpus | Raw corpus rows | Judgment years | File |
 |---|---:|---|---|
 | Supreme Court of Canada (SCC) | 10,891 | **1877–2026** | `corpus/SCC.parquet` |
 | Court of Appeal for Ontario (ONCA) | 24,089 | **1998–2026** | `corpus/ONCA.parquet` |
 | Court of Appeal for British Columbia (BCCA) | 14,703 | **1999–2026** | `corpus/BCCA.parquet` |
+
+The three-court corpus has 49,683 rows. A native-field audit corrected an earlier interpretation: 62 SCC and 136 ONCA rows lack English metadata/text but contain real French judgments, rather than empty records. The new `en_then_fr` policy processes the nonempty English text first and uses French only when English is absent; it preserves existing English source IDs and extracts bilingual rows once. There are 49,476 English-text rows, 198 French-only rows, and nine BCCA rows without either text. Historical manifests lacking `text_policy` retain their English-only scope and 49,485 valid English source IDs; the new metadata scope uses native fallbacks. Raw metadata rows, valid source IDs, text-available judgments and actual cited-source counts are distinct denominators. Batch/year restrictions remain explicit. See `audit/findings/project_review_20261014/language_coverage_receipt.json` and the release record.
 
 In other words: **citations by other courts (provincial superior courts, courts of appeal other than ONCA/BCCA, the Federal Court, administrative tribunals)
 are not included at all**. A case cited 200 times by the Ontario Superior Court and 3 times by the SCC shows 3 in this table.
@@ -69,10 +73,7 @@ To study "the influence of foreign law on Canadian courts", split by `case_origi
 so they honestly stay `UNDETERMINED`. Beyond Canadian Privy Council cases, the table covers no other place of origin.
 See PROBLEMS #59.
 
-**Also: the jurisdiction table itself is unverified.** `decisions/reporter_jurisdiction.csv` has **196 rows, 100%
-`confidence=estimated` and 100% `verification_level=name_inference`** — all inferred from the abbreviation's name,
-**not one row checked against an authoritative source** (PROBLEMS #40; Task 7 still has to decide which source to use). The
-`jurisdiction` values should therefore be treated as **unverified**; a product that filters on it should keep the ability to filter by `confidence`.
+The current `decisions/reporter_jurisdiction.csv` has **201 rows** (checked 2026-10-14): 105 marked `verified_print_evidence`, 30 `verified_authority`, 56 `name_inference`, 9 `authority_identity_only`, and 1 `authority_country_only`. All still carry `confidence=estimated`; confidence and verification status are separate fields. This replaces the historical claim that every entry was unverified. Filters and analyses should retain both fields and the source evidence.
 
 ## 5. Columns you need to know
 

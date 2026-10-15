@@ -1,5 +1,7 @@
 # Layer 4: adjudication
 
+Current operational rules were extended on 2026-10-15. The dated historical measurements below remain historical; the first reliable release is recorded in `audit/findings/project_review_20261014/release_summary_final.json` and subsequent identity review in `audit/findings/project_review_20261015/release_summary_final.json`.
+
 ## What this layer does
 
 The only judgements that require "knowing which case this is first", which is why it comes after merging. **DD is finally counted here**, and case identity (which printed strings are the same case) is established here too.
@@ -17,7 +19,7 @@ The only judgements that require "knowing which case this is first", which is wh
 ### 1. Case identity (which keys are the same case)
 
 - **Identity anchors**: neutral citations, or "the citation printed in the header of a corpus judgment itself" (`self_citation_of`, #55). Reporter anchors merge only on an identical key and do not go through `same_decision()` (which resolves by neutral citation and ignores volume).
-- **Same name + year means the same case** (`nk(case_name_modal)` equal and years within ±1, §10.3): parallel reporters are merged. This is **heuristic**.
+- **Name + nearby year is a heuristic candidate**, subject to complete identifier/verified-neutral cannot-links, positive deciding-court conflicts, document claims and the existing co-citation threshold. It does not override a distinct proved judgment.
 - **Splitting**:
   - Chained merging strings together chimeras spanning decades (`R. v. Smith` 2001–2023, 93 members, #48) → chains with a year span >1 are split with a ±1-year window;
   - Different judgments with same-named parties must not be merged (#49): only one judgment per court per year; bilingual codes with the same number and year merge; a one-digit number difference counts as a typo only when citation counts differ sharply; co-citation coefficient ≥0.8 before assignment;
@@ -28,8 +30,15 @@ The only judgements that require "knowing which case this is first", which is wh
   - No name, or none with the same name → leave alone;
   - Some print the target's name and some print another name → **hold out** (no merge, its case name suppressed, out of the identity-root contest).
   - Missing any one of these reproduces the regression (`211 D.L.R. (4th) 577` dropped from DD 602 to 21).
-- **A member's `identity_basis`** [verified: `decide.py:1160`]: `anchor`, `singleton` (6), `same_citation` (5), `anchor_variant_bilingual` (4), `anchor_variant_typo_number/year` (3), `name_year` (2), `cocitation`, `unanchored` (1).
-  - **Only the first four (`ELIGIBLE_BASES`) authorize propagating a group-level conclusion**; `name_year`, typo variants, `cocitation` and `unanchored` are heuristic: they stay visible and provisional, and member evidence must not be promoted to a group conclusion.
+- **A member's `identity_basis`**: `anchor`, `singleton`, `document_alias` (6), `same_citation` (5), `anchor_variant_bilingual` (4), `anchor_variant_typo_number/year` (3), `name_year` (2), `cocitation`, `unanchored` (1).
+  - **`ELIGIBLE_BASES` is anchor/singleton/document_alias/same_citation/anchor_variant_bilingual**. Name/year, typo variants, co-citation and unanchored evidence stay provisional and cannot authorize group-level propagation.
+  - A document alias requires complete parsed native metadata, a unique physical source row and matching text before a known native header boundary, with source/field/text/span SHA and canonical evidence hash. Old four-column own-citation tables authorize self handling only.
+  - Different proved documents split an already contaminated name cluster. Unclaimed passengers remain separate; proof-bound negative holdouts survive within-court, cross-court and repeated-key propagation.
+  - Curated `identity_court_facts.csv` facts apply only to an exact complete printed key. A lower-court appeal-history citation is not an alias of the appellate judgment; Lising/Pires is an independently sourced regression. Correct DD alone would miss this error, because the wrong member's source already appears in the correct core.
+  - `identity_separations.csv` can exclude one exact key from one proved document when native text establishes distinct judgments but the specific deciding court remains unknown. Each fact records corpus/row/text/span hashes, a canonical `sep:` evidence hash and the target's complete current qualified proof set. It reuses persistent holdouts; stale, incomplete, contradictory or misbound proof fails closed. It preserves original source mentions and permits a different proved identity. This is a curated negative fact, not a name blacklist or a rule assigning a guessed court.
+  - Known full identifier units and verified real neutral units are established before names. Primary neutral metadata from active and anchor corpora protects real numbers even if every occurrence was self-citation. Verified bilingual equivalents require all other identity slots to agree.
+  - A syntactic `neutral` label before the project's observed start year, with no primary/qualified claim, is not a verified neutral atom. Keep such historical candidates visible and unanchored; the observed boundary is not a claim about the legal history of the code.
+  - Printed deciding-court observations, qualified court facts, source-court affiliation and case country are distinct. One full key with contradictory court observations stays flagged; a stored observation is not an authoritative court assignment.
 
 ### 2. How DD is counted
 
@@ -54,7 +63,7 @@ None of the three hits → **`UNDETERMINED`**. `FOREIGN` can come only from a po
 ## The registry (note how narrow its use is)
 
 - The global judgment registry `registry/decision_registry.csv`: the citations printed by every known real judgment for itself; it is authorized only for the **typo gate** (spec 2.3). **Do not mix it into `own`** (`own` has three other uses: identity-anchor eligibility, DD self-citation exclusion, the start-year criterion).
-- Default `--registry-gate literal`, measured as equivalent to the current behaviour; `--anchor-corpus` is off by default.
+- Default `--registry-gate registered` protects real complete decision numbers. The standalone registry/extractor retain English-only compatibility; new full runs explicitly default to `text_policy=en_then_fr`. Active and optional anchor corpora contribute protection; anchor rows are not extracted or counted.
 - The registry depends on the corpus being present (#89): when a court's corpus is missing, none of its judgments has an anchor, and same-named real judgments fuse into one group. `--anchor-corpus` only builds the registry; it neither extracts nor counts.
 - **Ceiling monitor** `registry_report.py`: the original text of foreign courts' judgments is not in the corpus, and adding corpora cannot supply it.
 
