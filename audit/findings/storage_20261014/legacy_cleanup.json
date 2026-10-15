@@ -1,0 +1,833 @@
+{
+  "schema": "legacy_intermediates_retirement_v1",
+  "date": "2026-10-14",
+  "status": "retired",
+  "source_plan": "D:\\cases data analisis\\audit\\findings\\storage_20261014\\legacy_intermediates_plan.json",
+  "file_count": 85,
+  "deleted_source_bytes": 1222753525,
+  "records": [
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0000.csv",
+      "bytes": 1855779,
+      "sha256": "274dfa444199a778de2f4856630876de3899b945deb7955e3782a07fbcf10620",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0001.csv",
+      "bytes": 2030510,
+      "sha256": "4316fe3599f4e890ad2701aaaee1c91dbcafd38c6c931d4d7e1aaa130a914aa9",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0002.csv",
+      "bytes": 2409162,
+      "sha256": "556d9ce78e13ce851caddfeef0a99149fefba0579fe2b345dd156b174f8f0651",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0003.csv",
+      "bytes": 2194502,
+      "sha256": "8534451dd9d7db22e4f7e8a8e3b3b28d6a049b9a77385864d03997f8a27e60c8",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0004.csv",
+      "bytes": 2419649,
+      "sha256": "7c00f8146bf6a48b1ffd69af0bbe35caaf1edee8ea00a72ab49923756805a3be",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0005.csv",
+      "bytes": 1997980,
+      "sha256": "89c441107b747f9f27072736adfca013780f2d8b32045a3f25f289b568c99634",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0006.csv",
+      "bytes": 1834119,
+      "sha256": "874b1e0c79d885e0f3272c976c9e3aec375d9b2ed75c780c929e74614b902e53",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0007.csv",
+      "bytes": 1780400,
+      "sha256": "e048f1c1a31aad3ce5a971b78f3abc6cba3928282b9e797e99e920334ba55982",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0008.csv",
+      "bytes": 1525397,
+      "sha256": "b6facd9c6718e0b680e4357a797efe7942ca7212cf63a49f185f62968ba14a74",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0009.csv",
+      "bytes": 2262522,
+      "sha256": "f37a08ccbda990de010336e5aad4a929d0e855c23581cd185de51c95c6d186ae",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0010.csv",
+      "bytes": 1800765,
+      "sha256": "5c047c901fd32dbd3ba094a2db1bed7ed292f40ce5fe84ea97a40a5ff78f79e0",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0011.csv",
+      "bytes": 1849960,
+      "sha256": "106134096ec69ae80196d7c510bbf7dfa20ab0c79cf79d3f579a581d25cd7325",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0012.csv",
+      "bytes": 1158739,
+      "sha256": "4928293f7717c37deb9362ef789ef3049c1eeac631c313cd9ecd9a04ad72f853",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0013.csv",
+      "bytes": 1096072,
+      "sha256": "b581597a60f3ed8c23f90c08cf6e3e77b7b8ea6e7f2fb01689e486054c0a6275",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0014.csv",
+      "bytes": 1025706,
+      "sha256": "9eb2e2dd5cb67f36dc79806f320209183f9313672ed7b2bb731278d8538d8b19",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0015.csv",
+      "bytes": 1215771,
+      "sha256": "b3bbc614d0d8b5c745256ab605f1bb503eea1d98eebd7a0765ff194a3a54062a",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0016.csv",
+      "bytes": 1616133,
+      "sha256": "ee8e43781ea15527a0580884a0102ca21877fc8ebece798427c97d6c6544ffbc",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0017.csv",
+      "bytes": 738514,
+      "sha256": "4dc9db1055fab5f0ea4623a290a362afb9eeec435de7719e45dee0473df580d3",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0018.csv",
+      "bytes": 1157261,
+      "sha256": "e0dae521f340293befc97122ce86455d42d517370ff294be1e0cefb64fdbd026",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0019.csv",
+      "bytes": 1767533,
+      "sha256": "97cd8a1047889352206439172776488c52e0a012bb11b3e6ff2f4984ff852b99",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0020.csv",
+      "bytes": 1970645,
+      "sha256": "51a2bfc90d9d4612ea5c06c7f78553202fedb5faca71b77ee66bdb28e2ca1473",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0021.csv",
+      "bytes": 1286378,
+      "sha256": "59870fec6e7737155cadd7c5bd761c948fa87765f01ef554d735545ffe536711",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0022.csv",
+      "bytes": 1238696,
+      "sha256": "7008c8c5e8c0ab21469db2d0ed3edb900030bf3a8398f6413abeb0f8d94c83bf",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0023.csv",
+      "bytes": 1124544,
+      "sha256": "90feb518b28a04756717a5c6de8b3a6c1a01aa8c1cec0fe6791275cc6604972a",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0024.csv",
+      "bytes": 2668012,
+      "sha256": "7ed64d4dd8ed5464a3e7e262d332870c666c2031ea79f8f6371487ca0da135e3",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0025.csv",
+      "bytes": 2867983,
+      "sha256": "30051879fc11735390a97c8bd12bb678c151036332b9a6a0143cbc03e982ba12",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0026.csv",
+      "bytes": 3098239,
+      "sha256": "400da368d2e6121605a37e67aa4702fe9b05380667bceefc8083f07d4741fd11",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0027.csv",
+      "bytes": 1812690,
+      "sha256": "ef5c9138d699bb1ba58d57b5e579d5fc285a34112682125bd5f1a68e5dfe6fb8",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0028.csv",
+      "bytes": 2043188,
+      "sha256": "fe98a177de746179171c7a6928f410db99f65b89cdf42eb40977fe4d14ca0788",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0029.csv",
+      "bytes": 2976306,
+      "sha256": "560e67fc20300e4853e316c1c1b8a82f4dd548eec505d146c80afc593747bc60",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0030.csv",
+      "bytes": 937670,
+      "sha256": "c77570187924315439008e55653c9a9c322fdeeaabeb13a5825af0ce194e6ca1",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0031.csv",
+      "bytes": 978128,
+      "sha256": "60d3d4640bba316c5df9588f4425de1c6740d2429cdcb48e14eea53a6c3c0277",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0032.csv",
+      "bytes": 697973,
+      "sha256": "3fb41cd2c816a3233da467b5d2ae4587ed685e5464c8fb6a8714aab908fbff01",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0033.csv",
+      "bytes": 1353815,
+      "sha256": "76935042ed4abd1b822949434407ffe57b21c4d2eb8b8cf1985dffd5d48fb29f",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0034.csv",
+      "bytes": 2428692,
+      "sha256": "48cb4610ee5cf535ec4f1695c6858ef0becfb964ec8f97b70ca0fab4be2d29be",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0035.csv",
+      "bytes": 863535,
+      "sha256": "da492cd9a776c0539895ae376737bcaeca92c6559fdee228e3174d8bd0cdd56c",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0036.csv",
+      "bytes": 1284349,
+      "sha256": "b5fcacecf1728a030d7992b5c74b7b32a8b825956a82c2e5c7519736c41d4d46",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0037.csv",
+      "bytes": 1592617,
+      "sha256": "da640530f100774ffa925915e9ebbcda698fe3ffe5db990013d57e7f29e6a1d8",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0038.csv",
+      "bytes": 1255347,
+      "sha256": "2f5c63b31568ec31641bfe7d1032b99e365b1bfa4f68d5de8ea12c4e88cbad4b",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0039.csv",
+      "bytes": 1509800,
+      "sha256": "7d9ef8923369b2a020bebcc1eee161b6b543f778bffb2a7cb7e55b9e12ecca5b",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0040.csv",
+      "bytes": 1690628,
+      "sha256": "d553e166f1196efb934df92c332662b3e3455ec09f17103506089feea5c6a9b9",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0041.csv",
+      "bytes": 1527662,
+      "sha256": "afc0c0cbfa246a9c1c75b280189fa4b0f309afed0c49adf66c5357e4adfb35b4",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0042.csv",
+      "bytes": 2509981,
+      "sha256": "094ee25a6629dddea73269b136cfd273c486a8d3e5bbc350edf0b8e833757825",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0043.csv",
+      "bytes": 2528046,
+      "sha256": "e57e1a51a85d834b523ee83d77746d03b7c28778627af67a59a6b55e6868f3fb",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0044.csv",
+      "bytes": 2696075,
+      "sha256": "1ae325c85df999cfe2c649415638a69c5ef1d61f377c31d5c1432ddcef168935",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0045.csv",
+      "bytes": 2731830,
+      "sha256": "fd5df45182952fa97c7c588caf436bb8592f18a9e5a9e92bc4b4eb7e203cdc07",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0046.csv",
+      "bytes": 2281045,
+      "sha256": "7c7a60959ed75dde340ed3dac0601e89485c8f61dfb9430d0aa707bddf6519ff",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0047.csv",
+      "bytes": 2430419,
+      "sha256": "ce79a035bfa13066e4ceba87c18e2d1a01882c38275976870c7a034f7c731189",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0048.csv",
+      "bytes": 526999,
+      "sha256": "6291e8990a0aef23d1e44ee764bbb8bf424880bfc55a95afdadb269b33bf0d02",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0000.csv",
+      "bytes": 2771529,
+      "sha256": "8330b1ed3bb46d88906ab93a517ab1e954a4bf762d21f1516eb668581437b802",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0001.csv",
+      "bytes": 3945831,
+      "sha256": "2d1dddd6157f9fc958937fd2f22b4e94de1d06702815759ddd18fc0e095840d0",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0002.csv",
+      "bytes": 3258570,
+      "sha256": "96081f63c6f5087c2ffc372cb42bd31223687eeaa2ff93f1dfe603c0b0f04036",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0003.csv",
+      "bytes": 3236418,
+      "sha256": "feddafd73bc3d13d9df5f77f888681d74cccdaf521fe40656f150a81bc012415",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0004.csv",
+      "bytes": 8254095,
+      "sha256": "39fb76a636b7cd9c12cc64a9ce1630a93ecfb4e79d44726100dce13b9cc33227",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0005.csv",
+      "bytes": 15705123,
+      "sha256": "c75b3a4955fb896328de9d374f36ff8b012a81c9c2dc551e0fb7d2aeb90c4fc9",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0006.csv",
+      "bytes": 19230252,
+      "sha256": "6e4eb15596e620284884cb2e523ac6b6d81f6df7fd0530a79de519d16789973d",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0007.csv",
+      "bytes": 3664792,
+      "sha256": "eabdac7244cfe0a16f46cc0606059c419dfc3776306f0f055ad09f54e28df4dc",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0008.csv",
+      "bytes": 2844883,
+      "sha256": "8a562ad3df8e9339f3987c0ac53f71da38e50f2b0b92e0871cbce8216cb1dc1f",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0009.csv",
+      "bytes": 2749099,
+      "sha256": "abe35ea1e03afa91c25ee2d7b4a18087a810b49451c2534d695e8980f2de2547",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0010.csv",
+      "bytes": 7642747,
+      "sha256": "f64887bb493ff864f652426509ae2059e98daf60c376bdefc7e5a0d1c3e026ff",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0011.csv",
+      "bytes": 9822660,
+      "sha256": "ed929cb13d5f9eb599de0d5da1b3dfd48710f6d0607b408a3d936cb77e35c032",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0012.csv",
+      "bytes": 18239396,
+      "sha256": "59da430daa008082958407bf082cdc9b2475c14b524de752f1ea48aad1f152cc",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0013.csv",
+      "bytes": 8329836,
+      "sha256": "b09f4c83140efe42c8fbc5cda85f954c5ee84f4da7ae1e6571b3bb48c8311796",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0014.csv",
+      "bytes": 5946925,
+      "sha256": "dc9801bbdd64342baaf78a85948ac9288539e98318f806112597711f734c8f4c",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0015.csv",
+      "bytes": 3731537,
+      "sha256": "c46af87856c62d4e5ac8975d6c44902ede4e4c27f2211bf3a6b4956172b93e98",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0016.csv",
+      "bytes": 3730393,
+      "sha256": "3792844ab2cd7cd7c4ad9bf141b03c9318c0964bbf463fbf1165fe260cb11d53",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0017.csv",
+      "bytes": 8245237,
+      "sha256": "14c1f3c999ebe0bee9e19f051514aefb9ec1e97ef224b740d614a4f5c75b9c0f",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0018.csv",
+      "bytes": 3660249,
+      "sha256": "188d96c1a26223b0f71f4ccf8f02ffab834ced66a0110cb696ad63c0d23af5ac",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0019.csv",
+      "bytes": 3524311,
+      "sha256": "5690aecd6fe0da81aca4b51e05758d8d4893ca1c6a918643565c22609450ac50",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0020.csv",
+      "bytes": 4178383,
+      "sha256": "2d8ddd9ce37a9179e36c0904f27263e0a5b79b65af0efebecf531e3fc37f8bd7",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0021.csv",
+      "bytes": 2061538,
+      "sha256": "f8aa114bc3248c8f95305d17eb3d4e868751aa8b162ad6cbaf866a94c118b507",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\extracted.csv",
+      "bytes": 129657308,
+      "sha256": "8333314ed7d101945115794e0ef994c6d98fa2c32f067e0ac9a9f8384553f6b9",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\extract_out\\extracted_superseded.csv",
+      "bytes": 101164314,
+      "sha256": "2de9efb0d6d6213a95c82b91b639dbd1b7237c6709389f42d7a64821cdc7eab3",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\classify_out\\ONCA\\classified.csv",
+      "bytes": 177309622,
+      "sha256": "f45a1198d9c3d87455ecafcec2d10edcc6d21fadae925c3080b53c3cc0d0ed3c",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\classify_out\\SCC\\classified.csv",
+      "bytes": 297276495,
+      "sha256": "cae37c8487d76bc2da992846dfe7363a5d74db37e83db8692420b7809a9c442f",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\merge_out\\ONCA\\decision_ids.csv",
+      "bytes": 5495419,
+      "sha256": "c03e40b23328a9d698a38171caf3133cea7d5bdb043ee3be72d7529dee8eb5a8",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\merge_out\\ONCA\\folded_log.csv",
+      "bytes": 2839286,
+      "sha256": "b6823a774352dd085f497e35fcb598e15c5d9a30cb464846b1b172bc33ec6eb3",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\merge_out\\ONCA\\key_mapping.csv",
+      "bytes": 4339593,
+      "sha256": "2d9577964319993c66f2e1d183ea53874fca7c9afa977c2a8a65ece5abc989cc",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\merge_out\\ONCA\\mentions_candidates.csv",
+      "bytes": 89670722,
+      "sha256": "e3fb8281a22e70bbbf4a6eebb4b9c6f703f497d7037cb657c43d48990b05f23c",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\merge_out\\ONCA\\merged.csv",
+      "bytes": 7941405,
+      "sha256": "ad5953e39b305a7d5da0aa2a06ca110c43b4e88e6c6b026b43856296e2000a89",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\merge_out\\SCC\\decision_ids.csv",
+      "bytes": 6270352,
+      "sha256": "334d2116fa71fc23e01cd57bc15be75cd8e5877c5305ca08fc9a7f2d42b56083",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\merge_out\\SCC\\folded_log.csv",
+      "bytes": 5317580,
+      "sha256": "c1fb3c6c6c2dfe2f4d3ed316f65ccbc16fe30d4bababfa3abab5cf1d9df581a0",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\merge_out\\SCC\\key_mapping.csv",
+      "bytes": 5640775,
+      "sha256": "519e0d62b41143fe78a1c9be47a0cb2f6f8c85b0fb728b6668ef7d96c2b7994e",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\merge_out\\SCC\\mentions_candidates.csv",
+      "bytes": 144468110,
+      "sha256": "feec88eac3329800848e3efe23f36c085228956bf3d4f0f88e47117b46cd0edb",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    },
+    {
+      "absolute_path": "D:\\cases data analisis\\data\\merge_out\\SCC\\merged.csv",
+      "bytes": 13940974,
+      "sha256": "56f7bee65af27262022230a270b01910d073df228c69c9933cfc17b8e21aae22",
+      "status": "deleted",
+      "reparse_ancestors": "none",
+      "action": "file_level_delete_without_archive"
+    }
+  ],
+  "retained": "Original corpus, stage manifests, decide_out and select_out remain; isolated selfcite is not a byte-equivalent replacement for this mixed historical root snapshot",
+  "historical_consumer_impact": {
+    "legacy_batch_copies": {
+      "bytes": 231421570,
+      "file_count": 71,
+      "exact_paths": [
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0000.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0001.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0002.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0003.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0004.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0005.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0006.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0007.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0008.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0009.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0010.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0011.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0012.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0013.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0014.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0015.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0016.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0017.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0018.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0019.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0020.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0021.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0022.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0023.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0024.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0025.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0026.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0027.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0028.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0029.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0030.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0031.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0032.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0033.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0034.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0035.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0036.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0037.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0038.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0039.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0040.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0041.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0042.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0043.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0044.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0045.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0046.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0047.csv",
+        "D:\\cases data analisis\\data\\extract_out\\ONCA\\batch_0048.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0000.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0001.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0002.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0003.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0004.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0005.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0006.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0007.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0008.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0009.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0010.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0011.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0012.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0013.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0014.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0015.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0016.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0017.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0018.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0019.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0020.csv",
+        "D:\\cases data analisis\\data\\extract_out\\SCC\\batch_0021.csv"
+      ],
+      "historical_consumers": [
+        "pipeline/extract.py merge/resume for that exact old output directory only; no test/audit/production run_all path reads these batch files"
+      ]
+    },
+    "legacy_extraction_tables": {
+      "bytes": 230821622,
+      "file_count": 2,
+      "exact_paths": [
+        "D:\\cases data analisis\\data\\extract_out\\extracted.csv",
+        "D:\\cases data analisis\\data\\extract_out\\extracted_superseded.csv"
+      ],
+      "historical_consumers": [
+        "audit/gap_audit.py",
+        "audit/extraction_recall_audit.py",
+        "audit/table_coverage.py",
+        "audit/neutral_triage.py (via table_coverage.EXTRACTED)",
+        "audit/glm_prep.py",
+        "audit/glm_verify.py",
+        "implementation/r2_regression_join.py",
+        "implementation/r2f_verify.py",
+        "implementation/zcode_recheck.py",
+        "implementation/zcode_recheck2.py",
+        "implementation/zcode_recheck3.py"
+      ]
+    },
+    "legacy_classification_tables": {
+      "bytes": 474586117,
+      "file_count": 2,
+      "exact_paths": [
+        "D:\\cases data analisis\\data\\classify_out\\ONCA\\classified.csv",
+        "D:\\cases data analisis\\data\\classify_out\\SCC\\classified.csv"
+      ],
+      "historical_consumers": [
+        "audit/case_name_gap_audit.py (missing paths silently skipped)",
+        "audit/disambiguation_audit.py",
+        "audit/classify_diff.py snapshot/default after (missing snapshot source silently skipped)",
+        "audit/preview_case_name.py default --dir",
+        "audit/preview_prose_trim.py default --dir",
+        "implementation/r2_regression_join.py",
+        "implementation/r2_lost_breakdown.py",
+        "implementation/r2f_verify.py"
+      ]
+    },
+    "legacy_merge_tables": {
+      "bytes": 285924216,
+      "file_count": 10,
+      "exact_paths": [
+        "D:\\cases data analisis\\data\\merge_out\\ONCA\\decision_ids.csv",
+        "D:\\cases data analisis\\data\\merge_out\\ONCA\\folded_log.csv",
+        "D:\\cases data analisis\\data\\merge_out\\ONCA\\key_mapping.csv",
+        "D:\\cases data analisis\\data\\merge_out\\ONCA\\mentions_candidates.csv",
+        "D:\\cases data analisis\\data\\merge_out\\ONCA\\merged.csv",
+        "D:\\cases data analisis\\data\\merge_out\\SCC\\decision_ids.csv",
+        "D:\\cases data analisis\\data\\merge_out\\SCC\\folded_log.csv",
+        "D:\\cases data analisis\\data\\merge_out\\SCC\\key_mapping.csv",
+        "D:\\cases data analisis\\data\\merge_out\\SCC\\mentions_candidates.csv",
+        "D:\\cases data analisis\\data\\merge_out\\SCC\\merged.csv"
+      ],
+      "historical_consumers": [
+        "audit/decide_no_gate.py documented explicit old input example",
+        "implementation/zcode_recheck2.py"
+      ]
+    }
+  },
+  "no_archive_created": true
+}

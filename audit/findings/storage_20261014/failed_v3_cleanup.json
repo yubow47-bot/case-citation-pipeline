@@ -1,0 +1,111 @@
+{
+  "run": "D:\\cases data analisis\\data\\run_20261014_reliable_v3",
+  "run_status": "failed",
+  "manifest_sha256": "7f1208ed6fed3bffab06daeb6a2d341745b820beaf1c8a45f943cc16ab16eb8e",
+  "before_bytes": 596464539,
+  "after_bytes": 0,
+  "receipt_directory": "D:\\cases data analisis\\data\\run_receipts\\run_20261014_reliable_v3_deleted",
+  "removed_logical_bytes": 596464539,
+  "released_bytes": 84535258,
+  "hardlinked_content_bytes_not_counted_as_released": 511929281,
+  "receipt_total_bytes": 181722,
+  "net_released_content_bytes_lower_bound": 84353536,
+  "space_accounting_note": "removed_logical_bytes counts all deleted paths. released_bytes counts unique pre-delete inodes with st_nlink=1 only; multi-link content is excluded even when all links might be inside the deleted run. These are content-length lower bounds, not allocated disk blocks or measured disk-free changes. Net lower bound subtracts receipt file lengths.",
+  "retained_bytes": 177556,
+  "receipt_limit_bytes": 2097152,
+  "retained_files": [
+    {
+      "path": "run_manifest.json",
+      "bytes": 7958,
+      "sha256": "7f1208ed6fed3bffab06daeb6a2d341745b820beaf1c8a45f943cc16ab16eb8e"
+    },
+    {
+      "path": "step_build_registry.log",
+      "bytes": 431,
+      "sha256": "944f9f43ef9f3d4236b5512fd0a0cb3cae8de67e97f4025184968642445c5af5"
+    },
+    {
+      "path": "step_decide_ONCA.log",
+      "bytes": 991,
+      "sha256": "100b40205651546fb302d4f323434d489c37c4475b51805fe11585fef21d16ea"
+    },
+    {
+      "path": "step_decide_SCC.log",
+      "bytes": 3243,
+      "sha256": "6153b302c4e34b17c9651750f0dcbdd1b082c8e8578d87a26ab7a0975fa55d47"
+    },
+    {
+      "path": "classify_out\\BCCA\\manifest.json",
+      "bytes": 2776,
+      "sha256": "e49bad7a368dfc6592f17e1f973e0eba18c066013f8df6795a60d0306d97a36d"
+    },
+    {
+      "path": "classify_out\\ONCA\\manifest.json",
+      "bytes": 2760,
+      "sha256": "3db5dae5daf15866693bc5fa507c1ada650fa61a166ea979801ed5fd60f0b6b2"
+    },
+    {
+      "path": "classify_out\\SCC\\manifest.json",
+      "bytes": 2720,
+      "sha256": "064eab3aaf95d20fb01e7c07fd7ad643cb1dbde1ba2a4541787f06861e345234"
+    },
+    {
+      "path": "decide_out\\SCC\\manifest.json",
+      "bytes": 2562,
+      "sha256": "ac574857c9bc033161c68c3cfc8411875ae47d7e5bc2f00cf0cb975b8b2292d9"
+    },
+    {
+      "path": "extract_out\\BCCA\\progress.json",
+      "bytes": 21,
+      "sha256": "0c545acea10ae45c5817fec7f503721e350ff3072dedfb7a7fc72f8bbdfba1ac"
+    },
+    {
+      "path": "extract_out\\ONCA\\progress.json",
+      "bytes": 21,
+      "sha256": "8766c45ade03f56a6fd25faf69db2cf00f6817a2a1b94b0a1e16ef01782d88f3"
+    },
+    {
+      "path": "extract_out\\SCC\\progress.json",
+      "bytes": 21,
+      "sha256": "48b486677029a459bc928bf34c096ccf54ea933db66041635137e6371c16a393"
+    },
+    {
+      "path": "extract_out\\manifest.json",
+      "bytes": 4480,
+      "sha256": "857235bb67787548f290db614afa3626b0cd83f6d198221409de0846d6a2f8b4"
+    },
+    {
+      "path": "merge_out\\BCCA\\manifest.json",
+      "bytes": 1521,
+      "sha256": "4d92b46b855df1bf84b4a27f9c8c0d89480a46bd56b9dec4a1d1affa3de15ca9"
+    },
+    {
+      "path": "merge_out\\ONCA\\manifest.json",
+      "bytes": 1514,
+      "sha256": "aed41639e7b90da5167a093571f967b995674fb1144342d51c7fe6b9df81bf16"
+    },
+    {
+      "path": "merge_out\\SCC\\manifest.json",
+      "bytes": 1447,
+      "sha256": "e42c080575905f108cf77e383ba778599e07cf353f777001e66e4e243c7dd75d"
+    },
+    {
+      "path": "registry\\manifest.json",
+      "bytes": 7910,
+      "sha256": "fe382d37b5d89eacb9062f5c3e29f8269ee9a5f63d4b70a72db086f45d03eee2"
+    },
+    {
+      "path": "reused_upstream.json",
+      "bytes": 47065,
+      "sha256": "640d580a37b8c336b966a0153e907d6a1d763ea6219535f7fcf5162e66401fc3"
+    },
+    {
+      "path": "reused_upstream_manifest.json",
+      "bytes": 90115,
+      "sha256": "a3631c8b120199e8b17d9d1fcc2e94dd4fcd25cd25759cb4d1cd08db1271266e"
+    }
+  ],
+  "action": "direct_delete_without_archive",
+  "status": "deleted",
+  "created_at": "2026-10-14T23:01:30.166780+00:00"
+}
