@@ -3,4 +3,4 @@
 *.sh text eol=lf
 
 # Published review checksums require identical bytes on every platform.
-/audit/findings/quality_model_review_20261015/* -text
+/audit/findings/quality_model_review_20261015/* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
