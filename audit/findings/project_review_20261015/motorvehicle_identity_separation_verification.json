@@ -1,0 +1,333 @@
+{
+  "schema": "native_identity_separation_verification_v1",
+  "fact": {
+    "merge_key": "|65|nsr|2d|54",
+    "target_decision_id": "SCC_19852scr486",
+    "target_qualified_evidence_ids": "own:171e21a41d07601c2669e9fe12814827943f811d16571e851e9916cacc2fb3d0|own:84d40de37a5ffd5277ec656c62ddc73afda2e5edcbb9d8b0a0dda4a98ef19247|own:9cb4eb061c7e3d087286ae26269f06f6d772ee2fc0670af6fcc905bfdc8b28c5|own:fb08bf2a7b3387f2c1eb088c8967b3a908bb9e38a0de017309c3859b0a23151f",
+    "verification_status": "verified_native_distinct_judgment",
+    "source_court": "SCC",
+    "source_decision": "SCC_19942scr864",
+    "source_corpus": "corpus/SCC.parquet",
+    "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+    "corpus_row": "5416",
+    "text_field": "unofficial_text_en",
+    "text_sha256": "ce735d385170ba1c35d2d6556aace7e18eefdb3c97f5cad20060e8e3a093d513",
+    "span_start": "54771",
+    "span_end": "54817",
+    "span_sha256": "7d85fa9c7118fc7f1825c53dd8a0a0f20eb9313b1de10b073dc7caf837cca820",
+    "source_locator": "audit/findings/project_review_20261015/motorvehicle_identity_separation_verification.json#native_distinct_judgment",
+    "evidence_id": "sep:c35bcd2daaf53ca14666855d7b8187f4cc071c207b4f2e70c0c732aba19de9dd"
+  },
+  "native_distinct_judgment": {
+    "metadata": {
+      "citation_en": "[1994] 2 SCR 864",
+      "citation_fr": "[1994] 2 RCS 864",
+      "name_en": "R. v. Chartrand",
+      "name_fr": "R. c. Chartrand"
+    },
+    "start": 54771,
+    "end": 54817,
+    "text": "R. v. Johnson (1984), 65 N.S.R. (2d) 54 (C.A.)"
+  },
+  "nested_name_borrow_source": {
+    "court": "ONCA",
+    "corpus_row": 14881,
+    "metadata": {
+      "citation_en": null,
+      "citation_fr": "2024 ONCA 355",
+      "name_en": null,
+      "name_fr": "R. c. Séguin"
+    },
+    "text_field": "unofficial_text_fr",
+    "text_sha256": "d1f9387e3bb06b86df3a6030a522874392f997a3b903463ccc964b88f4b96361",
+    "match_start": 5926,
+    "match_end": 5945,
+    "window": {
+      "start": 5506,
+      "end": 6495,
+      "text": "cipe de totalité.\n[13] Encore, nous ne sommes pas d’accord. Le principe de totalité, une composante de la proportionnalité, vise à garantir que les peines consécutives ne soient ni écrasantes ni disproportionnées de façon qu’elles mineraient la confiance du public dans l’administration de la justice : R. v. Johnson, 2012 ONCA 339, 285 C.C.C. (3d) 120, aux paras. 15-16, citant Renvoi sur la Motor Vehicle Act (C.-B.), [1985] 2 R.C.S. 486, à la p. 533. La juge de première instance a tenu compte des arguments des avocats lors de la détermination d’une peine globale. Par conséquent, à la fin de ses motifs, quand elle a prononcé la peine, elle a réparti la peine globale entre les différents chefs d’accusation après avoir déterminé une peine globale juste et appropriée.\n[14] Finalement, l’avocat de service soumet que la juge a infligé une peine excessive. Il fait référence à l’arrêt R. v. Walker, 2017 ONCA 39, 345 C.C.C. (3d) 497, où cette cour a réduit une peine de quatre ans (en "
+    }
+  },
+  "target_native_proofs": [
+    {
+      "merge_key": "1985|2|rcs||486",
+      "decision_id": "SCC_19852scr486",
+      "source_court": "SCC",
+      "field": "citation2_fr",
+      "corpus_row": "5574",
+      "language": "fr",
+      "text_field": "unofficial_text_fr",
+      "source_citation_field": "citation_en",
+      "source_citation_sha256": "660fbba8f7a7348796fe711a3fcaa89b5318481ee890f15060f40d11ec256604",
+      "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+      "field_sha256": "e4a34a5c85dabad5bfb407b3f00c29f0a79f35c9c6debcbed424dbc840218879",
+      "text_sha256": "e98243a61d32de05bf5f9eb4d575da8946184d29dfbff6a781639e89bbe03986",
+      "citation": "[1985] 2 RCS 486",
+      "citation_kind": "reporter",
+      "header_boundary": "Contenu de la décision",
+      "header_end": "426",
+      "header_start": "104",
+      "header_match_end": "120",
+      "header_raw_sha256": "e4a34a5c85dabad5bfb407b3f00c29f0a79f35c9c6debcbed424dbc840218879",
+      "identity_qualified": "true",
+      "claim_status": "qualified_metadata_header",
+      "claim_detail": "",
+      "evidence_id": "own:171e21a41d07601c2669e9fe12814827943f811d16571e851e9916cacc2fb3d0",
+      "fixture_record": 18494
+    },
+    {
+      "merge_key": "1985|2|rcs||486",
+      "decision_id": "SCC_19852scr486",
+      "source_court": "SCC",
+      "field": "citation_fr",
+      "corpus_row": "5574",
+      "language": "fr",
+      "text_field": "unofficial_text_fr",
+      "source_citation_field": "citation_en",
+      "source_citation_sha256": "660fbba8f7a7348796fe711a3fcaa89b5318481ee890f15060f40d11ec256604",
+      "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+      "field_sha256": "e4a34a5c85dabad5bfb407b3f00c29f0a79f35c9c6debcbed424dbc840218879",
+      "text_sha256": "e98243a61d32de05bf5f9eb4d575da8946184d29dfbff6a781639e89bbe03986",
+      "citation": "[1985] 2 RCS 486",
+      "citation_kind": "reporter",
+      "header_boundary": "Contenu de la décision",
+      "header_end": "426",
+      "header_start": "104",
+      "header_match_end": "120",
+      "header_raw_sha256": "e4a34a5c85dabad5bfb407b3f00c29f0a79f35c9c6debcbed424dbc840218879",
+      "identity_qualified": "true",
+      "claim_status": "qualified_metadata_header",
+      "claim_detail": "",
+      "evidence_id": "own:84d40de37a5ffd5277ec656c62ddc73afda2e5edcbb9d8b0a0dda4a98ef19247",
+      "fixture_record": 18495
+    },
+    {
+      "merge_key": "1985|2|scr||486",
+      "decision_id": "SCC_19852scr486",
+      "source_court": "SCC",
+      "field": "citation2_en",
+      "corpus_row": "5574",
+      "language": "en",
+      "text_field": "unofficial_text_en",
+      "source_citation_field": "citation_en",
+      "source_citation_sha256": "660fbba8f7a7348796fe711a3fcaa89b5318481ee890f15060f40d11ec256604",
+      "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+      "field_sha256": "660fbba8f7a7348796fe711a3fcaa89b5318481ee890f15060f40d11ec256604",
+      "text_sha256": "aec990f8e49de8631628c982fb87b248eeb5197d8b3519d6dfc2c17919a43535",
+      "citation": "[1985] 2 SCR 486",
+      "citation_kind": "reporter",
+      "header_boundary": "Decision Content",
+      "header_end": "374",
+      "header_start": "84",
+      "header_match_end": "100",
+      "header_raw_sha256": "660fbba8f7a7348796fe711a3fcaa89b5318481ee890f15060f40d11ec256604",
+      "identity_qualified": "true",
+      "claim_status": "qualified_metadata_header",
+      "claim_detail": "",
+      "evidence_id": "own:9cb4eb061c7e3d087286ae26269f06f6d772ee2fc0670af6fcc905bfdc8b28c5",
+      "fixture_record": 18576
+    },
+    {
+      "merge_key": "1985|2|scr||486",
+      "decision_id": "SCC_19852scr486",
+      "source_court": "SCC",
+      "field": "citation_en",
+      "corpus_row": "5574",
+      "language": "en",
+      "text_field": "unofficial_text_en",
+      "source_citation_field": "citation_en",
+      "source_citation_sha256": "660fbba8f7a7348796fe711a3fcaa89b5318481ee890f15060f40d11ec256604",
+      "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+      "field_sha256": "660fbba8f7a7348796fe711a3fcaa89b5318481ee890f15060f40d11ec256604",
+      "text_sha256": "aec990f8e49de8631628c982fb87b248eeb5197d8b3519d6dfc2c17919a43535",
+      "citation": "[1985] 2 SCR 486",
+      "citation_kind": "reporter",
+      "header_boundary": "Decision Content",
+      "header_end": "374",
+      "header_start": "84",
+      "header_match_end": "100",
+      "header_raw_sha256": "660fbba8f7a7348796fe711a3fcaa89b5318481ee890f15060f40d11ec256604",
+      "identity_qualified": "true",
+      "claim_status": "qualified_metadata_header",
+      "claim_detail": "",
+      "evidence_id": "own:fb08bf2a7b3387f2c1eb088c8967b3a908bb9e38a0de017309c3859b0a23151f",
+      "fixture_record": 18577
+    }
+  ],
+  "meaning": "Chartrand explicitly cites Johnson (1984), 65 NSR (2d) 54 (C.A.); the target own native metadata/header is the distinct 1985 Motor Vehicle Act judgment. No canonical deciding court is inferred from generic C.A. The negative claim prohibits only this exact key/document pairing.",
+  "checks": {
+    "source_corpus_sha256_recomputed": true,
+    "source_text_and_span_sha256_recomputed": true,
+    "native_nested_citation_window_verified": true,
+    "current_target_proof_set_bound": true
+  },
+  "source_run": {
+    "run_id": "run_20261014_reliable_final",
+    "directory": "D:\\cases data analisis\\data\\run_20261014_reliable_final",
+    "courts": [
+      "SCC",
+      "ONCA",
+      "BCCA"
+    ],
+    "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+    "output_fingerprint": "7cc1e8dc936d0b0554b4e62c14e901d77948acb7c4f7f15b99db3d37390dd2ad",
+    "manifest_sha256": "09803eb185bf3834aa5bc9ee97e1874dab1b6f77675f4c9f0a82cd9905e5cbe5",
+    "params": {
+      "year_from": null,
+      "limit_batches": null,
+      "batch_size": 500,
+      "registry_gate": "registered",
+      "mixed_key_holdout": true
+    },
+    "artifacts": [
+      {
+        "logical_path": "merge_out/SCC/merged.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\SCC\\merged.csv.gz",
+        "physical_sha256": "eaf2936373b2566fe6b8938f1ca8db21e8c1c729685287842d10150ad08e7481",
+        "content_sha256": "6684221b18d300a59191e052c6247e18b06a6d7ec068bdec7af2b1130433a049",
+        "logical_bytes": 15442613,
+        "stored_bytes": 3121813,
+        "rows": 119939,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/SCC/decision_ids.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\SCC\\decision_ids.csv.gz",
+        "physical_sha256": "3b7da96e89030fd3dd4b7040f832deb51c1cd920ff99f5e70373481a4b10348c",
+        "content_sha256": "96268dadf91099a85a78437d731aa0a924a763f5dfec478346d3e1b80799c20f",
+        "logical_bytes": 6194316,
+        "stored_bytes": 1251945,
+        "rows": 196059,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/ONCA/merged.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\ONCA\\merged.csv.gz",
+        "physical_sha256": "d89d42c8ef7dac3e3faf4da167511856a1e5dc986522b18af6d0ac8eea65da4e",
+        "content_sha256": "4614ca355189aef262c3d19cc8e196d5927ee010ccc46b68572205b15e169219",
+        "logical_bytes": 9410806,
+        "stored_bytes": 1977164,
+        "rows": 66313,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/ONCA/decision_ids.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\ONCA\\decision_ids.csv.gz",
+        "physical_sha256": "aaf1f4458d1661036e3a5f356c5e3bc7ec8adffe87ddf433c41a7d1e5b7260dd",
+        "content_sha256": "6c692c677aae94483903803577bfe93e8abd74f8b65a1c57185a7006771bfff9",
+        "logical_bytes": 5502803,
+        "stored_bytes": 948600,
+        "rows": 165257,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/BCCA/merged.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\BCCA\\merged.csv.gz",
+        "physical_sha256": "9f5cfb8145b2813ff678716ae1520e3d02a22373334615965d21824240e6d583",
+        "content_sha256": "b82d112cc0f44bb70ea1986e33564e3d69952e0615491dee7303b40cc0c4e9a7",
+        "logical_bytes": 10850118,
+        "stored_bytes": 2251956,
+        "rows": 74777,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/BCCA/decision_ids.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\BCCA\\decision_ids.csv.gz",
+        "physical_sha256": "39a67d46fa60f39c7fe296df1deedba0ff80c60a862e85a160e19c78417e7fb3",
+        "content_sha256": "b2903a97bfd39c0cb40c7b02a8e5456934aa5b07d726c05e2f666dff3b0adfd6",
+        "logical_bytes": 5886500,
+        "stored_bytes": 954015,
+        "rows": 174081,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "registry/decision_own_citations.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\registry\\decision_own_citations.csv.gz",
+        "physical_sha256": "cd07d7448815c43a1e0d3d79fa680cbf15e054957aa54c2f46a874c59db0e4e2",
+        "content_sha256": "3c164d0d97e15e4b79ff0e52c383548301f3b41bbb84d6afa721191b89fd40b7",
+        "logical_bytes": 36077950,
+        "stored_bytes": 8496563,
+        "rows": 63793,
+        "output_seal_verified": true
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "logical_path": "merge_out/SCC/merged.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\SCC\\merged.csv.gz",
+      "physical_sha256": "eaf2936373b2566fe6b8938f1ca8db21e8c1c729685287842d10150ad08e7481",
+      "content_sha256": "6684221b18d300a59191e052c6247e18b06a6d7ec068bdec7af2b1130433a049",
+      "logical_bytes": 15442613,
+      "stored_bytes": 3121813,
+      "rows": 119939,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/SCC/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\SCC\\decision_ids.csv.gz",
+      "physical_sha256": "3b7da96e89030fd3dd4b7040f832deb51c1cd920ff99f5e70373481a4b10348c",
+      "content_sha256": "96268dadf91099a85a78437d731aa0a924a763f5dfec478346d3e1b80799c20f",
+      "logical_bytes": 6194316,
+      "stored_bytes": 1251945,
+      "rows": 196059,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/ONCA/merged.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\ONCA\\merged.csv.gz",
+      "physical_sha256": "d89d42c8ef7dac3e3faf4da167511856a1e5dc986522b18af6d0ac8eea65da4e",
+      "content_sha256": "4614ca355189aef262c3d19cc8e196d5927ee010ccc46b68572205b15e169219",
+      "logical_bytes": 9410806,
+      "stored_bytes": 1977164,
+      "rows": 66313,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/ONCA/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\ONCA\\decision_ids.csv.gz",
+      "physical_sha256": "aaf1f4458d1661036e3a5f356c5e3bc7ec8adffe87ddf433c41a7d1e5b7260dd",
+      "content_sha256": "6c692c677aae94483903803577bfe93e8abd74f8b65a1c57185a7006771bfff9",
+      "logical_bytes": 5502803,
+      "stored_bytes": 948600,
+      "rows": 165257,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/BCCA/merged.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\BCCA\\merged.csv.gz",
+      "physical_sha256": "9f5cfb8145b2813ff678716ae1520e3d02a22373334615965d21824240e6d583",
+      "content_sha256": "b82d112cc0f44bb70ea1986e33564e3d69952e0615491dee7303b40cc0c4e9a7",
+      "logical_bytes": 10850118,
+      "stored_bytes": 2251956,
+      "rows": 74777,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/BCCA/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\BCCA\\decision_ids.csv.gz",
+      "physical_sha256": "39a67d46fa60f39c7fe296df1deedba0ff80c60a862e85a160e19c78417e7fb3",
+      "content_sha256": "b2903a97bfd39c0cb40c7b02a8e5456934aa5b07d726c05e2f666dff3b0adfd6",
+      "logical_bytes": 5886500,
+      "stored_bytes": 954015,
+      "rows": 174081,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "registry/decision_own_citations.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\registry\\decision_own_citations.csv.gz",
+      "physical_sha256": "cd07d7448815c43a1e0d3d79fa680cbf15e054957aa54c2f46a874c59db0e4e2",
+      "content_sha256": "3c164d0d97e15e4b79ff0e52c383548301f3b41bbb84d6afa721191b89fd40b7",
+      "logical_bytes": 36077950,
+      "stored_bytes": 8496563,
+      "rows": 63793,
+      "output_seal_verified": true
+    }
+  ],
+  "fixture": {
+    "path": "pipeline\\tests\\fixtures\\motorvehicle_identity_20261015.json",
+    "sha256": "0ff0bf287b444ee1576a794f7a7bdbb02b29a1e3ee528897f8df4bfa80221632",
+    "rows": 6
+  },
+  "table_sha256": "ae4df66364aa44e18d9cec29f77904bccb1c67fd4563ff87f9c9828608e41991"
+}

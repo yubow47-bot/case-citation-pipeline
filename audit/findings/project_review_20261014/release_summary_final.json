@@ -1,0 +1,203 @@
+{
+  "schema": "reliable_release_summary_v1",
+  "completed_at": "2026-10-15T00:35:30.073927+00:00",
+  "status": "complete_with_explicit_semantic_limits",
+  "run_id": "run_20261014_reliable_final",
+  "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+  "courts": [
+    "SCC",
+    "ONCA",
+    "BCCA"
+  ],
+  "text_policy": "en_then_fr",
+  "metrics": {
+    "courts": [
+      "SCC",
+      "ONCA",
+      "BCCA"
+    ],
+    "limit_batches": null,
+    "year_from": null,
+    "rows_total": 261029,
+    "groups_total": 230447,
+    "groups_kept": 14003,
+    "threshold_dd": 5,
+    "group_foreign_status": {
+      "UNDETERMINED": 169414,
+      "DOMESTIC_CA": 60573,
+      "FOREIGN": 460
+    },
+    "group_origin_status": {
+      "UNDETERMINED": 169414,
+      "DETERMINED": 61033
+    },
+    "edges_total": 490576,
+    "edges_foreign": 1082,
+    "edges_domestic_ca": 212681,
+    "edges_undetermined": 276813,
+    "edges_conflict": 0,
+    "edges_supported": 459694,
+    "edges_heuristic_only": 30882,
+    "self_excluded_sources": 5077,
+    "tentative_edges": 381
+  },
+  "final_counted_mentions": 705476,
+  "legacy_manifest_mentions_before_self_exclusion": 716593,
+  "excluded_self_mentions": 11117,
+  "components": {
+    "acceptance": {
+      "generation": 3,
+      "status": "ready"
+    },
+    "cases": {
+      "generation": 1,
+      "status": "ready"
+    },
+    "edges": {
+      "generation": 1,
+      "status": "ready"
+    },
+    "import": {
+      "generation": 1,
+      "status": "ready"
+    },
+    "methods": {
+      "generation": 3,
+      "status": "ready"
+    },
+    "relations": {
+      "generation": 1,
+      "status": "ready"
+    },
+    "vectors_cases": {
+      "generation": 1,
+      "status": "missing"
+    },
+    "vectors_edges": {
+      "generation": 1,
+      "status": "missing"
+    },
+    "vectors_methods": {
+      "generation": 1,
+      "status": "stale"
+    }
+  },
+  "sampling": {
+    "frame_N": 490576,
+    "cells": 140,
+    "sample_n": 271,
+    "train": 223,
+    "holdout": 48,
+    "manual_labels": 0,
+    "semantic_precision": null,
+    "population_calibration": "not_calibrated",
+    "fixed_sample_languages": [
+      "en"
+    ]
+  },
+  "storage": {
+    "initial_d_logical_bytes": 25543680871,
+    "initial_d_measurement": "audit/findings/storage_20261014/inventory.json",
+    "final_inventory": "audit/findings/storage_20261014/final_inventory.json",
+    "embedding_cache_bytes": 86597632,
+    "cache_file_length_reduction_bytes": 1253748736,
+    "original_corpus_files": 8,
+    "original_corpus_bytes": 1486658450,
+    "e_junction_followed": false,
+    "project_budget_bytes": 12884901888
+  },
+  "receipts": {
+    "tables": {
+      "path": "audit/findings/project_review_20261014/check_reliable_final.json",
+      "bytes": 2890,
+      "sha256": "2c2a34b39006dd9b2bb4d453c2713866882e2c620a12f7febc920f0479689a87"
+    },
+    "identity": {
+      "path": "audit/findings/project_review_20261014/identity_release_final.json",
+      "bytes": 6402,
+      "sha256": "f0330eee8fed10faf917c2159c8b0b229dd326a6f95af5ab1c009d2bcaa9c839"
+    },
+    "french": {
+      "path": "audit/findings/project_review_20261014/french_ingestion_final.json",
+      "bytes": 4332,
+      "sha256": "53ff7f67d5fcea7e14b0a7d660c61d537a629bf4a2e5faa0bfe381742df6b864"
+    },
+    "legacy_comparison": {
+      "path": "audit/findings/project_review_20261014/compare_selfcite_reliable_final.json",
+      "bytes": 115754,
+      "sha256": "c3ea1944d51a2cf51a8d1c26a6e4a2ac83f30fcf7adb9fafcbdc6ababfa2115f"
+    },
+    "v2_comparison": {
+      "path": "audit/findings/project_review_20261014/compare_v2_reliable_final.json",
+      "bytes": 102554,
+      "sha256": "c97db17c249c8732c8c615b51ad40f4faa19722aafdfd8f0266a51d8025f6dfd"
+    },
+    "tcc_tables": {
+      "path": "audit/findings/project_review_20261014/check_tcc_verify_final.json",
+      "bytes": 2848,
+      "sha256": "fbb54be48efaf8c1887ae092824622f1121e4a5b265767b4e29a67cb3e3d2a69"
+    },
+    "tcc_corsano": {
+      "path": "audit/findings/project_review_20261014/corsano_final.json",
+      "bytes": 3351,
+      "sha256": "02c26bb97343fb828e0d92fc2610c4da4e6daf74417bb39c742cdc570897248c"
+    },
+    "methods": {
+      "path": "audit/findings/project_review_20261014/methods_refresh_final.json",
+      "bytes": 1316,
+      "sha256": "2ca619f3b08de1869a178f87bd8c0bd8897de9780f9042b711110a3f6d8ea264"
+    },
+    "research": {
+      "path": "audit/findings/research/research_validation_current.json",
+      "bytes": 6373,
+      "sha256": "246e3bcce8715f2db355572f9b1c3e6e8204f06d275427e05a57ed7256066574"
+    },
+    "quality": {
+      "path": "audit/findings/quality_20261014/execution_summary.json",
+      "bytes": 8741,
+      "sha256": "98e39737b78bc9a8bae2fcbaad1a5da381ba3373e9d6c92c40b59e6b7da263bc"
+    },
+    "evaluation": {
+      "path": "audit/findings/quality_20261014/evaluation.json",
+      "bytes": 62483,
+      "sha256": "085c23fbc719e7c37eade4d555dfb47126e961a0ce356f00425d89050370fdeb"
+    },
+    "cache_cleanup": {
+      "path": "audit/findings/quality_20261014/cache_cleanup_receipt.json",
+      "bytes": 3643,
+      "sha256": "8e4b78108c3ee7a44e18124e1a17da0be0530815214f6ed3292aa1da2f404ffb"
+    },
+    "cache_final_audit": {
+      "path": "audit/findings/quality_20261014/cache_cleanup_plan_final_audit.json",
+      "bytes": 3386,
+      "sha256": "c5e224c85bbd7a5d473580439bf1f490907cdaabcfa0f81e0e8afba70b643989"
+    },
+    "tests": {
+      "path": "implementation/offline_verification_final_20261014/summary.json",
+      "bytes": 5949,
+      "sha256": "a3f5f3c016cb2ea70b5d539c764bc1cf80a933502da67b01e19432b71099913e"
+    },
+    "status": {
+      "path": "audit/findings/project_status.json",
+      "bytes": 38494,
+      "sha256": "22d951a1b576c3a81915fa35853a6d5f47c39488814aed76efc9ceee230ef75d"
+    },
+    "status_validation": {
+      "path": "audit/findings/project_status_validation.json",
+      "bytes": 3663,
+      "sha256": "8a7e24fc9ea4a47e463a7a392d9ebaf92df58c6a66ce41f3526fa5d383b0b71b"
+    },
+    "producers": {
+      "path": "audit/findings/project_review_20261014/producer_sources_final.json",
+      "bytes": 1305172,
+      "sha256": "12e517d8edf89fbca99e08d0c956a87629b51871fc933a4fa22faf367f3e36a6"
+    }
+  },
+  "limits": [
+    "Identity constraints and named source-set regressions are not population accuracy.",
+    "Citation edges and passages do not classify legal treatment.",
+    "Vectors are unavailable (missing/stale); no API embedding calls were made.",
+    "The fixed sample has no manual labels and no FR samples; native FR ingestion/location were verified separately.",
+    "Logical file lengths are not allocated disk blocks."
+  ]
+}

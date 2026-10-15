@@ -1,0 +1,64 @@
+{
+  "schema": "consumer_whitespace_contract_v1",
+  "status": "passed",
+  "run_id": "run_20261014_reliable_final",
+  "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+  "scope": "Consumer-only change. Extractor raw_string whitespace normalization is compared; original source coordinates/windows/hashes remain unmodified. No DB build or API.",
+  "comparison": "re.sub(r'\\s+', ' ', original_text[start:end]).strip() == ledger_raw_string; 0 <= start < end <= len(text)",
+  "tests": {
+    "research": 29,
+    "foundation": 54,
+    "quality_peer_reported": 54,
+    "regressions": [
+      "CRLF/newline + NBSP original-span positives",
+      "non-whitespace number change negatives",
+      "out-of-bounds span negatives",
+      "case and edge indexes both independently fail closed"
+    ]
+  },
+  "source_tool_sha256": {
+    "tools/research/core.py": "0efcaa9894177fb1e89838f4d256c360f1e5d2c5237f40477d2e22395c81d724",
+    "tools/foundation/index_cases.py": "b20dcdaccac209ce695589a58405053d3e4fffcad76018f482f99a9a9ef78f29",
+    "tools/foundation/index_edges.py": "62bd40bcb8c9900ebdf669ab5b549cdca38cc324f78700984bb6d3f6c8761186",
+    "tools/research/test_research.py": "c989c22f00bd2bba7fde8df302fc2e272ed421d9fc86fe304745cf3269313f15",
+    "tools/foundation/test_corpus_language.py": "dff8187f00d2192442b0dd1b176eee4263e417ac0dad29b96306e01d867a59de"
+  },
+  "actual_french_regression": {
+    "court": "SCC",
+    "corpus_row": 8857,
+    "source_id": "SCC_1965rcs243",
+    "ledger_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\SCC\\mentions_candidates.csv.gz",
+    "ledger_record": 128289,
+    "candidate_id": "SCC:8857:15439:15451:shape_neutral_bare",
+    "arbitration_status": "rejected_row",
+    "scope": "Original-span verifier regression only. This rejected ledger record is not counted or presented as an edge evidence packet. Counted positives are covered by the tiny real-Parquet fixture tests.",
+    "span": {
+      "start": 15439,
+      "end": 15451,
+      "text_field": "unofficial_text_fr",
+      "language": "fr",
+      "coordinate_system": "zero-based Python Unicode code points, half-open, unofficial_text_fr"
+    },
+    "raw_string": "1963 March 5",
+    "original_span": "1963\nMarch 5",
+    "source_text_sha256": "513cdefa1dfdae089ef541e13ee3b86c8bb8cdd10582fdc02cd96ceaee81c3d7",
+    "quote_sha256": "cd14d11b54e887503baa9e46501acf56c150f0ebb419ed4ff5d24f7d90443d68",
+    "field_selection": {
+      "policy": "en_then_fr",
+      "citation_field": "citation_fr",
+      "name_field": "name_fr",
+      "date_field": "document_date_fr",
+      "text_field": "unofficial_text_fr",
+      "language": "fr",
+      "verification": "original_corpus_verified",
+      "field_values_sha256": {
+        "citation": "761d178c706352714ccd9d2d337341672f8b4addd982c1362ae04ee0bb775200",
+        "name": "0d475da6ab70204e13db9e5c67b64524847ec876510b1bbb985a322363e18523",
+        "date": "42cfc6f37fcac15cfff23d708b2ea081ae0afca5f0d75b398889bad95e4e10df"
+      },
+      "metadata_hash_encoding": "SHA256 UTF-8 str(selected value or '')"
+    },
+    "verification": "original_text_verified",
+    "corpus_hash_scope": "Recorded final manifest identity; full rehash performed by adoption/foundation, not repeated by this local span regression."
+  }
+}

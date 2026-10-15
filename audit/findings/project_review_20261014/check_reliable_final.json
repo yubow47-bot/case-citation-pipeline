@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-14T23:43:21.127675+00:00",
+  "run_directory": "D:\\cases data analisis\\data\\run_20261014_reliable_final",
+  "status": "passed",
+  "scope": "Artifact consistency only. No extraction recall, identity accuracy, corpus hash verification or statistical calibration.",
+  "metrics": {
+    "courts": [
+      "SCC",
+      "ONCA",
+      "BCCA"
+    ],
+    "limit_batches": null,
+    "year_from": null,
+    "rows_total": 261029,
+    "groups_total": 230447,
+    "groups_kept": 14003,
+    "threshold_dd": 5,
+    "group_foreign_status": {
+      "UNDETERMINED": 169414,
+      "DOMESTIC_CA": 60573,
+      "FOREIGN": 460
+    },
+    "group_origin_status": {
+      "UNDETERMINED": 169414,
+      "DETERMINED": 61033
+    },
+    "edges_total": 490576,
+    "edges_foreign": 1082,
+    "edges_domestic_ca": 212681,
+    "edges_undetermined": 276813,
+    "edges_conflict": 0,
+    "edges_supported": 459694,
+    "edges_heuristic_only": 30882,
+    "self_excluded_sources": 5077,
+    "tentative_edges": 381
+  },
+  "issues": [
+    {
+      "severity": "warning",
+      "code": "compressed_artifacts",
+      "detail": "Checked CSV.gz directly; foundation, research, quality and source tracing support these retained artifacts without decompression",
+      "count": 6,
+      "examples": [
+        "select_out/selected.csv",
+        "decide_out/cross_court/effective_sources.csv",
+        "edges/citation_edges.csv",
+        "edges/foreign_edges.csv",
+        "edges/tentative_edges.csv",
+        "edges/self_excluded_edges.csv"
+      ]
+    }
+  ],
+  "artifacts": {
+    "select_out/selected.csv": {
+      "path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\select_out\\selected.csv.gz",
+      "compressed": true,
+      "bytes": 8070996
+    },
+    "decide_out/cross_court/effective_sources.csv": {
+      "path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\decide_out\\cross_court\\effective_sources.csv.gz",
+      "compressed": true,
+      "bytes": 4369350
+    },
+    "edges/citation_edges.csv": {
+      "path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\edges\\citation_edges.csv.gz",
+      "compressed": true,
+      "bytes": 7247605
+    },
+    "edges/foreign_edges.csv": {
+      "path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\edges\\foreign_edges.csv.gz",
+      "compressed": true,
+      "bytes": 20593
+    },
+    "edges/tentative_edges.csv": {
+      "path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\edges\\tentative_edges.csv.gz",
+      "compressed": true,
+      "bytes": 5141
+    },
+    "edges/self_excluded_edges.csv": {
+      "path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\edges\\self_excluded_edges.csv.gz",
+      "compressed": true,
+      "bytes": 36401
+    }
+  }
+}

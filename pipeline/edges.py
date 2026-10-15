@@ -32,6 +32,7 @@ from collections import Counter, defaultdict
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk                                      # noqa: E402
 from decide import ELIGIBLE_BASES                             # noqa: E402  (R2 闭环 4.4 共享契约)
+from artifacts import open_csv, resolve
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -72,7 +73,7 @@ def main():
     # 组级属性（每行都带组结论，取任一行即可）
     group_attr = {}
     row2group = {}
-    with open(a.decided, encoding="utf-8", newline="") as f:
+    with open_csv(a.decided) as f:
         for r in csv.DictReader(f):
             row2group[(r.get("court") or "", r["merge_key"])] = r["merged_group_id"]
             g = group_attr.setdefault(r["merged_group_id"], {
@@ -87,7 +88,7 @@ def main():
             })
     # 决策组的组级列是逐行一致的——不一致即上游违约，拒绝写表
     bad = 0
-    with open(a.decided, encoding="utf-8", newline="") as f:
+    with open_csv(a.decided) as f:
         for r in csv.DictReader(f):
             g = group_attr[r["merged_group_id"]]
             if (r.get("group_foreign_status") or "UNDETERMINED") != g["group_foreign_status"] \
@@ -101,9 +102,11 @@ def main():
     for court in sorted(d for d in os.listdir(a.merge_out)
                         if os.path.isdir(os.path.join(a.merge_out, d))):
         path = os.path.join(a.merge_out, court, "mentions_candidates.csv")
-        if not os.path.exists(path):
+        try:
+            resolve(path)
+        except FileNotFoundError:
             continue
-        with open(path, encoding="utf-8", newline="") as f:
+        with open_csv(path) as f:
             for m in csv.DictReader(f):
                 stats["mentions_scanned"] += 1
                 if m["arbitration_status"] != "counted":
@@ -119,7 +122,7 @@ def main():
     # 有效来源关联 → 边
     all_rows, tentative, self_excluded = [], [], []
     per_group_counted = Counter()
-    with open(a.effective, encoding="utf-8", newline="") as f:
+    with open_csv(a.effective) as f:
         for e in csv.DictReader(f):
             gid = e["merged_group_id"]
             g = group_attr.get(gid)

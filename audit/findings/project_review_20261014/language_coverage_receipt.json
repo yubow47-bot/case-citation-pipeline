@@ -1,0 +1,423 @@
+{
+  "schema": "language_field_coverage_v1",
+  "generated_at_utc": "2026-10-14T22:49:53.276313+00:00",
+  "scope": "All rows in D project SCC/ONCA/BCCA parquet corpus. Source field completeness, not a linguistic language classifier or processed-judgment census.",
+  "fields_requested": [
+    "citation_en",
+    "citation_fr",
+    "unofficial_text_en",
+    "unofficial_text_fr",
+    "document_date_en",
+    "document_date_fr"
+  ],
+  "batch_size": 100,
+  "whitespace_rule": "Present means non-null and str(value).strip() is nonempty; no raw judgment text is retained.",
+  "courts": [
+    {
+      "court": "SCC",
+      "path": "D:\\cases data analisis\\corpus\\SCC.parquet",
+      "corpus_snapshot_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+      "physical_bytes": 365204389,
+      "mtime_ns": 1788104517876144000,
+      "unchanged_during_scan": true,
+      "schema_fields_present": [
+        "citation_en",
+        "citation_fr",
+        "unofficial_text_en",
+        "unofficial_text_fr",
+        "document_date_en",
+        "document_date_fr"
+      ],
+      "schema_fields_missing": [],
+      "counts": {
+        "rows": 10891,
+        "en_citation_present": 10829,
+        "fr_citation_present": 5022,
+        "en_text_present": 10829,
+        "fr_text_present": 5022,
+        "en_date_present": 10829,
+        "fr_date_present": 5022,
+        "en_valid_source_id_metadata": 10829,
+        "both_text_fields_present": 4960,
+        "en_text_only": 5869,
+        "fr_text_only": 62,
+        "both_text_fields_empty": 0,
+        "en_text_empty_fr_text_present": 62,
+        "en_text_empty_fr_text_present_en_citation_present": 0,
+        "en_text_empty_fr_text_present_valid_en_source_id": 0,
+        "en_text_empty_fr_text_present_en_date_present": 0,
+        "en_text_empty_fr_text_present_fr_citation_present": 62,
+        "en_text_empty_fr_text_present_fr_date_present": 62,
+        "en_citation_empty": 62,
+        "en_citation_empty_fr_citation_present": 62,
+        "en_citation_empty_en_text_present": 0,
+        "en_citation_empty_fr_text_present": 62,
+        "en_citation_empty_both_text_fields_empty": 0,
+        "en_citation_empty_both_citation_fields_empty": 0,
+        "en_citation_empty_fr_any_metadata_or_text_present": 62,
+        "en_citation_empty_en_date_empty": 62,
+        "en_date_empty_fr_date_present": 62,
+        "en_citation_present_en_text_empty": 0,
+        "en_invalid_source_id_metadata": 62
+      },
+      "metadata_examples": {
+        "en_text_empty_fr_text_present": [
+          {
+            "corpus_row": 6088,
+            "citation_en": null,
+            "citation_fr": "[1963] RCS 496",
+            "document_date_en": null,
+            "document_date_fr": "1963-01-22 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 8557
+          },
+          {
+            "corpus_row": 7345,
+            "citation_en": null,
+            "citation_fr": "[1965] RCS 534",
+            "document_date_en": null,
+            "document_date_fr": "1965-05-17 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 9319
+          },
+          {
+            "corpus_row": 7588,
+            "citation_en": null,
+            "citation_fr": "[1965] RCS 349",
+            "document_date_en": null,
+            "document_date_fr": "1965-01-26 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 7276
+          },
+          {
+            "corpus_row": 7589,
+            "citation_en": null,
+            "citation_fr": "[1965] RCS 393",
+            "document_date_en": null,
+            "document_date_fr": "1965-03-01 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 20433
+          },
+          {
+            "corpus_row": 7591,
+            "citation_en": null,
+            "citation_fr": "[1965] RCS 553",
+            "document_date_en": null,
+            "document_date_fr": "1965-04-06 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 4259
+          }
+        ],
+        "en_citation_empty": [
+          {
+            "corpus_row": 6088,
+            "citation_en": null,
+            "citation_fr": "[1963] RCS 496",
+            "document_date_en": null,
+            "document_date_fr": "1963-01-22 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 8557
+          },
+          {
+            "corpus_row": 7345,
+            "citation_en": null,
+            "citation_fr": "[1965] RCS 534",
+            "document_date_en": null,
+            "document_date_fr": "1965-05-17 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 9319
+          },
+          {
+            "corpus_row": 7588,
+            "citation_en": null,
+            "citation_fr": "[1965] RCS 349",
+            "document_date_en": null,
+            "document_date_fr": "1965-01-26 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 7276
+          },
+          {
+            "corpus_row": 7589,
+            "citation_en": null,
+            "citation_fr": "[1965] RCS 393",
+            "document_date_en": null,
+            "document_date_fr": "1965-03-01 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 20433
+          },
+          {
+            "corpus_row": 7591,
+            "citation_en": null,
+            "citation_fr": "[1965] RCS 553",
+            "document_date_en": null,
+            "document_date_fr": "1965-04-06 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 4259
+          }
+        ]
+      }
+    },
+    {
+      "court": "ONCA",
+      "path": "D:\\cases data analisis\\corpus\\ONCA.parquet",
+      "corpus_snapshot_sha256": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+      "physical_bytes": 183138908,
+      "mtime_ns": 1788104423449642300,
+      "unchanged_during_scan": true,
+      "schema_fields_present": [
+        "citation_en",
+        "citation_fr",
+        "unofficial_text_en",
+        "unofficial_text_fr",
+        "document_date_en",
+        "document_date_fr"
+      ],
+      "schema_fields_missing": [],
+      "counts": {
+        "rows": 24089,
+        "en_citation_present": 23953,
+        "fr_citation_present": 136,
+        "en_text_present": 23953,
+        "fr_text_present": 136,
+        "en_date_present": 23953,
+        "fr_date_present": 136,
+        "en_valid_source_id_metadata": 23953,
+        "both_text_fields_present": 0,
+        "en_text_only": 23953,
+        "fr_text_only": 136,
+        "both_text_fields_empty": 0,
+        "en_text_empty_fr_text_present": 136,
+        "en_text_empty_fr_text_present_en_citation_present": 0,
+        "en_text_empty_fr_text_present_valid_en_source_id": 0,
+        "en_text_empty_fr_text_present_en_date_present": 0,
+        "en_text_empty_fr_text_present_fr_citation_present": 136,
+        "en_text_empty_fr_text_present_fr_date_present": 136,
+        "en_citation_empty": 136,
+        "en_citation_empty_fr_citation_present": 136,
+        "en_citation_empty_en_text_present": 0,
+        "en_citation_empty_fr_text_present": 136,
+        "en_citation_empty_both_text_fields_empty": 0,
+        "en_citation_empty_both_citation_fields_empty": 0,
+        "en_citation_empty_fr_any_metadata_or_text_present": 136,
+        "en_citation_empty_en_date_empty": 136,
+        "en_date_empty_fr_date_present": 136,
+        "en_citation_present_en_text_empty": 0,
+        "en_invalid_source_id_metadata": 136
+      },
+      "metadata_examples": {
+        "en_text_empty_fr_text_present": [
+          {
+            "corpus_row": 187,
+            "citation_en": null,
+            "citation_fr": "2017 ONCA 943",
+            "document_date_en": null,
+            "document_date_fr": "2017-12-04 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 1069
+          },
+          {
+            "corpus_row": 265,
+            "citation_en": null,
+            "citation_fr": "2017 ONCA 818",
+            "document_date_en": null,
+            "document_date_fr": "2017-10-25 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 4493
+          },
+          {
+            "corpus_row": 490,
+            "citation_en": null,
+            "citation_fr": "2018 ONCA 422",
+            "document_date_en": null,
+            "document_date_fr": "2018-05-03 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 3300
+          },
+          {
+            "corpus_row": 493,
+            "citation_en": null,
+            "citation_fr": "2018 ONCA 423",
+            "document_date_en": null,
+            "document_date_fr": "2018-05-03 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 1848
+          },
+          {
+            "corpus_row": 574,
+            "citation_en": null,
+            "citation_fr": "2018 ONCA 155",
+            "document_date_en": null,
+            "document_date_fr": "2018-02-15 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 2666
+          }
+        ],
+        "en_citation_empty": [
+          {
+            "corpus_row": 187,
+            "citation_en": null,
+            "citation_fr": "2017 ONCA 943",
+            "document_date_en": null,
+            "document_date_fr": "2017-12-04 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 1069
+          },
+          {
+            "corpus_row": 265,
+            "citation_en": null,
+            "citation_fr": "2017 ONCA 818",
+            "document_date_en": null,
+            "document_date_fr": "2017-10-25 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 4493
+          },
+          {
+            "corpus_row": 490,
+            "citation_en": null,
+            "citation_fr": "2018 ONCA 422",
+            "document_date_en": null,
+            "document_date_fr": "2018-05-03 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 3300
+          },
+          {
+            "corpus_row": 493,
+            "citation_en": null,
+            "citation_fr": "2018 ONCA 423",
+            "document_date_en": null,
+            "document_date_fr": "2018-05-03 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 1848
+          },
+          {
+            "corpus_row": 574,
+            "citation_en": null,
+            "citation_fr": "2018 ONCA 155",
+            "document_date_en": null,
+            "document_date_fr": "2018-02-15 00:00:00+00:00",
+            "en_text_char_count": 0,
+            "fr_text_char_count": 2666
+          }
+        ]
+      }
+    },
+    {
+      "court": "BCCA",
+      "path": "D:\\cases data analisis\\corpus\\BCCA.parquet",
+      "corpus_snapshot_sha256": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3",
+      "physical_bytes": 186876782,
+      "mtime_ns": 1789703416609902400,
+      "unchanged_during_scan": true,
+      "schema_fields_present": [
+        "citation_en",
+        "citation_fr",
+        "unofficial_text_en",
+        "unofficial_text_fr",
+        "document_date_en",
+        "document_date_fr"
+      ],
+      "schema_fields_missing": [],
+      "counts": {
+        "rows": 14703,
+        "en_citation_present": 14703,
+        "fr_citation_present": 0,
+        "en_text_present": 14694,
+        "fr_text_present": 0,
+        "en_date_present": 14703,
+        "fr_date_present": 0,
+        "en_valid_source_id_metadata": 14703,
+        "both_text_fields_present": 0,
+        "en_text_only": 14694,
+        "fr_text_only": 0,
+        "both_text_fields_empty": 9,
+        "en_text_empty_fr_text_present": 0,
+        "en_text_empty_fr_text_present_en_citation_present": 0,
+        "en_text_empty_fr_text_present_valid_en_source_id": 0,
+        "en_text_empty_fr_text_present_en_date_present": 0,
+        "en_text_empty_fr_text_present_fr_citation_present": 0,
+        "en_text_empty_fr_text_present_fr_date_present": 0,
+        "en_citation_empty": 0,
+        "en_citation_empty_fr_citation_present": 0,
+        "en_citation_empty_en_text_present": 0,
+        "en_citation_empty_fr_text_present": 0,
+        "en_citation_empty_both_text_fields_empty": 0,
+        "en_citation_empty_both_citation_fields_empty": 0,
+        "en_citation_empty_fr_any_metadata_or_text_present": 0,
+        "en_citation_empty_en_date_empty": 0,
+        "en_date_empty_fr_date_present": 0,
+        "en_citation_present_en_text_empty": 9,
+        "en_invalid_source_id_metadata": 0
+      },
+      "metadata_examples": {}
+    }
+  ],
+  "totals": {
+    "rows": 49683,
+    "en_citation_present": 49485,
+    "fr_citation_present": 5158,
+    "en_text_present": 49476,
+    "fr_text_present": 5158,
+    "en_date_present": 49485,
+    "fr_date_present": 5158,
+    "en_valid_source_id_metadata": 49485,
+    "both_text_fields_present": 4960,
+    "en_text_only": 44516,
+    "fr_text_only": 198,
+    "both_text_fields_empty": 9,
+    "en_text_empty_fr_text_present": 198,
+    "en_text_empty_fr_text_present_en_citation_present": 0,
+    "en_text_empty_fr_text_present_valid_en_source_id": 0,
+    "en_text_empty_fr_text_present_en_date_present": 0,
+    "en_text_empty_fr_text_present_fr_citation_present": 198,
+    "en_text_empty_fr_text_present_fr_date_present": 198,
+    "en_citation_empty": 198,
+    "en_citation_empty_fr_citation_present": 198,
+    "en_citation_empty_en_text_present": 0,
+    "en_citation_empty_fr_text_present": 198,
+    "en_citation_empty_both_text_fields_empty": 0,
+    "en_citation_empty_both_citation_fields_empty": 0,
+    "en_citation_empty_fr_any_metadata_or_text_present": 198,
+    "en_citation_empty_en_date_empty": 198,
+    "en_date_empty_fr_date_present": 198,
+    "en_citation_present_en_text_empty": 9,
+    "en_invalid_source_id_metadata": 198
+  },
+  "examples": {},
+  "limits": [
+    "EN/FR labels are upstream field names; a nonempty fr field does not establish that its prose is French.",
+    "Counts are raw corpus metadata-row counts. Source-ID duplicates and extraction filters require separate denominator treatment.",
+    "This does not run new extraction, infer a French fallback, or assign an ID to blank English citation placeholders.",
+    "Corpus hashes below are inherited from the independently verified source snapshot in parallel_alias_evidence_20261014.json; this narrow audit checks file sizes/metadata and does not repeat large hash scans."
+  ],
+  "english_empty_citation_placeholder_audit": {
+    "rows": 198,
+    "fr_text_present": 198,
+    "fr_citation_present": 198,
+    "both_text_fields_empty": 0,
+    "both_citation_fields_empty": 0,
+    "any_fr_metadata_or_text_present": 198
+  },
+  "normalized_fr_only_citation_overlap_check": {
+    "method": "Remove non-ASCII-alphanumeric punctuation and lowercase citation strings, separately within each court; compare FR-only citation_fr against EN-present rows citation_en and citation_fr. This is a string-normalization screen, not bilingual citation equivalence or judgment-entity deduplication.",
+    "courts": [
+      {
+        "court": "SCC",
+        "fr_only_rows": 62,
+        "unique_normalized_fr_citation_keys": 62,
+        "matches_existing_en_present_row_citation_fields": 0
+      },
+      {
+        "court": "ONCA",
+        "fr_only_rows": 136,
+        "unique_normalized_fr_citation_keys": 136,
+        "matches_existing_en_present_row_citation_fields": 0
+      },
+      {
+        "court": "BCCA",
+        "fr_only_rows": 0,
+        "unique_normalized_fr_citation_keys": 0,
+        "matches_existing_en_present_row_citation_fields": 0
+      }
+    ]
+  }
+}

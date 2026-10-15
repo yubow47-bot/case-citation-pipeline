@@ -1,0 +1,48 @@
+{
+  "schema": "french_ingestion_verification_v1",
+  "status": "passed",
+  "run_id": "run_20261014_tcc_verify_final",
+  "input_fingerprint": "560f97eb0eb5ec1b57e86137e034aacaa10f4fb69611d5bf888cf15a98ffb347",
+  "text_policy": "en_then_fr",
+  "source_counts": {
+    "TCC": {
+      "raw_rows": 8128,
+      "en": 8077,
+      "fr": 51
+    }
+  },
+  "processed_french_sources": 51,
+  "french_sources_with_candidates": 51,
+  "french_candidates_verified": 1314,
+  "french_candidates_with_folded_whitespace": 55,
+  "span_comparison": "Exact original Unicode coordinates; ledger raw_string collapses whitespace only, matching the extractor contract.",
+  "french_sources_with_final_edges": 42,
+  "final_edges_by_source_language": {
+    "fr": 493,
+    "en": 53521
+  },
+  "french_sources_without_candidates": [],
+  "scope": "Every French candidate in the final ledger checked against its original native field and Unicode span; no semantic precision claim, no text copies.",
+  "artifacts": [
+    {
+      "logical_path": "merge_out/TCC/mentions_candidates.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_tcc_verify_final\\merge_out\\TCC\\mentions_candidates.csv.gz",
+      "physical_sha256": "6dadc1528649ba295802b09b6fcfade3f6a787cf32f967ef46f6732a3ceb2ff4",
+      "content_sha256": "f69f8594b828117eaed627ce0b647728e54b8cfc91030e76e2db67e1e77f2ce0",
+      "logical_bytes": 33064050,
+      "stored_bytes": 4436347,
+      "rows": 150218,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "edges/citation_edges.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_tcc_verify_final\\edges\\citation_edges.csv.gz",
+      "physical_sha256": "e15cbb96531e2dd83505b3fd23aefe01ccb12f36544193ba8273fba94d1f430b",
+      "content_sha256": "e32d58bbb8fdc11add235b1c606d01915fe79a7485264d163aa7f4862d089bc1",
+      "logical_bytes": 7953917,
+      "stored_bytes": 704112,
+      "rows": 54014,
+      "output_seal_verified": true
+    }
+  ]
+}

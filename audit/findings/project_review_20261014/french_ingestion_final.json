@@ -1,0 +1,139 @@
+{
+  "schema": "french_ingestion_verification_v1",
+  "status": "passed",
+  "run_id": "run_20261014_reliable_final",
+  "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+  "text_policy": "en_then_fr",
+  "source_counts": {
+    "SCC": {
+      "raw_rows": 10891,
+      "en": 10829,
+      "fr": 62
+    },
+    "ONCA": {
+      "raw_rows": 24089,
+      "en": 23953,
+      "fr": 136
+    },
+    "BCCA": {
+      "raw_rows": 14703,
+      "en": 14694,
+      "no_text": 9
+    }
+  },
+  "processed_french_sources": 198,
+  "french_sources_with_candidates": 186,
+  "french_candidates_verified": 2266,
+  "french_candidates_with_folded_whitespace": 14,
+  "span_comparison": "Exact original Unicode coordinates; ledger raw_string collapses whitespace only, matching the extractor contract.",
+  "french_sources_with_final_edges": 129,
+  "final_edges_by_source_language": {
+    "en": 489636,
+    "fr": 940
+  },
+  "french_sources_without_candidates": [
+    {
+      "source_id": "ONCA_c43311m32500",
+      "court": "ONCA",
+      "corpus_row": 7595
+    },
+    {
+      "source_id": "ONCA_c44849",
+      "court": "ONCA",
+      "corpus_row": 8332
+    },
+    {
+      "source_id": "ONCA_c44775",
+      "court": "ONCA",
+      "corpus_row": 8369
+    },
+    {
+      "source_id": "ONCA_c44392",
+      "court": "ONCA",
+      "corpus_row": 8583
+    },
+    {
+      "source_id": "ONCA_c39080",
+      "court": "ONCA",
+      "corpus_row": 8653
+    },
+    {
+      "source_id": "ONCA_c42638",
+      "court": "ONCA",
+      "corpus_row": 8800
+    },
+    {
+      "source_id": "ONCA_c20118",
+      "court": "ONCA",
+      "corpus_row": 12488
+    },
+    {
+      "source_id": "ONCA_c40774",
+      "court": "ONCA",
+      "corpus_row": 16011
+    },
+    {
+      "source_id": "ONCA_c32651",
+      "court": "ONCA",
+      "corpus_row": 17388
+    },
+    {
+      "source_id": "ONCA_c40324",
+      "court": "ONCA",
+      "corpus_row": 17576
+    },
+    {
+      "source_id": "ONCA_c28089",
+      "court": "ONCA",
+      "corpus_row": 21823
+    },
+    {
+      "source_id": "ONCA_c33675",
+      "court": "ONCA",
+      "corpus_row": 22092
+    }
+  ],
+  "scope": "Every French candidate in the final ledger checked against its original native field and Unicode span; no semantic precision claim, no text copies.",
+  "artifacts": [
+    {
+      "logical_path": "merge_out/SCC/mentions_candidates.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\SCC\\mentions_candidates.csv.gz",
+      "physical_sha256": "4744922a157fa550366648db2d8fcbd85265832ebd292149b2d34a91d0cc28e4",
+      "content_sha256": "6c0731407adb68c758edfe5a68eeba2f31f61ec577c9627172d06019441215a0",
+      "logical_bytes": 145237810,
+      "stored_bytes": 19421092,
+      "rows": 640467,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/ONCA/mentions_candidates.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\ONCA\\mentions_candidates.csv.gz",
+      "physical_sha256": "37e51b495bb60ee5cc912a01cb3ef63af11a3e5687ba6084a20520932bad3dda",
+      "content_sha256": "cccdfc5d25ff7a228e91c25c363b78e1425036026d519f572f445de23c33517a",
+      "logical_bytes": 90938664,
+      "stored_bytes": 12480749,
+      "rows": 377243,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/BCCA/mentions_candidates.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\BCCA\\mentions_candidates.csv.gz",
+      "physical_sha256": "25b093bfe308e6accd771856af28985f9ca8a0cf2347d73c8cd0f3bbc33e1fe6",
+      "content_sha256": "6d2867c97ab39b692fdf57197c999b3ba8fa348ae635629db6f6d0bdb9da5d07",
+      "logical_bytes": 110961901,
+      "stored_bytes": 14645077,
+      "rows": 454434,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "edges/citation_edges.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\edges\\citation_edges.csv.gz",
+      "physical_sha256": "3a89b92e09903517ebfddc719008673e75b967c80680128630c7eec8b621daf7",
+      "content_sha256": "7c9b3a2d4d53f621d9c7bf8d3955ef9c8098e671359214772cee233087ac7ae9",
+      "logical_bytes": 81256125,
+      "stored_bytes": 7247605,
+      "rows": 490576,
+      "output_seal_verified": true
+    }
+  ]
+}

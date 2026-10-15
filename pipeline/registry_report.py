@@ -35,6 +35,7 @@ sys.path.insert(0, PIPE)
 
 import classify                                               # noqa: E402
 from normalize import nk                                      # noqa: E402
+from artifacts import open_csv, resolve
 
 # 加拿大法域代码（`neutral_court_codes.csv` 的 jurisdiction 列取值，已核实）：
 # CA=联邦、其余为省/地区代码。表里出现新代码时它**不会**被静默归到 canadian
@@ -66,9 +67,11 @@ def collect(run_dir, scopes, jur_idx, registry=None):
     rows, per_scope = [], collections.Counter()
     for scope in scopes:
         path = os.path.join(run_dir, "decide_out", scope, "decided.csv")
-        if not os.path.exists(path):
+        try:
+            resolve(path)
+        except FileNotFoundError:
             continue
-        with io.open(path, encoding="utf-8", newline="") as f:
+        with open_csv(path) as f:
             for r in csv.DictReader(f):
                 if (r.get("identity_basis") or "") not in TYPO_BASES:
                     continue
@@ -94,8 +97,12 @@ def build(run_dir, scopes=("cross_court",), verbose=True):
     jur_idx = load_jurisdiction()
     reg_path = os.path.join(run_dir, "registry", "decision_registry.csv")
     registry = {}
-    if os.path.exists(reg_path):
-        with io.open(reg_path, encoding="utf-8", newline="") as f:
+    try:
+        resolve(reg_path)
+    except FileNotFoundError:
+        pass
+    else:
+        with open_csv(reg_path) as f:
             for r in csv.DictReader(f):
                 registry.setdefault(r["merge_key"], r.get("decision_id") or "")
     rows, per_scope = collect(run_dir, scopes, jur_idx, registry)

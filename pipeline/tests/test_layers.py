@@ -32,6 +32,7 @@ sys.path.insert(0, PIPE)
 
 import classify                                               # noqa: E402
 import decide                                                 # noqa: E402
+from artifacts import open_csv                                # noqa: E402
 from normalize import nk                                      # noqa: E402
 
 GOLDEN = os.path.join(HERE, "golden_layers.json")
@@ -891,8 +892,7 @@ def snapshot():
     snap["select"] = {"threshold_dd": sel["threshold_dd"], "stats": sel["stats"],
                       "dd_profile": sel["dd_profile"]}
     groups = defaultdict(list)
-    with open(os.path.join(D, "decide_out", "cross_court", "decided.csv"),
-              encoding="utf-8", newline="") as f:
+    with open_csv(os.path.join(D, "decide_out", "cross_court", "decided.csv")) as f:
         for r in csv.DictReader(f):
             groups[r["merged_group_id"]].append(r)
     top = sorted(groups.values(),

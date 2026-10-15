@@ -1,0 +1,208 @@
+{
+  "schema": "native_primary_bilingual_duplicate_audit_v1",
+  "scope": "All SCC/ONCA/BCCA citation_en/fr metadata; English primary IDs are never changed.",
+  "verified_bilingual_table": {
+    "path": "D:\\cases data analisis\\decisions\\bilingual_neutral_codes.csv",
+    "sha256": "dc4240597e1a066435250bab6787c54f91083e6aac08f202395022a9e9959baf",
+    "verified_code_pairs": [
+      [
+        "cacm",
+        "cmac"
+      ],
+      [
+        "caf",
+        "fca"
+      ],
+      [
+        "cci",
+        "tcc"
+      ],
+      [
+        "ccri",
+        "cirb"
+      ],
+      [
+        "cf",
+        "fc"
+      ],
+      [
+        "cfpi",
+        "fct"
+      ],
+      [
+        "chrt",
+        "tcdp"
+      ],
+      [
+        "crtfp",
+        "pslrb"
+      ],
+      [
+        "csc",
+        "scc"
+      ],
+      [
+        "canlii",
+        "iijcan"
+      ],
+      [
+        "nbbr",
+        "nbkb"
+      ],
+      [
+        "nbbr",
+        "nbqb"
+      ],
+      [
+        "nbcp",
+        "nbpc"
+      ],
+      [
+        "ohstc",
+        "tsstc"
+      ],
+      [
+        "sctc",
+        "trpc"
+      ]
+    ]
+  },
+  "method": "Existing full-field parser/classifier/build_merge_key_v2; neutral canonicalization preserves all five slots and only unions verified bilingual code pairs. Same full year/series/number required; no typo or renamed-code equivalence. SCR/RCS same year/volume/series/page are only a potential-collision screen, not identity authorization.",
+  "counts": {
+    "rawrows": 49683,
+    "fr_only_primary_rows": 198,
+    "fr_only_parse_reporter": 62,
+    "fr_only_parse_neutral": 116,
+    "fr_only_parse_shape_no_kept": 20
+  },
+  "neutral_equivalent_en_primary_collisions": 0,
+  "neutral_collision_examples": [],
+  "scr_rcs_potential_en_primary_collisions": 0,
+  "scr_rcs_potential_examples": [],
+  "unparsed_fr_primary_examples": [
+    {
+      "court": "ONCA",
+      "corpus_row": 1939,
+      "citation": "C33807",
+      "citation_field": "citation_fr",
+      "source_id": "ONCA_c33807",
+      "kind": null,
+      "merge_key": null,
+      "parse_skip_reason": "shape_no_kept",
+      "name": "Lalonde c. Commission de restructuration des services de santé",
+      "date": "2001-12-07 00:00:00+00:00"
+    },
+    {
+      "court": "ONCA",
+      "corpus_row": 7595,
+      "citation": "C43311, M32500",
+      "citation_field": "citation_fr",
+      "source_id": "ONCA_c43311m32500",
+      "kind": null,
+      "merge_key": null,
+      "parse_skip_reason": "shape_no_kept",
+      "name": "Belende c. ING Insurance Company",
+      "date": "2005-09-19 00:00:00+00:00"
+    },
+    {
+      "court": "ONCA",
+      "corpus_row": 8332,
+      "citation": "C44849",
+      "citation_field": "citation_fr",
+      "source_id": "ONCA_c44849",
+      "kind": null,
+      "merge_key": null,
+      "parse_skip_reason": "shape_no_kept",
+      "name": "The Toronto-Dominion Bank c. Ndem",
+      "date": "2006-05-12 00:00:00+00:00"
+    },
+    {
+      "court": "ONCA",
+      "corpus_row": 8369,
+      "citation": "C44775",
+      "citation_field": "citation_fr",
+      "source_id": "ONCA_c44775",
+      "kind": null,
+      "merge_key": null,
+      "parse_skip_reason": "shape_no_kept",
+      "name": "R. c. Desrosiers",
+      "date": "2006-05-12 00:00:00+00:00"
+    },
+    {
+      "court": "ONCA",
+      "corpus_row": 8583,
+      "citation": "C44392",
+      "citation_field": "citation_fr",
+      "source_id": "ONCA_c44392",
+      "kind": null,
+      "merge_key": null,
+      "parse_skip_reason": "shape_no_kept",
+      "name": "Jean Carl Denis avocat, barrister & solicitor, CMC c. Mouvement Desjardins",
+      "date": "2006-11-07 00:00:00+00:00"
+    },
+    {
+      "court": "ONCA",
+      "corpus_row": 8653,
+      "citation": "C39080",
+      "citation_field": "citation_fr",
+      "source_id": "ONCA_c39080",
+      "kind": null,
+      "merge_key": null,
+      "parse_skip_reason": "shape_no_kept",
+      "name": "R. c. Gaumond",
+      "date": "2006-10-30 00:00:00+00:00"
+    },
+    {
+      "court": "ONCA",
+      "corpus_row": 8800,
+      "citation": "C42638",
+      "citation_field": "citation_fr",
+      "source_id": "ONCA_c42638",
+      "kind": null,
+      "merge_key": null,
+      "parse_skip_reason": "shape_no_kept",
+      "name": "R. c. Aouahchi",
+      "date": "2006-02-09 00:00:00+00:00"
+    },
+    {
+      "court": "ONCA",
+      "corpus_row": 9008,
+      "citation": "C41386, C41394",
+      "citation_field": "citation_fr",
+      "source_id": "ONCA_c41386c41394",
+      "kind": null,
+      "merge_key": null,
+      "parse_skip_reason": "shape_no_kept",
+      "name": "Les services aux enfants et adultes de Prescott-Russell v. G., N.",
+      "date": "2006-06-22 00:00:00+00:00"
+    },
+    {
+      "court": "ONCA",
+      "corpus_row": 12488,
+      "citation": "C20118",
+      "citation_field": "citation_fr",
+      "source_id": "ONCA_c20118",
+      "kind": null,
+      "merge_key": null,
+      "parse_skip_reason": "shape_no_kept",
+      "name": "Dr. Kibale v. Ontario",
+      "date": "1998-10-21 00:00:00+00:00"
+    },
+    {
+      "court": "ONCA",
+      "corpus_row": 15301,
+      "citation": "C37942",
+      "citation_field": "citation_fr",
+      "source_id": "ONCA_c37942",
+      "kind": null,
+      "merge_key": null,
+      "parse_skip_reason": "shape_no_kept",
+      "name": "R. c. Potvin",
+      "date": "2004-06-16 00:00:00+00:00"
+    }
+  ],
+  "limits": [
+    "Source citation metadata completeness is distinct from unique judgment identity. Unparsed primaries are reported, not granted a default identity.",
+    "No text was read, no source IDs were rewritten, and no extraction or database was built."
+  ]
+}

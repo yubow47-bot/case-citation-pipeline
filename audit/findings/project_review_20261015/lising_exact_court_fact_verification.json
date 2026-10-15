@@ -1,0 +1,207 @@
+{
+  "schema": "native_exact_court_fact_verification_v1",
+  "fact": {
+    "merge_key": "2004|193|bcac||42",
+    "canonical_court": "BCCA",
+    "verification_status": "verified_corpus_court",
+    "source_court": "SCC",
+    "source_decision": "SCC_2005scc66",
+    "source_corpus": "corpus/SCC.parquet",
+    "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+    "corpus_row": "3209",
+    "text_field": "unofficial_text_en",
+    "text_sha256": "18936e026e2e940980993096dc5f13290381e07584b00174d93c6ff0c8f2fc19",
+    "span_start": "10338",
+    "span_end": "10661",
+    "span_sha256": "3391ca00189f4f62e6b4bdbe569b85d3d768d828dcb2dada226df7434a3314b5",
+    "evidence_id": "ICF-lising-bcca",
+    "source_locator": "audit/findings/project_review_20261015/lising_exact_court_fact_verification.json#native_procedural_history"
+  },
+  "native_metadata": {
+    "citation_en": "2005 SCC 66",
+    "citation2_en": "[2005] 3 SCR 343",
+    "name_en": "R. v. Pires; R. v. Lising"
+  },
+  "native_procedural_history": {
+    "start": 10338,
+    "end": 10661,
+    "text": "APPEAL from a judgment of the British Columbia Court of Appeal (Finch C.J. and Southin and Newbury JJ.A.) (2004), 193 B.C.A.C. 42, 316 W.A.C. 42, 183 C.C.C. (3d) 232, 116 C.R.R. (2d) 100, [2004] B.C.J. No. 83 (QL), 2004 BCCA 33, upholding the accused’s convictions on conspiracy and drug‑related charges. Appeals dismissed."
+  },
+  "checks": {
+    "corpus_file_sha256_recomputed": true,
+    "text_sha256_recomputed": true,
+    "original_unicode_span_sha256_recomputed": true,
+    "own_source_metadata_matches": true,
+    "run_sealed_complete": true
+  },
+  "meaning": "The paragraph explicitly identifies this reporter citation and 2004 BCCA 33 as the appealed British Columbia Court of Appeal judgment, distinct from the source Supreme Court judgment. It does not establish an identity alias automatically.",
+  "source_run": {
+    "run_id": "run_20261014_reliable_final",
+    "directory": "D:\\cases data analisis\\data\\run_20261014_reliable_final",
+    "courts": [
+      "SCC",
+      "ONCA",
+      "BCCA"
+    ],
+    "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+    "output_fingerprint": "7cc1e8dc936d0b0554b4e62c14e901d77948acb7c4f7f15b99db3d37390dd2ad",
+    "manifest_sha256": "09803eb185bf3834aa5bc9ee97e1874dab1b6f77675f4c9f0a82cd9905e5cbe5",
+    "params": {
+      "year_from": null,
+      "limit_batches": null,
+      "batch_size": 500,
+      "registry_gate": "registered",
+      "mixed_key_holdout": true
+    },
+    "artifacts": [
+      {
+        "logical_path": "merge_out/SCC/merged.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\SCC\\merged.csv.gz",
+        "physical_sha256": "eaf2936373b2566fe6b8938f1ca8db21e8c1c729685287842d10150ad08e7481",
+        "content_sha256": "6684221b18d300a59191e052c6247e18b06a6d7ec068bdec7af2b1130433a049",
+        "logical_bytes": 15442613,
+        "stored_bytes": 3121813,
+        "rows": 119939,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/SCC/decision_ids.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\SCC\\decision_ids.csv.gz",
+        "physical_sha256": "3b7da96e89030fd3dd4b7040f832deb51c1cd920ff99f5e70373481a4b10348c",
+        "content_sha256": "96268dadf91099a85a78437d731aa0a924a763f5dfec478346d3e1b80799c20f",
+        "logical_bytes": 6194316,
+        "stored_bytes": 1251945,
+        "rows": 196059,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/ONCA/merged.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\ONCA\\merged.csv.gz",
+        "physical_sha256": "d89d42c8ef7dac3e3faf4da167511856a1e5dc986522b18af6d0ac8eea65da4e",
+        "content_sha256": "4614ca355189aef262c3d19cc8e196d5927ee010ccc46b68572205b15e169219",
+        "logical_bytes": 9410806,
+        "stored_bytes": 1977164,
+        "rows": 66313,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/ONCA/decision_ids.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\ONCA\\decision_ids.csv.gz",
+        "physical_sha256": "aaf1f4458d1661036e3a5f356c5e3bc7ec8adffe87ddf433c41a7d1e5b7260dd",
+        "content_sha256": "6c692c677aae94483903803577bfe93e8abd74f8b65a1c57185a7006771bfff9",
+        "logical_bytes": 5502803,
+        "stored_bytes": 948600,
+        "rows": 165257,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/BCCA/merged.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\BCCA\\merged.csv.gz",
+        "physical_sha256": "9f5cfb8145b2813ff678716ae1520e3d02a22373334615965d21824240e6d583",
+        "content_sha256": "b82d112cc0f44bb70ea1986e33564e3d69952e0615491dee7303b40cc0c4e9a7",
+        "logical_bytes": 10850118,
+        "stored_bytes": 2251956,
+        "rows": 74777,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/BCCA/decision_ids.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\BCCA\\decision_ids.csv.gz",
+        "physical_sha256": "39a67d46fa60f39c7fe296df1deedba0ff80c60a862e85a160e19c78417e7fb3",
+        "content_sha256": "b2903a97bfd39c0cb40c7b02a8e5456934aa5b07d726c05e2f666dff3b0adfd6",
+        "logical_bytes": 5886500,
+        "stored_bytes": 954015,
+        "rows": 174081,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "registry/decision_own_citations.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\registry\\decision_own_citations.csv.gz",
+        "physical_sha256": "cd07d7448815c43a1e0d3d79fa680cbf15e054957aa54c2f46a874c59db0e4e2",
+        "content_sha256": "3c164d0d97e15e4b79ff0e52c383548301f3b41bbb84d6afa721191b89fd40b7",
+        "logical_bytes": 36077950,
+        "stored_bytes": 8496563,
+        "rows": 63793,
+        "output_seal_verified": true
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "logical_path": "merge_out/SCC/merged.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\SCC\\merged.csv.gz",
+      "physical_sha256": "eaf2936373b2566fe6b8938f1ca8db21e8c1c729685287842d10150ad08e7481",
+      "content_sha256": "6684221b18d300a59191e052c6247e18b06a6d7ec068bdec7af2b1130433a049",
+      "logical_bytes": 15442613,
+      "stored_bytes": 3121813,
+      "rows": 119939,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/SCC/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\SCC\\decision_ids.csv.gz",
+      "physical_sha256": "3b7da96e89030fd3dd4b7040f832deb51c1cd920ff99f5e70373481a4b10348c",
+      "content_sha256": "96268dadf91099a85a78437d731aa0a924a763f5dfec478346d3e1b80799c20f",
+      "logical_bytes": 6194316,
+      "stored_bytes": 1251945,
+      "rows": 196059,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/ONCA/merged.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\ONCA\\merged.csv.gz",
+      "physical_sha256": "d89d42c8ef7dac3e3faf4da167511856a1e5dc986522b18af6d0ac8eea65da4e",
+      "content_sha256": "4614ca355189aef262c3d19cc8e196d5927ee010ccc46b68572205b15e169219",
+      "logical_bytes": 9410806,
+      "stored_bytes": 1977164,
+      "rows": 66313,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/ONCA/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\ONCA\\decision_ids.csv.gz",
+      "physical_sha256": "aaf1f4458d1661036e3a5f356c5e3bc7ec8adffe87ddf433c41a7d1e5b7260dd",
+      "content_sha256": "6c692c677aae94483903803577bfe93e8abd74f8b65a1c57185a7006771bfff9",
+      "logical_bytes": 5502803,
+      "stored_bytes": 948600,
+      "rows": 165257,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/BCCA/merged.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\BCCA\\merged.csv.gz",
+      "physical_sha256": "9f5cfb8145b2813ff678716ae1520e3d02a22373334615965d21824240e6d583",
+      "content_sha256": "b82d112cc0f44bb70ea1986e33564e3d69952e0615491dee7303b40cc0c4e9a7",
+      "logical_bytes": 10850118,
+      "stored_bytes": 2251956,
+      "rows": 74777,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/BCCA/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\BCCA\\decision_ids.csv.gz",
+      "physical_sha256": "39a67d46fa60f39c7fe296df1deedba0ff80c60a862e85a160e19c78417e7fb3",
+      "content_sha256": "b2903a97bfd39c0cb40c7b02a8e5456934aa5b07d726c05e2f666dff3b0adfd6",
+      "logical_bytes": 5886500,
+      "stored_bytes": 954015,
+      "rows": 174081,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "registry/decision_own_citations.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\registry\\decision_own_citations.csv.gz",
+      "physical_sha256": "cd07d7448815c43a1e0d3d79fa680cbf15e054957aa54c2f46a874c59db0e4e2",
+      "content_sha256": "3c164d0d97e15e4b79ff0e52c383548301f3b41bbb84d6afa721191b89fd40b7",
+      "logical_bytes": 36077950,
+      "stored_bytes": 8496563,
+      "rows": 63793,
+      "output_seal_verified": true
+    }
+  ],
+  "fixture": {
+    "path": "pipeline\\tests\\fixtures\\lising_identity_20261015.json",
+    "sha256": "89e5c554d122903c335bc49fff059376222cab5631550aecdd47c0b5b4fc6089",
+    "rows": 13,
+    "own_fields": 4
+  }
+}

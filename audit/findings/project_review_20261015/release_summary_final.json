@@ -1,0 +1,401 @@
+{
+  "schema": "identity_review_release_summary_v1",
+  "completed_at": "2026-10-15T05:49:16.735239+00:00",
+  "status": "complete_with_explicit_semantic_limits",
+  "run_id": "run_20261015_identity_review",
+  "input_fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+  "output_fingerprint": "d6deb5d3cf3007c76841152e59a4fb97adedc855e0a6958492d4402c804a6cef",
+  "metrics": {
+    "courts": [
+      "SCC",
+      "ONCA",
+      "BCCA"
+    ],
+    "text_policy": "en_then_fr",
+    "metadata_rows": 49683,
+    "selected_nonempty_text_rows": 49674,
+    "candidates": 1472144,
+    "members": 261029,
+    "groups": 230449,
+    "groups_kept_at_dd_5": 14003,
+    "citation_edges": 490577,
+    "source_decisions_with_edges": 38776,
+    "final_counted_mentions": 705476,
+    "edge_origins": {
+      "DOMESTIC_CA": 212682,
+      "FOREIGN": 1082,
+      "UNDETERMINED": 276813
+    },
+    "edge_support": {
+      "heuristic_only": 30881,
+      "supported": 459696
+    },
+    "self_excluded_sources": 5077,
+    "self_excluded_mentions": 11117,
+    "case_profiles": 124313,
+    "methods_records": 1519
+  },
+  "identity_repairs": {
+    "lising_pires": "Separate lower BCCA citation from SCC appeal using exact native court evidence; all 85 upper judgment sources retained.",
+    "motor_vehicle_johnson": "Exact native evidence forbids attaching Johnson reporter to Motor Vehicle Act; DD214 becomes 213, and Chartrand-to-Johnson remains counted. No unproved court or neutral alias was added.",
+    "prior_four_regressions_and_all_membership_proof_checks": "passed",
+    "candidate_changes": "zero additions, losses or changed same-ID rows in the full old/new candidate comparison"
+  },
+  "components": {
+    "lifecycle": "recorded",
+    "records": [
+      {
+        "run_id": "run_20261015_identity_review",
+        "component": "acceptance",
+        "generation": 2,
+        "status": "ready",
+        "source_fingerprint": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "updated_at": "2026-10-15T05:35:03.394001+00:00",
+        "details_summary": {
+          "run_id": "run_20261015_identity_review",
+          "status": "passed",
+          "scope": "keyword_integrity_not_semantic_accuracy",
+          "profiles": 124313,
+          "edge_passages": 490577,
+          "methods": 1519
+        }
+      },
+      {
+        "run_id": "run_20261015_identity_review",
+        "component": "cases",
+        "generation": 1,
+        "status": "ready",
+        "source_fingerprint": "cfb4310386f7c8e153c29b9359ab3f2c8df709a95194bc9f3327f7bc11747748",
+        "updated_at": "2026-10-15T05:20:26.250190+00:00",
+        "details_summary": {
+          "run_id": "run_20261015_identity_review",
+          "profiles": 124313,
+          "with_context": 122059,
+          "candidate_mentions_excluded_by_final_edges": 10913,
+          "source_fingerprint": "cfb4310386f7c8e153c29b9359ab3f2c8df709a95194bc9f3327f7bc11747748",
+          "text_policy": "en_then_fr"
+        }
+      },
+      {
+        "run_id": "run_20261015_identity_review",
+        "component": "edges",
+        "generation": 1,
+        "status": "ready",
+        "source_fingerprint": "cfb4310386f7c8e153c29b9359ab3f2c8df709a95194bc9f3327f7bc11747748",
+        "updated_at": "2026-10-15T05:22:39.145879+00:00",
+        "details_summary": {
+          "run_id": "run_20261015_identity_review",
+          "edges": 490577,
+          "passages": 490577,
+          "edges_without_passage": 0,
+          "source_fingerprint": "cfb4310386f7c8e153c29b9359ab3f2c8df709a95194bc9f3327f7bc11747748",
+          "text_policy": "en_then_fr"
+        }
+      },
+      {
+        "run_id": "run_20261015_identity_review",
+        "component": "import",
+        "generation": 1,
+        "status": "ready",
+        "source_fingerprint": "5510ae941ae8701304120bad7f06fd2c2982e30d90db2f318c016ed8fbc97a16",
+        "updated_at": "2026-10-15T05:17:55.768755+00:00",
+        "details_summary": {
+          "groups": 230449
+        }
+      },
+      {
+        "run_id": "run_20261015_identity_review",
+        "component": "methods",
+        "generation": 2,
+        "status": "ready",
+        "source_fingerprint": "fb657941ea3b60a255e1a0694e028ded262a0ce7354e64b1f99b95e24bcf75f8",
+        "updated_at": "2026-10-15T05:32:48.605530+00:00",
+        "details_summary": {
+          "records": 1519,
+          "commit": "670bb47"
+        }
+      },
+      {
+        "run_id": "run_20261015_identity_review",
+        "component": "relations",
+        "generation": 1,
+        "status": "ready",
+        "source_fingerprint": "13786dac8ec53c3be47c05a5d1a774276f6a907f252bae05678224b87ef21ca1",
+        "updated_at": "2026-10-15T05:18:10.218146+00:00",
+        "details_summary": {
+          "run_id": "run_20261015_identity_review",
+          "edges": 490577,
+          "own_citations_file": true
+        }
+      },
+      {
+        "run_id": "run_20261015_identity_review",
+        "component": "vectors_cases",
+        "generation": 1,
+        "status": "missing",
+        "source_fingerprint": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "updated_at": "2026-10-15T05:23:23.332152+00:00",
+        "details_summary": {
+          "status": "missing",
+          "reason": "offline keyword build; vector generation skipped"
+        }
+      },
+      {
+        "run_id": "run_20261015_identity_review",
+        "component": "vectors_edges",
+        "generation": 1,
+        "status": "missing",
+        "source_fingerprint": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "updated_at": "2026-10-15T05:23:23.364346+00:00",
+        "details_summary": {
+          "status": "missing",
+          "reason": "offline keyword build; vector generation skipped"
+        }
+      },
+      {
+        "run_id": "run_20261015_identity_review",
+        "component": "vectors_methods",
+        "generation": 1,
+        "status": "stale",
+        "source_fingerprint": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "updated_at": "2026-10-15T05:32:08.016757+00:00",
+        "details_summary": {
+          "status": "missing",
+          "reason": "offline keyword build; vector generation skipped"
+        }
+      }
+    ],
+    "keyword_components_ready": true,
+    "vector_components_ready": false,
+    "vectors_missing_or_stale": [
+      "vectors_cases",
+      "vectors_methods",
+      "vectors_edges"
+    ],
+    "components_with_incomplete_generation_metadata": []
+  },
+  "sampling": {
+    "main": {
+      "frame_id": "393a03290bac2a1ba60a4d2528ddfe7527e9fc112e24213e391374f4eead498f",
+      "frame_N": 490577,
+      "cells": 140,
+      "sample_n": 270,
+      "selection_seed": 20261014,
+      "fold_seed": 20261014,
+      "folds": {
+        "holdout": 58,
+        "train": 212
+      },
+      "original_evidence_status": {
+        "original_text_verified": 270
+      },
+      "selected_text_fields": {
+        "unofficial_text_en": 270
+      },
+      "human_labelled_n": 0,
+      "population_calibration_status": "not_calibrated",
+      "population_inference_allowed": false,
+      "all_raw_verified_rates_null": true
+    },
+    "selected_french_supplement": {
+      "frame_id": "6f2f02c5bb69674fb1b01d96557a5588673e8fda4e896ec537a5b2b5fcecbc37",
+      "frame_N": 940,
+      "cells": 25,
+      "sample_n": 47,
+      "selection_seed": 20261015,
+      "fold_seed": 20261014,
+      "folds": {
+        "train": 36,
+        "holdout": 11
+      },
+      "original_evidence_status": {
+        "original_text_verified": 47
+      },
+      "selected_text_fields": {
+        "unofficial_text_fr": 47
+      },
+      "human_labelled_n": 0,
+      "population_calibration_status": "not_calibrated",
+      "population_inference_allowed": false,
+      "all_raw_verified_rates_null": true
+    },
+    "frames_combined": false
+  },
+  "identity_review_queue": {
+    "full_scan_coverage": {
+      "members_scanned": 261029,
+      "members_without_stored_positive_court_evidence": 175945,
+      "neutral_identifier_members_scanned": 64819,
+      "registered_fold_rows_scanned": 56,
+      "groups_scanned": 230449
+    },
+    "candidate_counts_by_reason": {
+      "complete_neutral_or_identifier_key_in_multiple_groups": 2,
+      "conflicting_positive_court_evidence": 1,
+      "high_impact_name_year_or_cocitation_identity": 773
+    },
+    "candidates_total": 776,
+    "retained_records": 364,
+    "truncated": true,
+    "limit": 500,
+    "min_impact_dd": 20,
+    "truncation_reason": "2 MiB JSON output budget",
+    "evidence_status": {
+      "candidate_span_located_corpus_not_read": 364
+    },
+    "original_corpus_read": false,
+    "interpretation": "Review leads, not confirmed error counts. Candidate count changes are not a linear count of fixes."
+  },
+  "tests": {
+    "status": "passed",
+    "assertions": 885,
+    "unittest_cases": 380,
+    "network_allowed": false
+  },
+  "storage": {
+    "inventory_path": "audit/findings/project_review_20261015/final_inventory.json",
+    "project_bytes": 5857565402,
+    "unique_file_bytes": 5344737072,
+    "budget_bytes": 12884901888,
+    "corpus": "All eight original Parquets retained; external E-drive junction not followed.",
+    "runs": "Current main, immediately preceding main baseline and one current TCC run retained. Obsolete selfcite and old TCC retired with bounded receipts; no persistent TCC DB.",
+    "database": "Accepted staging atomically replaced the sole canonical research DB, without a full backup copy.",
+    "cache": {
+      "deleted_rows": 2,
+      "deleted_payload_bytes": 8192,
+      "remaining_current_rows": 20468,
+      "unreferenced_rows": 0
+    },
+    "accounting": "File lengths; unique_file_bytes deduplicates file identities for hardlinks. Neither value claims actual allocated blocks or disk-free changes."
+  },
+  "limits": [
+    "No independent human quality labels: population precision and calibration remain unmeasured.",
+    "Origin unknown for 276813 edges; foreign-subset results retain preceding coverage denominators.",
+    "French borrowed-name extraction and unproved lower-court aliases remain separate open tasks.",
+    "Vectors remain missing/stale; no API calls or embedding purchases were made."
+  ],
+  "next_priorities": [
+    "Independent semantic labels on main and French frames with source-separated folds.",
+    "Controlled upstream fix for French nested borrowed names, followed by complete candidate A/B comparison.",
+    "Represent appeal/procedural relations separately from judgment identity.",
+    "Verify unknown origins and new court coverage before expanding the published scope.",
+    "Keep embedding inputs stable and current DD/statistics in SQL to avoid unnecessary cache turnover."
+  ],
+  "receipts": [
+    {
+      "path": "audit/findings/project_review_20261015/project_status_final.json",
+      "bytes": 43915,
+      "sha256": "7ac62e3a7d56a48cdc6f516e8ab08f1a6881a6739f968dfabccc411083d9b63e"
+    },
+    {
+      "path": "audit/findings/project_review_20261015/project_status_validation_final.json",
+      "bytes": 1491,
+      "sha256": "160f2859f3f1fb22b731e98a0e579aeb39d4ce2b080c54a6b891952305cc9ae2"
+    },
+    {
+      "path": "audit/findings/project_review_20261015/database_adoption.json",
+      "bytes": 4129,
+      "sha256": "c77febd3776907d0d8bda689b21ec042e0f38d4fcbb9949b6f278215bc916142"
+    },
+    {
+      "path": "audit/findings/project_review_20261015/methods_refresh_pre_adoption.json",
+      "bytes": 1350,
+      "sha256": "be6f4b9268e0356815e23af4821a974e44b9df93ea2739fa7c55c33e8e097957"
+    },
+    {
+      "path": "audit/findings/project_review_20261015/check_identity_review.json",
+      "bytes": 2897,
+      "sha256": "27ab6f43cb01e66c0d4b1f0aa09fb339e2dddd893d22d6f9c862565a2b014799"
+    },
+    {
+      "path": "audit/findings/project_review_20261015/compare_14_to_15.json",
+      "bytes": 23326,
+      "sha256": "fbc11262817df4971dfc996144041126d4a677d5c2f08919a00b2adc99b24bd5"
+    },
+    {
+      "path": "audit/findings/project_review_20261015/followup_sources_delta.json",
+      "bytes": 327422,
+      "sha256": "264dd21ae6170cc22ce777faa0676ece96933a53997c55d0116dc989e87c7eed"
+    },
+    {
+      "path": "audit/findings/project_review_20261015/obsolete_audit_retirement_receipt.json",
+      "bytes": 1180,
+      "sha256": "630bea36fe99b9800ed2a2634292892e8468d05016e616d301d7f195a6c9ad0a"
+    },
+    {
+      "path": "audit/findings/project_review_20261015/duplicate_local_output_retirement.json",
+      "bytes": 785,
+      "sha256": "ecd9a94a45308f99ea9347485b96ee6e34f191b2a1dad6ede213fc62d50961e5"
+    },
+    {
+      "path": "audit/findings/receipts_20261015/identity_review_actual_release.json",
+      "bytes": 28040,
+      "sha256": "0df292b645bdae52b7451eae4fde42421d79a60e07031f7160830f4134daf07d"
+    },
+    {
+      "path": "audit/findings/receipts_20261015/tcc_identity_storage_release.json",
+      "bytes": 6766,
+      "sha256": "dfa1f3c17bea8a81a610befbe6932072e328aca885831ce070ff1a81d114509e"
+    },
+    {
+      "path": "audit/findings/research_20261015/consumer_validation.json",
+      "bytes": 9845,
+      "sha256": "cb3aa87f00f5540b09b50fbdb5e3eac2e41585ff08377f3bcf8139e41e9d34fb"
+    },
+    {
+      "path": "audit/findings/research_20261015/retired_demo_packets.json",
+      "bytes": 3383,
+      "sha256": "873a5cc9fa9ff99b2f8b23221aa21d310874f5149aa3d2c74f63cb09a1fd3b9c"
+    },
+    {
+      "path": "audit/findings/quality_20261015/execution_summary.json",
+      "bytes": 10694,
+      "sha256": "3c070bacfaf1aefb38261747586705283cd10117335d17dd57aa23690854e2ef"
+    },
+    {
+      "path": "audit/findings/quality_20261015_fr/execution_summary.json",
+      "bytes": 3972,
+      "sha256": "c5fe53cdc8f6d538602d691959ad38d8a2c4f1b9f56700a40bacd8e5aff48c34"
+    },
+    {
+      "path": "audit/findings/quality_20261015/cache_cleanup_receipt_applied.json",
+      "bytes": 3612,
+      "sha256": "a1d59a307fe152f4e29fcd32a90532caee53e54620b9288e2690596ae6da9b62"
+    },
+    {
+      "path": "audit/findings/quality_20261015/embedding_cache_usefulness_post_cleanup.json",
+      "bytes": 2765,
+      "sha256": "d07935065f517d4114cdf450b572d38b1075518bbf9b3367eccddf487a84d757"
+    },
+    {
+      "path": "audit/findings/quality_20261015/cache_cleanup_plan_post_cleanup.json",
+      "bytes": 3390,
+      "sha256": "74739615a183abfce59e0ff9deec217257767cc77e0120c081f25134d2d96859"
+    },
+    {
+      "path": "implementation/offline_verification_20261015/summary.json",
+      "bytes": 6487,
+      "sha256": "112f8c000cb1609cfe11a7a51ffb1a25bea297f1060a36908f799d58b6270e7a"
+    },
+    {
+      "path": "implementation/finalize_identity_review_20261015.py",
+      "bytes": 14708,
+      "sha256": "10ac297ed86e03e8b404f4f725d12a9c4b6fa536ab1fabc631b89b86aff4a5dd"
+    },
+    {
+      "path": "implementation/publish_identity_review_20261015.py",
+      "bytes": 9020,
+      "sha256": "a67a636071f5d3510dbbb13a4b90053572aaa905f359e8730ab0031a66e4e867"
+    },
+    {
+      "path": "docs/FOLLOWUP_20261015.zh.md",
+      "bytes": 12832,
+      "sha256": "928bc9a1c22598f12e2d60bab69958194558635a477d2fe8bb0fb35ed7403f13"
+    },
+    {
+      "path": "tools/research/README.md",
+      "bytes": 15563,
+      "sha256": "b16609a5031bfe66164d7504f2d1257455d1c62e3f5f3dd0c182462981807a54"
+    }
+  ]
+}

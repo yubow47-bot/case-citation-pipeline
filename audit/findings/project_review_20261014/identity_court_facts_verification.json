@@ -1,0 +1,41 @@
+{
+  "status": "passed",
+  "facts": [
+    {
+      "merge_key": "2006|4|fcr||532",
+      "canonical_court": "FCA",
+      "verification_status": "verified_corpus_court",
+      "source_court": "SCC",
+      "source_decision": "SCC_2007scc33",
+      "source_corpus": "corpus/SCC.parquet",
+      "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+      "corpus_row": 2325,
+      "text_field": "unofficial_text_en",
+      "text_sha256": "27c377473d9f22fee3d889dd0837751091c6220a99df897857eb2f341a3dce54",
+      "span_start": 4942,
+      "span_end": 5301,
+      "span_sha256": "e832f831c154104655e21491a1b29e9080c1643b17883db6751d5f9b995b1d5d",
+      "evidence_id": "ICF-addison-fca",
+      "source_locator": "audit/findings/project_review_20261014/v3_addison_alias_source_evidence.json#negative_procedural_lower_court"
+    },
+    {
+      "merge_key": "2008|93|or|3d|241",
+      "canonical_court": "ONSC",
+      "verification_status": "verified_corpus_court",
+      "source_court": "ONCA",
+      "source_decision": "ONCA_2017onca526",
+      "source_corpus": "corpus/ONCA.parquet",
+      "corpus_sha256": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+      "corpus_row": 1499,
+      "text_field": "unofficial_text_en",
+      "text_sha256": "20de9938b22bd107be10afcdefa2240960e2ef2b66370fd407ce69ca02a8e78a",
+      "span_start": 14583,
+      "span_end": 15133,
+      "span_sha256": "5f9cc92c0cba70f4c08037893c4bd6f30c78bfede0efb12a31572727785d09ce",
+      "evidence_id": "ICF-sorbara-onsc",
+      "source_locator": "audit/findings/project_review_20261014/v3_addison_alias_source_evidence.json#negative_other_case_modal_name"
+    }
+  ],
+  "table_sha256": "9f5ac10c7fc23e562519a907eb33750b9e2b54edeb3a4a9637948ce2e1aa89dd",
+  "scope": "Curated exact full keys only; original span verified, court interpretation independently reviewed. No generic reporter/country inference."
+}

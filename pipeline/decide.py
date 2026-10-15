@@ -126,15 +126,68 @@ import argparse
 import csv
 import datetime
 import json
+import hashlib
 import os
+import re
 import sys
 from collections import Counter, defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk                                      # noqa: E402
+from artifacts import open_csv                               # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DECISIONS = os.path.join(ROOT, "decisions")
+
+SEPARATION_FIELDS = ('merge_key','target_decision_id','target_qualified_evidence_ids',
+    'verification_status','source_court','source_decision','source_corpus','corpus_sha256',
+    'corpus_row','text_field','text_sha256','span_start','span_end','span_sha256',
+    'source_locator','evidence_id')
+
+
+def load_identity_separations(path=None):
+    """Read exact, source-bound non-identity facts; never infer a deciding court.
+
+    Every row is a reviewed negative claim against one qualified document,
+    bound to its complete current metadata/header proof set. Bad or stale
+    claims fail closed rather than allowing a heuristic merge to reappear.
+    """
+    path = path or os.path.join(DECISIONS,'identity_separations.csv')
+    if os.path.getsize(path) > 1024*1024:
+        raise ValueError('Identity separation table exceeds the byte budget')
+    facts, pairs, evidence_ids = [],set(),set()
+    with open(path,encoding='utf-8-sig',newline='') as source:
+        reader=csv.DictReader(source,strict=True)
+        if tuple(reader.fieldnames or ()) != SEPARATION_FIELDS:
+            raise ValueError('Identity separation columns are missing, duplicate or unexpected')
+        for row in reader:
+            if None in row or any(not value for value in row.values()):
+                raise ValueError('Identity separation lacks complete provenance')
+            hashes=('corpus_sha256','text_sha256','span_sha256')
+            proofs=row['target_qualified_evidence_ids'].split('|')
+            pair=(row['merge_key'],row['target_decision_id'])
+            expected='sep:'+hashlib.sha256(json.dumps({k:v for k,v in row.items() if k!='evidence_id'},
+                ensure_ascii=False,sort_keys=True,separators=(',',':')).encode('utf-8')).hexdigest()
+            if (row['verification_status']!='verified_native_distinct_judgment' or
+                len(row['merge_key'].split('|'))!=5 or not any(row['merge_key'].split('|')) or
+                any(not re.fullmatch(r'[0-9a-f]{64}',row[k]) for k in hashes) or
+                not row['corpus_row'].isdigit() or not row['span_start'].isdigit() or
+                not row['span_end'].isdigit() or int(row['span_end'])<=int(row['span_start']) or
+                row['text_field'] not in ('unofficial_text_en','unofficial_text_fr') or
+                not re.fullmatch(r'[A-Z][A-Z0-9]*_.+',row['target_decision_id']) or
+                not re.fullmatch(r'[A-Z][A-Z0-9]*_.+',row['source_decision']) or
+                row['source_court'] != row['source_decision'].split('_',1)[0] or
+                row['source_corpus'] != 'corpus/'+row['source_court']+'.parquet' or
+                not row['source_locator'].startswith('audit/findings/') or
+                '..' in row['source_locator'].replace('\\','/').split('/') or
+                len(proofs)<2 or len(proofs)!=len(set(proofs)) or
+                any(not re.fullmatch(r'own:[0-9a-f]{64}',proof) for proof in proofs) or
+                row['evidence_id']!=expected or pair in pairs or row['evidence_id'] in evidence_ids):
+                raise ValueError('Identity separation has malformed, duplicate or corrupt provenance')
+            facts.append(row)
+            pairs.add(pair)
+            evidence_ids.add(row['evidence_id'])
+    return facts
 
 
 def load_case_origin():
@@ -509,6 +562,19 @@ def mixed_identity(k_classes, big_name):
     return "holdout" if (hit_big and hit_other) else "fold"
 
 
+def verified_bilingual_keys(ka, kb):
+    """Exact year/series/number agreement and an explicitly verified code pair."""
+    a, b = ka.split('|'), kb.split('|')
+    if (len(a) != 5 or len(b) != 5 or a[1] or b[1] or
+        not (len(a[0]) == len(b[0]) == 4 and a[0].isdigit() and b[0].isdigit()) or
+        not (a[4].isdigit() and b[4].isdigit())):
+        return False
+    ya, ca, sa, na = _neutral_parts(ka)
+    yb, cb, sb, nb = _neutral_parts(kb)
+    return (ya == yb and na == nb and sa == sb and
+            frozenset((ca, cb)) in load_bilingual())
+
+
 def same_decision_kind(ka, ja, dda, kb, jb, ddb):
     """中立引用 ka（较小者）与 kb 是否同一判决；返回匹配依据：
     bilingual（双语代码）/ typo_number / typo_year / None。
@@ -552,8 +618,8 @@ def load_registry(path):
 
     不传 `--registry` → 空表 → 本层行为与改动前逐字节一致。"""
     idx = defaultdict(set)
-    if path and os.path.exists(path):
-        with open(path, encoding="utf-8", newline="") as f:
+    if path and (os.path.exists(path) or os.path.exists(path+'.gz')):
+        with open_csv(path) as f:
             for r in csv.DictReader(f):
                 k = r.get("merge_key") or ""
                 did = r.get("decision_id") or ""
@@ -564,15 +630,51 @@ def load_registry(path):
             for k, v in idx.items()}
 
 
+class OwnCitations(defaultdict):
+    """Self-citation facts plus separately qualified, sealed document aliases."""
+    def __init__(self):
+        super().__init__(set)
+        self.aliases = {}
+        self.evidence = defaultdict(list)
+        self.diagnostics = Counter()
+
+
 def load_own_citations(path):
     """判决自己印的引证（registry.py 的 decision_own_citations.csv）-> {merge_key: {decision_id}}。
-    **只用于剔自引**（PROBLEMS #105），不进 own、不进笔误闸。不传 -> 空 -> 行为不变。"""
-    idx = defaultdict(set)
-    if path and os.path.exists(path):
-        with open(path, encoding="utf-8", newline="") as f:
+    旧四列只剔自引；新 qualified metadata/header 证据另存 aliases，才可连接
+    平行身份。不进 own、不进笔误闸。不传 -> 空 -> 行为不变。"""
+    idx = OwnCitations()
+    qualified = defaultdict(list)
+    if path and (os.path.exists(path) or os.path.exists(path+'.gz')):
+        with open_csv(path) as f:
             for r in csv.DictReader(f):
                 if r.get("merge_key") and r.get("decision_id"):
+                    if r.get('evidence_id'):
+                        expected = 'own:'+hashlib.sha256(json.dumps({k:str(v) for k,v in r.items() if k != 'evidence_id'},
+                            ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode('utf-8')).hexdigest()
+                        if r['evidence_id'] != expected:
+                            raise ValueError('Own-citation evidence hash mismatch')
+                    idx.diagnostics['claim_'+r.get('claim_status', 'legacy_self_only')] += 1
+                    if r.get('claim_status', '').startswith('rejected_'):
+                        continue
                     idx[r["merge_key"]].add(r["decision_id"])
+                    idx.evidence[r['merge_key']].append(r)
+                    if r.get('identity_qualified') == 'true':
+                        required = ('corpus_sha256','field_sha256','text_sha256','header_raw_sha256','evidence_id','header_boundary')
+                        if (r.get('claim_status') != 'qualified_metadata_header' or any(not r.get(k) for k in required)
+                            or not r.get('corpus_row', '').isdigit() or not r.get('header_start', '').isdigit()
+                            or not r.get('header_match_end', '').isdigit() or not r.get('header_end', '').isdigit()
+                            or not 0 <= int(r['header_start']) < int(r['header_match_end']) <= int(r['header_end'])):
+                            raise ValueError('Qualified document alias lacks complete header provenance')
+                        qualified[r['merge_key']].append(r)
+    for key, evidence in qualified.items():
+        ids = {r['decision_id'] for r in evidence}
+        # EN and FR header proofs may have different text hashes for one source.
+        sources = {(r['source_court'],r['corpus_row'],r['corpus_sha256']) for r in evidence}
+        if len(ids) == len(sources) == len(idx[key]) == 1:
+            idx.aliases[key] = next(iter(ids))
+        else:
+            idx.diagnostics['ambiguous_qualified_alias_keys'] += 1
     return idx
 
 
@@ -720,6 +822,13 @@ def decisions_of(members, did_idx, start=None, registry=None,
                 # 机制 A（own[k] 非空）走原来的同名闸，结论逐字不变。
                 in_registry = bool(own[k]) or registered
                 blocked = (bool(own[k]) and same_name[k]) or (registered and not own[k])
+            elif gate == "registered":
+                # Printed, registered decision identifiers outrank modal-name and
+                # rarity heuristics. Explicit bilingual equivalence is retained.
+                in_registry = bool(own[k]) or registered
+                proposed = same_decision_kind(k, ajur[k], len(anc[k]), big,
+                                              ajur[big], len(anc[big]))
+                blocked = in_registry and proposed != "bilingual"
             else:
                 raise SystemExit("未知的 --registry-gate：%r" % gate)
             if blocked:
@@ -749,6 +858,18 @@ def decisions_of(members, did_idx, start=None, registry=None,
                 root[k] = big
                 root_kind[k] = kind
                 break
+    # Only annotations made by merge_document_alias_clusters from qualified
+    # metadata/header proofs may collapse separate self-citation roots here.
+    # Legacy own-citation rows never supply these annotations.
+    alias_roots = defaultdict(set)
+    for m in members:
+        if m.get('document_alias_decision_id') and m['merge_key'] in root:
+            alias_roots[m['document_alias_decision_id']].add(root[m['merge_key']])
+    for roots in alias_roots.values():
+        target = min(roots, key=lambda k: (-len(anc[k]), k))
+        for k in root:
+            if root[k] in roots and root[k] != target:
+                root[k], root_kind[k] = target, 'document_alias'
     return root, anc, ajur, own, root_kind
 
 
@@ -786,6 +907,32 @@ def _with_held(parts, held):
     return list(parts) + [(bykey[k], "mixed_identity") for k in sorted(bykey)]
 
 
+def _identifier_keys(members):
+    """An identifier system may contribute one distinct key to an identity.
+
+    Several court rows carrying that exact key are the same identifier, not a
+    conflict. Keep keys, rather than only system names, for component-level checks.
+    """
+    out = defaultdict(set)
+    for m in members:
+        system = identifier_system_of(m["merge_key"])
+        if system:
+            out[system].add(m["merge_key"])
+    return dict(out)
+
+
+def _combined_identifier_keys(left, right):
+    """Return the union, or None when it would join different IDs in one system.
+
+    This checks whole union-find components: a cross-system bridge must not make
+    a cannot-link disappear after the first union.
+    """
+    combined = {system: set(keys) for system, keys in left.items()}
+    for system, keys in right.items():
+        combined.setdefault(system, set()).update(keys)
+    return None if any(len(keys) > 1 for keys in combined.values()) else combined
+
+
 def split_by_decision(members, did_idx, stats, start=None, registry=None,
                       typo_over=None, gate="literal", holdout=None):
     root, anc, ajur, own, root_kind = decisions_of(members, did_idx, start,
@@ -820,30 +967,45 @@ def split_by_decision(members, did_idx, stats, start=None, registry=None,
         dec_ids0 = (anc.get(dec0, set()) | own.get(dec0, set())) if dec0 else set()
         ride, pend = [], []
         bucket_keys = set()
-        for m in sorted(members, key=row_key):
-            if identifier_system_of(m["merge_key"]):
-                ids_m = did_idx.get(row_key(m), set())
+        # Exact identifiers from different courts move as one unit. Comparing
+        # court rows separately would either split the same ID or attach only
+        # the first row to the anchor, losing the cross-court source union.
+        same_key = defaultdict(list)
+        for m in members:
+            same_key[m["merge_key"]].append(m)
+        for us in sorted(same_key.values(), key=lambda rs: min(map(row_key, rs))):
+            mk = us[0]["merge_key"]
+            system = identifier_system_of(mk)
+            # A single anchor is not evidence that every same-name reporter is
+            # that judgment. It must have the same co-citation support required
+            # by the multiple-anchor route, unless it is an explicit anchor alias.
+            needs_support = bool(system) or (dec0 is not None and root.get(mk) != dec0)
+            if needs_support:
+                ids_m = set()
+                for m in us:
+                    ids_m |= did_idx.get(row_key(m), set())
                 if not ids_m or not dec_ids0:
                     cov = 0.0
                 else:
                     cov = (len(ids_m & dec_ids0) /
                            min(len(ids_m), len(dec_ids0)))
-                if cov >= BAR \
-                        and not any(identifier_system_of(k) ==
-                                    identifier_system_of(m["merge_key"])
-                                    for k in bucket_keys):
-                    ride.append(m)
-                    bucket_keys.add(m["merge_key"])
+                if cov >= BAR and (not system or not any(
+                        identifier_system_of(k) == system for k in bucket_keys)):
+                    ride.extend(us)
+                    bucket_keys.add(mk)
                     continue
-                pend.append([m])
+                pend.append(us)
                 continue
-            ride.append(m)
-            bucket_keys.add(m["merge_key"])
+            ride.extend(us)
+            bucket_keys.add(mk)
         parts0 = []
         if ride:
             parts0.append((ride, ""))
         for pm in pend:
-            parts0.append((pm, "identifier_uncoited"))
+            reason = "identifier_uncoited" if identifier_system_of(pm[0]["merge_key"]) else "unanchored"
+            parts0.append((pm, reason))
+            if reason == "unanchored":
+                stats["single_anchor_unsupported_reporter_units"] += 1
         if len(parts0) > 1:
             stats["clusters_identifier_split_uncoited"] += 1
             # identifier 单元之间、以及 identifier 单元与非锚成员之间的跨系统
@@ -851,6 +1013,7 @@ def split_by_decision(members, did_idx, stats, start=None, registry=None,
             # 对被守卫跳过（不同编号=不同文档）
             n_p = len(parts0)
             parent = list(range(n_p))
+            component_keys = [_identifier_keys(p[0]) for p in parts0]
 
             def find(x):
                 while parent[x] != x:
@@ -869,13 +1032,16 @@ def split_by_decision(members, did_idx, stats, start=None, registry=None,
                     small = min(len(ids_i), len(ids_j))
                     if not small or len(ids_i & ids_j) < BAR * small:
                         continue
-                    sys_i = {identifier_system_of(m["merge_key"])
-                             for m in parts0[i][0]}
-                    sys_j = {identifier_system_of(m["merge_key"])
-                             for m in parts0[j][0]}
-                    if (sys_i & sys_j) - {None}:
-                        continue      # 同系统 identifier 永不合并
-                    parent[find(i)] = find(j)
+                    ri, rj = find(i), find(j)
+                    if ri == rj:
+                        continue
+                    keys = _combined_identifier_keys(component_keys[ri],
+                                                     component_keys[rj])
+                    if keys is None:
+                        stats["identifier_component_conflicts_blocked"] += 1
+                        continue      # 同系统不同 identifier 不经桥接合并
+                    parent[ri] = rj
+                    component_keys[rj] = keys
             comps = defaultdict(list)
             for i in range(n_p):
                 comps[find(i)].append(i)
@@ -886,8 +1052,9 @@ def split_by_decision(members, did_idx, stats, start=None, registry=None,
                 g_rows = [m for i in comp for m in parts0[i][0]]
                 reasons = sorted({parts0[i][1] for i in comp if parts0[i][1]})
                 merged.append((g_rows, ";".join(reasons)))
-            if len(merged) > 1:
-                return merged
+            # A single component is a successful co-citation merge too. Return
+            # the computed result and retain any mixed-key holdouts in all cases.
+            return _with_held(merged, held)
         return _with_held(parts0 if parts0 else [(members, "")], held)
     stats["clusters_split_by_decision"] += 1
 
@@ -963,6 +1130,7 @@ def split_by_decision(members, did_idx, stats, start=None, registry=None,
     # 分不下去的单元彼此按同一标准拼组：它们是那件没有中立引用的判决本身
     n = len(pending)
     parent = list(range(n))
+    component_keys = [_identifier_keys(p[0]) for p in pending]
 
     def find(x):
         while parent[x] != x:
@@ -974,19 +1142,20 @@ def split_by_decision(members, did_idx, stats, start=None, registry=None,
         for j in range(i + 1, n):
             if not _compatible(pending[i][2], pending[j][2]):
                 continue
-            # R2F：同系统 identifier 两单元永不合并（不同编号=不同文档）
-            sys_i = {identifier_system_of(m["merge_key"])
-                     for m in pending[i][0]}
-            sys_j = {identifier_system_of(m["merge_key"])
-                     for m in pending[j][0]}
-            common_sys = (sys_i & sys_j) - {None}
-            if common_sys:
-                stats["pending_identifier_same_system_skipped"] += 1
-                continue
             a, b = pending[i][1], pending[j][1]
             small = min(len(a), len(b))
             if small and len(a & b) >= BAR * small:
-                parent[find(i)] = find(j)
+                ri, rj = find(i), find(j)
+                if ri == rj:
+                    continue
+                keys = _combined_identifier_keys(component_keys[ri],
+                                                 component_keys[rj])
+                if keys is None:
+                    stats["pending_identifier_same_system_skipped"] += 1
+                    stats["identifier_component_conflicts_blocked"] += 1
+                    continue
+                parent[ri] = rj
+                component_keys[rj] = keys
     comps = defaultdict(list)
     for i in range(n):
         comps[find(i)].append(i)
@@ -1003,15 +1172,64 @@ def split_by_decision(members, did_idx, stats, start=None, registry=None,
 def cluster_same_case(rows, did_idx, stats, start=None, registry=None,
                       typo_over=None, gate="literal", holdout=None):
     """返回 [(members, split_reason, split_seq)]；split_reason 为空表示未拆。
-    无案名或无年份的行不参与合并（没有判同的依据），各自独立成组。"""
+    无案名或无年份的行不参与按名合并。已识别 identifier 的同一完整键先组成
+    原子身份，不因跨院案名缺失或不同而拆开；这不适用于 reporter，也不把不同
+    identifier 键判同。名称矛盾的 identifier 单元不借任何一方名称挂靠别的键。
+    """
+    from identity_courts import CourtEvidence, partition
+    courts = CourtEvidence()
+    def court_evidence(row):
+        early = not _self_of(row) and _before_start(row["merge_key"], start)
+        found = courts.evidence(row, before_start=early)
+        row["identity_court_evidence"] = "|".join(
+            c + "=" + ";".join(sorted(e)) for c, e in sorted(found.items()))
+        row.setdefault("identity_court_conflict", "false")
+        return found
+    for row in rows:
+        court_evidence(row)
     buckets, out = defaultdict(list), []
+    exact_identifiers = defaultdict(list)
+    bilingual_parent = {}
+    def bilingual_root(code):
+        bilingual_parent.setdefault(code, code)
+        if bilingual_parent[code] != code:
+            bilingual_parent[code] = bilingual_root(bilingual_parent[code])
+        return bilingual_parent[code]
+    for pair in load_bilingual():
+        a, b = sorted(pair)
+        a, b = bilingual_root(a), bilingual_root(b)
+        bilingual_parent[max(a, b)] = min(a, b)
+    units = []
     for r in rows:
-        name = nk(r.get("case_name_modal") or "")
-        y = row_year(r)          # R3：用「印出来的年份」，不是键首槽（连续编卷键已零化）
-        if name and y is not None:
-            buckets[name].append((y, r))
+        kind = r.get("citation_kind")
+        if kind == "identifier" and identifier_system_of(r["merge_key"]):
+            exact_identifiers["identifier:" + r["merge_key"]].append(r)
+        elif kind == "neutral" and any(e.startswith("neutral_code:") for ev in court_evidence(r).values() for e in ev):
+            parts = r["merge_key"].split("|")
+            parts[2] = bilingual_root(parts[2])
+            exact_identifiers["neutral:" + "|".join(parts)].append(r)
         else:
-            out.append(([r], "", ""))
+            units.append([r])
+    units.extend(exact_identifiers[k] for k in sorted(exact_identifiers))
+    for members in units:
+        court_tokens = {c for r in members for c in court_evidence(r)}
+        if len(court_tokens) > 1:
+            for r in members:
+                r["identity_court_conflict"] = "true"
+            stats["identity_exact_unit_court_conflicts"] += 1
+        names = {nk(r.get("case_name_modal") or "") for r in members} - {""}
+        # R3：用印刷年份，不读连续编卷 reporter 已零化的键首槽。
+        years = {row_year(r) for r in members if row_year(r) is not None}
+        if len(names) == 1 and len(years) == 1 and len(court_tokens) <= 1:
+            name, y = next(iter(names)), next(iter(years))
+            buckets[name].extend((y, r) for r in members)
+        else:
+            # Exact ID is enough to join its own court rows, but conflicting or
+            # absent metadata supplies no name/year link to a different key.
+            reason = "identity_court_conflict" if len(court_tokens) > 1 else "identity_metadata_variants" if len(names) > 1 else ""
+            out.append((members, reason, ""))
+            if len(members) > 1:
+                stats["identifier_exact_key_groups_without_name_link"] += 1
 
     for name in sorted(buckets):
         items = sorted(buckets[name], key=lambda t: (t[0], row_key(t[1])))
@@ -1032,17 +1250,19 @@ def cluster_same_case(rows, did_idx, stats, start=None, registry=None,
                 parts = [([r for _, r in p], "span") for p in windows(ch)]
             seq = 0
             for rows_, r0 in parts:
-                for sub, r1 in split_by_decision(rows_, did_idx, stats, start,
-                                                 registry, typo_over, gate,
-                                                 holdout):
-                    reason = ";".join(x for x in (r0, r1) if x)
-                    if reason:
-                        out.append((sub, reason, seq))
-                        seq += 1
-                    else:
-                        out.append((sub, "", ""))
-                        if len(sub) > 1:
-                            stats["groups_merged_parallel"] += 1
+                for court_rows, court_reason in partition(
+                        rows_, did_idx, court_evidence, row_key, stats, BAR):
+                    for sub, r1 in split_by_decision(court_rows, did_idx, stats, start,
+                                                     registry, typo_over, gate,
+                                                     holdout):
+                        reason = ";".join(x for x in (r0, court_reason, r1) if x)
+                        if reason:
+                            out.append((sub, reason, seq))
+                            seq += 1
+                        else:
+                            out.append((sub, "", ""))
+                            if len(sub) > 1:
+                                stats["groups_merged_parallel"] += 1
     return out
 
 
@@ -1157,7 +1377,7 @@ def _scope_origin(row, scope_idx, stats):
 
 
 # ---- R2-1/R2-9：身份基础、组聚合、有效来源关联 ----
-BASIS_RANK = {"anchor": 6, "singleton": 6, "same_citation": 5,
+BASIS_RANK = {"anchor": 6, "singleton": 6, "document_alias": 6, "same_citation": 5,
               "anchor_variant_bilingual": 4, "anchor_variant_typo_number": 3,
               "anchor_variant_typo_year": 3,
               "name_year": 2, "cocitation": 1, "unanchored": 1}
@@ -1168,7 +1388,7 @@ BASIS_RANK = {"anchor": 6, "singleton": 6, "same_citation": 5,
 # name_year / anchor_variant_typo / cocitation / unanchored 是启发式——保持可见、
 # 保持暂定，不得把成员证据升成组结论。
 ELIGIBLE_BASES = frozenset(("anchor", "singleton", "same_citation",
-                            "anchor_variant_bilingual"))
+                            "anchor_variant_bilingual", "document_alias"))
 
 
 def assign_identity_basis(members, did_idx, start, reason):
@@ -1185,7 +1405,9 @@ def assign_identity_basis(members, did_idx, start, reason):
     out = {}
     for m in members:
         k = m["merge_key"]
-        if len(members) == 1:
+        if m.get('document_alias_decision_id') and m.get('document_alias_evidence_ids'):
+            b = 'document_alias'
+        elif len(members) == 1:
             b = "singleton"
         elif k in anchors:
             b = "anchor"
@@ -1224,7 +1446,9 @@ def aggregate_group_origin(group_rows, stats):
                        r.get("member_origin_evidence_ids")) for r in noncore}))
     countries = sorted({r["member_origin_country"] for r in pos})
     eids, bases = [], []
-    for r in (pos if len(countries) == 1 else pos + conf):
+    # A local conflict still supplies essential evidence even when another core
+    # member has one determined country. Group status and evidence must agree.
+    for r in pos + conf:
         for e in (r.get("member_origin_evidence_ids") or "").split("|"):
             if e and e not in eids:
                 eids.append(e)
@@ -1293,29 +1517,256 @@ def build_effective_sources(group_rows, ids, selfd, did_idx, stats):
 
 
 def read_csv(path):
-    with open(path, encoding="utf-8", newline="") as f:
+    with open_csv(path) as f:
         return list(csv.DictReader(f))
 
 
 def load_decision_ids(path, court=None):
     """归并层的文件以 merge_key 为键（需补 court 前缀）；本层输出的文件已是 row_key。"""
     idx = defaultdict(set)
-    with open(path, encoding="utf-8", newline="") as f:
+    with open_csv(path) as f:
         for r in csv.DictReader(f):
             k = r["row_key"] if "row_key" in r else "%s|%s" % (court, r["merge_key"])
             idx[k].add(r["source_decision_citation"])
     return idx
 
 
+def merge_document_alias_clusters(clusters, own_cites, registry, stats):
+    """Join qualified same-document aliases without weakening cannot-link rules.
+
+    The entire candidate component is checked, so a reporter bridge cannot hide
+    a different real neutral/vendor identifier or incompatible positive court.
+    A failed claim remains visible as separate existing clusters.
+    """
+    aliases = getattr(own_cites, 'aliases', {})
+    if not aliases:
+        return clusters
+    from identity_courts import CourtEvidence
+    courts = CourtEvidence()
+    document_proofs = defaultdict(set)
+    for key,did in aliases.items():
+        for proof in own_cites.evidence[key]:
+            if proof.get('identity_qualified') == 'true' and proof['decision_id'] == did:
+                document_proofs[did].add(proof['evidence_id'])
+    # Positive source-document claims also invalidate a heuristic merge that
+    # already happened. Keeping that contaminated cluster would block the real
+    # alias and preserve the known wrong identity. Unclaimed members are held
+    # separately by their exact key; they do not inherit a document assignment.
+    cleaned = []
+    for members, reason, sequence in clusters:
+        docs = {aliases[m['merge_key']] for m in members if m['merge_key'] in aliases}
+        if len(docs) <= 1:
+            cleaned.append((members, reason, sequence))
+            continue
+        by_doc, unknown = defaultdict(list), defaultdict(list)
+        for m in members:
+            did = aliases.get(m['merge_key'])
+            (by_doc[did] if did else unknown[m['merge_key']]).append(m)
+        stats['document_claim_contaminated_clusters_split'] += 1
+        stats['document_claim_unassigned_key_units'] += len(unknown)
+        for did in sorted(by_doc):
+            cleaned.append((by_doc[did], ';'.join(x for x in (reason,'document_claim_conflict') if x), ''))
+        for key in sorted(unknown):
+            cleaned.append((unknown[key], ';'.join(x for x in (reason,'document_claim_conflict','document_unassigned') if x), ''))
+    clusters = cleaned
+    parent = list(range(len(clusters)))
+    components = {i: list(members) for i,(members,_,_) in enumerate(clusters)}
+    detached = []
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+    def compatible(members):
+        docs = {aliases[m['merge_key']] for m in members if m['merge_key'] in aliases}
+        if len(docs) > 1:
+            return 'different_document_claims'
+        if docs and any(next(iter(docs)) in set(filter(None,m.get('document_alias_holdout_doc_ids','').split('|')))
+                        for m in members):
+            return 'explicit_document_holdout'
+        if any(len(keys) > 1 for keys in _identifier_keys(members).values()):
+            return 'different_identifier_numbers'
+        tokens = {token for m in members for token in courts.evidence(m)}
+        if len(tokens) > 1 or any(m.get('identity_court_conflict') == 'true' for m in members):
+            return 'positive_court_conflict'
+        years = {row_year(m) for m in members if m.get('case_name_modal') and row_year(m) is not None}
+        if years and max(years)-min(years)>1:
+            return 'year_span'
+        neutrals = {m['merge_key'] for m in members if m.get('citation_kind') == 'neutral'}
+        if len(neutrals) > 1:
+            first = min(neutrals)
+            # Distinct neutral numbers are never merged by an alias bridge.
+            # Only the separately verified same-number bilingual rule remains.
+            for key in neutrals - {first}:
+                if not verified_bilingual_keys(first, key):
+                    return 'different_neutral_numbers'
+        doc = next(iter(docs), '')
+        for key in neutrals:
+            protected = (registry or {}).get(key)
+            if protected and doc and doc not in protected[0].split(';'):
+                return 'registered_other_document'
+        return ''
+    by_document = defaultdict(set)
+    for index,(members,_,_) in enumerate(clusters):
+        for m in members:
+            if m['merge_key'] in aliases:
+                by_document[aliases[m['merge_key']]].add(index)
+    for did in sorted(by_document):
+        indices = sorted(by_document[did], key=lambda i: min(row_key(m) for m in components[find(i)]))
+        if not indices:
+            continue
+        left = find(indices[0])
+        for index in indices[1:]:
+            right = find(index)
+            left = find(left)
+            if left == right:
+                continue
+            combined = components[left]+components[right]
+            why = compatible(combined)
+            if why:
+                # A direct alias cannot drag pre-existing heuristic passengers
+                # through the year/court/number guard. Isolate those unclaimed
+                # exact keys, then connect only the compatible positive proof.
+                proven = [m for m in combined if m['merge_key'] in aliases]
+                if len(proven) < len(combined) and not compatible(proven):
+                    for component in (left,right):
+                        unclaimed = defaultdict(list)
+                        keep = []
+                        for m in components[component]:
+                            (keep if m['merge_key'] in aliases else unclaimed[m['merge_key']]).append(m)
+                        components[component] = keep
+                        for key in sorted(unclaimed):
+                            evidence = document_proofs[did]
+                            for m in unclaimed[key]:
+                                m['document_alias_holdout_doc_ids'] = '|'.join(sorted(
+                                    set(filter(None,m.get('document_alias_holdout_doc_ids','').split('|'))) | {did}))
+                                m['document_alias_holdout_evidence_ids'] = '|'.join(sorted(
+                                    set(filter(None,m.get('document_alias_holdout_evidence_ids','').split('|'))) | evidence))
+                            detached.append((unclaimed[key], 'unanchored;document_alias_'+why+'_holdout', ''))
+                            stats['document_alias_unknown_key_units_held_'+why] += 1
+                    combined = components[left]+components[right]
+                    why = compatible(combined)
+            if why:
+                stats['document_alias_blocked_'+why] += 1
+                continue
+            parent[right] = left
+            components[left] = combined
+            del components[right]
+            stats['document_alias_cluster_unions'] += 1
+    result = []
+    old_parts = defaultdict(list)
+    for index, cluster in enumerate(clusters):
+        old_parts[find(index)].append(cluster)
+    for index in sorted(components):
+        members = components[index]
+        doc_keys = defaultdict(set)
+        for m in members:
+            if m['merge_key'] in aliases:
+                doc_keys[aliases[m['merge_key']]].add(m['merge_key'])
+        if not compatible(members):
+            for m in members:
+                did = aliases.get(m['merge_key'])
+                if did and len(doc_keys[did]) > 1:
+                    proofs = [r for r in own_cites.evidence[m['merge_key']]
+                              if r.get('identity_qualified') == 'true' and r['decision_id'] == did]
+                    m['document_alias_decision_id'] = did
+                    m['document_alias_evidence_ids'] = '|'.join(sorted({r['evidence_id'] for r in proofs}))
+                    m['document_alias_source_rows'] = '|'.join(sorted({r['source_court']+':'+r['corpus_row']+':'+r['field'] for r in proofs}))
+                    stats['document_alias_qualified_member_rows'] += 1
+        # Preserve earlier splitting evidence. Alias joins carry their own
+        # positive columns and never turn unrelated heuristic members into core.
+        reasons = sorted({reason for _,reason,_ in old_parts[index] if reason})
+        result.append((members, ';'.join(reasons), ''))
+    return result+detached
+
+
 def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin,
                scope_idx=None, reporter_idx=None, registry=None, typo_over=None,
                holdout=None,
-               gate="literal", own_cites=None):
+               gate="literal", own_cites=None, identity_separations=None):
+    for row in rows:
+        for field in ('document_alias_decision_id','document_alias_evidence_ids','document_alias_source_rows'):
+            row[field] = ''
+        row.setdefault('document_alias_holdout_doc_ids','')
+        row.setdefault('document_alias_holdout_evidence_ids','')
+        row.setdefault('identity_separation_evidence_ids','')
     start = neutral_start(rows)
     stats["neutral_rows_before_court_start"] = sum(
         1 for r in rows if r.get("citation_kind") == "neutral" and _before_start(r["merge_key"], start))
-    clusters = cluster_same_case(rows, did_idx, stats, start, registry, typo_over,
+    # A guarded holdout discovered in one court must not be guessed back into
+    # the same document at the cross-court stage. Propagate by the stable full
+    # key, and accept the exclusion only when its current qualified proof IDs
+    # still match the own-citation source snapshot.
+    valid_proofs = defaultdict(set)
+    for key in getattr(own_cites,'aliases',{}):
+        for evidence in own_cites.evidence[key]:
+            if evidence.get('identity_qualified') == 'true':
+                valid_proofs[evidence['decision_id']].add(evidence['evidence_id'])
+    held_by_key = defaultdict(lambda: [set(),set(),set()])
+    for row in rows:
+        proof_ids=set(filter(None,row['document_alias_holdout_evidence_ids'].split('|')))
+        targets=set(filter(None,row['document_alias_holdout_doc_ids'].split('|')))
+        if not targets and not proof_ids:
+            continue
+        target_proofs=set().union(*(valid_proofs.get(did,set()) for did in targets))
+        if (not targets or not proof_ids or not proof_ids <= target_proofs or
+            any(not valid_proofs.get(did) or not valid_proofs[did] <= proof_ids for did in targets)):
+            raise ValueError('Document-alias holdout has stale, missing, incomplete or misbound target proofs')
+        for did in targets:
+            if proof_ids and proof_ids <= target_proofs and valid_proofs.get(did,set()) and valid_proofs[did] <= proof_ids:
+                held_by_key[row['merge_key']][0].add(did)
+                # Bind each retained target to its complete current proof set.
+                # Partial/stale proofs from another target are never propagated.
+                held_by_key[row['merge_key']][1].update(valid_proofs[did])
+    separations = load_identity_separations() if identity_separations is None else identity_separations
+    fact_by_id = {fact['evidence_id']:fact for fact in separations}
+    row_keys = {row['merge_key'] for row in rows}
+    for row in rows:
+        for evidence_id in filter(None,row['identity_separation_evidence_ids'].split('|')):
+            fact=fact_by_id.get(evidence_id)
+            if (not fact or fact['merge_key']!=row['merge_key'] or
+                fact['target_decision_id'] not in held_by_key[row['merge_key']][0]):
+                raise ValueError('Identity separation has stale or misbound inherited evidence')
+            held_by_key[row['merge_key']][2].add(evidence_id)
+    # Apply reviewed non-identity facts through the existing persistent holdout
+    # path. That path preserves source rows, propagates exact keys across courts,
+    # blocks only the prohibited document, and permits another proven document.
+    for fact in separations:
+        if fact['merge_key'] not in row_keys:
+            continue
+        did=fact['target_decision_id']
+        expected=set(fact['target_qualified_evidence_ids'].split('|'))
+        qualified=[proof for key in getattr(own_cites,'aliases',{})
+                   for proof in own_cites.evidence[key]
+                   if proof.get('identity_qualified')=='true' and proof['decision_id']==did]
+        sources={(p['source_court'],p['corpus_row'],p['corpus_sha256']) for p in qualified}
+        source_hashes={p.get('corpus_sha256')
+                       for values in getattr(own_cites,'evidence',{}).values() for p in values
+                       if p.get('source_court')==fact['source_court'] and p.get('corpus_sha256')}
+        if getattr(own_cites,'aliases',{}).get(fact['merge_key'])==did:
+            raise ValueError('Identity separation conflicts with a current positive document alias')
+        if (not expected or expected!=valid_proofs.get(did,set()) or len(sources)!=1 or
+            source_hashes!={fact['corpus_sha256']}):
+            raise ValueError('Identity separation has stale, missing or ambiguous current qualified proofs')
+        held_by_key[fact['merge_key']][0].add(did)
+        held_by_key[fact['merge_key']][1].update(expected)
+        held_by_key[fact['merge_key']][2].add(fact['evidence_id'])
+        stats['identity_separation_facts_applied'] += 1
+    active,held= [],defaultdict(list)
+    for row in rows:
+        if row['merge_key'] in held_by_key:
+            dids,proofs,separation_ids=held_by_key[row['merge_key']]
+            row['document_alias_holdout_doc_ids']='|'.join(sorted(dids))
+            row['document_alias_holdout_evidence_ids']='|'.join(sorted(proofs))
+            row['identity_separation_evidence_ids']='|'.join(sorted(separation_ids))
+            held[row['merge_key']].append(row)
+        else:
+            active.append(row)
+    stats['document_alias_inherited_holdout_key_units'] += len(held)
+    clusters = cluster_same_case(active, did_idx, stats, start, registry, typo_over,
                                  gate, holdout)
+    clusters += [(held[key],'unanchored;document_alias_inherited_holdout','') for key in sorted(held)]
+    clusters = merge_document_alias_clusters(clusters, own_cites, registry, stats)
     # PROBLEMS #88：混合键的案名被自己的提及互相推翻（既印着折叠目标的名字、
     # 又印着别的名字）→ **不主张案名**（约束四：无证据不填值；约束五：行不删，
     # 只打标记）。这一步必须在按名挂靠之前做：不抹名，扣留下来的键会变成同名
@@ -1482,7 +1933,7 @@ def main():
                          "**只授权笔误闸使用**（规格 2.3）")
     ap.add_argument("--own-citations", default=None,
                     help="判决自己印的引证表（<run>/registry/decision_own_citations.csv）："
-                         "只用于剔「判决引用自己」（PROBLEMS #105）；不传 = 行为不变")
+                         "剔自引；仅新qualified metadata/header证据可连接平行身份；旧四列只剔自引")
     # 2026-09-17：用户裁定设为默认开启（PROBLEMS #88 销账）。--no-mixed-key-holdout
     # 关闭以复现关闭前逐字节一致的产物（判据 1 的对照仍可重放）。
     ap.add_argument("--mixed-key-holdout", action=argparse.BooleanOptionalAction,
@@ -1491,7 +1942,7 @@ def main():
                          "案名时（一个印刷串承担两种身份），不折叠并抑制其案名。"
                          "默认开启；--no-mixed-key-holdout 关闭以复现旧行为")
     ap.add_argument("--registry-gate", default="literal",
-                    choices=("literal", "own_or_registry", "registered_only"),
+                    choices=("literal", "own_or_registry", "registered_only", "registered"),
                     help="登记簿在笔误闸里怎么参与：literal = 规格 2.3 逐字写法"
                          "（or k in registry 会被同名闸旁路，实测 0 键变化）；"
                          "own_or_registry = 规格 2.3 的字面意图；"
@@ -1506,6 +1957,10 @@ def main():
     stats = Counter()
     registry = load_registry(a.registry)
     own_cites = load_own_citations(a.own_citations)
+    separations = load_identity_separations()
+    separations_path = os.path.join(DECISIONS,'identity_separations.csv')
+    with open(separations_path,'rb') as separation_source:
+        separations_sha256 = hashlib.sha256(separation_source.read()).hexdigest()
     stats["registry_keys"] = len(registry)
     typo_over = []
     # PROBLEMS #88：混合键留痕。**None = 规则关闭**（默认），传列表才启用——
@@ -1550,7 +2005,7 @@ def main():
                                         prefix, stats, redo, scope_idx,
                                         reporter_idx, registry, typo_over,
                                         holdout,
-                                        a.registry_gate, own_cites)
+                                        a.registry_gate, own_cites, separations)
     # PROBLEMS #62：同名、年份相差 ≤1 的同级组。只在跨法院轮算——跨院合并跑完才是
     # 最终分组；院内轮该列留空（它不是产品列，选取层读的是跨院产出）
     if a.cross_court:
@@ -1592,7 +2047,8 @@ def main():
     assert not wide, "有组的年份跨度 > 1：%r" % wide[:5]
     start = neutral_start(rows)
     multi = [g for g, ms in groups.items()
-             if len(set(decisions_of(ms, did_idx, start)[0].values())) > 1]
+             if len(set(decisions_of(ms, did_idx, start, registry, None,
+                                     a.registry_gate)[0].values())) > 1]
     assert not multi, "有组仍含多个不同判决：%r" % multi[:5]
 
     os.makedirs(a.output, exist_ok=True)
@@ -1646,8 +2102,13 @@ def main():
         "mode": "cross_court" if a.cross_court else "in_court",
         "label": label,
         "spec_section": "10",
+        "schema_version": 14,
+        "document_alias_policy": "Qualified source-unique metadata/header proof only; whole-component neutral/vendor/court cannot-links remain enforced.",
         "registry_file": a.registry or "",
         "own_citations_file": a.own_citations or "",
+        "identity_separations_file": separations_path,
+        "identity_separations_sha256": separations_sha256,
+        "identity_separations": separations,
         "registry_gate": a.registry_gate,
         "mixed_key_holdout": bool(a.mixed_key_holdout),
         "case_origin_table_rows": sum(len(v) for v in origin_idx.values()),

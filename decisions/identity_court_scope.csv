@@ -1,0 +1,3 @@
+printed_key,citation_kind,canonical_court,year_start,year_end,verification_status,source_locator
+S.C.R.,reporter,SCC,1876,,verified_existing_statute,"decisions/reporter_origin_scope.csv normalized_key=scr; Supreme Court Act s.17: Registrar reports judgments of the Court"
+Can. S.C.R.,reporter,SCC,1876,,verified_existing_statute,"decisions/reporter_origin_scope.csv normalized_key=canscr; same official Supreme Court Reports; SCC official report name recorded there"

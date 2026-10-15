@@ -1,0 +1,988 @@
+{
+  "schema": "identity_highimpact_native_review_v1",
+  "generated_at": "2026-10-15T05:09:43.707460+00:00",
+  "scope": {
+    "project": "D:/cases data analisis",
+    "source_run": "data/run_20261014_reliable_final",
+    "queue_sha256": "a8e530013a03a26df0c5190eaa418a0e9ca23aacb6fea47f435d57c07f4ff673",
+    "queue_retained_records": 298,
+    "excluded_prior_explained_leads": 3,
+    "automated_screened_groups": 295,
+    "groups_with_single_metadata_document_for_source_delta": 253,
+    "groups_with_incremental_unqualified_sources": 26
+  },
+  "method": {
+    "automated": "Stream complete sealed selected, own/registry, per-court decision_ids and edge artifacts; compare exact court|merge_key membership source unions. Group IDs are local locators, not cross-run identities. Source delta is relative to metadata keys, not a correctness label.",
+    "substantive_review": "A research agent and implementation agent inspected the two named original Unicode windows and their native metadata. Explicit appeal history and nested citation text support the interpretations below. These are agent-reviewed evidence conclusions, not human manual annotation or a measured population precision.",
+    "limits": "The retained queue is a byte-bounded risk queue. Screening all retained records does not adjudicate all 230447 groups. Absence of conflicting corpus metadata cannot prove correct identity when the other court is outside the corpus."
+  },
+  "findings": [
+    {
+      "case": "Lising/Pires",
+      "baseline_group": "XC-G027331",
+      "status": "confirmed_distinct_judgment_member; exact court fact implemented; actual full replay verification pending",
+      "wrong_member_key": "2004|193|bcac||42",
+      "formal_document": "SCC_2005scc66",
+      "formal_keys": [
+        "2005||scc||66",
+        "2005|3|scr||343"
+      ],
+      "baseline_counts": {
+        "group": "XC-G027331",
+        "name": "R. v. Lising",
+        "dd": 85,
+        "core_sources": 84,
+        "extra_sources_count": 1,
+        "extra_sources": [
+          "ONCA_2007onca84"
+        ],
+        "formal_core_keys": [
+          "2005|3|scr||343",
+          "2005||scc||66"
+        ],
+        "unqualified_member_keys": [
+          "2004|193|bcac||42",
+          "|201|ccc|3d|449"
+        ],
+        "metadata_document": "SCC_2005scc66"
+      },
+      "wrong_member_sources": [
+        "BCCA_2005bcca639"
+      ],
+      "wrong_member_incremental_sources": [],
+      "interpretation": "The original Supreme Court judgment identifies 193 BCAC42/2004BCCA33 as the appealed BCCA judgment. It is a different adjudication. Name Lising and adjacent years plus overlapping citing sources admitted the unclaimed reporter; native document_alias proof correctly covers only the SCC neutral/SCR pair.",
+      "minimum_correction": "Exact complete reporter key has sourced BCCA court evidence; existing court cannot-link now separates it from the Supreme Court component, without guessing an alias to BCCA33 or bail BCCA91.",
+      "native_proof": {
+        "start": 10338,
+        "end": 10661,
+        "text": "APPEAL from a judgment of the British Columbia Court of Appeal (Finch C.J. and Southin and Newbury JJ.A.) (2004), 193 B.C.A.C. 42, 316 W.A.C. 42, 183 C.C.C. (3d) 232, 116 C.R.R. (2d) 100, [2004] B.C.J. No. 83 (QL), 2004 BCCA 33, upholding the accused’s convictions on conspiracy and drug‑related charges. Appeals dismissed."
+      },
+      "fact": {
+        "merge_key": "2004|193|bcac||42",
+        "canonical_court": "BCCA",
+        "verification_status": "verified_corpus_court",
+        "source_court": "SCC",
+        "source_decision": "SCC_2005scc66",
+        "source_corpus": "corpus/SCC.parquet",
+        "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+        "corpus_row": "3209",
+        "text_field": "unofficial_text_en",
+        "text_sha256": "18936e026e2e940980993096dc5f13290381e07584b00174d93c6ff0c8f2fc19",
+        "span_start": "10338",
+        "span_end": "10661",
+        "span_sha256": "3391ca00189f4f62e6b4bdbe569b85d3d768d828dcb2dada226df7434a3314b5",
+        "evidence_id": "ICF-lising-bcca",
+        "source_locator": "audit/findings/project_review_20261015/lising_exact_court_fact_verification.json#native_procedural_history"
+      },
+      "source_set_regression": {
+        "old_upper_dd": 85,
+        "new_upper_dd": 85,
+        "upper_sources_unchanged": true,
+        "upper_source_ids": [
+          "BCCA_2005bcca639",
+          "BCCA_2006bcca277",
+          "BCCA_2007bcca342",
+          "BCCA_2008bcca132",
+          "BCCA_2009bcca328",
+          "BCCA_2010bcca157",
+          "BCCA_2010bcca496",
+          "BCCA_2010bcca85",
+          "BCCA_2012bcca134",
+          "BCCA_2012bcca242",
+          "BCCA_2012bcca3",
+          "BCCA_2012bcca81",
+          "BCCA_2013bcca162",
+          "BCCA_2013bcca527",
+          "BCCA_2015bcca116",
+          "BCCA_2015bcca488",
+          "BCCA_2015bcca64",
+          "BCCA_2016bcca379",
+          "BCCA_2016bcca391",
+          "BCCA_2016bcca476",
+          "BCCA_2017bcca21",
+          "BCCA_2018bcca2",
+          "BCCA_2018bcca284",
+          "BCCA_2018bcca494",
+          "BCCA_2020bcca207",
+          "BCCA_2020bcca255",
+          "BCCA_2020bcca85",
+          "BCCA_2021bcca34",
+          "BCCA_2021bcca42",
+          "BCCA_2021bcca52",
+          "BCCA_2022bcca11",
+          "BCCA_2022bcca296",
+          "BCCA_2025bcca30",
+          "ONCA_2007onca84",
+          "ONCA_2009onca851",
+          "ONCA_2011onca465",
+          "ONCA_2011onca693",
+          "ONCA_2012onca673",
+          "ONCA_2012onca905",
+          "ONCA_2014onca561",
+          "ONCA_2014onca72",
+          "ONCA_2015onca260",
+          "ONCA_2015onca579",
+          "ONCA_2015onca619",
+          "ONCA_2016onca13",
+          "ONCA_2016onca160",
+          "ONCA_2016onca379",
+          "ONCA_2016onca467",
+          "ONCA_2016onca524",
+          "ONCA_2017onca23",
+          "ONCA_2017onca430",
+          "ONCA_2017onca780",
+          "ONCA_2018onca110",
+          "ONCA_2018onca69",
+          "ONCA_2019onca317",
+          "ONCA_2019onca8",
+          "ONCA_2020onca269",
+          "ONCA_2020onca298",
+          "ONCA_2020onca795",
+          "ONCA_2021onca119",
+          "ONCA_2021onca50",
+          "ONCA_2022onca3",
+          "ONCA_2022onca689",
+          "ONCA_2022onca902",
+          "ONCA_2023onca103",
+          "ONCA_2023onca130",
+          "ONCA_2023onca45",
+          "ONCA_2023onca803",
+          "ONCA_2024onca448",
+          "ONCA_2024onca665",
+          "ONCA_2025onca179",
+          "ONCA_2025onca614",
+          "ONCA_2025onca767",
+          "ONCA_2025onca772",
+          "ONCA_2026onca188",
+          "SCC_2010scc8",
+          "SCC_2011scc34",
+          "SCC_2012scc21",
+          "SCC_2014scc41",
+          "SCC_2015scc62",
+          "SCC_2016scc15",
+          "SCC_2018scc53",
+          "SCC_2019scc22",
+          "SCC_2023scc11",
+          "SCC_2024scc42"
+        ],
+        "lower_reporter_keeps_BCCA_2005bcca639": true,
+        "source_SCC_2005scc66_to_lower_reporter_stays_counted": true,
+        "BCCA33_and_BCCA91_distinct": true
+      },
+      "tests": "pipeline/tests/test_lising_identity_review.py",
+      "verification_receipt": "audit/findings/project_review_20261015/lising_exact_court_fact_verification.json"
+    },
+    {
+      "case": "Motor Vehicle Act / Johnson",
+      "baseline_group": "XC-G008972",
+      "status": "confirmed_false_identity_and_one_false_source; exact negative fact implemented; actual full replay verification pending",
+      "wrong_member_key": "|65|nsr|2d|54",
+      "formal_document": "SCC_19852scr486",
+      "formal_keys": [
+        "1985|2|scr||486",
+        "1985|2|rcs||486"
+      ],
+      "baseline_counts": {
+        "group": "XC-G008972",
+        "name": "Re B.C. Motor Vehicle Act",
+        "dd": 214,
+        "core_sources": 213,
+        "extra_sources_count": 1,
+        "extra_sources": [
+          "SCC_19942scr864"
+        ],
+        "formal_core_keys": [
+          "1985|2|rcs||486",
+          "1985|2|scr||486"
+        ],
+        "unqualified_member_keys": [
+          "1985||canlii||81",
+          "|65|nsr|2d|54"
+        ],
+        "metadata_document": "SCC_19852scr486"
+      },
+      "interpretation": "The ONCA French sentence cites Johnson2012ONCA339, then says citant MotorVehicleAct1985RCS486. The RCS candidate borrowed Johnson as its modal name. Its qualified metadata alias linked to the true MotorVehicle document while same-name/year admitted the distinct Johnson1984 NSR reporter. Chartrand cites Johnson, not MotorVehicle through that member.",
+      "canonical_court_limit": "English and French Chartrand print only generic C.A. for Johnson. No NSCA canonical court is inferred. The new fact expresses only a source-proven exact key/document non-identity.",
+      "native_proof": {
+        "metadata": {
+          "citation_en": "[1994] 2 SCR 864",
+          "citation_fr": "[1994] 2 RCS 864",
+          "name_en": "R. v. Chartrand",
+          "name_fr": "R. c. Chartrand"
+        },
+        "start": 54771,
+        "end": 54817,
+        "text": "R. v. Johnson (1984), 65 N.S.R. (2d) 54 (C.A.)"
+      },
+      "nested_citation_proof": {
+        "court": "ONCA",
+        "corpus_row": 14881,
+        "metadata": {
+          "citation_en": null,
+          "citation_fr": "2024 ONCA 355",
+          "name_en": null,
+          "name_fr": "R. c. Séguin"
+        },
+        "text_field": "unofficial_text_fr",
+        "text_sha256": "d1f9387e3bb06b86df3a6030a522874392f997a3b903463ccc964b88f4b96361",
+        "match_start": 5926,
+        "match_end": 5945,
+        "window": {
+          "start": 5506,
+          "end": 6495,
+          "text": "cipe de totalité.\n[13] Encore, nous ne sommes pas d’accord. Le principe de totalité, une composante de la proportionnalité, vise à garantir que les peines consécutives ne soient ni écrasantes ni disproportionnées de façon qu’elles mineraient la confiance du public dans l’administration de la justice : R. v. Johnson, 2012 ONCA 339, 285 C.C.C. (3d) 120, aux paras. 15-16, citant Renvoi sur la Motor Vehicle Act (C.-B.), [1985] 2 R.C.S. 486, à la p. 533. La juge de première instance a tenu compte des arguments des avocats lors de la détermination d’une peine globale. Par conséquent, à la fin de ses motifs, quand elle a prononcé la peine, elle a réparti la peine globale entre les différents chefs d’accusation après avoir déterminé une peine globale juste et appropriée.\n[14] Finalement, l’avocat de service soumet que la juge a infligé une peine excessive. Il fait référence à l’arrêt R. v. Walker, 2017 ONCA 39, 345 C.C.C. (3d) 497, où cette cour a réduit une peine de quatre ans (en "
+        }
+      },
+      "fact": {
+        "merge_key": "|65|nsr|2d|54",
+        "target_decision_id": "SCC_19852scr486",
+        "target_qualified_evidence_ids": "own:171e21a41d07601c2669e9fe12814827943f811d16571e851e9916cacc2fb3d0|own:84d40de37a5ffd5277ec656c62ddc73afda2e5edcbb9d8b0a0dda4a98ef19247|own:9cb4eb061c7e3d087286ae26269f06f6d772ee2fc0670af6fcc905bfdc8b28c5|own:fb08bf2a7b3387f2c1eb088c8967b3a908bb9e38a0de017309c3859b0a23151f",
+        "verification_status": "verified_native_distinct_judgment",
+        "source_court": "SCC",
+        "source_decision": "SCC_19942scr864",
+        "source_corpus": "corpus/SCC.parquet",
+        "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+        "corpus_row": "5416",
+        "text_field": "unofficial_text_en",
+        "text_sha256": "ce735d385170ba1c35d2d6556aace7e18eefdb3c97f5cad20060e8e3a093d513",
+        "span_start": "54771",
+        "span_end": "54817",
+        "span_sha256": "7d85fa9c7118fc7f1825c53dd8a0a0f20eb9313b1de10b073dc7caf837cca820",
+        "source_locator": "audit/findings/project_review_20261015/motorvehicle_identity_separation_verification.json#native_distinct_judgment",
+        "evidence_id": "sep:c35bcd2daaf53ca14666855d7b8187f4cc071c207b4f2e70c0c732aba19de9dd"
+      },
+      "source_set_regression": {
+        "old_upper_dd": 214,
+        "new_upper_dd": 213,
+        "removed_from_upper_only": [
+          "SCC_19942scr864"
+        ],
+        "new_upper_source_ids": [
+          "BCCA_1999bcca114",
+          "BCCA_1999bcca448",
+          "BCCA_1999bcca645",
+          "BCCA_1999bcca72",
+          "BCCA_2000bcca335",
+          "BCCA_2002bcca426",
+          "BCCA_2003bcca100",
+          "BCCA_2005bcca74",
+          "BCCA_2006bcca121",
+          "BCCA_2006bcca262",
+          "BCCA_2007bcca470",
+          "BCCA_2007bcca637",
+          "BCCA_2009bcca23",
+          "BCCA_2009bcca309",
+          "BCCA_2010bcca15",
+          "BCCA_2010bcca365",
+          "BCCA_2010bcca527",
+          "BCCA_2012bcca129",
+          "BCCA_2013bcca147",
+          "BCCA_2013bcca435",
+          "BCCA_2013bcca522",
+          "BCCA_2014bcca240",
+          "BCCA_2014bcca322",
+          "BCCA_2014bcca484",
+          "BCCA_2014bcca7",
+          "BCCA_2015bcca138",
+          "BCCA_2015bcca92",
+          "BCCA_2018bcca227",
+          "BCCA_2022bcca245",
+          "BCCA_2022bcca328",
+          "BCCA_2023bcca336",
+          "BCCA_2025bcca197",
+          "BCCA_2025bcca21",
+          "ONCA_2007onca392",
+          "ONCA_2008onca22",
+          "ONCA_2008onca521",
+          "ONCA_2010onca206",
+          "ONCA_2010onca830",
+          "ONCA_2012onca162",
+          "ONCA_2012onca186",
+          "ONCA_2012onca326",
+          "ONCA_2012onca339",
+          "ONCA_2013onca650",
+          "ONCA_2013onca677",
+          "ONCA_2014onca900",
+          "ONCA_2017onca552",
+          "ONCA_2018onca436",
+          "ONCA_2019onca30",
+          "ONCA_2019onca876",
+          "ONCA_2020onca333",
+          "ONCA_2020onca394",
+          "ONCA_2024onca355",
+          "ONCA_2025onca468",
+          "ONCA_2025onca92",
+          "ONCA_2026onca281",
+          "ONCA_2026onca582",
+          "ONCA_c13175",
+          "ONCA_c28066",
+          "ONCA_c28732",
+          "ONCA_c29645",
+          "ONCA_c31065",
+          "ONCA_c32813",
+          "ONCA_c37954",
+          "ONCA_c39532",
+          "ONCA_c40577",
+          "ONCA_c42719c42923",
+          "SCC_19861scr103",
+          "SCC_19861scr549",
+          "SCC_19862scr284",
+          "SCC_19862scr713",
+          "SCC_19871scr1045",
+          "SCC_19871scr110",
+          "SCC_19872scr309",
+          "SCC_19872scr636",
+          "SCC_19881scr1153",
+          "SCC_19881scr30",
+          "SCC_19881scr914",
+          "SCC_19882scr3",
+          "SCC_19882scr387",
+          "SCC_19882scr595",
+          "SCC_19882scr833",
+          "SCC_19882scr903",
+          "SCC_19891scr1296",
+          "SCC_19891scr1469",
+          "SCC_19891scr525",
+          "SCC_19891scr927",
+          "SCC_19901scr1123",
+          "SCC_19901scr1366",
+          "SCC_19901scr342",
+          "SCC_19901scr425",
+          "SCC_19902scr151",
+          "SCC_19902scr217",
+          "SCC_19902scr633",
+          "SCC_19902scr711",
+          "SCC_19902scr865",
+          "SCC_19902scr906",
+          "SCC_19903scr229",
+          "SCC_19903scr697",
+          "SCC_19911scr933",
+          "SCC_19912scr158",
+          "SCC_19912scr211",
+          "SCC_19912scr577",
+          "SCC_19912scr779",
+          "SCC_19913scr154",
+          "SCC_19913scr485",
+          "SCC_19921scr259",
+          "SCC_19921scr711",
+          "SCC_19921scr843",
+          "SCC_19921scr91",
+          "SCC_19922scr606",
+          "SCC_19922scr944",
+          "SCC_19923scr631",
+          "SCC_19923scr665",
+          "SCC_19931scr1053",
+          "SCC_19931scr554",
+          "SCC_19931scr867",
+          "SCC_19932scr143",
+          "SCC_19933scr103",
+          "SCC_19933scr3",
+          "SCC_19933scr327",
+          "SCC_19933scr519",
+          "SCC_19934scr199",
+          "SCC_19942scr229",
+          "SCC_19942scr339",
+          "SCC_19942scr914",
+          "SCC_19942scr951",
+          "SCC_19943scr236",
+          "SCC_19943scr761",
+          "SCC_19951scr315",
+          "SCC_19951scr451",
+          "SCC_19952scr418",
+          "SCC_19952scr973",
+          "SCC_19953scr44",
+          "SCC_19953scr562",
+          "SCC_19954scr154",
+          "SCC_19954scr411",
+          "SCC_19961scr500",
+          "SCC_19961scr75",
+          "SCC_19962scr171",
+          "SCC_19963scr1128",
+          "SCC_19971scr1113",
+          "SCC_19973scr624",
+          "SCC_19973scr844",
+          "SCC_19983scr262",
+          "SCC_19983scr45",
+          "SCC_19993scr46",
+          "SCC_19993scr668",
+          "SCC_2000scc28",
+          "SCC_2000scc44",
+          "SCC_2000scc48",
+          "SCC_2001scc24",
+          "SCC_2001scc7",
+          "SCC_2001scc76",
+          "SCC_2001scc78",
+          "SCC_2002scc1",
+          "SCC_2002scc12",
+          "SCC_2002scc23",
+          "SCC_2002scc61",
+          "SCC_2002scc73",
+          "SCC_2002scc84",
+          "SCC_2003scc39",
+          "SCC_2003scc62",
+          "SCC_2003scc74",
+          "SCC_2004scc4",
+          "SCC_2004scc42",
+          "SCC_2005scc35",
+          "SCC_2006scc12",
+          "SCC_2007scc26",
+          "SCC_2007scc9",
+          "SCC_2008scc18",
+          "SCC_2008scc25",
+          "SCC_2008scc5",
+          "SCC_2009scc37",
+          "SCC_2010scc3",
+          "SCC_2010scc6",
+          "SCC_2012scc13",
+          "SCC_2013scc72",
+          "SCC_2014scc20",
+          "SCC_2014scc52",
+          "SCC_2014scc62",
+          "SCC_2015scc15",
+          "SCC_2015scc34",
+          "SCC_2015scc5",
+          "SCC_2015scc59",
+          "SCC_2015scc7",
+          "SCC_2016scc13",
+          "SCC_2018scc17",
+          "SCC_2018scc32",
+          "SCC_2019scc1",
+          "SCC_2019scc10",
+          "SCC_2019scc40",
+          "SCC_2019scc47",
+          "SCC_2020scc17",
+          "SCC_2020scc32",
+          "SCC_2020scc38",
+          "SCC_2021scc37",
+          "SCC_2022scc18",
+          "SCC_2022scc19",
+          "SCC_2022scc23",
+          "SCC_2022scc28",
+          "SCC_2022scc38",
+          "SCC_2022scc54",
+          "SCC_2023scc2",
+          "SCC_2023scc30",
+          "SCC_2024scc10",
+          "SCC_2024scc15",
+          "SCC_2024scc26",
+          "SCC_2025scc16",
+          "SCC_2025scc18",
+          "SCC_2025scc41",
+          "SCC_2025scc6",
+          "SCC_2026scc22",
+          "SCC_2026scc5"
+        ],
+        "chartrand_to_johnson_stays_counted": true,
+        "raw_candidate_rows_retained": true,
+        "qualified_SCR_RCS_core_preserved": true
+      },
+      "tests": "pipeline/tests/test_identity_separations.py",
+      "verification_receipt": "audit/findings/project_review_20261015/motorvehicle_identity_separation_verification.json"
+    }
+  ],
+  "unresolved_priority_examples": [
+    {
+      "group": "XC-G007747",
+      "name": "Vetrovec v. The Queen",
+      "dd": 232,
+      "core_sources": 207,
+      "extra_sources_count": 25,
+      "extra_sources": [
+        "ONCA_2007onca131",
+        "ONCA_2007onca329",
+        "ONCA_2008onca589",
+        "ONCA_2008onca615",
+        "ONCA_2008onca715",
+        "ONCA_2009onca59",
+        "ONCA_2011onca570",
+        "ONCA_c20075",
+        "ONCA_c22404c22904",
+        "ONCA_c23093c23398c23474c23808",
+        "ONCA_c24351",
+        "ONCA_c24985c25069",
+        "ONCA_c27456c27460",
+        "ONCA_c27961",
+        "ONCA_c29346",
+        "ONCA_c31855",
+        "ONCA_c33231",
+        "ONCA_c33623",
+        "ONCA_c33710c36455",
+        "ONCA_c35171",
+        "ONCA_c36766",
+        "ONCA_c36973",
+        "ONCA_c37316",
+        "ONCA_c38099c38180",
+        "ONCA_c41455"
+      ],
+      "formal_core_keys": [
+        "1982|1|scr||811"
+      ],
+      "unqualified_member_keys": [
+        "|67|ccc|2d|1"
+      ],
+      "metadata_document": "SCC_19821scr811"
+    },
+    {
+      "group": "XC-G005745",
+      "name": "R. v. Kienapple",
+      "dd": 490,
+      "core_sources": 470,
+      "extra_sources_count": 20,
+      "extra_sources": [
+        "BCCA_2002bcca76",
+        "BCCA_2003bcca196",
+        "ONCA_2007onca464",
+        "ONCA_2008onca580",
+        "ONCA_2011onca330",
+        "ONCA_2013onca605",
+        "ONCA_2016onca865",
+        "ONCA_c23709",
+        "ONCA_c27158c27597c27598c27638c27968c28029c32179",
+        "ONCA_c30789",
+        "ONCA_c31048",
+        "ONCA_c31995c32068",
+        "ONCA_c34154",
+        "ONCA_c37610",
+        "ONCA_c38360",
+        "ONCA_c39546",
+        "ONCA_c40163",
+        "ONCA_c40755c40767",
+        "ONCA_c43132",
+        "ONCA_c43355"
+      ],
+      "formal_core_keys": [
+        "1975|1|rcs||729",
+        "1975|1|scr||729"
+      ],
+      "unqualified_member_keys": [
+        "|15|ccc|2d|524",
+        "|15|ccc|3d|524"
+      ],
+      "metadata_document": "SCC_19751scr729"
+    },
+    {
+      "group": "XC-G028861",
+      "name": "R. v. Elias",
+      "dd": 54,
+      "core_sources": 46,
+      "extra_sources_count": 8,
+      "extra_sources": [
+        "ONCA_2007onca46",
+        "ONCA_2007onca574",
+        "ONCA_2007onca60",
+        "ONCA_2008onca49",
+        "ONCA_2008onca605",
+        "ONCA_c40234",
+        "ONCA_c41585",
+        "ONCA_c43132"
+      ],
+      "formal_core_keys": [
+        "2005|2|scr||3",
+        "2005||scc||37"
+      ],
+      "unqualified_member_keys": [
+        "|196|ccc|3d|481"
+      ],
+      "metadata_document": "SCC_2005scc37"
+    },
+    {
+      "group": "XC-G009969",
+      "name": "Argentina v. Mellino",
+      "dd": 62,
+      "core_sources": 55,
+      "extra_sources_count": 7,
+      "extra_sources": [
+        "ONCA_2010onca891",
+        "ONCA_c27298",
+        "ONCA_c32995",
+        "ONCA_c33326",
+        "ONCA_c33768c34872",
+        "ONCA_c35198",
+        "ONCA_c43484"
+      ],
+      "formal_core_keys": [
+        "1987|1|scr||536"
+      ],
+      "unqualified_member_keys": [
+        "|33|ccc|3d|334"
+      ],
+      "metadata_document": "SCC_19871scr536"
+    },
+    {
+      "group": "XC-G008156",
+      "name": "Wilson v. The Queen",
+      "dd": 86,
+      "core_sources": 80,
+      "extra_sources_count": 6,
+      "extra_sources": [
+        "BCCA_2014bcca330",
+        "ONCA_2015onca484",
+        "ONCA_c32686",
+        "ONCA_c33576",
+        "ONCA_c33768c34872",
+        "ONCA_c35006"
+      ],
+      "formal_core_keys": [
+        "1983|2|scr||594"
+      ],
+      "unqualified_member_keys": [
+        "1983||canlii||35",
+        "|9|ccc|3d|97"
+      ],
+      "metadata_document": "SCC_19832scr594"
+    },
+    {
+      "group": "XC-G008508",
+      "name": "Perka v. The Queen",
+      "dd": 89,
+      "core_sources": 84,
+      "extra_sources_count": 5,
+      "extra_sources": [
+        "BCCA_2009bcca597",
+        "ONCA_c32144c33697",
+        "ONCA_c34989",
+        "ONCA_c39313",
+        "ONCA_c43484"
+      ],
+      "formal_core_keys": [
+        "1984|2|scr||232"
+      ],
+      "unqualified_member_keys": [
+        "1984||scj||40",
+        "|14|ccc|3d|385"
+      ],
+      "metadata_document": "SCC_19842scr232"
+    },
+    {
+      "group": "XC-G026036",
+      "name": "R. v. Duguay",
+      "dd": 85,
+      "core_sources": 81,
+      "extra_sources_count": 4,
+      "extra_sources": [
+        "ONCA_2007onca714",
+        "ONCA_2008onca580",
+        "ONCA_c33058c34952c35001",
+        "ONCA_c42726m33835"
+      ],
+      "formal_core_keys": [
+        "2003|3|rcs||307",
+        "2003|3|scr||307",
+        "2003||csc||70",
+        "2003||scc||70"
+      ],
+      "unqualified_member_keys": [
+        "|179|ccc|3d|353"
+      ],
+      "metadata_document": "SCC_2003scc70"
+    },
+    {
+      "group": "XC-G008957",
+      "name": "R. v. Dedman",
+      "dd": 72,
+      "core_sources": 68,
+      "extra_sources_count": 4,
+      "extra_sources": [
+        "ONCA_2012onca140",
+        "ONCA_c35171",
+        "ONCA_c36130",
+        "ONCA_c36722c37990"
+      ],
+      "formal_core_keys": [
+        "1985|2|scr||2"
+      ],
+      "unqualified_member_keys": [
+        "|20|ccc|3d|97"
+      ],
+      "metadata_document": "SCC_19852scr2"
+    },
+    {
+      "group": "XC-G007805",
+      "name": "R. v. Graat",
+      "dd": 53,
+      "core_sources": 50,
+      "extra_sources_count": 3,
+      "extra_sources": [
+        "ONCA_2007onca528",
+        "ONCA_c25915",
+        "ONCA_c32825"
+      ],
+      "formal_core_keys": [
+        "1982|2|scr||819"
+      ],
+      "unqualified_member_keys": [
+        "|2|ccc|3d|365"
+      ],
+      "metadata_document": "SCC_19822scr819"
+    },
+    {
+      "group": "XC-G012281",
+      "name": "R. v. W.(D.)",
+      "dd": 849,
+      "core_sources": 847,
+      "extra_sources_count": 2,
+      "extra_sources": [
+        "BCCA_2024bcca65",
+        "ONCA_2025onca733"
+      ],
+      "formal_core_keys": [
+        "1991|1|rcs||742",
+        "1991|1|scr||742"
+      ],
+      "unqualified_member_keys": [
+        "1991||canlii||93"
+      ],
+      "metadata_document": "SCC_19911scr742"
+    },
+    {
+      "group": "XC-G006981",
+      "name": "Palmer v. The Queen",
+      "dd": 853,
+      "core_sources": 852,
+      "extra_sources_count": 1,
+      "extra_sources": [
+        "BCCA_2022bcca408"
+      ],
+      "formal_core_keys": [
+        "1980|1|rcs||759",
+        "1980|1|scr||759"
+      ],
+      "unqualified_member_keys": [
+        "1979||canlii||8"
+      ],
+      "metadata_document": "SCC_19801scr759"
+    },
+    {
+      "group": "XC-G016572",
+      "name": "R. v. M. (C.A.)",
+      "dd": 488,
+      "core_sources": 487,
+      "extra_sources_count": 1,
+      "extra_sources": [
+        "BCCA_2023bcca442"
+      ],
+      "formal_core_keys": [
+        "1996|1|rcs||500",
+        "1996|1|scr||500"
+      ],
+      "unqualified_member_keys": [
+        "1996||canlii||230"
+      ],
+      "metadata_document": "SCC_19961scr500"
+    },
+    {
+      "group": "XC-G011647",
+      "name": "Hunt v. Carey Canada Inc",
+      "dd": 245,
+      "core_sources": 244,
+      "extra_sources_count": 1,
+      "extra_sources": [
+        "BCCA_2026bcca53"
+      ],
+      "formal_core_keys": [
+        "1990|2|scr||959"
+      ],
+      "unqualified_member_keys": [
+        "1990||canlii||90",
+        "1990||scj||93"
+      ],
+      "metadata_document": "SCC_19902scr959"
+    },
+    {
+      "group": "XC-G021331",
+      "name": "Haldorson v. Coquitlam (City)",
+      "dd": 218,
+      "core_sources": 217,
+      "extra_sources_count": 1,
+      "extra_sources": [
+        "BCCA_2006bcca172"
+      ],
+      "formal_core_keys": [
+        "2000||bcca||672"
+      ],
+      "unqualified_member_keys": [
+        "2000|149|bcac||197"
+      ],
+      "metadata_document": "BCCA_2000bcca672"
+    },
+    {
+      "group": "XC-G017894",
+      "name": "R. v. S. (R.D.)",
+      "dd": 155,
+      "core_sources": 154,
+      "extra_sources_count": 1,
+      "extra_sources": [
+        "BCCA_2021bcca263"
+      ],
+      "formal_core_keys": [
+        "1997|3|scr||484"
+      ],
+      "unqualified_member_keys": [
+        "1997||canlii||324"
+      ],
+      "metadata_document": "SCC_19973scr484"
+    },
+    {
+      "group": "XC-G030352",
+      "name": "United States of America v. Latty",
+      "dd": 89,
+      "core_sources": 88,
+      "extra_sources_count": 1,
+      "extra_sources": [
+        "BCCA_2010bcca149"
+      ],
+      "formal_core_keys": [
+        "2006|2|scr||77",
+        "2006||scc||33"
+      ],
+      "unqualified_member_keys": [
+        "2006||scj||33"
+      ],
+      "metadata_document": "SCC_2006scc33"
+    },
+    {
+      "group": "XC-G017699",
+      "name": "United States of America v. Dynar",
+      "dd": 84,
+      "core_sources": 83,
+      "extra_sources_count": 1,
+      "extra_sources": [
+        "BCCA_2022bcca199"
+      ],
+      "formal_core_keys": [
+        "1997|2|scr||462"
+      ],
+      "unqualified_member_keys": [
+        "1997||canlii||359"
+      ],
+      "metadata_document": "SCC_19972scr462"
+    },
+    {
+      "group": "XC-G014881",
+      "name": "Lucas (Litigation Guardian of) v. Gagnon",
+      "dd": 82,
+      "core_sources": 81,
+      "extra_sources_count": 1,
+      "extra_sources": [
+        "ONCA_c36748"
+      ],
+      "formal_core_keys": [
+        "1994|3|scr||1022"
+      ],
+      "unqualified_member_keys": [
+        "1994|120|dlr|4d|289",
+        "1994||canlii||44"
+      ],
+      "metadata_document": "SCC_19943scr1022"
+    },
+    {
+      "group": "XC-G026002",
+      "name": "Nova Scotia (Workers' Compensation Board) v. Martin",
+      "dd": 74,
+      "core_sources": 73,
+      "extra_sources_count": 1,
+      "extra_sources": [
+        "ONCA_c42931"
+      ],
+      "formal_core_keys": [
+        "2003|2|scr||504",
+        "2003||scc||54"
+      ],
+      "unqualified_member_keys": [
+        "2003|231|dlr|4d|385"
+      ],
+      "metadata_document": "SCC_2003scc54"
+    },
+    {
+      "group": "XC-G038437",
+      "name": "R. v. Luciano",
+      "dd": 61,
+      "core_sources": 60,
+      "extra_sources_count": 1,
+      "extra_sources": [
+        "ONCA_2015onca562"
+      ],
+      "formal_core_keys": [
+        "2011||onca||89"
+      ],
+      "unqualified_member_keys": [
+        "|267|ccc|3d|16"
+      ],
+      "metadata_document": "ONCA_2011onca89"
+    }
+  ],
+  "validation": {
+    "targeted_alias_language_court_identifier_and_new_tests": {
+      "count": 74,
+      "result": "PASS"
+    },
+    "host_NTFS_replay_tests": {
+      "count": 18,
+      "result": "PASS"
+    },
+    "new_own_negative_conflict_and_mixed_source_snapshot_tests": "PASS",
+    "independent_readonly_review": "research_tools reviewed source and code; 8 negative-fact tests independently passed",
+    "producer_freeze_utc": "2026-10-15 05:08:40 UTC",
+    "frozen_files": {
+      "pipeline/decide.py": "79d1adc1c54483e7b1c5f62bab88d540dc7efc80431898eb2633d36b5041f25a",
+      "decisions/identity_court_facts.csv": "3ee854278bc0de607245382616fe48e62a67ca60833d7f38c46b68ddd0154e4f",
+      "decisions/identity_separations.csv": "ae4df66364aa44e18d9cec29f77904bccb1c67fd4563ff87f9c9828608e41991"
+    }
+  },
+  "source_artifact_receipts": [
+    {
+      "logical_path": "merge_out/SCC/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\SCC\\decision_ids.csv.gz",
+      "physical_sha256": "3b7da96e89030fd3dd4b7040f832deb51c1cd920ff99f5e70373481a4b10348c",
+      "content_sha256": "96268dadf91099a85a78437d731aa0a924a763f5dfec478346d3e1b80799c20f",
+      "logical_bytes": 6194316,
+      "stored_bytes": 1251945,
+      "rows": 196059,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/ONCA/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\ONCA\\decision_ids.csv.gz",
+      "physical_sha256": "aaf1f4458d1661036e3a5f356c5e3bc7ec8adffe87ddf433c41a7d1e5b7260dd",
+      "content_sha256": "6c692c677aae94483903803577bfe93e8abd74f8b65a1c57185a7006771bfff9",
+      "logical_bytes": 5502803,
+      "stored_bytes": 948600,
+      "rows": 165257,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/BCCA/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\BCCA\\decision_ids.csv.gz",
+      "physical_sha256": "39a67d46fa60f39c7fe296df1deedba0ff80c60a862e85a160e19c78417e7fb3",
+      "content_sha256": "b2903a97bfd39c0cb40c7b02a8e5456934aa5b07d726c05e2f666dff3b0adfd6",
+      "logical_bytes": 5886500,
+      "stored_bytes": 954015,
+      "rows": 174081,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "edges/citation_edges.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\edges\\citation_edges.csv.gz",
+      "physical_sha256": "3a89b92e09903517ebfddc719008673e75b967c80680128630c7eec8b621daf7",
+      "content_sha256": "7c9b3a2d4d53f621d9c7bf8d3955ef9c8098e671359214772cee233087ac7ae9",
+      "logical_bytes": 81256125,
+      "stored_bytes": 7247605,
+      "rows": 490576,
+      "output_seal_verified": true
+    }
+  ],
+  "temporary_projection_retirement": [
+    {
+      "path": "implementation\\identity_queue_highimpact_scan_20261015.json",
+      "bytes": 4264303,
+      "sha256": "71027eda912bfeb2ba591502e52500f1784bf8b2c729ff43e0ddc3f4885870b7",
+      "reason": "Temporary broad screening/source projection; named verified evidence and exact regression source sets retained below; original sealed run remains available."
+    },
+    {
+      "path": "implementation\\identity_queue_core_source_delta_20261015.json",
+      "bytes": 2148954,
+      "sha256": "6eda103eefa300dba66932412d12c35b3a9e9739d5139512203f8a8649a5fa1c",
+      "reason": "Temporary broad screening/source projection; named verified evidence and exact regression source sets retained below; original sealed run remains available."
+    }
+  ]
+}

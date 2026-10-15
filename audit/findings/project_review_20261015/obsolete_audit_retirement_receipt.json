@@ -1,0 +1,36 @@
+{
+  "schema": "obsolete_audit_retirement_receipt_v1",
+  "completed_at": "2026-10-15T04:55:08.9224607Z",
+  "plan": "D:\\cases data analisis\\audit\\findings\\project_review_20261015\\obsolete_audit_retirement_plan.json",
+  "plan_sha256": "3342fb339d27a6f1e20471917d7f77677085a2ba0486c4004b2d34942c8e36e0",
+  "targets": [
+    {
+      "path": "D:\\cases data analisis\\data\\audit\\case_origin_before.tsv",
+      "bytes": 46042374,
+      "deleted": true
+    },
+    {
+      "path": "D:\\cases data analisis\\data\\audit\\gap_audit.json",
+      "bytes": 4293855,
+      "deleted": true
+    },
+    {
+      "path": "D:\\cases data analisis\\data\\audit\\trim_all.txt",
+      "bytes": 2891261,
+      "deleted": true
+    },
+    {
+      "path": "D:\\cases data analisis\\data\\audit\\task2_gains_-.txt",
+      "bytes": 2004951,
+      "deleted": true
+    },
+    {
+      "path": "D:\\cases data analisis\\data\\audit\\name_borrow_rows.csv",
+      "bytes": 928958,
+      "deleted": true
+    }
+  ],
+  "deleted_logical_bytes": 56161399.0,
+  "measurement": "Logical file lengths, not allocated blocks or a claim about disk free space",
+  "status": "complete"
+}

@@ -1,0 +1,223 @@
+{
+  "schema": "isolated_addison_positive_court_validation_v1",
+  "status": "passed",
+  "checks": {
+    "both_negative": {
+      "status": "passed",
+      "groups": 1,
+      "dd": [
+        9
+      ],
+      "source_set_exact": true,
+      "source_count": 9,
+      "negative_keys_present": [],
+      "member_keys": [
+        "2007|2|scr||793",
+        "2007||scc||33"
+      ],
+      "stats": {
+        "neutral_rows_before_court_start": 0,
+        "document_alias_inherited_holdout_key_units": 0,
+        "identifier_exact_key_groups_without_name_link": 1,
+        "anchors_collapsed_as_variant": 0,
+        "identity_clusters_split_by_court": 1,
+        "document_alias_cluster_unions": 1,
+        "document_alias_qualified_member_rows": 5,
+        "self_ids_removed": 1,
+        "group_origin_undetermined": 4,
+        "groups_out": 4
+      }
+    },
+    "lower_FCA_only": {
+      "status": "passed",
+      "groups": 1,
+      "dd": [
+        9
+      ],
+      "source_set_exact": true,
+      "source_count": 9,
+      "negative_keys_present": [],
+      "member_keys": [
+        "2007|2|scr||793",
+        "2007||scc||33"
+      ],
+      "stats": {
+        "neutral_rows_before_court_start": 0,
+        "document_alias_inherited_holdout_key_units": 0,
+        "identifier_exact_key_groups_without_name_link": 1,
+        "anchors_collapsed_as_variant": 0,
+        "identity_clusters_split_by_court": 1,
+        "document_alias_cluster_unions": 1,
+        "document_alias_qualified_member_rows": 5,
+        "self_ids_removed": 1,
+        "group_origin_undetermined": 3,
+        "groups_out": 3
+      }
+    },
+    "other_ONSC_only": {
+      "status": "passed",
+      "groups": 1,
+      "dd": [
+        9
+      ],
+      "source_set_exact": true,
+      "source_count": 9,
+      "negative_keys_present": [],
+      "member_keys": [
+        "2007|2|scr||793",
+        "2007||scc||33"
+      ],
+      "stats": {
+        "neutral_rows_before_court_start": 0,
+        "document_alias_inherited_holdout_key_units": 0,
+        "identifier_exact_key_groups_without_name_link": 1,
+        "anchors_collapsed_as_variant": 0,
+        "groups_merged_parallel": 1,
+        "document_alias_cluster_unions": 1,
+        "document_alias_qualified_member_rows": 5,
+        "self_ids_removed": 1,
+        "group_origin_undetermined": 2,
+        "groups_out": 2
+      }
+    }
+  },
+  "source_run": "data/run_20261014_reliable_v2",
+  "text_policy": "en_then_fr",
+  "scope": "Full original metadata uniqueness/header qualification, followed by isolated actual Addison member/source subsets. Not a complete fresh fallback extraction certification.",
+  "producer_sha256": {
+    "registry.py": "22a922657fc64a97289b9bf48ff1d3514a0e6ced188b93de1e047cd2cda68e0c",
+    "decide.py": "a98073f926ec0224d50dc76bc13cafd190ceba9ce0da95037b173f357ace9581",
+    "identity_courts.py": "3f95f4812ab46ef93548bd3f46f4a651915a1882919023bace26fefec2ae422c",
+    "corpus_fields.py": "8121d6485dc5f23778a17d659a5fd54e5fb2faf841928b9959d2049ce1b240a2"
+  },
+  "court_facts_sha256": "9f5ac10c7fc23e562519a907eb33750b9e2b54edeb3a4a9637948ce2e1aa89dd",
+  "court_facts_verification_receipt": "audit/findings/project_review_20261014/identity_court_facts_verification.json",
+  "native_alias_proofs": {
+    "2007||scc||33": [
+      {
+        "merge_key": "2007||scc||33",
+        "decision_id": "SCC_2007scc33",
+        "source_court": "SCC",
+        "field": "citation_en",
+        "corpus_row": "2325",
+        "language": "en",
+        "text_field": "unofficial_text_en",
+        "source_citation_field": "citation_en",
+        "source_citation_sha256": "a48fcbc829520d70253911230379928ad426ccf7f851a078f030df862e93b522",
+        "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+        "field_sha256": "a48fcbc829520d70253911230379928ad426ccf7f851a078f030df862e93b522",
+        "text_sha256": "27c377473d9f22fee3d889dd0837751091c6220a99df897857eb2f341a3dce54",
+        "citation": "2007 SCC 33",
+        "citation_kind": "neutral",
+        "header_boundary": "Decision Content",
+        "header_end": "415",
+        "header_start": "99",
+        "header_match_end": "110",
+        "header_raw_sha256": "a48fcbc829520d70253911230379928ad426ccf7f851a078f030df862e93b522",
+        "identity_qualified": "true",
+        "claim_status": "qualified_metadata_header",
+        "claim_detail": "",
+        "evidence_id": "own:4f2750017f55de4a052b48f134bae56ac993a5c2ff2ba968193f3893d299fe99"
+      }
+    ],
+    "2007|2|scr||793": [
+      {
+        "merge_key": "2007|2|scr||793",
+        "decision_id": "SCC_2007scc33",
+        "source_court": "SCC",
+        "field": "citation2_en",
+        "corpus_row": "2325",
+        "language": "en",
+        "text_field": "unofficial_text_en",
+        "source_citation_field": "citation_en",
+        "source_citation_sha256": "a48fcbc829520d70253911230379928ad426ccf7f851a078f030df862e93b522",
+        "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+        "field_sha256": "de042d41fb08761c91ccaf4839767097a9bfade8bd565a9e7d04b97d564f5363",
+        "text_sha256": "27c377473d9f22fee3d889dd0837751091c6220a99df897857eb2f341a3dce54",
+        "citation": "[2007] 2 SCR 793",
+        "citation_kind": "reporter",
+        "header_boundary": "Decision Content",
+        "header_end": "415",
+        "header_start": "118",
+        "header_match_end": "134",
+        "header_raw_sha256": "de042d41fb08761c91ccaf4839767097a9bfade8bd565a9e7d04b97d564f5363",
+        "identity_qualified": "true",
+        "claim_status": "qualified_metadata_header",
+        "claim_detail": "",
+        "evidence_id": "own:0524cf20adb8c6c884c3bd91193b38cf9c5a976300a0da96d8a07eb4ab2b0e54"
+      }
+    ],
+    "2007||csc||33": [
+      {
+        "merge_key": "2007||csc||33",
+        "decision_id": "SCC_2007scc33",
+        "source_court": "SCC",
+        "field": "citation_fr",
+        "corpus_row": "2325",
+        "language": "fr",
+        "text_field": "unofficial_text_fr",
+        "source_citation_field": "citation_en",
+        "source_citation_sha256": "a48fcbc829520d70253911230379928ad426ccf7f851a078f030df862e93b522",
+        "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+        "field_sha256": "6b9bc586f55c69c5c3613d8192c4f96e0ba5781fc2ada92527c7a3c51398894f",
+        "text_sha256": "36c37b989f93d0aff9324aa1526f552a7bf6d3268bc8e553959eda8155a459a0",
+        "citation": "2007 CSC 33",
+        "citation_kind": "neutral",
+        "header_boundary": "Contenu de la décision",
+        "header_end": "447",
+        "header_start": "104",
+        "header_match_end": "115",
+        "header_raw_sha256": "6b9bc586f55c69c5c3613d8192c4f96e0ba5781fc2ada92527c7a3c51398894f",
+        "identity_qualified": "true",
+        "claim_status": "qualified_metadata_header",
+        "claim_detail": "",
+        "evidence_id": "own:21fb883b7485de12853edef17e444b26dcf1eff309e616d5a6b734af1d65ca7a"
+      }
+    ],
+    "2007|2|rcs||793": [
+      {
+        "merge_key": "2007|2|rcs||793",
+        "decision_id": "SCC_2007scc33",
+        "source_court": "SCC",
+        "field": "citation2_fr",
+        "corpus_row": "2325",
+        "language": "fr",
+        "text_field": "unofficial_text_fr",
+        "source_citation_field": "citation_en",
+        "source_citation_sha256": "a48fcbc829520d70253911230379928ad426ccf7f851a078f030df862e93b522",
+        "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+        "field_sha256": "a8042f974ea16f39e9b34ff00686e01eec3a454f99bfc890136af60441ea977e",
+        "text_sha256": "36c37b989f93d0aff9324aa1526f552a7bf6d3268bc8e553959eda8155a459a0",
+        "citation": "[2007] 2 RCS 793",
+        "citation_kind": "reporter",
+        "header_boundary": "Contenu de la décision",
+        "header_end": "447",
+        "header_start": "124",
+        "header_match_end": "140",
+        "header_raw_sha256": "a8042f974ea16f39e9b34ff00686e01eec3a454f99bfc890136af60441ea977e",
+        "identity_qualified": "true",
+        "claim_status": "qualified_metadata_header",
+        "claim_detail": "",
+        "evidence_id": "own:349ed5247f5167a19d073400b6effae592e06200f9f6ed2826bc730bf8d8de11"
+      }
+    ]
+  },
+  "own_scan_stats": {
+    "corpus_sha256_SCC": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+    "keys_citation_en": 43302,
+    "keys_citation2_en": 10579,
+    "keys_citation_fr": 5138,
+    "keys_citation2_fr": 4774,
+    "skipped_citation_en_shape_no_kept": 6183,
+    "skipped_citation2_en_shape_no_kept": 2,
+    "corpus_sha256_ONCA": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+    "skipped_citation_fr_shape_no_kept": 20,
+    "corpus_sha256_BCCA": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3",
+    "claim_self_only_no_distinct_parallel_key": 38228,
+    "claim_qualified_metadata_header": 19338,
+    "claim_rejected_ambiguous_source_or_key": 4,
+    "claim_self_only_missing_header_match": 4,
+    "claim_self_only_unknown_header_boundary": 6219
+  },
+  "temporary_own_table_deleted": true
+}

@@ -1,0 +1,125 @@
+{
+  "schema": "housen_fallback_source_delta_v1",
+  "status": "passed",
+  "run_id": "run_20261014_reliable_final",
+  "old_english_source_count": 1499,
+  "final_source_count": 1500,
+  "added_source": "ONCA_2021onca268",
+  "removed_sources": [],
+  "reason": "A genuine French-only input source is processed by explicit en_then_fr fallback; its native CSC/RCS citations join the same Housen identity through qualified document aliases.",
+  "manifest_sha256": "09803eb185bf3834aa5bc9ee97e1874dab1b6f77675f4c9f0a82cd9905e5cbe5",
+  "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+  "corpus_path": "D:\\cases data analisis\\corpus\\ONCA.parquet",
+  "corpus_sha256": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+  "corpus_row": 22879,
+  "source_metadata": {
+    "citation_en": null,
+    "citation_fr": "2021 ONCA 268",
+    "name_en": null,
+    "name_fr": "R. c. F.J.",
+    "document_date_en": null,
+    "document_date_fr": "2021-04-30 00:00:00+00:00"
+  },
+  "text_field": "unofficial_text_fr",
+  "text_sha256": "39f5a24bf271b929839466ecc194a625e7a884fc84e763ca657e528865ab7a39",
+  "quotes": [
+    {
+      "candidate_id": "ONCA:22879:22786:22797:shape_neutral_bare",
+      "merge_key": "2002||csc||33",
+      "ledger_record": 201470,
+      "span": [
+        22786,
+        22797
+      ],
+      "literal_original_matches": true,
+      "raw": "2002 CSC 33",
+      "raw_sha256": "acee991cb8d964018d88bf23590358e2688c242cb7013e1b6983b65825cc4c53",
+      "context": "impose à la conclusion factuelle de la juge de procès : Luceno, au para. 34 ; Housen c. Nikolaisen, 2002 CSC 33, [2002] 2 R.C.S. 235, aux paras. 10, 25.\n[31] Ce moyen d’appel est donc rejeté.\n(3) L’utilisation d"
+    },
+    {
+      "candidate_id": "ONCA:22879:22799:22818:shape_bracket",
+      "merge_key": "2002|2|rcs||235",
+      "ledger_record": 201472,
+      "span": [
+        22799,
+        22818
+      ],
+      "literal_original_matches": true,
+      "raw": "[2002] 2 R.C.S. 235",
+      "raw_sha256": "77cbf93fea00e775c8d7aef8723845e0ab9f46dc8d79f5fa4e64f11cb9108bc9",
+      "context": "onclusion factuelle de la juge de procès : Luceno, au para. 34 ; Housen c. Nikolaisen, 2002 CSC 33, [2002] 2 R.C.S. 235, aux paras. 10, 25.\n[31] Ce moyen d’appel est donc rejeté.\n(3) L’utilisation des déclarations antér"
+    }
+  ],
+  "edge": [
+    {
+      "record": 113053,
+      "source_decision": "ONCA_2021onca268",
+      "resolved_cited_case": "XC-G024431",
+      "foreign_status": "DOMESTIC_CA",
+      "origin_country": "CA",
+      "group_origin_country": "CA",
+      "group_origin_status": "DETERMINED",
+      "group_foreign_status": "DOMESTIC_CA",
+      "edge_support": "supported",
+      "identity_status": "document_alias",
+      "origin_basis": "exclusive_reporter_scope+court_scope_rule",
+      "origin_evidence_ids": "reporter_scope:S.C.R.|scope:SCC|scope:CSC",
+      "noncore_origin_evidence": "unanchored:CA:reporter_scope:S.C.R.",
+      "mention_count": "2",
+      "distinct_decisions_count": "1500",
+      "case_name_modal": "Housen v. Nikolaisen",
+      "mention_detail_key": "ONCA|2002|2|rcs||235;ONCA|2002||csc||33"
+    }
+  ],
+  "artifacts": [
+    {
+      "logical_path": "merge_out/ONCA/mentions_candidates.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\ONCA\\mentions_candidates.csv.gz",
+      "physical_sha256": "37e51b495bb60ee5cc912a01cb3ef63af11a3e5687ba6084a20520932bad3dda",
+      "content_sha256": "cccdfc5d25ff7a228e91c25c363b78e1425036026d519f572f445de23c33517a",
+      "logical_bytes": 90938664,
+      "stored_bytes": 12480749,
+      "rows": 377243,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "edges/citation_edges.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\edges\\citation_edges.csv.gz",
+      "physical_sha256": "3a89b92e09903517ebfddc719008673e75b967c80680128630c7eec8b621daf7",
+      "content_sha256": "7c9b3a2d4d53f621d9c7bf8d3955ef9c8098e671359214772cee233087ac7ae9",
+      "logical_bytes": 81256125,
+      "stored_bytes": 7247605,
+      "rows": 490576,
+      "output_seal_verified": true
+    }
+  ],
+  "source_set_delta": {
+    "Bell": {
+      "old_count": 446,
+      "new_count": 446,
+      "added": [],
+      "removed": []
+    },
+    "Housen": {
+      "old_count": 1499,
+      "new_count": 1500,
+      "added": [
+        "ONCA_2021onca268"
+      ],
+      "removed": []
+    },
+    "Biniaris": {
+      "old_count": 384,
+      "new_count": 384,
+      "added": [],
+      "removed": []
+    },
+    "Addison": {
+      "old_count": 9,
+      "new_count": 9,
+      "added": [],
+      "removed": []
+    }
+  },
+  "limits": "Named source preservation and literal quote verification only; no treatment or population-accuracy label."
+}

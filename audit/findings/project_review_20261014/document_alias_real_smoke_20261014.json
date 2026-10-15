@@ -1,0 +1,242 @@
+{
+  "schema": "document_alias_real_smoke_v1",
+  "status": "passed",
+  "own_citation_stats": {
+    "corpus_sha256_SCC": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+    "keys_citation_en": 43302,
+    "keys_citation2_en": 10579,
+    "skipped_citation_en_shape_no_kept": 6183,
+    "skipped_citation2_en_shape_no_kept": 2,
+    "corpus_sha256_ONCA": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+    "corpus_sha256_BCCA": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3",
+    "claim_self_only_no_distinct_parallel_key": 44532,
+    "claim_qualified_metadata_header": 3128,
+    "claim_rejected_ambiguous_source_or_key": 2,
+    "claim_self_only_unknown_header_boundary": 6219
+  },
+  "qualified_keys": 3128,
+  "cases": {
+    "Bell": {
+      "dd": 446,
+      "groups": 1,
+      "qualified_aliases": {
+        "2002||scc||42": "SCC_2002scc42",
+        "2002|2|scr||559": "SCC_2002scc42"
+      },
+      "proofs": {
+        "2002||scc||42": [
+          {
+            "merge_key": "2002||scc||42",
+            "decision_id": "SCC_2002scc42",
+            "source_court": "SCC",
+            "field": "citation_en",
+            "corpus_row": "2804",
+            "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+            "field_sha256": "d694c93416eb517c46c62d5b16d8c18b885868d5e01242fe1defa6d0c51e2d1e",
+            "text_sha256": "58672531a1a5b5ec38bf78e4aa3ceae760a97ef6509d01c25f0ffa5b5935606a",
+            "citation": "2002 SCC 42",
+            "citation_kind": "neutral",
+            "header_boundary": "Decision Content",
+            "header_end": "417",
+            "header_start": "110",
+            "header_match_end": "121",
+            "header_raw_sha256": "d694c93416eb517c46c62d5b16d8c18b885868d5e01242fe1defa6d0c51e2d1e",
+            "identity_qualified": "true",
+            "claim_status": "qualified_metadata_header",
+            "claim_detail": "",
+            "evidence_id": "own:95977d651bbf02d133f4723943a621a7b065e80e39c2d4789f00cebd6d7adf0e"
+          }
+        ],
+        "2002|2|scr||559": [
+          {
+            "merge_key": "2002|2|scr||559",
+            "decision_id": "SCC_2002scc42",
+            "source_court": "SCC",
+            "field": "citation2_en",
+            "corpus_row": "2804",
+            "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+            "field_sha256": "1ed28a5ac93a7f155ddcfab1e16b498019791e9d55e6d8797b0ea4cbf2172ab5",
+            "text_sha256": "58672531a1a5b5ec38bf78e4aa3ceae760a97ef6509d01c25f0ffa5b5935606a",
+            "citation": "[2002] 2 SCR 559",
+            "citation_kind": "reporter",
+            "header_boundary": "Decision Content",
+            "header_end": "417",
+            "header_start": "129",
+            "header_match_end": "145",
+            "header_raw_sha256": "1ed28a5ac93a7f155ddcfab1e16b498019791e9d55e6d8797b0ea4cbf2172ab5",
+            "identity_qualified": "true",
+            "claim_status": "qualified_metadata_header",
+            "claim_detail": "",
+            "evidence_id": "own:7d7ee779319e4f0e255a404ee2465ea5831ffeca3b24837ad1b4844486b48db7"
+          }
+        ]
+      },
+      "stats": {
+        "neutral_rows_before_court_start": 0,
+        "anchors_collapsed_as_variant": 0,
+        "single_anchor_unsupported_reporter_units": 1,
+        "clusters_identifier_split_uncoited": 1,
+        "groups_merged_parallel": 1,
+        "document_alias_cluster_unions": 1,
+        "document_alias_qualified_member_rows": 6,
+        "self_ids_removed": 1,
+        "group_origin_undetermined": 1,
+        "groups_out": 1
+      },
+      "excluded_self_sources": [
+        "SCC_2002scc42"
+      ],
+      "known_other_document_excluded": true
+    },
+    "Housen": {
+      "dd": 1499,
+      "groups": 1,
+      "qualified_aliases": {
+        "2002||scc||33": "SCC_2002scc33",
+        "2002|2|scr||235": "SCC_2002scc33"
+      },
+      "proofs": {
+        "2002||scc||33": [
+          {
+            "merge_key": "2002||scc||33",
+            "decision_id": "SCC_2002scc33",
+            "source_court": "SCC",
+            "field": "citation_en",
+            "corpus_row": "2784",
+            "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+            "field_sha256": "65c66fd7c4f43d0f32b144f63eec4af96fddf14f651d273f99712a1c6272d5c4",
+            "text_sha256": "644df4b0824b1c65fe77f284f505b4c988abde98a09f2b3c530acf1e61d3e3aa",
+            "citation": "2002 SCC 33",
+            "citation_kind": "neutral",
+            "header_boundary": "Decision Content",
+            "header_end": "432",
+            "header_start": "89",
+            "header_match_end": "100",
+            "header_raw_sha256": "65c66fd7c4f43d0f32b144f63eec4af96fddf14f651d273f99712a1c6272d5c4",
+            "identity_qualified": "true",
+            "claim_status": "qualified_metadata_header",
+            "claim_detail": "",
+            "evidence_id": "own:483bc2b8f91f9b45ca086fccc0d9aa7faa2ec9304b88bbeda70e4d3515e3c383"
+          }
+        ],
+        "2002|2|scr||235": [
+          {
+            "merge_key": "2002|2|scr||235",
+            "decision_id": "SCC_2002scc33",
+            "source_court": "SCC",
+            "field": "citation2_en",
+            "corpus_row": "2784",
+            "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+            "field_sha256": "0bc3a4ffb2897c2cc3c778ef3dcbaf5867c6b10b2a01d4439619fcf3dd370f2a",
+            "text_sha256": "644df4b0824b1c65fe77f284f505b4c988abde98a09f2b3c530acf1e61d3e3aa",
+            "citation": "[2002] 2 SCR 235",
+            "citation_kind": "reporter",
+            "header_boundary": "Decision Content",
+            "header_end": "432",
+            "header_start": "108",
+            "header_match_end": "124",
+            "header_raw_sha256": "0bc3a4ffb2897c2cc3c778ef3dcbaf5867c6b10b2a01d4439619fcf3dd370f2a",
+            "identity_qualified": "true",
+            "claim_status": "qualified_metadata_header",
+            "claim_detail": "",
+            "evidence_id": "own:0508bb86496db89dc70e1d41137d10937342856e36e846d0a08d538652d38ed0"
+          }
+        ]
+      },
+      "stats": {
+        "neutral_rows_before_court_start": 0,
+        "anchors_collapsed_as_variant": 0,
+        "single_anchor_unsupported_reporter_units": 1,
+        "clusters_identifier_split_uncoited": 1,
+        "groups_merged_parallel": 1,
+        "document_alias_cluster_unions": 1,
+        "document_alias_qualified_member_rows": 6,
+        "self_ids_removed": 1,
+        "group_origin_undetermined": 1,
+        "groups_with_observed_deciding_court": 1,
+        "groups_out": 1
+      },
+      "excluded_self_sources": [
+        "SCC_2002scc33"
+      ],
+      "known_other_document_excluded": true
+    },
+    "Biniaris": {
+      "dd": 384,
+      "groups": 1,
+      "qualified_aliases": {
+        "2000||scc||15": "SCC_2000scc15",
+        "2000|1|scr||381": "SCC_2000scc15"
+      },
+      "proofs": {
+        "2000||scc||15": [
+          {
+            "merge_key": "2000||scc||15",
+            "decision_id": "SCC_2000scc15",
+            "source_court": "SCC",
+            "field": "citation_en",
+            "corpus_row": "6653",
+            "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+            "field_sha256": "56450c1fa44458458e7626256e6e981d03ec0e7a23583e4823dfc622fb03a31c",
+            "text_sha256": "c9d331aba1a599ad7e14cf1e4c49c7f96f0c4ee166fdfd1c7e3c45311d01ce17",
+            "citation": "2000 SCC 15",
+            "citation_kind": "neutral",
+            "header_boundary": "Decision Content",
+            "header_end": "418",
+            "header_start": "83",
+            "header_match_end": "94",
+            "header_raw_sha256": "56450c1fa44458458e7626256e6e981d03ec0e7a23583e4823dfc622fb03a31c",
+            "identity_qualified": "true",
+            "claim_status": "qualified_metadata_header",
+            "claim_detail": "",
+            "evidence_id": "own:92e43e6b07e0f27aecdceaf5cdf3dc0b01af98c1617a75c680e17a85f567a997"
+          }
+        ],
+        "2000|1|scr||381": [
+          {
+            "merge_key": "2000|1|scr||381",
+            "decision_id": "SCC_2000scc15",
+            "source_court": "SCC",
+            "field": "citation2_en",
+            "corpus_row": "6653",
+            "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+            "field_sha256": "0a1314e062cc09fc9220ecd6fd2a8bb1aa98a8b6a25d9bc63675d93ad4585aa5",
+            "text_sha256": "c9d331aba1a599ad7e14cf1e4c49c7f96f0c4ee166fdfd1c7e3c45311d01ce17",
+            "citation": "[2000] 1 SCR 381",
+            "citation_kind": "reporter",
+            "header_boundary": "Decision Content",
+            "header_end": "418",
+            "header_start": "102",
+            "header_match_end": "118",
+            "header_raw_sha256": "0a1314e062cc09fc9220ecd6fd2a8bb1aa98a8b6a25d9bc63675d93ad4585aa5",
+            "identity_qualified": "true",
+            "claim_status": "qualified_metadata_header",
+            "claim_detail": "",
+            "evidence_id": "own:1fb51d0d0bd2cb0fdda64a2915138f7525fe4a63541da6a022a52aceff5276d9"
+          }
+        ]
+      },
+      "stats": {
+        "neutral_rows_before_court_start": 0,
+        "anchors_collapsed_as_variant": 0,
+        "single_anchor_unsupported_reporter_units": 3,
+        "clusters_identifier_split_uncoited": 2,
+        "groups_merged_parallel": 2,
+        "document_claim_contaminated_clusters_split": 1,
+        "document_claim_unassigned_key_units": 0,
+        "document_alias_cluster_unions": 3,
+        "document_alias_qualified_member_rows": 12,
+        "self_ids_removed": 2,
+        "group_origin_undetermined": 2,
+        "groups_out": 2
+      },
+      "excluded_self_sources": [
+        "SCC_2000scc15",
+        "SCC_2000scc17"
+      ],
+      "known_other_document_excluded": true
+    }
+  },
+  "carlos_primary_metadata_registered": true,
+  "scope": "Read-only source projection and isolated in-memory three-case adjudication; full V3 must still run."
+}

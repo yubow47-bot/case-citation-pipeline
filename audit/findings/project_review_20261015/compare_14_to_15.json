@@ -1,0 +1,706 @@
+{
+  "schema": "run_comparison_v1",
+  "status": "compared",
+  "candidates": {
+    "old": {
+      "rows": 1472144,
+      "by_court": {
+        "SCC": 640467,
+        "ONCA": 377243,
+        "BCCA": 454434
+      },
+      "ordered_identity_sha256": "8bb766477ee3435217d67f96a9a73ef7cacc1de28847ebc4ad074e84c29e46c1"
+    },
+    "new": {
+      "rows": 1472144,
+      "by_court": {
+        "SCC": 640467,
+        "ONCA": 377243,
+        "BCCA": 454434
+      },
+      "ordered_identity_sha256": "8bb766477ee3435217d67f96a9a73ef7cacc1de28847ebc4ad074e84c29e46c1"
+    },
+    "added_rows": 0,
+    "lost_rows": 0,
+    "same_id_changed_rows": 0,
+    "documents_failing_legacy_ordered_subsequence": 0,
+    "ordered_identity_equal": true,
+    "original_candidates_preserved_in_order": true,
+    "preservation_status": "passed",
+    "same_document_duplicate_candidate_ids": {
+      "old": 0,
+      "new": 0
+    },
+    "changed_fields": {},
+    "added_shapes": {
+      "top": [],
+      "other_count": 0,
+      "distinct_values": 0
+    },
+    "examples": [],
+    "identity_fields": [
+      "candidate_id",
+      "corpus_row_index",
+      "source_decision_citation",
+      "raw_string",
+      "match_start_offset",
+      "match_end_offset",
+      "match_span",
+      "parse_signature"
+    ],
+    "example_limit": 20,
+    "matching": "Candidate ID plus occurrence ordinal within one corpus document; every raw row is counted, including duplicate IDs."
+  },
+  "merged": {
+    "courts": {
+      "SCC": {
+        "old_keys": 119939,
+        "new_keys": 119939,
+        "added_keys": 0,
+        "lost_keys": 0,
+        "existing_keys_counts_changed": 0,
+        "changed_fields": {},
+        "old_field_sums": {
+          "occurrence_count": 358121,
+          "distinct_decisions_count": 196059,
+          "variants_count": 69056,
+          "candidates_admitted": 157944,
+          "candidates_rejected": 200177
+        },
+        "new_field_sums": {
+          "occurrence_count": 358121,
+          "distinct_decisions_count": 196059,
+          "variants_count": 69056,
+          "candidates_admitted": 157944,
+          "candidates_rejected": 200177
+        },
+        "added_key_kinds": {
+          "top": [],
+          "other_count": 0,
+          "distinct_values": 0
+        },
+        "lost_key_kinds": {
+          "top": [],
+          "other_count": 0,
+          "distinct_values": 0
+        }
+      },
+      "ONCA": {
+        "old_keys": 66313,
+        "new_keys": 66313,
+        "added_keys": 0,
+        "lost_keys": 0,
+        "existing_keys_counts_changed": 0,
+        "changed_fields": {},
+        "old_field_sums": {
+          "occurrence_count": 170529,
+          "distinct_decisions_count": 165257,
+          "variants_count": 60643,
+          "candidates_admitted": 106495,
+          "candidates_rejected": 64034
+        },
+        "new_field_sums": {
+          "occurrence_count": 170529,
+          "distinct_decisions_count": 165257,
+          "variants_count": 60643,
+          "candidates_admitted": 106495,
+          "candidates_rejected": 64034
+        },
+        "added_key_kinds": {
+          "top": [],
+          "other_count": 0,
+          "distinct_values": 0
+        },
+        "lost_key_kinds": {
+          "top": [],
+          "other_count": 0,
+          "distinct_values": 0
+        }
+      },
+      "BCCA": {
+        "old_keys": 74777,
+        "new_keys": 74777,
+        "added_keys": 0,
+        "lost_keys": 0,
+        "existing_keys_counts_changed": 0,
+        "changed_fields": {},
+        "old_field_sums": {
+          "occurrence_count": 187943,
+          "distinct_decisions_count": 174081,
+          "variants_count": 63035,
+          "candidates_admitted": 99221,
+          "candidates_rejected": 88722
+        },
+        "new_field_sums": {
+          "occurrence_count": 187943,
+          "distinct_decisions_count": 174081,
+          "variants_count": 63035,
+          "candidates_admitted": 99221,
+          "candidates_rejected": 88722
+        },
+        "added_key_kinds": {
+          "top": [],
+          "other_count": 0,
+          "distinct_values": 0
+        },
+        "lost_key_kinds": {
+          "top": [],
+          "other_count": 0,
+          "distinct_values": 0
+        }
+      }
+    },
+    "examples": [],
+    "example_limit": 20,
+    "count_scope": "Per-court merged keys before cross-court adjudication, full tables."
+  },
+  "selected_identity": {
+    "old": {
+      "rows": 261029,
+      "groups": 230447,
+      "stable_member_keys": 261029,
+      "dd_sum": 490576,
+      "kept_groups": 14003,
+      "repeated_same_group_member_rows": 0,
+      "member_keys_in_multiple_groups": 0
+    },
+    "new": {
+      "rows": 261029,
+      "groups": 230449,
+      "stable_member_keys": 261029,
+      "dd_sum": 490577,
+      "kept_groups": 14003,
+      "repeated_same_group_member_rows": 0,
+      "member_keys_in_multiple_groups": 0
+    },
+    "stable_keys_added": 0,
+    "stable_keys_lost": 0,
+    "stable_keys_shared": 261029,
+    "components": {
+      "new_only_components": 0,
+      "new_only_old_groups": 0,
+      "new_only_new_groups": 0,
+      "old_only_components": 0,
+      "old_only_old_groups": 0,
+      "old_only_new_groups": 0,
+      "one_to_one_same_membership_components": 230445,
+      "one_to_one_same_membership_old_groups": 230445,
+      "one_to_one_same_membership_new_groups": 230445,
+      "one_to_one_changed_membership_components": 0,
+      "one_to_one_changed_membership_old_groups": 0,
+      "one_to_one_changed_membership_new_groups": 0,
+      "split_components": 2,
+      "split_old_groups": 2,
+      "split_new_groups": 4,
+      "merge_components": 0,
+      "merge_old_groups": 0,
+      "merge_new_groups": 0,
+      "many_to_many_components": 0,
+      "many_to_many_old_groups": 0,
+      "many_to_many_new_groups": 0,
+      "components_with_dd_sum_change": 1,
+      "components_with_kept_count_change": 0,
+      "components_with_origin_value_set_change": 1,
+      "one_to_one_dd_changed": 0,
+      "one_to_one_kept_changed": 0,
+      "one_to_one_origin_values_changed": 0,
+      "one_to_one_origin_evidence_changed": 0,
+      "one_to_one_primary_name_changed": 0,
+      "same_membership_dd_changed": 0,
+      "same_membership_kept_changed": 0,
+      "same_membership_origin_values_changed": 0
+    },
+    "component_dd_direction": {
+      "unchanged": 230446,
+      "increased": 1
+    },
+    "one_to_one_kept_transitions": {
+      "false→false": 216444,
+      "true→true": 14001
+    },
+    "category_totals": {
+      "new_only": {
+        "old_groups": 0,
+        "new_groups": 0,
+        "group_count_delta": 0,
+        "old_kept": 0,
+        "new_kept": 0,
+        "kept_count_delta": 0,
+        "old_dd_sum": 0,
+        "new_dd_sum": 0,
+        "dd_sum_delta": 0
+      },
+      "old_only": {
+        "old_groups": 0,
+        "new_groups": 0,
+        "group_count_delta": 0,
+        "old_kept": 0,
+        "new_kept": 0,
+        "kept_count_delta": 0,
+        "old_dd_sum": 0,
+        "new_dd_sum": 0,
+        "dd_sum_delta": 0
+      },
+      "one_to_one_same_membership": {
+        "old_groups": 230445,
+        "new_groups": 230445,
+        "group_count_delta": 0,
+        "old_kept": 14001,
+        "new_kept": 14001,
+        "kept_count_delta": 0,
+        "old_dd_sum": 490277,
+        "new_dd_sum": 490277,
+        "dd_sum_delta": 0
+      },
+      "one_to_one_changed_membership": {
+        "old_groups": 0,
+        "new_groups": 0,
+        "group_count_delta": 0,
+        "old_kept": 0,
+        "new_kept": 0,
+        "kept_count_delta": 0,
+        "old_dd_sum": 0,
+        "new_dd_sum": 0,
+        "dd_sum_delta": 0
+      },
+      "split": {
+        "old_groups": 2,
+        "new_groups": 4,
+        "group_count_delta": 2,
+        "old_kept": 2,
+        "new_kept": 2,
+        "kept_count_delta": 0,
+        "old_dd_sum": 299,
+        "new_dd_sum": 300,
+        "dd_sum_delta": 1
+      },
+      "merge": {
+        "old_groups": 0,
+        "new_groups": 0,
+        "group_count_delta": 0,
+        "old_kept": 0,
+        "new_kept": 0,
+        "kept_count_delta": 0,
+        "old_dd_sum": 0,
+        "new_dd_sum": 0,
+        "dd_sum_delta": 0
+      },
+      "many_to_many": {
+        "old_groups": 0,
+        "new_groups": 0,
+        "group_count_delta": 0,
+        "old_kept": 0,
+        "new_kept": 0,
+        "kept_count_delta": 0,
+        "old_dd_sum": 0,
+        "new_dd_sum": 0,
+        "dd_sum_delta": 0
+      }
+    },
+    "one_to_one_foreign_status_transitions": {
+      "top": [
+        {
+          "value": "UNDETERMINED→UNDETERMINED",
+          "count": 169414
+        },
+        {
+          "value": "DOMESTIC_CA→DOMESTIC_CA",
+          "count": 60571
+        },
+        {
+          "value": "FOREIGN→FOREIGN",
+          "count": 460
+        }
+      ],
+      "other_count": 0,
+      "distinct_values": 3
+    },
+    "merged_input_membership_coverage": {
+      "old": {
+        "merged_input_rows": 261029,
+        "selected_stable_keys": 261029,
+        "merged_input_keys_missing_from_selected": 0,
+        "selected_keys_without_merged_input": 0,
+        "matched_input_member_keys": 261029,
+        "status": "passed",
+        "missing_input_examples": [],
+        "extra_selected_examples": [],
+        "meaning": "Every per-court merged input key should survive as selected (court, merge_key) membership. Group merging never excuses silently dropping these source member rows."
+      },
+      "new": {
+        "merged_input_rows": 261029,
+        "selected_stable_keys": 261029,
+        "merged_input_keys_missing_from_selected": 0,
+        "selected_keys_without_merged_input": 0,
+        "matched_input_member_keys": 261029,
+        "status": "passed",
+        "missing_input_examples": [],
+        "extra_selected_examples": [],
+        "meaning": "Every per-court merged input key should survive as selected (court, merge_key) membership. Group merging never excuses silently dropping these source member rows."
+      }
+    },
+    "examples": [
+      {
+        "kind": "split",
+        "old_group_count": 1,
+        "new_group_count": 2,
+        "old_dd_sum": 85,
+        "new_dd_sum": 86,
+        "dd_sum_delta": 1,
+        "old_kept_count": 1,
+        "new_kept_count": 1,
+        "origin_value_set_changed": true,
+        "old_member_keys": 8,
+        "new_member_keys": 8,
+        "shared_member_keys": 8,
+        "member_preview_limit": 20,
+        "member_preview": [
+          {
+            "court": "BCCA",
+            "merge_key": "2004|193|bcac||42"
+          },
+          {
+            "court": "BCCA",
+            "merge_key": "2005|3|scr||343"
+          },
+          {
+            "court": "BCCA",
+            "merge_key": "2005||scc||66"
+          },
+          {
+            "court": "ONCA",
+            "merge_key": "2005|3|scr||343"
+          },
+          {
+            "court": "ONCA",
+            "merge_key": "2005||scc||66"
+          },
+          {
+            "court": "ONCA",
+            "merge_key": "|201|ccc|3d|449"
+          },
+          {
+            "court": "SCC",
+            "merge_key": "2005|3|scr||343"
+          },
+          {
+            "court": "SCC",
+            "merge_key": "2005||scc||66"
+          }
+        ],
+        "old_groups": [
+          {
+            "local_group_id": "XC-G027331",
+            "name": "R. v. Lising",
+            "dd": 85,
+            "kept": true,
+            "foreign_status": "DOMESTIC_CA",
+            "origin_country": "CA",
+            "origin_status": "DETERMINED",
+            "primary_record": 38333,
+            "primary_merge_key": "2005|3|scr||343",
+            "split_reason": "court_evidence;identity_metadata_variants;span",
+            "primary_identity_basis": "document_alias",
+            "observed_deciding_court": "",
+            "member_keys": 8
+          }
+        ],
+        "new_groups": [
+          {
+            "local_group_id": "XC-G027331",
+            "name": "R. v. Lising",
+            "dd": 1,
+            "kept": false,
+            "foreign_status": "UNDETERMINED",
+            "origin_country": "",
+            "origin_status": "UNDETERMINED",
+            "primary_record": 38330,
+            "primary_merge_key": "2004|193|bcac||42",
+            "split_reason": "span;court_evidence",
+            "primary_identity_basis": "singleton",
+            "observed_deciding_court": "",
+            "member_keys": 1
+          },
+          {
+            "local_group_id": "XC-G028898",
+            "name": "R. v. Lising",
+            "dd": 85,
+            "kept": true,
+            "foreign_status": "DOMESTIC_CA",
+            "origin_country": "CA",
+            "origin_status": "DETERMINED",
+            "primary_record": 40715,
+            "primary_merge_key": "2005|3|scr||343",
+            "split_reason": "court_evidence;identity_metadata_variants;span;court_evidence",
+            "primary_identity_basis": "document_alias",
+            "observed_deciding_court": "",
+            "member_keys": 7
+          }
+        ]
+      },
+      {
+        "kind": "split",
+        "old_group_count": 1,
+        "new_group_count": 2,
+        "old_dd_sum": 214,
+        "new_dd_sum": 214,
+        "dd_sum_delta": 0,
+        "old_kept_count": 1,
+        "new_kept_count": 1,
+        "origin_value_set_changed": false,
+        "old_member_keys": 6,
+        "new_member_keys": 6,
+        "shared_member_keys": 6,
+        "member_preview_limit": 20,
+        "member_preview": [
+          {
+            "court": "BCCA",
+            "merge_key": "1985|2|scr||486"
+          },
+          {
+            "court": "BCCA",
+            "merge_key": "1985||canlii||81"
+          },
+          {
+            "court": "ONCA",
+            "merge_key": "1985|2|rcs||486"
+          },
+          {
+            "court": "ONCA",
+            "merge_key": "1985|2|scr||486"
+          },
+          {
+            "court": "SCC",
+            "merge_key": "1985|2|scr||486"
+          },
+          {
+            "court": "SCC",
+            "merge_key": "|65|nsr|2d|54"
+          }
+        ],
+        "old_groups": [
+          {
+            "local_group_id": "XC-G008972",
+            "name": "Re B.C. Motor Vehicle Act",
+            "dd": 214,
+            "kept": true,
+            "foreign_status": "DOMESTIC_CA",
+            "origin_country": "CA",
+            "origin_status": "DETERMINED",
+            "primary_record": 12030,
+            "primary_merge_key": "1985|2|scr||486",
+            "split_reason": "",
+            "primary_identity_basis": "document_alias",
+            "observed_deciding_court": "",
+            "member_keys": 6
+          }
+        ],
+        "new_groups": [
+          {
+            "local_group_id": "XC-G008972",
+            "name": "Re B.C. Motor Vehicle Act",
+            "dd": 213,
+            "kept": true,
+            "foreign_status": "DOMESTIC_CA",
+            "origin_country": "CA",
+            "origin_status": "DETERMINED",
+            "primary_record": 12030,
+            "primary_merge_key": "1985|2|scr||486",
+            "split_reason": "",
+            "primary_identity_basis": "document_alias",
+            "observed_deciding_court": "",
+            "member_keys": 5
+          },
+          {
+            "local_group_id": "XC-G221656",
+            "name": "R. v. Johnson",
+            "dd": 1,
+            "kept": false,
+            "foreign_status": "DOMESTIC_CA",
+            "origin_country": "CA",
+            "origin_status": "DETERMINED",
+            "primary_record": 252230,
+            "primary_merge_key": "|65|nsr|2d|54",
+            "split_reason": "unanchored;document_alias_inherited_holdout",
+            "primary_identity_basis": "singleton",
+            "observed_deciding_court": "",
+            "member_keys": 1
+          }
+        ]
+      }
+    ],
+    "example_limit": 20,
+    "matching": "Connected components of old/new groups sharing exact (court, merge_key) membership; local group IDs are never compared across runs.",
+    "interpretation": "Splits/merges are structural membership changes, not proof of correct judgment identity. DD sums count edges and can change when group membership changes."
+  },
+  "old": {
+    "run_id": "run_20261014_reliable_final",
+    "directory": "D:\\cases data analisis\\data\\run_20261014_reliable_final",
+    "courts": [
+      "SCC",
+      "ONCA",
+      "BCCA"
+    ],
+    "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+    "output_fingerprint": "7cc1e8dc936d0b0554b4e62c14e901d77948acb7c4f7f15b99db3d37390dd2ad",
+    "manifest_sha256": "09803eb185bf3834aa5bc9ee97e1874dab1b6f77675f4c9f0a82cd9905e5cbe5",
+    "params": {
+      "year_from": null,
+      "limit_batches": null,
+      "batch_size": 500,
+      "registry_gate": "registered",
+      "mixed_key_holdout": true
+    },
+    "artifacts": [
+      {
+        "logical_path": "extract_out/candidates.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\extract_out\\candidates.csv.gz",
+        "physical_sha256": "48c040a846caead4ef97b2bd7058cac5f726c2bb69f7de25f714fe83ec2c9cd7",
+        "content_sha256": "8885d6b7ebc8bb5ab25f407caa069e2ba824f98981a0cc21d331ea2aa7477589",
+        "logical_bytes": 551081943,
+        "stored_bytes": 100909458,
+        "rows": 1472144,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/SCC/merged.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\SCC\\merged.csv.gz",
+        "physical_sha256": "eaf2936373b2566fe6b8938f1ca8db21e8c1c729685287842d10150ad08e7481",
+        "content_sha256": "6684221b18d300a59191e052c6247e18b06a6d7ec068bdec7af2b1130433a049",
+        "logical_bytes": 15442613,
+        "stored_bytes": 3121813,
+        "rows": 119939,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/ONCA/merged.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\ONCA\\merged.csv.gz",
+        "physical_sha256": "d89d42c8ef7dac3e3faf4da167511856a1e5dc986522b18af6d0ac8eea65da4e",
+        "content_sha256": "4614ca355189aef262c3d19cc8e196d5927ee010ccc46b68572205b15e169219",
+        "logical_bytes": 9410806,
+        "stored_bytes": 1977164,
+        "rows": 66313,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/BCCA/merged.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\BCCA\\merged.csv.gz",
+        "physical_sha256": "9f5cfb8145b2813ff678716ae1520e3d02a22373334615965d21824240e6d583",
+        "content_sha256": "b82d112cc0f44bb70ea1986e33564e3d69952e0615491dee7303b40cc0c4e9a7",
+        "logical_bytes": 10850118,
+        "stored_bytes": 2251956,
+        "rows": 74777,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "select_out/selected.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\select_out\\selected.csv.gz",
+        "physical_sha256": "9674262dc60b4b4f81b35f204e05e3636d81a2e039127e2dfd6e276c386760fa",
+        "content_sha256": "851b03e1a628d5801d013203eb367d81d71b07d38655127848b6f82a69be957d",
+        "logical_bytes": 84407688,
+        "stored_bytes": 8070996,
+        "rows": 261029,
+        "output_seal_verified": true
+      }
+    ]
+  },
+  "new": {
+    "run_id": "run_20261015_identity_review",
+    "directory": "D:\\cases data analisis\\data\\run_20261015_identity_review",
+    "courts": [
+      "SCC",
+      "ONCA",
+      "BCCA"
+    ],
+    "input_fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+    "output_fingerprint": "d6deb5d3cf3007c76841152e59a4fb97adedc855e0a6958492d4402c804a6cef",
+    "manifest_sha256": "312830e39e4e49c132c19e19a81b3aed51b9734cd4c159a277cae7d8e75fc431",
+    "params": {
+      "year_from": null,
+      "limit_batches": null,
+      "batch_size": 500,
+      "registry_gate": "registered",
+      "mixed_key_holdout": true
+    },
+    "artifacts": [
+      {
+        "logical_path": "extract_out/candidates.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\extract_out\\candidates.csv.gz",
+        "physical_sha256": "48c040a846caead4ef97b2bd7058cac5f726c2bb69f7de25f714fe83ec2c9cd7",
+        "content_sha256": "8885d6b7ebc8bb5ab25f407caa069e2ba824f98981a0cc21d331ea2aa7477589",
+        "logical_bytes": 551081943,
+        "stored_bytes": 100909458,
+        "rows": 1472144,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/SCC/merged.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\SCC\\merged.csv.gz",
+        "physical_sha256": "eaf2936373b2566fe6b8938f1ca8db21e8c1c729685287842d10150ad08e7481",
+        "content_sha256": "6684221b18d300a59191e052c6247e18b06a6d7ec068bdec7af2b1130433a049",
+        "logical_bytes": 15442613,
+        "stored_bytes": 3121813,
+        "rows": 119939,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/ONCA/merged.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\ONCA\\merged.csv.gz",
+        "physical_sha256": "d89d42c8ef7dac3e3faf4da167511856a1e5dc986522b18af6d0ac8eea65da4e",
+        "content_sha256": "4614ca355189aef262c3d19cc8e196d5927ee010ccc46b68572205b15e169219",
+        "logical_bytes": 9410806,
+        "stored_bytes": 1977164,
+        "rows": 66313,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/BCCA/merged.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\BCCA\\merged.csv.gz",
+        "physical_sha256": "9f5cfb8145b2813ff678716ae1520e3d02a22373334615965d21824240e6d583",
+        "content_sha256": "b82d112cc0f44bb70ea1986e33564e3d69952e0615491dee7303b40cc0c4e9a7",
+        "logical_bytes": 10850118,
+        "stored_bytes": 2251956,
+        "rows": 74777,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "select_out/selected.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\select_out\\selected.csv.gz",
+        "physical_sha256": "9e567a632851f5d968d19ac2d0b36159bbd529d3370763c6db9b95fbd215a899",
+        "content_sha256": "c055e82caa29976a6ac41386deb7af2dff5966dae5d2a671aca6ced15ac8a583",
+        "logical_bytes": 84669064,
+        "stored_bytes": 8074790,
+        "rows": 261029,
+        "output_seal_verified": true
+      }
+    ]
+  },
+  "input_scope": {
+    "shared_courts": [
+      "BCCA",
+      "ONCA",
+      "SCC"
+    ],
+    "changed_or_missing_shared_corpus_hashes": [],
+    "same_court_scope": true,
+    "old_text_policy": "en_then_fr",
+    "new_text_policy": "en_then_fr"
+  },
+  "limits": {
+    "max_report_bytes": 2097152,
+    "examples_per_section": 20,
+    "max_candidates_in_one_document": 20000,
+    "persistent_databases_created": 0,
+    "uncompressed_csv_copies_created": 0
+  },
+  "warnings": [
+    "Counts cover the complete CSV artifacts. Examples are bounded, not an accuracy sample.",
+    "No new semantic precision, causal attribution or population calibration is established by this comparison."
+  ],
+  "invariants": {
+    "legacy_candidate_preservation": true,
+    "merged_to_selected_member_coverage": true,
+    "selected_unique_source_membership": true
+  },
+  "validation_status": "passed"
+}

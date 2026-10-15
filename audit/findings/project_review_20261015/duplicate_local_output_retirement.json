@@ -1,0 +1,19 @@
+{
+  "schema": "duplicate_local_output_retirement_v1",
+  "targets": [
+    {
+      "path": "D:\\cases data analisis\\implementation\\foundation_identity_review_20261015.log",
+      "bytes": 23367,
+      "sha256": "7eeaf197788d886245dddc31e08e6f3ac3f665b30777488c6cf3751de3d21616",
+      "reason": "Exact duplicate stdout JSON; canonical foundation receipt retained"
+    },
+    {
+      "path": "D:\\cases data analisis\\audit\\findings\\project_review_20261015\\status_before_supplement.json",
+      "bytes": 39990,
+      "sha256": "6e761c38ba08e03674ebdd5c509e856e0f74cd2fca1a2084165f6f1ed043eaa9",
+      "reason": "Redundant intermediate status; status_before_replay and final dated status retained"
+    }
+  ],
+  "total_logical_bytes": 63357,
+  "status": "deleted"
+}

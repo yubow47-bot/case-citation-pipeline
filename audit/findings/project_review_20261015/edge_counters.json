@@ -1,0 +1,15 @@
+{
+  "schema": "edge_counter_reconciliation_v1",
+  "run_id": "run_20261015_identity_review",
+  "final_edges": {
+    "rows": 490577,
+    "mention_count": 705476
+  },
+  "excluded_self": {
+    "rows": 5077,
+    "mention_count": 11117
+  },
+  "legacy_pre_source_exclusion_mentions": 716593,
+  "reconciles": true,
+  "scope": "Full sealed CSV.gz edge row sums. Mentions are not edges or distinct source judgments."
+}

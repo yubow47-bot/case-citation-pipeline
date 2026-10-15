@@ -1,0 +1,797 @@
+{
+  "schema": "independent_parallel_alias_evidence_v1",
+  "run_directory": "D:\\cases data analisis\\data\\run_20261014_reliable_v2",
+  "run_input_fingerprint": "9577cc59abb73125ff51f70ec2e3ff4bb087ee021aef0b581f7cbe5e0f3a1ba1",
+  "run_manifest_sha256": "a3631c8b120199e8b17d9d1fcc2e94dd4fcd25cd25759cb4d1cd08db1271266e",
+  "scope": "All citation_en and citation2_en metadata in all SCC/ONCA/BCCA corpus rows; Unicode code point text offsets, end exclusive.",
+  "unique_metadata_fields_parsed": 51051,
+  "corpus_sources": [
+    {
+      "path": "D:\\cases data analisis\\corpus\\SCC.parquet",
+      "logical_path": "corpus/SCC.parquet",
+      "sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+      "matches_run_manifest": true,
+      "rows": 10891
+    },
+    {
+      "path": "D:\\cases data analisis\\corpus\\ONCA.parquet",
+      "logical_path": "corpus/ONCA.parquet",
+      "sha256": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+      "matches_run_manifest": true,
+      "rows": 24089
+    },
+    {
+      "path": "D:\\cases data analisis\\corpus\\BCCA.parquet",
+      "logical_path": "corpus/BCCA.parquet",
+      "sha256": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3",
+      "matches_run_manifest": true,
+      "rows": 14703
+    }
+  ],
+  "cases": [
+    {
+      "name": "Housen",
+      "corpus_row": 2784,
+      "source_id": "SCC_2002scc33",
+      "neutral_key": "2002||scc||33",
+      "reporter_key": "2002|2|scr||235",
+      "metadata": {
+        "citation_en": "2002 SCC 33",
+        "citation2_en": "[2002] 2 SCR 235",
+        "name_en": "Housen v. Nikolaisen",
+        "document_date_en": "2002-03-28 00:00:00+00:00"
+      },
+      "metadata_key_matches": {
+        "2002||scc||33": [
+          {
+            "court": "SCC",
+            "corpus_row": 2784,
+            "field": "citation_en",
+            "raw": "2002 SCC 33",
+            "primary_citation": "2002 SCC 33",
+            "source_id": "SCC_2002scc33",
+            "name": "Housen v. Nikolaisen",
+            "date": "2002-03-28 00:00:00+00:00"
+          }
+        ],
+        "2002|2|scr||235": [
+          {
+            "court": "SCC",
+            "corpus_row": 2784,
+            "field": "citation2_en",
+            "raw": "[2002] 2 SCR 235",
+            "primary_citation": "2002 SCC 33",
+            "source_id": "SCC_2002scc33",
+            "name": "Housen v. Nikolaisen",
+            "date": "2002-03-28 00:00:00+00:00"
+          }
+        ]
+      },
+      "mapping_unique_across_all_three_court_metadata": true,
+      "header_first_1500": "Housen v. Nikolaisen\nCollection\nSupreme Court Judgments\nDate\n2002-03-28\nNeutral citation\n2002 SCC 33\nReport\n[2002] 2 SCR 235\nCase number\n27826\nJudges\nMcLachlin, Beverley; L'Heureux-Dubé, Claire; Gonthier, Charles Doherty; Iacobucci, Frank; Major, John C.; Bastarache, Michel; Binnie, William Ian Corneil; Arbour, Louise; LeBel, Louis\nOn appeal from\nSaskatchewan\nSubjects\nAppeal\nMunicipal law\nTorts\nNotes\nSCC Case Information: 27826\nDecision Content\nHousen v. Nikolaisen, [2002] 2 S.C.R. 235, 2002 SCC 33\nPaul Housen Appellant\nv.\nRural Municipality of Shellbrook No. 493 Respondent\nIndexed as: Housen v. Nikolaisen\nNeutral citation: 2002 SCC 33.\nFile No.: 27826.\n2001: October 2; 2002: March 28.\nPresent: McLachlin C.J. and L’Heureux‑Dubé, Gonthier, Iacobucci, Major, Bastarache, Binnie, Arbour and LeBel JJ.\non appeal from the court of appeal for saskatchewan\nTorts -- Motor vehicles -- Highways -- Negligence -- Liability of rural municipality for failing to post warning signs on local access road -- Passenger sustaining injuries in motor vehicle accident on rural road -- Trial judge apportioning part of liability to rural municipality -- Whether Court of Appeal properly overturning trial judge’s finding of negligence -- The Rural Municipality Act, 1989, S.S. 1989‑90, c. R‑26.1, s. 192.\nMunicipal law -- Negligence -- Liability of rural municipality for failing to post warning signs on local access road -- Passenger sustaining injuries in motor vehicle accident on rural road -- Trial judge",
+      "header_sha256": "31edd70505a2bb13534d7b4c8a4ad6244729aad0c10db741b587db757361fffc",
+      "full_text_sha256": "644df4b0824b1c65fe77f284f505b4c988abde98a09f2b3c530acf1e61d3e3aa",
+      "metadata_header_spans": [
+        {
+          "field": "citation_en",
+          "start": 89,
+          "end": 100,
+          "raw": "2002 SCC 33",
+          "sha256": "65c66fd7c4f43d0f32b144f63eec4af96fddf14f651d273f99712a1c6272d5c4"
+        },
+        {
+          "field": "citation2_en",
+          "start": 108,
+          "end": 124,
+          "raw": "[2002] 2 SCR 235",
+          "sha256": "0bc3a4ffb2897c2cc3c778ef3dcbaf5867c6b10b2a01d4439619fcf3dd370f2a"
+        }
+      ],
+      "metadata_header_boundary": {
+        "start": 432,
+        "end": 448,
+        "line": "Decision Content"
+      },
+      "both_keys_before_explicit_metadata_boundary": true,
+      "body_section_markers": [
+        {
+          "start": 432,
+          "end": 448,
+          "line": "Decision Content"
+        },
+        {
+          "start": 4289,
+          "end": 4425,
+          "line": "Held (Gonthier, Bastarache, Binnie and LeBel JJ. dissenting): The appeal should be allowed and the judgment of the trial judge restored."
+        },
+        {
+          "start": 18818,
+          "end": 18829,
+          "line": "Cases Cited"
+        },
+        {
+          "start": 22265,
+          "end": 22295,
+          "line": "Statutes and Regulations Cited"
+        },
+        {
+          "start": 23877,
+          "end": 23976,
+          "line": "The judgment of McLachlin C.J. and L’Heureux-Dubé, Iacobucci, Major and Arbour JJ. was delivered by"
+        },
+        {
+          "start": 98203,
+          "end": 98278,
+          "line": "The reasons of Gonthier, Bastarache, Binnie and LeBel JJ. were delivered by"
+        }
+      ],
+      "v2_own_citation_rows": {
+        "2002||scc||33": [
+          {
+            "record": 3019,
+            "merge_key": "2002||scc||33",
+            "decision_id": "SCC_2002scc33",
+            "source_court": "SCC",
+            "field": "citation_en"
+          }
+        ],
+        "2002|2|scr||235": []
+      },
+      "v2_scc_merged_rows": {
+        "2002||scc||33": [
+          {
+            "record": 48179,
+            "merge_key": "2002||scc||33",
+            "self_citation_of": "SCC_2002scc33",
+            "self_case_name": "Housen v. Nikolaisen",
+            "distinct_decisions_count": "141"
+          }
+        ],
+        "2002|2|scr||235": [
+          {
+            "record": 47464,
+            "merge_key": "2002|2|scr||235",
+            "self_citation_of": "",
+            "self_case_name": "",
+            "distinct_decisions_count": "142"
+          }
+        ]
+      },
+      "v2_selected_members": {
+        "2002||scc||33": [
+          {
+            "record": 33257,
+            "merge_key": "2002||scc||33",
+            "merged_group_id": "XC-G024668",
+            "court": "BCCA",
+            "self_citation_of": "",
+            "distinct_decisions_count": "1310",
+            "identity_basis": "anchor",
+            "split_reason": ""
+          },
+          {
+            "record": 33258,
+            "merge_key": "2002||scc||33",
+            "merged_group_id": "XC-G024668",
+            "court": "ONCA",
+            "self_citation_of": "",
+            "distinct_decisions_count": "1310",
+            "identity_basis": "anchor",
+            "split_reason": ""
+          },
+          {
+            "record": 33259,
+            "merge_key": "2002||scc||33",
+            "merged_group_id": "XC-G024668",
+            "court": "SCC",
+            "self_citation_of": "SCC_2002scc33",
+            "distinct_decisions_count": "1310",
+            "identity_basis": "anchor",
+            "split_reason": ""
+          }
+        ],
+        "2002|2|scr||235": [
+          {
+            "record": 32929,
+            "merge_key": "2002|2|scr||235",
+            "merged_group_id": "XC-G024487",
+            "court": "BCCA",
+            "self_citation_of": "",
+            "distinct_decisions_count": "861",
+            "identity_basis": "same_citation",
+            "split_reason": "unanchored"
+          },
+          {
+            "record": 32930,
+            "merge_key": "2002|2|scr||235",
+            "merged_group_id": "XC-G024487",
+            "court": "ONCA",
+            "self_citation_of": "",
+            "distinct_decisions_count": "861",
+            "identity_basis": "same_citation",
+            "split_reason": "unanchored"
+          },
+          {
+            "record": 32931,
+            "merge_key": "2002|2|scr||235",
+            "merged_group_id": "XC-G024487",
+            "court": "SCC",
+            "self_citation_of": "",
+            "distinct_decisions_count": "861",
+            "identity_basis": "same_citation",
+            "split_reason": "unanchored"
+          }
+        ]
+      },
+      "v2_source_set_diagnostics": {
+        "neutral_group": 1310,
+        "reporter_group": 861,
+        "intersection": 670,
+        "overlap_smaller": 0.778164924506388,
+        "union": 1501,
+        "union_excluding_own_source": 1500,
+        "own_source_in_neutral_group": false,
+        "own_source_in_reporter_group": true,
+        "warning": "Group unions include other inferred aliases and are diagnostics, not ground truth."
+      },
+      "v2_exact_key_source_sets": {
+        "neutral_key": 1309,
+        "reporter_key": 861,
+        "intersection": 670,
+        "union": 1500,
+        "pair_union_excluding_own_source": 1499,
+        "own_source_in_neutral_key": false,
+        "own_source_in_reporter_key": true,
+        "neutral_group_extra_sources": [
+          "ONCA_2023onca781"
+        ],
+        "reporter_group_extra_sources": [],
+        "basis": "Union of actual merge_out/<court>/decision_ids.csv(.gz) rows for these two exact keys, then exclude this verified source decision only. Not an inferred group total."
+      }
+    },
+    {
+      "name": "Bell ExpressVu",
+      "corpus_row": 2804,
+      "source_id": "SCC_2002scc42",
+      "neutral_key": "2002||scc||42",
+      "reporter_key": "2002|2|scr||559",
+      "metadata": {
+        "citation_en": "2002 SCC 42",
+        "citation2_en": "[2002] 2 SCR 559",
+        "name_en": "Bell ExpressVu Limited Partnership v. Rex",
+        "document_date_en": "2002-04-26 00:00:00+00:00"
+      },
+      "metadata_key_matches": {
+        "2002||scc||42": [
+          {
+            "court": "SCC",
+            "corpus_row": 2804,
+            "field": "citation_en",
+            "raw": "2002 SCC 42",
+            "primary_citation": "2002 SCC 42",
+            "source_id": "SCC_2002scc42",
+            "name": "Bell ExpressVu Limited Partnership v. Rex",
+            "date": "2002-04-26 00:00:00+00:00"
+          }
+        ],
+        "2002|2|scr||559": [
+          {
+            "court": "SCC",
+            "corpus_row": 2804,
+            "field": "citation2_en",
+            "raw": "[2002] 2 SCR 559",
+            "primary_citation": "2002 SCC 42",
+            "source_id": "SCC_2002scc42",
+            "name": "Bell ExpressVu Limited Partnership v. Rex",
+            "date": "2002-04-26 00:00:00+00:00"
+          }
+        ]
+      },
+      "mapping_unique_across_all_three_court_metadata": true,
+      "header_first_1500": "Bell ExpressVu Limited Partnership v. Rex\nCollection\nSupreme Court Judgments\nDate\n2002-04-26\nNeutral citation\n2002 SCC 42\nReport\n[2002] 2 SCR 559\nCase number\n28227\nJudges\nL'Heureux-Dubé, Claire; Iacobucci, Frank; Major, John C.; Bastarache, Michel; Binnie, William Ian Corneil; Arbour, Louise; LeBel, Louis\nOn appeal from\nBritish Columbia\nSubjects\nAppeal\nCommunications law\nStatutes\nNotes\nSCC Case Information: 28227\nDecision Content\nBell ExpressVu Limited Partnership v. Rex, [2002] 2 S.C.R. 559, 2002 SCC 42\nBell ExpressVu Limited Partnership Appellant\nv.\nRichard Rex, Richard Rex, c.o.b. as ‘Can‑Am Satellites’,\nand c.o.b. as ‘Can Am Satellites’ and c.o.b. as\n‘CanAm Satellites’ and c.o.b. as ‘Can Am Satellite’ and\nc.o.b. as ‘Can Am Sat’ and c.o.b. as ‘Can‑Am Satellites Digital\nMedia Group’ and c.o.b. as ‘Can‑Am Digital Media Group’\nand c.o.b. as ‘Digital Media Group’, Anne Marie Halley\na.k.a. Anne Marie Rex, Michael Rex a.k.a. Mike Rex,\nRodney Kibler a.k.a. Rod Kibler, Lee‑Anne Patterson,\nMichelle Lee, Jay Raymond, Jason Anthony, John Doe 1 to 20,\nJane Doe 1 to 20 and any other person or persons\nfound on the premises or identified as working at the\npremises at 22409 McIntosh Avenue, Maple Ridge,\nBritish Columbia, who operate or work for\nbusinesses carrying on business under the name\nand style of ‘Can‑Am Satellites’, ‘Can Am Satellites’,\n‘CanAm Satellites’, ‘Can Am Satellite’, ‘Can Am Sat’,\n‘Can‑Am Satellites Digital Media Group’, ‘Can‑Am Digital\nMedia Group’, ‘Digital Media Group’",
+      "header_sha256": "137838c31fd4a2f87ef62e34a2e1b8e41c9b3874098364ab89aa93d1adc4e7cd",
+      "full_text_sha256": "58672531a1a5b5ec38bf78e4aa3ceae760a97ef6509d01c25f0ffa5b5935606a",
+      "metadata_header_spans": [
+        {
+          "field": "citation_en",
+          "start": 110,
+          "end": 121,
+          "raw": "2002 SCC 42",
+          "sha256": "d694c93416eb517c46c62d5b16d8c18b885868d5e01242fe1defa6d0c51e2d1e"
+        },
+        {
+          "field": "citation2_en",
+          "start": 129,
+          "end": 145,
+          "raw": "[2002] 2 SCR 559",
+          "sha256": "1ed28a5ac93a7f155ddcfab1e16b498019791e9d55e6d8797b0ea4cbf2172ab5"
+        }
+      ],
+      "metadata_header_boundary": {
+        "start": 417,
+        "end": 433,
+        "line": "Decision Content"
+      },
+      "both_keys_before_explicit_metadata_boundary": true,
+      "body_section_markers": [
+        {
+          "start": 417,
+          "end": 433,
+          "line": "Decision Content"
+        },
+        {
+          "start": 4031,
+          "end": 4178,
+          "line": "Held: The appeal should be allowed. Section 9(1)(c) of the Act prohibits the decoding of all encrypted satellite signals, with a limited exception."
+        },
+        {
+          "start": 7104,
+          "end": 7115,
+          "line": "Cases Cited"
+        },
+        {
+          "start": 10474,
+          "end": 10504,
+          "line": "Statutes and Regulations Cited"
+        },
+        {
+          "start": 13420,
+          "end": 13462,
+          "line": "The judgment of the Court was delivered by"
+        }
+      ],
+      "v2_own_citation_rows": {
+        "2002||scc||42": [
+          {
+            "record": 3029,
+            "merge_key": "2002||scc||42",
+            "decision_id": "SCC_2002scc42",
+            "source_court": "SCC",
+            "field": "citation_en"
+          }
+        ],
+        "2002|2|scr||559": []
+      },
+      "v2_scc_merged_rows": {
+        "2002||scc||42": [
+          {
+            "record": 48185,
+            "merge_key": "2002||scc||42",
+            "self_citation_of": "SCC_2002scc42",
+            "self_case_name": "Bell ExpressVu Limited Partnership v. Rex",
+            "distinct_decisions_count": "107"
+          }
+        ],
+        "2002|2|scr||559": [
+          {
+            "record": 47475,
+            "merge_key": "2002|2|scr||559",
+            "self_citation_of": "",
+            "self_case_name": "",
+            "distinct_decisions_count": "108"
+          }
+        ]
+      },
+      "v2_selected_members": {
+        "2002||scc||42": [
+          {
+            "record": 34577,
+            "merge_key": "2002||scc||42",
+            "merged_group_id": "XC-G025749",
+            "court": "BCCA",
+            "self_citation_of": "",
+            "distinct_decisions_count": "371",
+            "identity_basis": "anchor",
+            "split_reason": ""
+          },
+          {
+            "record": 34578,
+            "merge_key": "2002||scc||42",
+            "merged_group_id": "XC-G025749",
+            "court": "ONCA",
+            "self_citation_of": "",
+            "distinct_decisions_count": "371",
+            "identity_basis": "anchor",
+            "split_reason": ""
+          },
+          {
+            "record": 34579,
+            "merge_key": "2002||scc||42",
+            "merged_group_id": "XC-G025749",
+            "court": "SCC",
+            "self_citation_of": "SCC_2002scc42",
+            "distinct_decisions_count": "371",
+            "identity_basis": "anchor",
+            "split_reason": ""
+          }
+        ],
+        "2002|2|scr||559": [
+          {
+            "record": 32947,
+            "merge_key": "2002|2|scr||559",
+            "merged_group_id": "XC-G024493",
+            "court": "BCCA",
+            "self_citation_of": "",
+            "distinct_decisions_count": "358",
+            "identity_basis": "same_citation",
+            "split_reason": "unanchored"
+          },
+          {
+            "record": 32948,
+            "merge_key": "2002|2|scr||559",
+            "merged_group_id": "XC-G024493",
+            "court": "ONCA",
+            "self_citation_of": "",
+            "distinct_decisions_count": "358",
+            "identity_basis": "same_citation",
+            "split_reason": "unanchored"
+          },
+          {
+            "record": 32949,
+            "merge_key": "2002|2|scr||559",
+            "merged_group_id": "XC-G024493",
+            "court": "SCC",
+            "self_citation_of": "",
+            "distinct_decisions_count": "358",
+            "identity_basis": "same_citation",
+            "split_reason": "unanchored"
+          }
+        ]
+      },
+      "v2_source_set_diagnostics": {
+        "neutral_group": 371,
+        "reporter_group": 358,
+        "intersection": 282,
+        "overlap_smaller": 0.7877094972067039,
+        "union": 447,
+        "union_excluding_own_source": 446,
+        "own_source_in_neutral_group": false,
+        "own_source_in_reporter_group": true,
+        "warning": "Group unions include other inferred aliases and are diagnostics, not ground truth."
+      },
+      "v2_exact_key_source_sets": {
+        "neutral_key": 371,
+        "reporter_key": 358,
+        "intersection": 282,
+        "union": 447,
+        "pair_union_excluding_own_source": 446,
+        "own_source_in_neutral_key": false,
+        "own_source_in_reporter_key": true,
+        "neutral_group_extra_sources": [],
+        "reporter_group_extra_sources": [],
+        "basis": "Union of actual merge_out/<court>/decision_ids.csv(.gz) rows for these two exact keys, then exclude this verified source decision only. Not an inferred group total."
+      }
+    },
+    {
+      "name": "Biniaris",
+      "corpus_row": 6653,
+      "source_id": "SCC_2000scc15",
+      "neutral_key": "2000||scc||15",
+      "reporter_key": "2000|1|scr||381",
+      "metadata": {
+        "citation_en": "2000 SCC 15",
+        "citation2_en": "[2000] 1 SCR 381",
+        "name_en": "R. v. Biniaris",
+        "document_date_en": "2000-04-13 00:00:00+00:00"
+      },
+      "metadata_key_matches": {
+        "2000||scc||15": [
+          {
+            "court": "SCC",
+            "corpus_row": 6653,
+            "field": "citation_en",
+            "raw": "2000 SCC 15",
+            "primary_citation": "2000 SCC 15",
+            "source_id": "SCC_2000scc15",
+            "name": "R. v. Biniaris",
+            "date": "2000-04-13 00:00:00+00:00"
+          }
+        ],
+        "2000|1|scr||381": [
+          {
+            "court": "SCC",
+            "corpus_row": 6653,
+            "field": "citation2_en",
+            "raw": "[2000] 1 SCR 381",
+            "primary_citation": "2000 SCC 15",
+            "source_id": "SCC_2000scc15",
+            "name": "R. v. Biniaris",
+            "date": "2000-04-13 00:00:00+00:00"
+          }
+        ]
+      },
+      "mapping_unique_across_all_three_court_metadata": true,
+      "header_first_1500": "R. v. Biniaris\nCollection\nSupreme Court Judgments\nDate\n2000-04-13\nNeutral citation\n2000 SCC 15\nReport\n[2000] 1 SCR 381\nCase number\n26570\nJudges\nLamer, Antonio; L'Heureux-Dubé, Claire; Gonthier, Charles Doherty; McLachlin, Beverley; Iacobucci, Frank; Major, John C.; Bastarache, Michel; Binnie, William Ian Corneil; Arbour, Louise\nOn appeal from\nBritish Columbia\nSubjects\nCriminal law\nNotes\nSCC Case Information: 26570\nDecision Content\nR. v. Biniaris, [2000] 1 S.C.R. 381\nHer Majesty The Queen Appellant\nv.\nJohn Biniaris Respondent\nand\nThe Attorney General of Canada,\nthe Attorney General for Ontario,\nthe Attorney General of Quebec,\nthe Criminal Lawyers’ Association (Ontario),\nthe Innocence Project, the Association in Defence\nof the Wrongly Convicted and\nthe Criminal Trial Lawyers Association of Alberta Interveners\nIndexed as: R. v. Biniaris\nNeutral citation: 2000 SCC 15.\nFile No.: 26570.\n1999: October 5, 6; 2000: April 13.\nPresent: Lamer C.J.* and L’Heureux‑Dubé, Gonthier, McLachlin, Iacobucci, Major, Bastarache, Binnie and Arbour JJ.\non appeal from the court of appeal for british columbia\nCriminal law -- Appeals -- Supreme Court -- Rights of appeal from substituted verdict -- Accused convicted of second degree murder -- Court of Appeal dismissing accused’s appeal but substituting conviction for manslaughter -- Whether Court of Appeal set aside conviction thereby providing Crown with right of appeal under s. 693(1) of Criminal Code -- Whether Court of Appeal affirmed conviction ther",
+      "header_sha256": "21de961b60a1dcf27a3546c57ff38b93711495964a454e4798fe6270e521df78",
+      "full_text_sha256": "c9d331aba1a599ad7e14cf1e4c49c7f96f0c4ee166fdfd1c7e3c45311d01ce17",
+      "metadata_header_spans": [
+        {
+          "field": "citation_en",
+          "start": 83,
+          "end": 94,
+          "raw": "2000 SCC 15",
+          "sha256": "56450c1fa44458458e7626256e6e981d03ec0e7a23583e4823dfc622fb03a31c"
+        },
+        {
+          "field": "citation2_en",
+          "start": 102,
+          "end": 118,
+          "raw": "[2000] 1 SCR 381",
+          "sha256": "0a1314e062cc09fc9220ecd6fd2a8bb1aa98a8b6a25d9bc63675d93ad4585aa5"
+        }
+      ],
+      "metadata_header_boundary": {
+        "start": 418,
+        "end": 434,
+        "line": "Decision Content"
+      },
+      "both_keys_before_explicit_metadata_boundary": true,
+      "body_section_markers": [
+        {
+          "start": 418,
+          "end": 434,
+          "line": "Decision Content"
+        },
+        {
+          "start": 4458,
+          "end": 4493,
+          "line": "Held: The appeal should be allowed."
+        },
+        {
+          "start": 9533,
+          "end": 9544,
+          "line": "Cases Cited"
+        },
+        {
+          "start": 10939,
+          "end": 10969,
+          "line": "Statutes and Regulations Cited"
+        },
+        {
+          "start": 12387,
+          "end": 12429,
+          "line": "The judgment of the Court was delivered by"
+        }
+      ],
+      "v2_own_citation_rows": {
+        "2000||scc||15": [
+          {
+            "record": 1466,
+            "merge_key": "2000||scc||15",
+            "decision_id": "SCC_2000scc15",
+            "source_court": "SCC",
+            "field": "citation_en"
+          }
+        ],
+        "2000|1|scr||381": []
+      },
+      "v2_scc_merged_rows": {
+        "2000||scc||15": [
+          {
+            "record": 46213,
+            "merge_key": "2000||scc||15",
+            "self_citation_of": "SCC_2000scc15",
+            "self_case_name": "R. v. Biniaris\nNeutral citation",
+            "distinct_decisions_count": "40"
+          }
+        ],
+        "2000|1|scr||381": [
+          {
+            "record": 45496,
+            "merge_key": "2000|1|scr||381",
+            "self_citation_of": "",
+            "self_case_name": "",
+            "distinct_decisions_count": "41"
+          }
+        ]
+      },
+      "v2_selected_members": {
+        "2000||scc||15": [
+          {
+            "record": 28409,
+            "merge_key": "2000||scc||15",
+            "merged_group_id": "XC-G021353",
+            "court": "BCCA",
+            "self_citation_of": "",
+            "distinct_decisions_count": "285",
+            "identity_basis": "anchor",
+            "split_reason": ""
+          },
+          {
+            "record": 28410,
+            "merge_key": "2000||scc||15",
+            "merged_group_id": "XC-G021353",
+            "court": "ONCA",
+            "self_citation_of": "",
+            "distinct_decisions_count": "285",
+            "identity_basis": "anchor",
+            "split_reason": ""
+          },
+          {
+            "record": 28411,
+            "merge_key": "2000||scc||15",
+            "merged_group_id": "XC-G021353",
+            "court": "SCC",
+            "self_citation_of": "SCC_2000scc15",
+            "distinct_decisions_count": "285",
+            "identity_basis": "anchor",
+            "split_reason": ""
+          }
+        ],
+        "2000|1|scr||381": [
+          {
+            "record": 28566,
+            "merge_key": "2000|1|scr||381",
+            "merged_group_id": "XC-G021441",
+            "court": "BCCA",
+            "self_citation_of": "",
+            "distinct_decisions_count": "323",
+            "identity_basis": "unanchored",
+            "split_reason": "unanchored"
+          },
+          {
+            "record": 28567,
+            "merge_key": "2000|1|scr||381",
+            "merged_group_id": "XC-G021441",
+            "court": "ONCA",
+            "self_citation_of": "",
+            "distinct_decisions_count": "323",
+            "identity_basis": "unanchored",
+            "split_reason": "unanchored"
+          },
+          {
+            "record": 28568,
+            "merge_key": "2000|1|scr||381",
+            "merged_group_id": "XC-G021441",
+            "court": "SCC",
+            "self_citation_of": "",
+            "distinct_decisions_count": "323",
+            "identity_basis": "unanchored",
+            "split_reason": "unanchored"
+          }
+        ]
+      },
+      "v2_source_set_diagnostics": {
+        "neutral_group": 285,
+        "reporter_group": 323,
+        "intersection": 222,
+        "overlap_smaller": 0.7789473684210526,
+        "union": 386,
+        "union_excluding_own_source": 385,
+        "own_source_in_neutral_group": false,
+        "own_source_in_reporter_group": true,
+        "warning": "Group unions include other inferred aliases and are diagnostics, not ground truth."
+      },
+      "v2_exact_key_source_sets": {
+        "neutral_key": 285,
+        "reporter_key": 322,
+        "intersection": 222,
+        "union": 385,
+        "pair_union_excluding_own_source": 384,
+        "own_source_in_neutral_key": false,
+        "own_source_in_reporter_key": true,
+        "neutral_group_extra_sources": [],
+        "reporter_group_extra_sources": [
+          "BCCA_2007bcca154"
+        ],
+        "basis": "Union of actual merge_out/<court>/decision_ids.csv(.gz) rows for these two exact keys, then exclude this verified source decision only. Not an inferred group total."
+      }
+    }
+  ],
+  "negative_registered_neutral_example": {
+    "citation_en": "2002 SCC 35",
+    "citation2_en": "[2002] 2 SCR 411",
+    "name_en": "R. v. Carlos",
+    "document_date_en": "2002-04-17 00:00:00+00:00",
+    "corpus_row": 2796,
+    "source_id": "SCC_2002scc35",
+    "full_text_sha256": "d1847318faedb5c981206fef7da7f1d7efd675a88cfd9a2bf8606b87e972ba0f",
+    "header_first_1500": "R. v. Carlos\nCollection\nSupreme Court Judgments\nDate\n2002-04-17\nNeutral citation\n2002 SCC 35\nReport\n[2002] 2 SCR 411\nCase number\n28748\nJudges\nMcLachlin, Beverley; Gonthier, Charles Doherty; Iacobucci, Frank; Bastarache, Michel; Binnie, William Ian Corneil; Arbour, Louise; LeBel, Louis\nOn appeal from\nYukon\nSubjects\nCriminal law\nNotes\nSCC Case Information: 28748\nDecision Content\nR. v. Carlos, [2002] 2 S.C.R. 411, 2002 SCC 35\nHer Majesty The Queen Appellant\nv.\nAllen Michael Carlos Respondent\nIndexed as: R. v. Carlos\nNeutral citation: 2002 SCC 35.\nFile No.: 28748.\n2002: April 17.\nPresent: McLachlin C.J. and Gonthier, Iacobucci, Bastarache, Binnie, Arbour and LeBel JJ.\non appeal from the court of appeal for the yukon territory\nCriminal law -- Firearms -- Careless storage of firearms -- Storage of firearms in contravention of regulations -- Actus reus of offences -- Whether firearms “stored” within meaning of s. 86(1) of Criminal Code -- Criminal Code, R.S.C. 1985, c. C-46, s. 86(1) .\nStatutes and Regulations Cited\nCriminal Code, R.S.C. 1985, c. C-46, s. 86(1) .\nAPPEAL from a judgment of the Yukon Territory Court of Appeal (2001), 155 C.C.C. (3d) 459, 48 C.R. (5th) 57, 155 B.C.A.C. 95, 254 W.A.C. 95, [2001] Y.J. No. 69 (QL), 2001 YKCA 6, dismissing the Crown’s appeal from a judgment of the Yukon Territorial Court, [2000] Y.J. No. 113 (QL), 2000 YTTC 519, acquitting the accused on one count of careless storage of a firearm and two counts of storing a firearm contrary to regulations.",
+    "warning": "2002 SCC 35 R. v. Carlos is distinct from Housen 2002 SCC 33; V2 Housen's ONCA member still labels SCC35 anchor_variant_typo_number.",
+    "registry_omission_trace": {
+      "classify_out/SCC/classified.csv": [
+        {
+          "record": 119174,
+          "candidate_id": "SCC:2796:81:92:shape_neutral_bare",
+          "source_decision_citation": "SCC_2002scc35",
+          "raw_string": "2002 SCC 35",
+          "self_citation": "true",
+          "rejected_reason": ""
+        },
+        {
+          "record": 119175,
+          "candidate_id": "SCC:2796:415:426:shape_neutral_bare",
+          "source_decision_citation": "SCC_2002scc35",
+          "raw_string": "2002 SCC 35",
+          "self_citation": "true",
+          "rejected_reason": ""
+        },
+        {
+          "record": 119176,
+          "candidate_id": "SCC:2796:537:548:shape_neutral_bare",
+          "source_decision_citation": "SCC_2002scc35",
+          "raw_string": "2002 SCC 35",
+          "self_citation": "true",
+          "rejected_reason": ""
+        }
+      ],
+      "merge_out/SCC/mentions_candidates.csv": [
+        {
+          "record": 339270,
+          "candidate_id": "SCC:2796:81:92:shape_neutral_bare",
+          "source_decision_citation": "SCC_2002scc35",
+          "raw_string": "2002 SCC 35",
+          "self_citation": "true",
+          "merge_key": "2002||scc||35",
+          "arbitration_status": "self_citation_row",
+          "rejected_reason": ""
+        },
+        {
+          "record": 339276,
+          "candidate_id": "SCC:2796:415:426:shape_neutral_bare",
+          "source_decision_citation": "SCC_2002scc35",
+          "raw_string": "2002 SCC 35",
+          "self_citation": "true",
+          "merge_key": "2002||scc||35",
+          "arbitration_status": "self_citation_row",
+          "rejected_reason": ""
+        },
+        {
+          "record": 339278,
+          "candidate_id": "SCC:2796:537:548:shape_neutral_bare",
+          "source_decision_citation": "SCC_2002scc35",
+          "raw_string": "2002 SCC 35",
+          "self_citation": "true",
+          "merge_key": "2002||scc||35",
+          "arbitration_status": "self_citation_row",
+          "rejected_reason": ""
+        }
+      ],
+      "merge_out/SCC/merged.csv": [],
+      "registry/decision_registry.csv": [],
+      "registry/decision_own_citations.csv": [
+        {
+          "record": 3021,
+          "merge_key": "2002||scc||35",
+          "decision_id": "SCC_2002scc35",
+          "source_court": "SCC",
+          "field": "citation_en"
+        }
+      ]
+    },
+    "registry_manifest_scope": {
+      "by_source": {
+        "self_citation": 23530
+      },
+      "anchor_courts": [],
+      "extracted_courts": [
+        "SCC",
+        "ONCA",
+        "BCCA"
+      ],
+      "corpus_stats": {}
+    },
+    "registry_omission_explanation": "Actual V2 full build: the neutral appears as self_citation_row only, and SCC merged omits the key because merge._emit iterates per_key_counted. The registry takes its real neutral keys only from emitted merged self_citation_of rows; active corpus metadata is not unioned (no anchor_courts/corpus_stats). Thus the registered guard misses a real primary-metadata decision. The independent own metadata table contains it. A plain-only reader would separately fail a later replay after compaction, but did not cause this original omission because original registry ran before compaction."
+  },
+  "negative_distinct_reporter_document": {
+    "citation_en": "2000 SCC 17",
+    "citation2_en": "[2000] 1 SCR 439",
+    "name_en": "R. v. A.G.",
+    "document_date_en": "2000-04-13 00:00:00+00:00",
+    "corpus_row": 6650,
+    "source_id": "SCC_2000scc17",
+    "full_text_sha256": "3700b94596906e869beaef9ef06ecd7d0c53f7f81aa8c5c292eedab7448e71f0",
+    "header_first_1500": "R. v. A.G.\nCollection\nSupreme Court Judgments\nDate\n2000-04-13\nNeutral citation\n2000 SCC 17\nReport\n[2000] 1 SCR 439\nCase number\n26924\nJudges\nLamer, Antonio; L'Heureux-Dubé, Claire; Gonthier, Charles Doherty; McLachlin, Beverley; Iacobucci, Frank; Major, John C.; Bastarache, Michel; Binnie, William Ian Corneil; Arbour, Louise\nOn appeal from\nOntario\nSubjects\nCriminal law\nNotes\nSCC Case Information: 26924\nDecision Content\nR. v. A.G., [2000] 1 S.C.R. 439\nA.G. Appellant\nv.\nHer Majesty The Queen Respondent\nand\nThe Attorney General of Canada,\nthe Attorney General of Manitoba,\nthe Attorney General of British Columbia,\nthe Attorney General for Alberta,\nthe Criminal Lawyers’ Association (Ontario),\nthe Innocence Project and the Association in\nDefence of the Wrongly Convicted Interveners\nIndexed as: R. v. A.G.\nNeutral citation: 2000 SCC 17.\nFile No.: 26924.\n1999: October 5, 6; 2000: April 13.\nPresent: Lamer C.J.* and L’Heureux‑Dubé, Gonthier, McLachlin, Iacobucci, Major, Bastarache, Binnie and Arbour JJ.\non appeal from the court of appeal for ontario\nCriminal law -- Appeals -- Supreme Court -- Question of law -- Whether reasonableness of verdict involves question of law within meaning of ss. 691(1) and 693(1) of Criminal Code -- Criminal Code, R.S.C., 1985, c. C-46, ss. 691(1) , 693(1) .\nCriminal law -- Reasonableness of verdict -- Standard of review -- Standard of review applicable by reviewing court in examining reasonableness of verdict -- Whether Yebes should be reaffirmed -- Whether ",
+    "warning": "2000 SCC 17 / [2000] 1 SCR 439 R. v. A.G. is distinct from Biniaris 2000 SCC 15 / [2000] 1 SCR 381. V2 reporter381 group incorrectly also contains a reporter439 member carrying the Biniaris modal name; aliases must split existing incompatible document claims, not merely reject future unions."
+  },
+  "review": [
+    "Use explicit unique source-bound parallel alias evidence; preserve the neutral-only typo registry and BAR=0.8.",
+    "Reject ambiguous key-to-source mappings and invalid source IDs; parse complete metadata fields.",
+    "Before any union, enforce component-wide distinct real neutral IDs, same-system identifiers, and positive deciding-court conflicts, including heuristic typo routes.",
+    "Already formed clusters with two verified distinct document claims must be separated before alias joining; new-union guards alone preserve an existing wrong reporter cluster.",
+    "Require both legal keys in clearly labeled own metadata/header before an explicit section boundary. Unknown boundary does not establish document identity.",
+    "Historical Housen 1534 and Biniaris 440 include additional unsupported or inferred variants; do not restore counts without evidence."
+  ],
+  "reproduce": "python audit/findings/project_review_20261014/verify_parallel_alias_evidence.py",
+  "reproduction_script_sha256": "082dee9310e4352e6697af5711edb278548c4e557dc1f06f70ff1b9bb22954bb"
+}

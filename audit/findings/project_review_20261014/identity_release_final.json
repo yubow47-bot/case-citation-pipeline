@@ -1,0 +1,180 @@
+{
+  "schema": "identity_release_verification_v2",
+  "run_id": "run_20261014_reliable_final",
+  "manifest_sha256": "09803eb185bf3834aa5bc9ee97e1874dab1b6f77675f4c9f0a82cd9905e5cbe5",
+  "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+  "output_fingerprint": "7cc1e8dc936d0b0554b4e62c14e901d77948acb7c4f7f15b99db3d37390dd2ad",
+  "text_policy": "en_then_fr",
+  "full_group_checks": {
+    "groups_scanned": 230447,
+    "conflicting_proved_document_groups": 0,
+    "incomplete_or_invalid_qualified_proofs": 0,
+    "inconsistent_member_dd_groups": 0,
+    "examples": [],
+    "proof_error_examples": [],
+    "inconsistent_dd_examples": []
+  },
+  "source_set_regressions": [
+    {
+      "name": "Bell ExpressVu",
+      "keys": [
+        "2002|2|rcs||559",
+        "2002|2|scr||559",
+        "2002||csc||42",
+        "2002||scc||42"
+      ],
+      "status": "passed",
+      "group_ids": [
+        "XC-G024437"
+      ],
+      "expected_dd": 446,
+      "historical_english_pair_dd": 446,
+      "actual_dd": 446,
+      "missing_sources": [],
+      "unexpected_sources": [],
+      "self_excluded": true
+    },
+    {
+      "name": "Housen",
+      "keys": [
+        "2002|2|rcs||235",
+        "2002|2|scr||235",
+        "2002||csc||33",
+        "2002||scc||33"
+      ],
+      "status": "passed",
+      "group_ids": [
+        "XC-G024431"
+      ],
+      "expected_dd": 1500,
+      "historical_english_pair_dd": 1499,
+      "actual_dd": 1500,
+      "missing_sources": [],
+      "unexpected_sources": [],
+      "self_excluded": true
+    },
+    {
+      "name": "Biniaris",
+      "keys": [
+        "2000|1|rcs||381",
+        "2000|1|scr||381",
+        "2000||csc||15",
+        "2000||scc||15"
+      ],
+      "status": "passed",
+      "group_ids": [
+        "XC-G021355"
+      ],
+      "expected_dd": 384,
+      "historical_english_pair_dd": 384,
+      "actual_dd": 384,
+      "missing_sources": [],
+      "unexpected_sources": [],
+      "self_excluded": true
+    },
+    {
+      "name": "Addison & Leyen",
+      "keys": [
+        "2007|2|rcs||793",
+        "2007|2|scr||793",
+        "2007||csc||33",
+        "2007||scc||33"
+      ],
+      "status": "passed",
+      "group_ids": [
+        "XC-G033141"
+      ],
+      "expected_dd": 9,
+      "historical_english_pair_dd": 9,
+      "actual_dd": 9,
+      "missing_sources": [],
+      "unexpected_sources": [],
+      "self_excluded": true
+    }
+  ],
+  "carlos_housen_separate": true,
+  "addison_lower_court_and_sorbara_separate": true,
+  "biniaris_and_ag_separate": true,
+  "biniaris_negative_key_groups": {
+    "2000|1|scr||439": [
+      "XC-G021444"
+    ],
+    "2000||scc||17": [
+      "XC-G021444"
+    ]
+  },
+  "artifacts": [
+    {
+      "logical_path": "registry/decision_own_citations.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\registry\\decision_own_citations.csv.gz",
+      "physical_sha256": "cd07d7448815c43a1e0d3d79fa680cbf15e054957aa54c2f46a874c59db0e4e2",
+      "content_sha256": "3c164d0d97e15e4b79ff0e52c383548301f3b41bbb84d6afa721191b89fd40b7",
+      "logical_bytes": 36077950,
+      "stored_bytes": 8496563,
+      "rows": 63793,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "registry/decision_registry.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\registry\\decision_registry.csv.gz",
+      "physical_sha256": "6a7c34aee31e2d3473d88e4fdaf04aef5849888f249ce0136f7d304d24c99397",
+      "content_sha256": "d1eff9e36fd03b817a4698134b96451f71d1a0a01d04472a7be0a6d947a2c7a4",
+      "logical_bytes": 2812099,
+      "stored_bytes": 239228,
+      "rows": 52538,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "select_out/selected.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\select_out\\selected.csv.gz",
+      "physical_sha256": "9674262dc60b4b4f81b35f204e05e3636d81a2e039127e2dfd6e276c386760fa",
+      "content_sha256": "851b03e1a628d5801d013203eb367d81d71b07d38655127848b6f82a69be957d",
+      "logical_bytes": 84407688,
+      "stored_bytes": 8070996,
+      "rows": 261029,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/SCC/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\SCC\\decision_ids.csv.gz",
+      "physical_sha256": "3b7da96e89030fd3dd4b7040f832deb51c1cd920ff99f5e70373481a4b10348c",
+      "content_sha256": "96268dadf91099a85a78437d731aa0a924a763f5dfec478346d3e1b80799c20f",
+      "logical_bytes": 6194316,
+      "stored_bytes": 1251945,
+      "rows": 196059,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/ONCA/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\ONCA\\decision_ids.csv.gz",
+      "physical_sha256": "aaf1f4458d1661036e3a5f356c5e3bc7ec8adffe87ddf433c41a7d1e5b7260dd",
+      "content_sha256": "6c692c677aae94483903803577bfe93e8abd74f8b65a1c57185a7006771bfff9",
+      "logical_bytes": 5502803,
+      "stored_bytes": 948600,
+      "rows": 165257,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/BCCA/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\merge_out\\BCCA\\decision_ids.csv.gz",
+      "physical_sha256": "39a67d46fa60f39c7fe296df1deedba0ff80c60a862e85a160e19c78417e7fb3",
+      "content_sha256": "b2903a97bfd39c0cb40c7b02a8e5456934aa5b07d726c05e2f666dff3b0adfd6",
+      "logical_bytes": 5886500,
+      "stored_bytes": 954015,
+      "rows": 174081,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "edges/citation_edges.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261014_reliable_final\\edges\\citation_edges.csv.gz",
+      "physical_sha256": "3a89b92e09903517ebfddc719008673e75b967c80680128630c7eec8b621daf7",
+      "content_sha256": "7c9b3a2d4d53f621d9c7bf8d3955ef9c8098e671359214772cee233087ac7ae9",
+      "logical_bytes": 81256125,
+      "stored_bytes": 7247605,
+      "rows": 490576,
+      "output_seal_verified": true
+    }
+  ],
+  "limits": "Explicit identity constraints and named source-set regressions, not population precision. Qualified proof validation recomputes declared hashes/bindings; it does not independently interpret original header text.",
+  "status": "passed"
+}

@@ -1,6 +1,10 @@
 # decisions/ — 人工判断，唯一事实源
 
-四张表是整个项目里唯一不可再生的东西，全部进 git。
+事实表及其出处全部进 git。下面四张表是项目初期的核心表清单，后续增加的表以实际 CSV schema 和规格中的日期说明为准。
+
+2026-10-15 的身份事实另有严格原文凭证：`identity_court_facts.csv` 的三个完整 key 记录裁决法院；`identity_separations.csv` 的一条事实排除一个完整 key 与单一已证实文档的错误合并，不能据此猜测法院。它们保存 `source_corpus`、源行、字段、corpus/text/span SHA、`evidence_id`、`source_locator`；这些具体字段替代泛化的 source 文本。排除事实还绑定目标的完整当前 qualified proofs，过期、缺失、冲突或串绑会拒绝执行。
+
+这些是研究代理回到原文核查后形成的可复查事实，不是随机人工标注或准确率。不得写运行内的 group ID 作为身份事实。新增事实与真实小子集回归、全量来源集合验收见 [后续记录](../audit/findings/project_review_20261015/release_summary_final.json)。
 
 | 表 | 用途 |
 |---|---|
@@ -11,7 +15,7 @@
 
 ## 规则
 
-- 每一行必须带 `source` 和 `source_locator` 两列
+- 每一行必须带来源及 `source_locator`；通用表使用 `source`，原文身份事实使用上述严格文件／行／字段／SHA schema
 - 判定不得写在代码里
 - 键必须是印刷事实（缩写、法院代码、引证串本身），不得使用管线计算出的分组标识
 
