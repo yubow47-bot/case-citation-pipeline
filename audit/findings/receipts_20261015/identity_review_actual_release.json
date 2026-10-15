@@ -1,0 +1,688 @@
+{
+  "schema": "identity_review_actual_release_v1",
+  "run": {
+    "run_id": "run_20261015_identity_review",
+    "directory": "D:\\cases data analisis\\data\\run_20261015_identity_review",
+    "courts": [
+      "SCC",
+      "ONCA",
+      "BCCA"
+    ],
+    "input_fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+    "output_fingerprint": "d6deb5d3cf3007c76841152e59a4fb97adedc855e0a6958492d4402c804a6cef",
+    "manifest_sha256": "312830e39e4e49c132c19e19a81b3aed51b9734cd4c159a277cae7d8e75fc431",
+    "params": {
+      "year_from": null,
+      "limit_batches": null,
+      "batch_size": 500,
+      "registry_gate": "registered",
+      "mixed_key_holdout": true
+    },
+    "artifacts": [
+      {
+        "logical_path": "registry/decision_own_citations.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\registry\\decision_own_citations.csv.gz",
+        "physical_sha256": "cd07d7448815c43a1e0d3d79fa680cbf15e054957aa54c2f46a874c59db0e4e2",
+        "content_sha256": "3c164d0d97e15e4b79ff0e52c383548301f3b41bbb84d6afa721191b89fd40b7",
+        "logical_bytes": 36077950,
+        "stored_bytes": 8496563,
+        "rows": 63793,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "registry/decision_registry.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\registry\\decision_registry.csv.gz",
+        "physical_sha256": "6a7c34aee31e2d3473d88e4fdaf04aef5849888f249ce0136f7d304d24c99397",
+        "content_sha256": "d1eff9e36fd03b817a4698134b96451f71d1a0a01d04472a7be0a6d947a2c7a4",
+        "logical_bytes": 2812099,
+        "stored_bytes": 239228,
+        "rows": 52538,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "select_out/selected.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\select_out\\selected.csv.gz",
+        "physical_sha256": "9e567a632851f5d968d19ac2d0b36159bbd529d3370763c6db9b95fbd215a899",
+        "content_sha256": "c055e82caa29976a6ac41386deb7af2dff5966dae5d2a671aca6ced15ac8a583",
+        "logical_bytes": 84669064,
+        "stored_bytes": 8074790,
+        "rows": 261029,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/SCC/decision_ids.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\SCC\\decision_ids.csv.gz",
+        "physical_sha256": "3b7da96e89030fd3dd4b7040f832deb51c1cd920ff99f5e70373481a4b10348c",
+        "content_sha256": "96268dadf91099a85a78437d731aa0a924a763f5dfec478346d3e1b80799c20f",
+        "logical_bytes": 6194316,
+        "stored_bytes": 1251945,
+        "rows": 196059,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/ONCA/decision_ids.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\ONCA\\decision_ids.csv.gz",
+        "physical_sha256": "aaf1f4458d1661036e3a5f356c5e3bc7ec8adffe87ddf433c41a7d1e5b7260dd",
+        "content_sha256": "6c692c677aae94483903803577bfe93e8abd74f8b65a1c57185a7006771bfff9",
+        "logical_bytes": 5502803,
+        "stored_bytes": 948600,
+        "rows": 165257,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/BCCA/decision_ids.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\BCCA\\decision_ids.csv.gz",
+        "physical_sha256": "39a67d46fa60f39c7fe296df1deedba0ff80c60a862e85a160e19c78417e7fb3",
+        "content_sha256": "b2903a97bfd39c0cb40c7b02a8e5456934aa5b07d726c05e2f666dff3b0adfd6",
+        "logical_bytes": 5886500,
+        "stored_bytes": 954015,
+        "rows": 174081,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "edges/citation_edges.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\edges\\citation_edges.csv.gz",
+        "physical_sha256": "3dd0658e8ceb23fd26c1762710b40ef651d7ac1d150b3b98202a1eeb0a211a2f",
+        "content_sha256": "50f7a8401ab2c5e3ec8e690eaafadfed4e2ed3821ff871649110a0bd939a0a47",
+        "logical_bytes": 81248737,
+        "stored_bytes": 7247755,
+        "rows": 490577,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "decide_out/cross_court/effective_sources.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\decide_out\\cross_court\\effective_sources.csv.gz",
+        "physical_sha256": "2658d73861e1faebd3451c2f34536fbbe022ea690adaad3126c165d7b9b9b929",
+        "content_sha256": "92e20719dd828fdb1f8a581400205eb9b12218fcc6de22597cfd10a8cf506720",
+        "logical_bytes": 34637850,
+        "stored_bytes": 4369299,
+        "rows": 495654,
+        "output_seal_verified": true
+      }
+    ]
+  },
+  "status": "passed",
+  "checks": {
+    "lising_formal_pair_same_group": true,
+    "lising_exact_85_source_set": true,
+    "lising_lower_reporter_separate": true,
+    "lising_raw_lower_supports_preserved": true,
+    "lising_bcca33_and_bail91_separate": true,
+    "motor_native_scr_rcs_core_same_group": true,
+    "motor_exact_213_source_set_old_minus_chartrand": true,
+    "johnson_prohibited_target_separate": true,
+    "chartrand_to_johnson_still_counted": true,
+    "all_holdout_proofs_current_complete": true,
+    "all_group_document_vendor_and_negative_constraints": true,
+    "current_negative_fact_present": true,
+    "selected_groups_contiguous_and_complete": true,
+    "all_child_manifests_bind_negative_fact": true
+  },
+  "four_prior_cases_and_full_proof_scan": {
+    "schema": "identity_release_verification_v2",
+    "run_id": "run_20261015_identity_review",
+    "manifest_sha256": "312830e39e4e49c132c19e19a81b3aed51b9734cd4c159a277cae7d8e75fc431",
+    "input_fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+    "output_fingerprint": "d6deb5d3cf3007c76841152e59a4fb97adedc855e0a6958492d4402c804a6cef",
+    "text_policy": "en_then_fr",
+    "full_group_checks": {
+      "groups_scanned": 230449,
+      "conflicting_proved_document_groups": 0,
+      "incomplete_or_invalid_qualified_proofs": 0,
+      "inconsistent_member_dd_groups": 0,
+      "examples": [],
+      "proof_error_examples": [],
+      "inconsistent_dd_examples": []
+    },
+    "source_set_regressions": [
+      {
+        "name": "Bell ExpressVu",
+        "keys": [
+          "2002|2|rcs||559",
+          "2002|2|scr||559",
+          "2002||csc||42",
+          "2002||scc||42"
+        ],
+        "status": "passed",
+        "group_ids": [
+          "XC-G024437"
+        ],
+        "expected_dd": 446,
+        "historical_english_pair_dd": 446,
+        "actual_dd": 446,
+        "missing_sources": [],
+        "unexpected_sources": [],
+        "self_excluded": true
+      },
+      {
+        "name": "Housen",
+        "keys": [
+          "2002|2|rcs||235",
+          "2002|2|scr||235",
+          "2002||csc||33",
+          "2002||scc||33"
+        ],
+        "status": "passed",
+        "group_ids": [
+          "XC-G024431"
+        ],
+        "expected_dd": 1500,
+        "historical_english_pair_dd": 1499,
+        "actual_dd": 1500,
+        "missing_sources": [],
+        "unexpected_sources": [],
+        "self_excluded": true
+      },
+      {
+        "name": "Biniaris",
+        "keys": [
+          "2000|1|rcs||381",
+          "2000|1|scr||381",
+          "2000||csc||15",
+          "2000||scc||15"
+        ],
+        "status": "passed",
+        "group_ids": [
+          "XC-G021355"
+        ],
+        "expected_dd": 384,
+        "historical_english_pair_dd": 384,
+        "actual_dd": 384,
+        "missing_sources": [],
+        "unexpected_sources": [],
+        "self_excluded": true
+      },
+      {
+        "name": "Addison & Leyen",
+        "keys": [
+          "2007|2|rcs||793",
+          "2007|2|scr||793",
+          "2007||csc||33",
+          "2007||scc||33"
+        ],
+        "status": "passed",
+        "group_ids": [
+          "XC-G033142"
+        ],
+        "expected_dd": 9,
+        "historical_english_pair_dd": 9,
+        "actual_dd": 9,
+        "missing_sources": [],
+        "unexpected_sources": [],
+        "self_excluded": true
+      }
+    ],
+    "carlos_housen_separate": true,
+    "addison_lower_court_and_sorbara_separate": true,
+    "biniaris_and_ag_separate": true,
+    "biniaris_negative_key_groups": {
+      "2000|1|scr||439": [
+        "XC-G021444"
+      ],
+      "2000||scc||17": [
+        "XC-G021444"
+      ]
+    },
+    "artifacts": [
+      {
+        "logical_path": "registry/decision_own_citations.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\registry\\decision_own_citations.csv.gz",
+        "physical_sha256": "cd07d7448815c43a1e0d3d79fa680cbf15e054957aa54c2f46a874c59db0e4e2",
+        "content_sha256": "3c164d0d97e15e4b79ff0e52c383548301f3b41bbb84d6afa721191b89fd40b7",
+        "logical_bytes": 36077950,
+        "stored_bytes": 8496563,
+        "rows": 63793,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "registry/decision_registry.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\registry\\decision_registry.csv.gz",
+        "physical_sha256": "6a7c34aee31e2d3473d88e4fdaf04aef5849888f249ce0136f7d304d24c99397",
+        "content_sha256": "d1eff9e36fd03b817a4698134b96451f71d1a0a01d04472a7be0a6d947a2c7a4",
+        "logical_bytes": 2812099,
+        "stored_bytes": 239228,
+        "rows": 52538,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "select_out/selected.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\select_out\\selected.csv.gz",
+        "physical_sha256": "9e567a632851f5d968d19ac2d0b36159bbd529d3370763c6db9b95fbd215a899",
+        "content_sha256": "c055e82caa29976a6ac41386deb7af2dff5966dae5d2a671aca6ced15ac8a583",
+        "logical_bytes": 84669064,
+        "stored_bytes": 8074790,
+        "rows": 261029,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/SCC/decision_ids.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\SCC\\decision_ids.csv.gz",
+        "physical_sha256": "3b7da96e89030fd3dd4b7040f832deb51c1cd920ff99f5e70373481a4b10348c",
+        "content_sha256": "96268dadf91099a85a78437d731aa0a924a763f5dfec478346d3e1b80799c20f",
+        "logical_bytes": 6194316,
+        "stored_bytes": 1251945,
+        "rows": 196059,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/ONCA/decision_ids.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\ONCA\\decision_ids.csv.gz",
+        "physical_sha256": "aaf1f4458d1661036e3a5f356c5e3bc7ec8adffe87ddf433c41a7d1e5b7260dd",
+        "content_sha256": "6c692c677aae94483903803577bfe93e8abd74f8b65a1c57185a7006771bfff9",
+        "logical_bytes": 5502803,
+        "stored_bytes": 948600,
+        "rows": 165257,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "merge_out/BCCA/decision_ids.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\BCCA\\decision_ids.csv.gz",
+        "physical_sha256": "39a67d46fa60f39c7fe296df1deedba0ff80c60a862e85a160e19c78417e7fb3",
+        "content_sha256": "b2903a97bfd39c0cb40c7b02a8e5456934aa5b07d726c05e2f666dff3b0adfd6",
+        "logical_bytes": 5886500,
+        "stored_bytes": 954015,
+        "rows": 174081,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "edges/citation_edges.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\edges\\citation_edges.csv.gz",
+        "physical_sha256": "3dd0658e8ceb23fd26c1762710b40ef651d7ac1d150b3b98202a1eeb0a211a2f",
+        "content_sha256": "50f7a8401ab2c5e3ec8e690eaafadfed4e2ed3821ff871649110a0bd939a0a47",
+        "logical_bytes": 81248737,
+        "stored_bytes": 7247755,
+        "rows": 490577,
+        "output_seal_verified": true
+      },
+      {
+        "logical_path": "decide_out/cross_court/effective_sources.csv",
+        "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\decide_out\\cross_court\\effective_sources.csv.gz",
+        "physical_sha256": "2658d73861e1faebd3451c2f34536fbbe022ea690adaad3126c165d7b9b9b929",
+        "content_sha256": "92e20719dd828fdb1f8a581400205eb9b12218fcc6de22597cfd10a8cf506720",
+        "logical_bytes": 34637850,
+        "stored_bytes": 4369299,
+        "rows": 495654,
+        "output_seal_verified": true
+      }
+    ],
+    "limits": "Explicit identity constraints and named source-set regressions, not population precision. Qualified proof validation recomputes declared hashes/bindings; it does not independently interpret original header text.",
+    "status": "passed"
+  },
+  "groups_scanned": 230449,
+  "holdout_member_rows_checked": 11,
+  "negative_fact_member_rows_checked": 1,
+  "proof_error_examples": [],
+  "constraint_error_examples": [],
+  "named_members": [
+    {
+      "record": 12028,
+      "court": "BCCA",
+      "merge_key": "1985|2|scr||486",
+      "merged_group_id": "XC-G008972",
+      "distinct_decisions_count": "213",
+      "kept": "true",
+      "identity_basis": "document_alias",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 12029,
+      "court": "ONCA",
+      "merge_key": "1985|2|scr||486",
+      "merged_group_id": "XC-G008972",
+      "distinct_decisions_count": "213",
+      "kept": "true",
+      "identity_basis": "document_alias",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 12030,
+      "court": "SCC",
+      "merge_key": "1985|2|scr||486",
+      "merged_group_id": "XC-G008972",
+      "distinct_decisions_count": "213",
+      "kept": "true",
+      "identity_basis": "document_alias",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 12032,
+      "court": "ONCA",
+      "merge_key": "1985|2|rcs||486",
+      "merged_group_id": "XC-G008972",
+      "distinct_decisions_count": "213",
+      "kept": "true",
+      "identity_basis": "document_alias",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 38330,
+      "court": "BCCA",
+      "merge_key": "2004|193|bcac||42",
+      "merged_group_id": "XC-G027331",
+      "distinct_decisions_count": "1",
+      "kept": "false",
+      "identity_basis": "singleton",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 39208,
+      "court": "SCC",
+      "merge_key": "2004||bcca||33",
+      "merged_group_id": "XC-G027814",
+      "distinct_decisions_count": "8",
+      "kept": "true",
+      "identity_basis": "anchor",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 39209,
+      "court": "ONCA",
+      "merge_key": "2004||bcca||33",
+      "merged_group_id": "XC-G027814",
+      "distinct_decisions_count": "8",
+      "kept": "true",
+      "identity_basis": "anchor",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 39210,
+      "court": "BCCA",
+      "merge_key": "2004||bcca||33",
+      "merged_group_id": "XC-G027814",
+      "distinct_decisions_count": "8",
+      "kept": "true",
+      "identity_basis": "anchor",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 39444,
+      "court": "BCCA",
+      "merge_key": "2004||bcca||91",
+      "merged_group_id": "XC-G027999",
+      "distinct_decisions_count": "3",
+      "kept": "false",
+      "identity_basis": "singleton",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 40714,
+      "court": "BCCA",
+      "merge_key": "2005|3|scr||343",
+      "merged_group_id": "XC-G028898",
+      "distinct_decisions_count": "85",
+      "kept": "true",
+      "identity_basis": "document_alias",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 40715,
+      "court": "ONCA",
+      "merge_key": "2005|3|scr||343",
+      "merged_group_id": "XC-G028898",
+      "distinct_decisions_count": "85",
+      "kept": "true",
+      "identity_basis": "document_alias",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 40717,
+      "court": "SCC",
+      "merge_key": "2005||scc||66",
+      "merged_group_id": "XC-G028898",
+      "distinct_decisions_count": "85",
+      "kept": "true",
+      "identity_basis": "document_alias",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 40718,
+      "court": "ONCA",
+      "merge_key": "2005||scc||66",
+      "merged_group_id": "XC-G028898",
+      "distinct_decisions_count": "85",
+      "kept": "true",
+      "identity_basis": "document_alias",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 40719,
+      "court": "BCCA",
+      "merge_key": "2005||scc||66",
+      "merged_group_id": "XC-G028898",
+      "distinct_decisions_count": "85",
+      "kept": "true",
+      "identity_basis": "document_alias",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 40720,
+      "court": "SCC",
+      "merge_key": "2005|3|scr||343",
+      "merged_group_id": "XC-G028898",
+      "distinct_decisions_count": "85",
+      "kept": "true",
+      "identity_basis": "document_alias",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 197688,
+      "court": "SCC",
+      "merge_key": "2004|193|bcac||42",
+      "merged_group_id": "XC-G167772",
+      "distinct_decisions_count": "1",
+      "kept": "false",
+      "identity_basis": "singleton",
+      "document_alias_holdout_doc_ids": "",
+      "document_alias_holdout_evidence_ids": "",
+      "identity_separation_evidence_ids": ""
+    },
+    {
+      "record": 252230,
+      "court": "SCC",
+      "merge_key": "|65|nsr|2d|54",
+      "merged_group_id": "XC-G221656",
+      "distinct_decisions_count": "1",
+      "kept": "false",
+      "identity_basis": "singleton",
+      "document_alias_holdout_doc_ids": "SCC_19852scr486",
+      "document_alias_holdout_evidence_ids": "own:171e21a41d07601c2669e9fe12814827943f811d16571e851e9916cacc2fb3d0|own:84d40de37a5ffd5277ec656c62ddc73afda2e5edcbb9d8b0a0dda4a98ef19247|own:9cb4eb061c7e3d087286ae26269f06f6d772ee2fc0670af6fcc905bfdc8b28c5|own:fb08bf2a7b3387f2c1eb088c8967b3a908bb9e38a0de017309c3859b0a23151f",
+      "identity_separation_evidence_ids": "sep:c35bcd2daaf53ca14666855d7b8187f4cc071c207b4f2e70c0c732aba19de9dd"
+    }
+  ],
+  "negative_fact": {
+    "merge_key": "|65|nsr|2d|54",
+    "target_decision_id": "SCC_19852scr486",
+    "target_qualified_evidence_ids": "own:171e21a41d07601c2669e9fe12814827943f811d16571e851e9916cacc2fb3d0|own:84d40de37a5ffd5277ec656c62ddc73afda2e5edcbb9d8b0a0dda4a98ef19247|own:9cb4eb061c7e3d087286ae26269f06f6d772ee2fc0670af6fcc905bfdc8b28c5|own:fb08bf2a7b3387f2c1eb088c8967b3a908bb9e38a0de017309c3859b0a23151f",
+    "verification_status": "verified_native_distinct_judgment",
+    "source_court": "SCC",
+    "source_decision": "SCC_19942scr864",
+    "source_corpus": "corpus/SCC.parquet",
+    "corpus_sha256": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+    "corpus_row": "5416",
+    "text_field": "unofficial_text_en",
+    "text_sha256": "ce735d385170ba1c35d2d6556aace7e18eefdb3c97f5cad20060e8e3a093d513",
+    "span_start": "54771",
+    "span_end": "54817",
+    "span_sha256": "7d85fa9c7118fc7f1825c53dd8a0a0f20eb9313b1de10b073dc7caf837cca820",
+    "source_locator": "audit/findings/project_review_20261015/motorvehicle_identity_separation_verification.json#native_distinct_judgment",
+    "evidence_id": "sep:c35bcd2daaf53ca14666855d7b8187f4cc071c207b4f2e70c0c732aba19de9dd"
+  },
+  "native_facts_reverified": [
+    {
+      "evidence_id": "sep:c35bcd2daaf53ca14666855d7b8187f4cc071c207b4f2e70c0c732aba19de9dd",
+      "source_corpus": "corpus/SCC.parquet",
+      "source_decision": "SCC_19942scr864",
+      "corpus_row": "5416",
+      "text_field": "unofficial_text_en",
+      "text_sha256": "ce735d385170ba1c35d2d6556aace7e18eefdb3c97f5cad20060e8e3a093d513",
+      "span_start": 54771,
+      "span_end": 54817,
+      "span_sha256": "7d85fa9c7118fc7f1825c53dd8a0a0f20eb9313b1de10b073dc7caf837cca820",
+      "native_span": "R. v. Johnson (1984), 65 N.S.R. (2d) 54 (C.A.)",
+      "status": "passed"
+    },
+    {
+      "evidence_id": "ICF-lising-bcca",
+      "source_corpus": "corpus/SCC.parquet",
+      "source_decision": "SCC_2005scc66",
+      "corpus_row": "3209",
+      "text_field": "unofficial_text_en",
+      "text_sha256": "18936e026e2e940980993096dc5f13290381e07584b00174d93c6ff0c8f2fc19",
+      "span_start": 10338,
+      "span_end": 10661,
+      "span_sha256": "3391ca00189f4f62e6b4bdbe569b85d3d768d828dcb2dada226df7434a3314b5",
+      "native_span": "APPEAL from a judgment of the British Columbia Court of Appeal (Finch C.J. and Southin and Newbury JJ.A.) (2004), 193 B.C.A.C. 42, 316 W.A.C. 42, 183 C.C.C. (3d) 232, 116 C.R.R. (2d) 100, [2004] B.C.J. No. 83 (QL), 2004 BCCA 33, upholding the accused’s convictions on conspiracy and drug‑related charges. Appeals dismissed.",
+      "status": "passed"
+    }
+  ],
+  "child_manifests": [
+    {
+      "path": "decide_out/SCC/manifest.json",
+      "negative_fact_snapshot_matches": true
+    },
+    {
+      "path": "decide_out/ONCA/manifest.json",
+      "negative_fact_snapshot_matches": true
+    },
+    {
+      "path": "decide_out/BCCA/manifest.json",
+      "negative_fact_snapshot_matches": true
+    },
+    {
+      "path": "decide_out/cross_court/manifest.json",
+      "negative_fact_snapshot_matches": true
+    }
+  ],
+  "lising_lower_effective_sources": [
+    "BCCA_2005bcca639",
+    "SCC_2005scc66"
+  ],
+  "johnson_effective_sources": [
+    "SCC_19942scr864"
+  ],
+  "lising_missing_sources": [],
+  "lising_unexpected_sources": [],
+  "motor_missing_sources": [],
+  "motor_unexpected_sources": [],
+  "table_hashes": {
+    "identity_court_facts.csv": "3ee854278bc0de607245382616fe48e62a67ca60833d7f38c46b68ddd0154e4f",
+    "identity_separations.csv": "ae4df66364aa44e18d9cec29f77904bccb1c67fd4563ff87f9c9828608e41991"
+  },
+  "baseline_evidence_receipt": {
+    "path": "D:\\cases data analisis\\audit\\findings\\project_review_20261015\\identity_highimpact_evidence_review_20261015.json",
+    "sha256": "2b42b5678d0d6fe027cebb6a029cc0842496d72dd33d0db8ce65f32a1c00d826"
+  },
+  "artifacts": [
+    {
+      "logical_path": "registry/decision_own_citations.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\registry\\decision_own_citations.csv.gz",
+      "physical_sha256": "cd07d7448815c43a1e0d3d79fa680cbf15e054957aa54c2f46a874c59db0e4e2",
+      "content_sha256": "3c164d0d97e15e4b79ff0e52c383548301f3b41bbb84d6afa721191b89fd40b7",
+      "logical_bytes": 36077950,
+      "stored_bytes": 8496563,
+      "rows": 63793,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "registry/decision_registry.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\registry\\decision_registry.csv.gz",
+      "physical_sha256": "6a7c34aee31e2d3473d88e4fdaf04aef5849888f249ce0136f7d304d24c99397",
+      "content_sha256": "d1eff9e36fd03b817a4698134b96451f71d1a0a01d04472a7be0a6d947a2c7a4",
+      "logical_bytes": 2812099,
+      "stored_bytes": 239228,
+      "rows": 52538,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "select_out/selected.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\select_out\\selected.csv.gz",
+      "physical_sha256": "9e567a632851f5d968d19ac2d0b36159bbd529d3370763c6db9b95fbd215a899",
+      "content_sha256": "c055e82caa29976a6ac41386deb7af2dff5966dae5d2a671aca6ced15ac8a583",
+      "logical_bytes": 84669064,
+      "stored_bytes": 8074790,
+      "rows": 261029,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/SCC/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\SCC\\decision_ids.csv.gz",
+      "physical_sha256": "3b7da96e89030fd3dd4b7040f832deb51c1cd920ff99f5e70373481a4b10348c",
+      "content_sha256": "96268dadf91099a85a78437d731aa0a924a763f5dfec478346d3e1b80799c20f",
+      "logical_bytes": 6194316,
+      "stored_bytes": 1251945,
+      "rows": 196059,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/ONCA/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\ONCA\\decision_ids.csv.gz",
+      "physical_sha256": "aaf1f4458d1661036e3a5f356c5e3bc7ec8adffe87ddf433c41a7d1e5b7260dd",
+      "content_sha256": "6c692c677aae94483903803577bfe93e8abd74f8b65a1c57185a7006771bfff9",
+      "logical_bytes": 5502803,
+      "stored_bytes": 948600,
+      "rows": 165257,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "merge_out/BCCA/decision_ids.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\merge_out\\BCCA\\decision_ids.csv.gz",
+      "physical_sha256": "39a67d46fa60f39c7fe296df1deedba0ff80c60a862e85a160e19c78417e7fb3",
+      "content_sha256": "b2903a97bfd39c0cb40c7b02a8e5456934aa5b07d726c05e2f666dff3b0adfd6",
+      "logical_bytes": 5886500,
+      "stored_bytes": 954015,
+      "rows": 174081,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "edges/citation_edges.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\edges\\citation_edges.csv.gz",
+      "physical_sha256": "3dd0658e8ceb23fd26c1762710b40ef651d7ac1d150b3b98202a1eeb0a211a2f",
+      "content_sha256": "50f7a8401ab2c5e3ec8e690eaafadfed4e2ed3821ff871649110a0bd939a0a47",
+      "logical_bytes": 81248737,
+      "stored_bytes": 7247755,
+      "rows": 490577,
+      "output_seal_verified": true
+    },
+    {
+      "logical_path": "decide_out/cross_court/effective_sources.csv",
+      "physical_path": "D:\\cases data analisis\\data\\run_20261015_identity_review\\decide_out\\cross_court\\effective_sources.csv.gz",
+      "physical_sha256": "2658d73861e1faebd3451c2f34536fbbe022ea690adaad3126c165d7b9b9b929",
+      "content_sha256": "92e20719dd828fdb1f8a581400205eb9b12218fcc6de22597cfd10a8cf506720",
+      "logical_bytes": 34637850,
+      "stored_bytes": 4369299,
+      "rows": 495654,
+      "output_seal_verified": true
+    }
+  ],
+  "limits": "Current byte seals, complete declared native proof sets, formal cannot-links and named exact source sets. Native span review is restricted to the two sourced corrections. This is not population identity precision or an independent legal interpretation of every header."
+}

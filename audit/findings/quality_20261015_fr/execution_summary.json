@@ -1,0 +1,87 @@
+{
+  "schema": "french_supplement_execution_receipt_v1",
+  "run_id": "run_20261015_identity_review",
+  "input_fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+  "population_definition": "Every final countable edge whose valid source ID unambiguously selects nonempty original unofficial_text_fr under the recorded run policy; no DD/top-k/origin filter",
+  "sample": {
+    "frame_id": "6f2f02c5bb69674fb1b01d96557a5588673e8fda4e896ec537a5b2b5fcecbc37",
+    "frame_N": 940,
+    "cells": 25,
+    "sample_n": 47,
+    "selection_seed": 20261015,
+    "fold_seed": 20261014,
+    "folds": {
+      "train": 36,
+      "holdout": 11
+    },
+    "original_evidence_status": {
+      "original_text_verified": 47
+    },
+    "selected_text_fields": {
+      "unofficial_text_fr": 47
+    },
+    "human_labelled_n": 0,
+    "population_calibration_status": "not_calibrated",
+    "population_inference_allowed": false,
+    "all_raw_verified_rates_null": true
+  },
+  "parent_binding": {
+    "parent_frame_id": "393a03290bac2a1ba60a4d2528ddfe7527e9fc112e24213e391374f4eead498f",
+    "parent_samples_hash": "965bdbedde1ab7af62b687b70ac4c3f226e93c2a9adc1a12d3910ce91bf6cc0d",
+    "parent_samples_sha256": "537c030837b4a33a6ca8d6f6b59853aa6bb701b99df56daee2872443055444a9",
+    "supplement_id": "selected_french_v1"
+  },
+  "language_census_counts": {
+    "rows/en": 49476,
+    "rows/empty": 9,
+    "rows/fr": 198,
+    "source_ids/en": 49476,
+    "source_ids/empty": 9,
+    "source_ids/fr": 198
+  },
+  "eligible_source_ids": 198,
+  "source_selection_sha256": "277ad6a765e2e279205362dc2ceba6ffa007262ab83edbbc031d0ec98bd5a0da",
+  "old_quality_20261014_unchanged": true,
+  "main_execution_summary": {
+    "path": "D:\\cases data analisis\\audit\\findings\\quality_20261015\\execution_summary.json",
+    "bytes": 10694,
+    "sha256": "3c070bacfaf1aefb38261747586705283cd10117335d17dd57aa23690854e2ef"
+  },
+  "artifacts": {
+    "audit\\findings\\quality_20261015_fr\\samples.json": {
+      "path": "D:\\cases data analisis\\audit\\findings\\quality_20261015_fr\\samples.json",
+      "bytes": 341858,
+      "sha256": "11b23231a4b9135b2fc413447df9304a650393ec27a7a1a2e120562c70231dd4"
+    },
+    "audit\\findings\\quality_20261015_fr\\manual_labels.csv": {
+      "path": "D:\\cases data analisis\\audit\\findings\\quality_20261015_fr\\manual_labels.csv",
+      "bytes": 29184,
+      "sha256": "cff9059c28dc8fc144bb3053d167ab19081b19b1d218eb63de5b7a21b3744b26"
+    },
+    "audit\\findings\\quality_20261015_fr\\labels.json": {
+      "path": "D:\\cases data analisis\\audit\\findings\\quality_20261015_fr\\labels.json",
+      "bytes": 594,
+      "sha256": "4f9bf4e8791ee39461019e4f53b8431499e3107e67270822aaf414c1b9c2da5c"
+    },
+    "audit\\findings\\quality_20261015_fr\\evaluation.json": {
+      "path": "D:\\cases data analisis\\audit\\findings\\quality_20261015_fr\\evaluation.json",
+      "bytes": 25302,
+      "sha256": "0567df8048e5fabedcb07e831b32e9fd4363bc2ea7cfeb9cb34f3d9146ba3203"
+    },
+    "audit\\findings\\quality_20261015_fr\\storage_preflight.json": {
+      "path": "D:\\cases data analisis\\audit\\findings\\quality_20261015_fr\\storage_preflight.json",
+      "bytes": 301,
+      "sha256": "5b179b9a8cba084fb09478685b69e4f9b8fce7b34409bce0230ae007473696d7"
+    },
+    "audit\\findings\\quality_20261015_fr\\old_quality_preservation_before.json": {
+      "path": "D:\\cases data analisis\\audit\\findings\\quality_20261015_fr\\old_quality_preservation_before.json",
+      "bytes": 1040,
+      "sha256": "a6bb1b2c4e421f9a80f41cee534a4eb7491aa3cb282c784b6b9b7c77d64b20c2"
+    }
+  },
+  "limitations": [
+    "French frame is selected original unofficial_text_fr source IDs and their final countable edges, not all translations or missed mentions/recall.",
+    "The supplement has its own N/n/pi and cannot be pooled with main inverse-probability weights without a joint design.",
+    "There are no manual labels and no new precision/calibration claims."
+  ]
+}

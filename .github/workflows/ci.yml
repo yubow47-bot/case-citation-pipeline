@@ -22,4 +22,6 @@ jobs:
       - run: pip install pyarrow pyyaml
       # Offline: the demo and the layer tests use synthetic data, not the corpus.
       - run: python scripts/demo.py
-      - run: python pipeline/tests/test_layers.py
+      # Check every suite exit code; fixtures use workspace-local temporary files.
+      # Vector fixtures run when sqlite-vec is installed; all checks remain offline.
+      - run: python scripts/verify_offline.py

@@ -1,0 +1,58 @@
+{
+  "schema": "native-court-token-check-v1",
+  "court": "SCC",
+  "corpus_row": 5416,
+  "citation_en": "[1994] 2 SCR 864",
+  "citation_fr": "[1994] 2 RCS 864",
+  "scope": "Native EN and FR textual court specification only; reporter origin is not used to invent court.",
+  "records": [
+    {
+      "field": "unofficial_text_en",
+      "text_sha256": "ce735d385170ba1c35d2d6556aace7e18eefdb3c97f5cad20060e8e3a093d513",
+      "johnson_windows": [
+        {
+          "name_start": 7177,
+          "name_end": 7184,
+          "window_start": 7027,
+          "window_end": 7414,
+          "text": "982] C.S. 461; R. v. Green (1989), 89 N.S.R. (2d) 16; R. v. Whitty (1977), 12 Nfld. & P.E.I.R. 361; R. v. MacKinlay (1986), 28 C.C.C. (3d) 306; R. v. Johnson (1984), 65 N.S.R. (2d) 54; R. v. Sam, [1993] Y.J. No. 233 (QL); R. v. Petropoulos (1990), 59 C.C.C. (3d) 393; Lewis v. The Queen, [1979] 2 S.C.R. 821; R. v. Elder (1978), 40 C.C.C. (2d) 122; R. v. Leech (1972), 10 C.C.C. (2d) 149"
+        },
+        {
+          "name_start": 54777,
+          "name_end": 54784,
+          "window_start": 54627,
+          "window_end": 55014,
+          "text": ". (2d) 16 (C.A.); R. v. Whitty (1977), 12 Nfld. & P.E.I.R. 361 (Nfld. C.A.); R. v. MacKinlay (1986), 28 C.C.C. (3d) 306 (Ont. C.A.), at p. 318; R. v. Johnson (1984), 65 N.S.R. (2d) 54 (C.A.); and R. v. Sam, [1993] Y.J. No. 233 (Terr. Ct.) (QL).) It is especially true that intent can be inferred from the surrounding circumstances when we consider that intent is very seldom exteriorized"
+        }
+      ],
+      "explicit_nova_scotia_tokens": [
+        {
+          "start": 27972,
+          "end": 27980,
+          "text": "ians entitled to the child's custody, care and charge. (See: R. v. Cook (1984), 12 C.C.C. (3d) 471 (N.S.C.A.), at p. 475.) That subsection was seldom applied to strangers since strangers (those not related in"
+        }
+      ]
+    },
+    {
+      "field": "unofficial_text_fr",
+      "text_sha256": "6498d2932c11bbc3bb283aa71c409cebef7104f071866d7b59b8571776cc3f3a",
+      "johnson_windows": [
+        {
+          "name_start": 7792,
+          "name_end": 7799,
+          "window_start": 7642,
+          "window_end": 8029,
+          "text": "982] C.S. 461; R. c. Green (1989), 89 N.S.R. (2d) 16; R. c. Whitty (1977), 12 Nfld. & P.E.I.R. 361; R. c. MacKinlay (1986), 28 C.C.C. (3d) 306; R. c. Johnson (1984), 65 N.S.R. (2d) 54; R. c. Sam, [1993] Y.J. no. 233 (QL); R. c. Petropoulos (1990), 59 C.C.C. (3d) 393; Lewis c. La Reine, [1979] 2 R.C.S. 821; R. c. Elder (1978), 40 C.C.C. (2d) 122; R. c. Leech (1972), 10 C.C.C. (2d) 149;"
+        },
+        {
+          "name_start": 59199,
+          "name_end": 59206,
+          "window_start": 59049,
+          "window_end": 59436,
+          "text": " (2d) 16 (C.A.); R. c. Whitty (1977), 12 Nfld. & P.E.I.R. 361 (C.A.T.‑N.); R. c. MacKinlay (1986), 28 C.C.C. (3d) 306 (C.A. Ont.), à la p. 318; R. c. Johnson (1984), 65 N.S.R. (2d) 54 (C.A.); et R. c. Sam, [1993] Y.J. no 233 (C. Terr.) (QL).) Il est particulièrement vrai que l'on peut inférer l'intention des circonstances qui entourent l'affaire lorsque l'on considère qu'elle est très"
+        }
+      ],
+      "explicit_nova_scotia_tokens": []
+    }
+  ]
+}

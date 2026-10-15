@@ -1,0 +1,174 @@
+{
+  "schema": "tcc_identity_replay_storage_release_v1",
+  "status": "passed",
+  "retained_run": "D:\\cases data analisis\\data\\run_20261015_tcc_identity_verify",
+  "new_manifest_sha256": "cce2e5cfd6d3eb43013686ca3ddb285a944e5f6b4704e1cf41dd2f62a6016b21",
+  "new_output_fingerprint": "d20dea975f2d8957de25fbc20449c598ba2af36dd0e5a3a0d4c8ab644a8455d2",
+  "new_complete_output_seal_reverified_after_source_deletion": true,
+  "upstream_files_reverified": 47,
+  "only_one_tcc_run_remains": [
+    "run_20261015_tcc_identity_verify"
+  ],
+  "old_tcc_retired_with_bounded_receipt": {
+    "run": "D:\\cases data analisis\\data\\run_20261014_tcc_verify_final",
+    "run_status": "complete",
+    "manifest_sha256": "25506399d911dc24e3e8f212df74d0f62e79fbe910724f214c6fc4821757d9ab",
+    "before_bytes": 66860484,
+    "after_bytes": 0,
+    "receipt_directory": "D:\\cases data analisis\\data\\run_receipts\\run_20261014_tcc_verify_final_deleted",
+    "removed_logical_bytes": 66860484,
+    "released_bytes": 16154906,
+    "hardlinked_content_bytes_not_counted_as_released": 50705578,
+    "receipt_total_bytes": 84343,
+    "net_released_content_bytes_lower_bound": 16070563,
+    "space_accounting_note": "removed_logical_bytes counts all deleted paths. released_bytes counts unique pre-delete inodes with st_nlink=1 only; multi-link content is excluded even when all links might be inside the deleted run. These are content-length lower bounds, not allocated disk blocks or measured disk-free changes. Net lower bound subtracts receipt file lengths.",
+    "retained_bytes": 79755,
+    "receipt_limit_bytes": 524288,
+    "retained_files": [
+      {
+        "path": "run_manifest.json",
+        "bytes": 28604,
+        "sha256": "25506399d911dc24e3e8f212df74d0f62e79fbe910724f214c6fc4821757d9ab"
+      },
+      {
+        "path": "step_build_registry.log",
+        "bytes": 580,
+        "sha256": "f75ff764c269e5b7c74da4b7f1da3e38129442678ff6b68c4b9f6330480abf1a"
+      },
+      {
+        "path": "step_classify_TCC.log",
+        "bytes": 2902,
+        "sha256": "dca91ae3d98299685f5dee9eb323ab6143f0b9e4b3644ea15d6cebc5cb5a0785"
+      },
+      {
+        "path": "step_decide_TCC.log",
+        "bytes": 3072,
+        "sha256": "cbd7e73b74d11db54f64ac825cd6f5d6bc73357d28e2dbd92b43d12b65134081"
+      },
+      {
+        "path": "step_decide_cross.log",
+        "bytes": 2604,
+        "sha256": "738691371271130b043cc2336dda2b160a69da013e4486790f597cd05e318ddd"
+      },
+      {
+        "path": "step_edges.log",
+        "bytes": 852,
+        "sha256": "1bf3c18cb4060352a96942862de78f45b0cd5198295f8043781f3b8212a2beea"
+      },
+      {
+        "path": "step_extract.log",
+        "bytes": 1775,
+        "sha256": "d11e27737100bdc3b39fb2c6ab29f8f28063e0fcae59c685deda3535e9a5b040"
+      },
+      {
+        "path": "step_merge_TCC.log",
+        "bytes": 1835,
+        "sha256": "2783972769046f69a940bc53fe394726f528bf2374da6b3ab12c4398753982f1"
+      },
+      {
+        "path": "step_registry_report.log",
+        "bytes": 251,
+        "sha256": "353966eee50d42bac4fccff3ac5356904fd120195d916429089752d478b4247a"
+      },
+      {
+        "path": "step_select.log",
+        "bytes": 707,
+        "sha256": "c37dc595f2bcb2e469da9ea620fc789d094d1556dbd32f53e17add9689765859"
+      },
+      {
+        "path": "classify_out\\TCC\\manifest.json",
+        "bytes": 2721,
+        "sha256": "f590758cbde24d9595defc019d5f16103e20fa0674778d7c1100901a8fa904aa"
+      },
+      {
+        "path": "compact_receipt.json",
+        "bytes": 14197,
+        "sha256": "0f7369699063c582c27fe7e747e901707792b2af8ee753eaa0cf6a948e6e06ed"
+      },
+      {
+        "path": "decide_out\\TCC\\manifest.json",
+        "bytes": 2505,
+        "sha256": "89ac7dccb76107287ba6d3140f22bc66c518cba6ee5a8eba3a129668b5fb49c0"
+      },
+      {
+        "path": "decide_out\\cross_court\\manifest.json",
+        "bytes": 2266,
+        "sha256": "8c409ccb9d4ec8761b7a1791756864edd93d4afa527ca2b7c58b68d4dfc66c10"
+      },
+      {
+        "path": "edges\\manifest.json",
+        "bytes": 761,
+        "sha256": "f12fdf9f2128d531e82ec524363cc65c44d4cca1f0874b850776836e722c54fe"
+      },
+      {
+        "path": "extract_out\\TCC\\progress.json",
+        "bytes": 51,
+        "sha256": "61c1e608759d67da828fe38c199206b9cd347226325263b3cf3975a2679b812f"
+      },
+      {
+        "path": "extract_out\\manifest.json",
+        "bytes": 2563,
+        "sha256": "c921647711c99c75150722b0fe2ba19c911212da49e33c1385e61083e02c4536"
+      },
+      {
+        "path": "merge_out\\TCC\\manifest.json",
+        "bytes": 1508,
+        "sha256": "b4abf1d0b441a84cbd79b033bc8cfa8badabca66ee8511cbf35d388f19a62fc3"
+      },
+      {
+        "path": "registry\\ceiling.json",
+        "bytes": 4021,
+        "sha256": "2350ccc5fe1ed85f210aae869772910713c7d58aaf7a821ad213e15be6521ab2"
+      },
+      {
+        "path": "registry\\manifest.json",
+        "bytes": 4822,
+        "sha256": "f056c1723b4afcdf12fcf90b36374e7c3516862c0f6aab7f87ca2b4e2192cef7"
+      },
+      {
+        "path": "select_out\\manifest.json",
+        "bytes": 1158,
+        "sha256": "c59c1736978072dfeae91861dfd3572e42fecbb1d12f6c98a166e633fc59bf9b"
+      }
+    ],
+    "action": "direct_delete_without_archive",
+    "status": "deleted",
+    "created_at": "2026-10-15T05:20:01.166068+00:00"
+  },
+  "main_14_baseline_preserved": true,
+  "project_postflight": {
+    "root": "D:\\cases data analisis",
+    "project_bytes": 7295877166,
+    "estimated_peak_bytes": 0,
+    "projected_peak_bytes": 7295877166,
+    "max_project_bytes": 12884901888,
+    "free_bytes": 55649882112,
+    "free_after_peak_bytes": 55649882112,
+    "min_free_bytes": 2147483648,
+    "allowed": true
+  },
+  "reports": {
+    "tcc_replay_preflight.json": {
+      "sha256": "ffe578feaaf287e2bb9b34d5409a5f7b8cb86e75dac3ee166cf32272b8d138c4",
+      "bytes": 797
+    },
+    "tcc_identity_table_check.json": {
+      "sha256": "4f81894d7a77fbbd5fc6bc3fed480f2e589b9786c1f77abd49c3917bb2d2f15d",
+      "bytes": 2869
+    },
+    "tcc_identity_compare.json": {
+      "sha256": "c59b54b02778f7de4c8ddf51015553baf1f085e23c425d409404c9b45e497d33",
+      "bytes": 13502
+    },
+    "tcc_identity_corsano.json": {
+      "sha256": "af777c875f093f0d7d10811a71d5d06eec301778bc10d98c5c66db12f432746e",
+      "bytes": 3375
+    },
+    "tcc_identity_effective_sources.json": {
+      "sha256": "1a48d970e0e5a7d5a58baf13b33edd6585f159b520c034d0c3bc9b8274e38440",
+      "bytes": 9693
+    }
+  },
+  "persistent_tcc_databases_created": 0,
+  "note": "Original old CSVs retired only after all comparison/source checks passed. Compressed upstream inodes remain reachable from the new run; full output seal independently rechecked afterwards. Source comparison receipts retain old fingerprints and complete Corsano effective source sets."
+}

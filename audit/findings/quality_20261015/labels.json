@@ -1,0 +1,14 @@
+{
+  "schema": "quality_labels_v1",
+  "run_id": "run_20261015_identity_review",
+  "frame_id": "393a03290bac2a1ba60a4d2528ddfe7527e9fc112e24213e391374f4eead498f",
+  "samples_hash": "965bdbedde1ab7af62b687b70ac4c3f226e93c2a9adc1a12d3910ce91bf6cc0d",
+  "source_labels_sha256": "03cf7535899db5b5e197ee103b7834a8136d59aca590a6bd7fdbf7a9914fc3c4",
+  "imported_at": "2026-10-15T05:27:00.745275+00:00",
+  "label_method": "manual",
+  "sampled_records": 270,
+  "csv_rows": 270,
+  "labelled_records": 0,
+  "records": [],
+  "content_hash": "c98363dabbe34e003cb6023f9f0a290431c57d8f0131d7a80031e53429831081"
+}

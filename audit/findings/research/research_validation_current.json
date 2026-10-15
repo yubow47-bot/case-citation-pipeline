@@ -1,0 +1,175 @@
+{
+  "schema": "research-release-validation-v1",
+  "status": "passed",
+  "run_id": "run_20261014_reliable_final",
+  "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+  "text_policy": "en_then_fr",
+  "full_table_summary": {
+    "citation_edges": 490576,
+    "citing_source_ids": 38776,
+    "cited_groups": 228100,
+    "printed_mentions": 705476,
+    "origin_determined_edges": 213763,
+    "origin_unknown_edges": 276813,
+    "foreign_edges": 1082,
+    "domestic_edges": 212681,
+    "origin_conflict_edges": 0,
+    "heuristic_only_edges": 30882,
+    "group_origin_determined": 58687,
+    "edges_missing_document_metadata": 0,
+    "edges_unknown_source_year": 0,
+    "origin_coverage": 0.43573880499657547,
+    "origin_unknown_rate": 0.5642611950034245,
+    "heuristic_only_rate": 0.0629504908515704,
+    "foreign_share_all_edges": 0.0022055705945663875,
+    "foreign_share_determined_edges": 0.005061680459200142,
+    "group_origin_coverage": 0.2572862779482683
+  },
+  "corpus_metadata_diagnostics": {
+    "corpus_document_rows": 49683,
+    "empty_citation_document_rows": 0,
+    "empty_date_document_rows": 0,
+    "invalid_source_id_document_rows": 0,
+    "valid_corpus_source_ids": 49683
+  },
+  "court_edge_totals": {
+    "SCC": 178358,
+    "ONCA": 147281,
+    "BCCA": 164937
+  },
+  "court_decade_buckets": 24,
+  "checks": {
+    "same_full_summary_count_stats_ranking": true,
+    "all_decade_edge_buckets_sum_to_full_edges": true,
+    "document_denominators_sum_to_raw_corpus_metadata": true,
+    "unfiltered_ranking_dd_matches_global_dd": true,
+    "foreign_filter_count_matches_full_summary_foreign": true,
+    "canonical_packet_hashes_verified": true,
+    "run_identity_and_text_policy_verified": true,
+    "foreign_and_french_evidence_original_fields_span_hash_verified": true
+  },
+  "packets": [
+    {
+      "path": "D:\\cases data analisis\\audit\\findings\\research\\full_count_current.json",
+      "bytes": 166961,
+      "physical_sha256": "faacff8108097469bfa207279f46c01fc9803b0e1d00f911741bc7573e0cec92",
+      "packet_sha256": "e937823b40244ffdacb3cc412df1c1e25cf6691cb0b7acdb318ef3326bb757d8",
+      "intent": "count",
+      "parameters": {
+        "court": null,
+        "year_from": null,
+        "year_to": null,
+        "origin": null,
+        "min_dd": 0,
+        "kept_only": false,
+        "group_id": null,
+        "top": 10,
+        "evidence_limit": 0,
+        "with_text": false,
+        "language": "zh",
+        "text_policy": "en_then_fr"
+      },
+      "evidence_status": []
+    },
+    {
+      "path": "D:\\cases data analisis\\audit\\findings\\research\\court_decade_current.json",
+      "bytes": 199992,
+      "physical_sha256": "d1b7ce4e35f2a88383ea6b693772f17574fac67a543734515d45f26bd7a48dab",
+      "packet_sha256": "07850f2e4572dea2950fea4762860d985dc31d4d47796109fb542f99484a747e",
+      "intent": "court_decade",
+      "parameters": {
+        "court": null,
+        "year_from": null,
+        "year_to": null,
+        "origin": null,
+        "min_dd": 0,
+        "kept_only": false,
+        "group_id": null,
+        "top": 10,
+        "evidence_limit": 0,
+        "with_text": false,
+        "language": "zh",
+        "text_policy": "en_then_fr"
+      },
+      "evidence_status": []
+    },
+    {
+      "path": "D:\\cases data analisis\\audit\\findings\\research\\ranking_current.json",
+      "bytes": 173698,
+      "physical_sha256": "2e2fccb351957f292ad0a16947000683a3350af4b92334411d0bf07d5feaa79d",
+      "packet_sha256": "55f12f1e24fdb41c50ff8a7d3c2495f0be47f548c1003ce43c3dfb7e5d4c08fc",
+      "intent": "ranking",
+      "parameters": {
+        "court": null,
+        "year_from": null,
+        "year_to": null,
+        "origin": null,
+        "min_dd": 0,
+        "kept_only": false,
+        "group_id": null,
+        "top": 10,
+        "evidence_limit": 0,
+        "with_text": false,
+        "language": "zh",
+        "text_policy": "en_then_fr"
+      },
+      "evidence_status": []
+    },
+    {
+      "path": "D:\\cases data analisis\\audit\\findings\\research\\foreign_count_evidence.json",
+      "bytes": 175128,
+      "physical_sha256": "15855821bad2501f504d4238d27ab4aa54e16fe3ae7627ad25d368e261f584f1",
+      "packet_sha256": "101257f34720e3d845e144e7ad38b5780f84b6ae3114324008c118afc0bb1792",
+      "intent": "count",
+      "parameters": {
+        "court": null,
+        "year_from": null,
+        "year_to": null,
+        "origin": "FOREIGN",
+        "min_dd": 0,
+        "kept_only": false,
+        "group_id": null,
+        "top": 10,
+        "evidence_limit": 1,
+        "with_text": true,
+        "language": "zh",
+        "text_policy": "en_then_fr"
+      },
+      "evidence_status": [
+        "original_text_verified"
+      ]
+    },
+    {
+      "path": "D:\\cases data analisis\\audit\\findings\\research\\french_case_evidence.json",
+      "bytes": 175058,
+      "physical_sha256": "68109445739733d4b01046051544da073b55d692fbc24749f5fb48538a2cbeef",
+      "packet_sha256": "d86dd008a0bcdc2df415b1417e6009bd6d1419a24eaf4fa47d4cd2b90d662f2d",
+      "intent": "case_citations",
+      "parameters": {
+        "court": "SCC",
+        "year_from": null,
+        "year_to": null,
+        "origin": null,
+        "min_dd": 0,
+        "kept_only": false,
+        "group_id": "XC-G138564",
+        "top": 10,
+        "evidence_limit": 1,
+        "with_text": true,
+        "language": "zh",
+        "text_policy": "en_then_fr"
+      },
+      "evidence_status": [
+        "original_text_verified"
+      ]
+    }
+  ],
+  "generated_report_bytes": 914022,
+  "limits": [
+    "Counts are source-ID/group mentions, not followed/relied-on legal relationships.",
+    "Corpus denominators are metadata universe and include 9 rows without selected text; English/French row processing is one source per row.",
+    "The deterministic original-text proofs do not measure extraction, identity, or origin semantic precision.",
+    "No DB/corpus copy, new cache, API, or full stream rebuild; queries used the adopted final readonly database.",
+    "Component provenance records the DB snapshot at query time; a later methods refresh must be reported by the final status rather than silently rewritten into prior packets."
+  ]
+}

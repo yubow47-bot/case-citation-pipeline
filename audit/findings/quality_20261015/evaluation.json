@@ -1,0 +1,2387 @@
+{
+  "schema": "quality_evaluation_v1",
+  "run_id": "run_20261015_identity_review",
+  "frame_id": "393a03290bac2a1ba60a4d2528ddfe7527e9fc112e24213e391374f4eead498f",
+  "samples_hash": "965bdbedde1ab7af62b687b70ac4c3f226e93c2a9adc1a12d3910ce91bf6cc0d",
+  "labels_hash": "c98363dabbe34e003cb6023f9f0a290431c57d8f0131d7a80031e53429831081",
+  "frame_N": 490577,
+  "sampled_n": 270,
+  "labelled_n": 0,
+  "cells": [
+    {
+      "cell_id": "01cf883323711161385a1854",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "identifier",
+        "edge_support": "supported"
+      },
+      "N_cell": 1578,
+      "n_cell": 2,
+      "pi": 0.0012674271229404308
+    },
+    {
+      "cell_id": "0429b2a18184d0c005b58c00",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 1739,
+      "n_cell": 2,
+      "pi": 0.0011500862564692352
+    },
+    {
+      "cell_id": "0a8ff3fd1961e9958ff5a9e6",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 15,
+      "n_cell": 2,
+      "pi": 0.13333333333333333
+    },
+    {
+      "cell_id": "0b79ecd74e8492a74b9f0b55",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "<=1949",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 155,
+      "n_cell": 2,
+      "pi": 0.012903225806451613
+    },
+    {
+      "cell_id": "0d33bf7ead8b9854e830eb29",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "neutral",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 5,
+      "n_cell": 2,
+      "pi": 0.4
+    },
+    {
+      "cell_id": "0fce6d7b5e9f2689ae0c82a9",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 4921,
+      "n_cell": 2,
+      "pi": 0.000406421459053038
+    },
+    {
+      "cell_id": "114c3c8bd0bbbb08767fb66a",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 3427,
+      "n_cell": 2,
+      "pi": 0.0005836008170411438
+    },
+    {
+      "cell_id": "11cb9bc3d370ff0649dc89b4",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 1877,
+      "n_cell": 2,
+      "pi": 0.0010655301012253596
+    },
+    {
+      "cell_id": "135f33f5b402d914922f98cf",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "100+",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 1,
+      "n_cell": 1,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "13ca21ea2db7f337a851218a",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "identifier",
+        "edge_support": "supported"
+      },
+      "N_cell": 70,
+      "n_cell": 2,
+      "pi": 0.02857142857142857
+    },
+    {
+      "cell_id": "14c7932c01097bd2690464c6",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "<=1949",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 38383,
+      "n_cell": 2,
+      "pi": 5.210640127139619e-05
+    },
+    {
+      "cell_id": "14da579bb38ecc49387f8526",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 116,
+      "n_cell": 2,
+      "pi": 0.017241379310344827
+    },
+    {
+      "cell_id": "14fdbf176e1f3676c8e4a066",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "other",
+        "edge_support": "supported"
+      },
+      "N_cell": 10,
+      "n_cell": 2,
+      "pi": 0.2
+    },
+    {
+      "cell_id": "15dd3de88100c6285388353f",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "100+",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 1203,
+      "n_cell": 2,
+      "pi": 0.0016625103906899418
+    },
+    {
+      "cell_id": "16451d2d647e8b75a69c3a48",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 490,
+      "n_cell": 2,
+      "pi": 0.004081632653061225
+    },
+    {
+      "cell_id": "182e06bee585259b9be6735c",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "<=1949",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 1,
+      "n_cell": 1,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "1835dce52097fd4c0027e73b",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "neutral",
+        "edge_support": "supported"
+      },
+      "N_cell": 19493,
+      "n_cell": 2,
+      "pi": 0.00010260093366849639
+    },
+    {
+      "cell_id": "192a429e16c571a72b32b1ac",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 12370,
+      "n_cell": 2,
+      "pi": 0.00016168148746968473
+    },
+    {
+      "cell_id": "1b3686d337363248f2aaa787",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 24,
+      "n_cell": 2,
+      "pi": 0.08333333333333333
+    },
+    {
+      "cell_id": "1c1ab0defd2d781757116f1e",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "neutral",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 6,
+      "n_cell": 2,
+      "pi": 0.3333333333333333
+    },
+    {
+      "cell_id": "1ef0f12c4168bd15c2fabc07",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 2394,
+      "n_cell": 2,
+      "pi": 0.000835421888053467
+    },
+    {
+      "cell_id": "205d825288a62e4fcedc9e33",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "identifier",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 6,
+      "n_cell": 2,
+      "pi": 0.3333333333333333
+    },
+    {
+      "cell_id": "21a0fc3be70256a15285b5fd",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 41400,
+      "n_cell": 2,
+      "pi": 4.830917874396135e-05
+    },
+    {
+      "cell_id": "22651a089a3c938485c825ef",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "<=1949",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 5114,
+      "n_cell": 2,
+      "pi": 0.00039108330074305825
+    },
+    {
+      "cell_id": "23454f2b27058e01b06901f7",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 8696,
+      "n_cell": 2,
+      "pi": 0.00022999080036798528
+    },
+    {
+      "cell_id": "27de915215689328729f025c",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "neutral",
+        "edge_support": "supported"
+      },
+      "N_cell": 1,
+      "n_cell": 1,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "2a5cd145dd3598951b2fb31d",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 896,
+      "n_cell": 2,
+      "pi": 0.002232142857142857
+    },
+    {
+      "cell_id": "2d63eab6d88d4f870ae860a6",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "identifier",
+        "edge_support": "supported"
+      },
+      "N_cell": 178,
+      "n_cell": 2,
+      "pi": 0.011235955056179775
+    },
+    {
+      "cell_id": "2e0f41ee464c9a68b832d475",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "100+",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 97,
+      "n_cell": 2,
+      "pi": 0.020618556701030927
+    },
+    {
+      "cell_id": "315285ccb86527f9bdb88685",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 349,
+      "n_cell": 2,
+      "pi": 0.0057306590257879654
+    },
+    {
+      "cell_id": "32e8bfd3393d50a7b8845108",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "other",
+        "edge_support": "supported"
+      },
+      "N_cell": 71,
+      "n_cell": 2,
+      "pi": 0.028169014084507043
+    },
+    {
+      "cell_id": "34b6c5cd0101f7a51c7a153a",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "5-19",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 15,
+      "n_cell": 2,
+      "pi": 0.13333333333333333
+    },
+    {
+      "cell_id": "3570cf1148ab313f4db5d009",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "neutral",
+        "edge_support": "supported"
+      },
+      "N_cell": 5678,
+      "n_cell": 2,
+      "pi": 0.0003522367030644593
+    },
+    {
+      "cell_id": "3607f911e6b5418f01f12898",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "<=1949",
+        "dd_band": "0-4",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 2,
+      "n_cell": 2,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "366b2e542093e6cc217fdc92",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "100+",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 11,
+      "n_cell": 2,
+      "pi": 0.18181818181818182
+    },
+    {
+      "cell_id": "36ac949a83474be56b36941d",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "identifier",
+        "edge_support": "supported"
+      },
+      "N_cell": 1,
+      "n_cell": 1,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "3a5d3e81299432ce200fe07d",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 7361,
+      "n_cell": 2,
+      "pi": 0.0002717022143730471
+    },
+    {
+      "cell_id": "3b4874f96d6767884e9a158c",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 2136,
+      "n_cell": 2,
+      "pi": 0.0009363295880149813
+    },
+    {
+      "cell_id": "425ed5283afa6bd401d62a91",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "neutral",
+        "edge_support": "supported"
+      },
+      "N_cell": 1473,
+      "n_cell": 2,
+      "pi": 0.0013577732518669382
+    },
+    {
+      "cell_id": "48566379f0f6c8562de40c61",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "100+",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 94,
+      "n_cell": 2,
+      "pi": 0.02127659574468085
+    },
+    {
+      "cell_id": "490b16ba13ef76248b7eb051",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 4086,
+      "n_cell": 2,
+      "pi": 0.0004894762604013706
+    },
+    {
+      "cell_id": "4caaa48dfbd9ccfa4a73e644",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 1866,
+      "n_cell": 2,
+      "pi": 0.0010718113612004287
+    },
+    {
+      "cell_id": "4fe1b2a0661cde5ddda6d3a0",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "5-19",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 12,
+      "n_cell": 2,
+      "pi": 0.16666666666666666
+    },
+    {
+      "cell_id": "5121bf5d901b34bb91048162",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "<=1949",
+        "dd_band": "100+",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 7,
+      "n_cell": 2,
+      "pi": 0.2857142857142857
+    },
+    {
+      "cell_id": "522b7e66066c7126437ee6c3",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 170,
+      "n_cell": 2,
+      "pi": 0.011764705882352941
+    },
+    {
+      "cell_id": "548a27eec96b60e450727cd5",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 136,
+      "n_cell": 2,
+      "pi": 0.014705882352941176
+    },
+    {
+      "cell_id": "55036e5770398e9a17ced4ea",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 1041,
+      "n_cell": 2,
+      "pi": 0.0019212295869356388
+    },
+    {
+      "cell_id": "552ff3a48333b07e86c5038b",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 1552,
+      "n_cell": 2,
+      "pi": 0.001288659793814433
+    },
+    {
+      "cell_id": "58f30a14401527e32c5c61b0",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 12635,
+      "n_cell": 2,
+      "pi": 0.00015829046299960426
+    },
+    {
+      "cell_id": "594e0a4a7965a40c7757f4b2",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "<=1949",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 59,
+      "n_cell": 2,
+      "pi": 0.03389830508474576
+    },
+    {
+      "cell_id": "5a6d591d75d01f30cfb8ac46",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 7965,
+      "n_cell": 2,
+      "pi": 0.00025109855618330194
+    },
+    {
+      "cell_id": "5ab4e1c1008394c0df7e02d0",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 1510,
+      "n_cell": 2,
+      "pi": 0.0013245033112582781
+    },
+    {
+      "cell_id": "5b87769f73718dfff670074f",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "<=1949",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 811,
+      "n_cell": 2,
+      "pi": 0.002466091245376079
+    },
+    {
+      "cell_id": "5e17b4fa015e2a17200b8b0d",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 94,
+      "n_cell": 2,
+      "pi": 0.02127659574468085
+    },
+    {
+      "cell_id": "5e6b6a08b54e77d35038db13",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 5195,
+      "n_cell": 2,
+      "pi": 0.00038498556304138594
+    },
+    {
+      "cell_id": "60f5df1f6ac597aede47b9c4",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 94,
+      "n_cell": 2,
+      "pi": 0.02127659574468085
+    },
+    {
+      "cell_id": "619be40ca467e09f508aa029",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 9332,
+      "n_cell": 2,
+      "pi": 0.0002143163309044149
+    },
+    {
+      "cell_id": "623e00070fe1106adbf64de9",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 7,
+      "n_cell": 2,
+      "pi": 0.2857142857142857
+    },
+    {
+      "cell_id": "654171d834c86f4dd0878deb",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "100+",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 11,
+      "n_cell": 2,
+      "pi": 0.18181818181818182
+    },
+    {
+      "cell_id": "6861559359df0ccde57247f8",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "identifier",
+        "edge_support": "supported"
+      },
+      "N_cell": 2382,
+      "n_cell": 2,
+      "pi": 0.0008396305625524769
+    },
+    {
+      "cell_id": "69a31cff0450d67d322d0a21",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "neutral",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 1,
+      "n_cell": 1,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "6ad22d7c8c6eb55952de6a16",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 397,
+      "n_cell": 2,
+      "pi": 0.005037783375314861
+    },
+    {
+      "cell_id": "6db0c2fb8418e570fee5c01a",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 15,
+      "n_cell": 2,
+      "pi": 0.13333333333333333
+    },
+    {
+      "cell_id": "6f21881eae70da4bd57776ac",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "neutral",
+        "edge_support": "supported"
+      },
+      "N_cell": 20628,
+      "n_cell": 2,
+      "pi": 9.695559433779329e-05
+    },
+    {
+      "cell_id": "702eaf49e0f0a2db8264f25a",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "identifier",
+        "edge_support": "supported"
+      },
+      "N_cell": 1,
+      "n_cell": 1,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "70a8bb1af1367a4fc1f30540",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "neutral",
+        "edge_support": "supported"
+      },
+      "N_cell": 33588,
+      "n_cell": 2,
+      "pi": 5.954507562224604e-05
+    },
+    {
+      "cell_id": "70f8c9e460c928aa2608da3b",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "identifier",
+        "edge_support": "supported"
+      },
+      "N_cell": 18,
+      "n_cell": 2,
+      "pi": 0.1111111111111111
+    },
+    {
+      "cell_id": "70fd28b893a5437494c1e2a5",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "100+",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 2,
+      "n_cell": 2,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "7c2537fa24bbacd51265912d",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 68,
+      "n_cell": 2,
+      "pi": 0.029411764705882353
+    },
+    {
+      "cell_id": "7e74ca1bb8d65a14ddba1f67",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 46337,
+      "n_cell": 2,
+      "pi": 4.316205192394846e-05
+    },
+    {
+      "cell_id": "7fb237d7403b2d0e3bf69394",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 396,
+      "n_cell": 2,
+      "pi": 0.005050505050505051
+    },
+    {
+      "cell_id": "8104b688f651d04ac3075cec",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "other",
+        "edge_support": "supported"
+      },
+      "N_cell": 53,
+      "n_cell": 2,
+      "pi": 0.03773584905660377
+    },
+    {
+      "cell_id": "831c08d63e3599d3bee85ac4",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "neutral",
+        "edge_support": "supported"
+      },
+      "N_cell": 413,
+      "n_cell": 2,
+      "pi": 0.004842615012106538
+    },
+    {
+      "cell_id": "831e239f2bf050c61ecc448a",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 3298,
+      "n_cell": 2,
+      "pi": 0.0006064281382656155
+    },
+    {
+      "cell_id": "84226d83dafe5720ecd0f4fb",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "identifier",
+        "edge_support": "supported"
+      },
+      "N_cell": 7,
+      "n_cell": 2,
+      "pi": 0.2857142857142857
+    },
+    {
+      "cell_id": "84f8de2e206e467f1fe67596",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "identifier",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 6,
+      "n_cell": 2,
+      "pi": 0.3333333333333333
+    },
+    {
+      "cell_id": "8504b72c9a26f86759bf9915",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "100+",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 71,
+      "n_cell": 2,
+      "pi": 0.028169014084507043
+    },
+    {
+      "cell_id": "8520e8e54d2fb82b75e0c588",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 208,
+      "n_cell": 2,
+      "pi": 0.009615384615384616
+    },
+    {
+      "cell_id": "855953f8e4dab009fe128c02",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "100+",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 8,
+      "n_cell": 2,
+      "pi": 0.25
+    },
+    {
+      "cell_id": "86907315b3ad8a78e69e51c4",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "<=1949",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 161,
+      "n_cell": 2,
+      "pi": 0.012422360248447204
+    },
+    {
+      "cell_id": "87f3c9ea6617a4353d102ed3",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 33,
+      "n_cell": 2,
+      "pi": 0.06060606060606061
+    },
+    {
+      "cell_id": "8edf29e432785ba7f6b6d924",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "neutral",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 2,
+      "n_cell": 2,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "8ffb6337884f25e5b671bfbf",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 12832,
+      "n_cell": 2,
+      "pi": 0.00015586034912718204
+    },
+    {
+      "cell_id": "90a146561225e98dc756704e",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "identifier",
+        "edge_support": "supported"
+      },
+      "N_cell": 1257,
+      "n_cell": 2,
+      "pi": 0.0015910898965791568
+    },
+    {
+      "cell_id": "9121f0fb06ab39fe0b024b57",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "other",
+        "edge_support": "supported"
+      },
+      "N_cell": 1,
+      "n_cell": 1,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "9235ca8d21531671f9cd2b05",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 6595,
+      "n_cell": 2,
+      "pi": 0.00030326004548900684
+    },
+    {
+      "cell_id": "92370ff90e3d7438aa1595c3",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 347,
+      "n_cell": 2,
+      "pi": 0.005763688760806916
+    },
+    {
+      "cell_id": "9252e81c2d272bb0f7e9e830",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "5-19",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 10,
+      "n_cell": 2,
+      "pi": 0.2
+    },
+    {
+      "cell_id": "92e94c7f760cd8952cf9af64",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "5-19",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 5,
+      "n_cell": 2,
+      "pi": 0.4
+    },
+    {
+      "cell_id": "931c2978c550f3f108b7d5c9",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 169,
+      "n_cell": 2,
+      "pi": 0.011834319526627219
+    },
+    {
+      "cell_id": "93721e0b6ba32ce85bd587cb",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 16,
+      "n_cell": 2,
+      "pi": 0.125
+    },
+    {
+      "cell_id": "95588d7e4daf8b94cab209ae",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 245,
+      "n_cell": 2,
+      "pi": 0.00816326530612245
+    },
+    {
+      "cell_id": "958416998dc7c3e249cb1eca",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "neutral",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 1,
+      "n_cell": 1,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "9a0f3d782ed067b05136c7f6",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 9,
+      "n_cell": 2,
+      "pi": 0.2222222222222222
+    },
+    {
+      "cell_id": "9a9afe591beaf89782ee85d4",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 4051,
+      "n_cell": 2,
+      "pi": 0.0004937052579609973
+    },
+    {
+      "cell_id": "a17e667ec0224b7a6e0250de",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "neutral",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 1,
+      "n_cell": 1,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "a31d14e56e17096a82f31d9b",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "identifier",
+        "edge_support": "supported"
+      },
+      "N_cell": 4,
+      "n_cell": 2,
+      "pi": 0.5
+    },
+    {
+      "cell_id": "a3665addf8d6c1ea517222d1",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 2,
+      "n_cell": 2,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "a4ec603e27f5dbd6b4529077",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "<=1949",
+        "dd_band": "5-19",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 4,
+      "n_cell": 2,
+      "pi": 0.5
+    },
+    {
+      "cell_id": "a70b752e47ec4bc42482cc21",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 703,
+      "n_cell": 2,
+      "pi": 0.002844950213371266
+    },
+    {
+      "cell_id": "a79d2a3b983a2b035cadac6d",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "neutral",
+        "edge_support": "supported"
+      },
+      "N_cell": 261,
+      "n_cell": 2,
+      "pi": 0.007662835249042145
+    },
+    {
+      "cell_id": "ab6ed03c6ebfd4e98b631ff7",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "100+",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 5,
+      "n_cell": 2,
+      "pi": 0.4
+    },
+    {
+      "cell_id": "ad91170172835072802bd283",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "5-19",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 171,
+      "n_cell": 2,
+      "pi": 0.011695906432748537
+    },
+    {
+      "cell_id": "af4d23d25a5cc85957a6cbb5",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 400,
+      "n_cell": 2,
+      "pi": 0.005
+    },
+    {
+      "cell_id": "b04529c049daef86bd5c2eb1",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 1378,
+      "n_cell": 2,
+      "pi": 0.001451378809869376
+    },
+    {
+      "cell_id": "b1355a61d7c6cf125e42b4e4",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 41608,
+      "n_cell": 2,
+      "pi": 4.806767929244376e-05
+    },
+    {
+      "cell_id": "b1614f8feb510dbc18edf653",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 11502,
+      "n_cell": 2,
+      "pi": 0.0001738828029907842
+    },
+    {
+      "cell_id": "b2d2d5c03dc5e05f39e4bb2f",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 389,
+      "n_cell": 2,
+      "pi": 0.005141388174807198
+    },
+    {
+      "cell_id": "b6b278e5343b00cf4cb00a5b",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "100+",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 132,
+      "n_cell": 2,
+      "pi": 0.015151515151515152
+    },
+    {
+      "cell_id": "b751a742372e56d0cb42bef5",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "5-19",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 47,
+      "n_cell": 2,
+      "pi": 0.0425531914893617
+    },
+    {
+      "cell_id": "bad4b6f0fd8fdb63efde47e8",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 1073,
+      "n_cell": 2,
+      "pi": 0.001863932898415657
+    },
+    {
+      "cell_id": "bbb75761e74a30097f162b3e",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 560,
+      "n_cell": 2,
+      "pi": 0.0035714285714285713
+    },
+    {
+      "cell_id": "bcd81b3be643b66801bb7a6e",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 131,
+      "n_cell": 2,
+      "pi": 0.015267175572519083
+    },
+    {
+      "cell_id": "be461856850b0246ce4489c9",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 86,
+      "n_cell": 2,
+      "pi": 0.023255813953488372
+    },
+    {
+      "cell_id": "bf619ae9d38e8183d434c6b8",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 361,
+      "n_cell": 2,
+      "pi": 0.00554016620498615
+    },
+    {
+      "cell_id": "c055ec5578d27ef219c23b88",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 53,
+      "n_cell": 2,
+      "pi": 0.03773584905660377
+    },
+    {
+      "cell_id": "c0581844925ed8183f1581e6",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 2367,
+      "n_cell": 2,
+      "pi": 0.0008449514152936206
+    },
+    {
+      "cell_id": "c227f32fe8758881b2e58c5b",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "neutral",
+        "edge_support": "supported"
+      },
+      "N_cell": 6832,
+      "n_cell": 2,
+      "pi": 0.0002927400468384075
+    },
+    {
+      "cell_id": "c2d00dd63a22fe6f9a9262bd",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 2550,
+      "n_cell": 2,
+      "pi": 0.000784313725490196
+    },
+    {
+      "cell_id": "ca3b72f2c3d1734b520f2244",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "neutral",
+        "edge_support": "supported"
+      },
+      "N_cell": 10754,
+      "n_cell": 2,
+      "pi": 0.0001859773107680863
+    },
+    {
+      "cell_id": "cf8e3349e3045173af0acb1f",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 38,
+      "n_cell": 2,
+      "pi": 0.05263157894736842
+    },
+    {
+      "cell_id": "d695a619269e1ab57ecf2326",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "identifier",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 1,
+      "n_cell": 1,
+      "pi": 1.0
+    },
+    {
+      "cell_id": "d754a199d5c7dc735cf013a0",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 26957,
+      "n_cell": 2,
+      "pi": 7.419223207330192e-05
+    },
+    {
+      "cell_id": "d79dee80173e38b51f655fc7",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 2079,
+      "n_cell": 2,
+      "pi": 0.000962000962000962
+    },
+    {
+      "cell_id": "db945c7b026b38f5d53efea8",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "identifier",
+        "edge_support": "supported"
+      },
+      "N_cell": 3,
+      "n_cell": 2,
+      "pi": 0.6666666666666666
+    },
+    {
+      "cell_id": "dccc1d569f076862390b75e9",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 4853,
+      "n_cell": 2,
+      "pi": 0.00041211621677313
+    },
+    {
+      "cell_id": "debb53c095e6cc12dc6ed3de",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 1221,
+      "n_cell": 2,
+      "pi": 0.001638001638001638
+    },
+    {
+      "cell_id": "e148bbc160e1b8a774aa21d2",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 3794,
+      "n_cell": 2,
+      "pi": 0.0005271481286241434
+    },
+    {
+      "cell_id": "e27ab1111a7f1ab0a6e431fb",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "20-99",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 489,
+      "n_cell": 2,
+      "pi": 0.00408997955010225
+    },
+    {
+      "cell_id": "e31adbd3ed225d6b57aeaa78",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 3969,
+      "n_cell": 2,
+      "pi": 0.0005039052658100278
+    },
+    {
+      "cell_id": "e43ef9379877876c4d65442d",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "100+",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 972,
+      "n_cell": 2,
+      "pi": 0.00205761316872428
+    },
+    {
+      "cell_id": "e62548861036e8955f4389a0",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "reporter",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 316,
+      "n_cell": 2,
+      "pi": 0.006329113924050633
+    },
+    {
+      "cell_id": "e8a324fee6b0752987697faa",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 1227,
+      "n_cell": 2,
+      "pi": 0.0016299918500407497
+    },
+    {
+      "cell_id": "ecc0e9e0bd53fc5e240587cc",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "1950-1999",
+        "dd_band": "0-4",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 3,
+      "n_cell": 2,
+      "pi": 0.6666666666666666
+    },
+    {
+      "cell_id": "ecc543f2a706aece64cf974a",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "0-4",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 1338,
+      "n_cell": 2,
+      "pi": 0.0014947683109118087
+    },
+    {
+      "cell_id": "ed7a4b65bc383d062e2b7a95",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "5-19",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 14215,
+      "n_cell": 2,
+      "pi": 0.00014069644741470278
+    },
+    {
+      "cell_id": "ee9fc50ff10085150766a8a8",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "heuristic_only"
+      },
+      "N_cell": 63,
+      "n_cell": 2,
+      "pi": 0.031746031746031744
+    },
+    {
+      "cell_id": "fa79690cc6aaf5967856adae",
+      "stratum": {
+        "citing_court": "ONCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "20-99",
+        "citation_kind": "neutral",
+        "edge_support": "supported"
+      },
+      "N_cell": 3616,
+      "n_cell": 2,
+      "pi": 0.0005530973451327434
+    },
+    {
+      "cell_id": "fc244b6bd3098eb451769a84",
+      "stratum": {
+        "citing_court": "SCC",
+        "citing_judgment_era": "<=1949",
+        "dd_band": "20-99",
+        "citation_kind": "mixed",
+        "edge_support": "supported"
+      },
+      "N_cell": 3,
+      "n_cell": 2,
+      "pi": 0.6666666666666666
+    },
+    {
+      "cell_id": "fef39b01e3f21485736c0422",
+      "stratum": {
+        "citing_court": "BCCA",
+        "citing_judgment_era": "2000+",
+        "dd_band": "100+",
+        "citation_kind": "reporter",
+        "edge_support": "supported"
+      },
+      "N_cell": 1975,
+      "n_cell": 2,
+      "pi": 0.0010126582278481013
+    }
+  ],
+  "weighting": "inverse_inclusion_probability_1_over_pi",
+  "folds": {
+    "train": {
+      "sampled_n": 212,
+      "reviewed_rows": 0,
+      "row_label_completion": 0.0,
+      "inverse_pi_sample_weight": 415327.0,
+      "dimensions": {
+        "case_mention": {
+          "sampled_n": 212,
+          "labelled_n": 0,
+          "unlabelled_n": 212,
+          "unverifiable_n": 0,
+          "unknown_n": 0,
+          "verified_n": 0,
+          "sample_label_completion": 0.0,
+          "sample_verified_coverage": 0.0,
+          "inverse_pi_label_completion": 0.0,
+          "inverse_pi_verified_coverage": 0.0,
+          "categories": {
+            "yes": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "no": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unknown": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unverifiable": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            }
+          },
+          "rate_scope": "labelled_verifiable_subset_only",
+          "raw_verified_rate": null,
+          "weighted_verified_rate": null
+        },
+        "judgment_identity": {
+          "sampled_n": 212,
+          "labelled_n": 0,
+          "unlabelled_n": 212,
+          "unverifiable_n": 0,
+          "unknown_n": 0,
+          "verified_n": 0,
+          "sample_label_completion": 0.0,
+          "sample_verified_coverage": 0.0,
+          "inverse_pi_label_completion": 0.0,
+          "inverse_pi_verified_coverage": 0.0,
+          "categories": {
+            "correct": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "incorrect": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unknown": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unverifiable": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            }
+          },
+          "rate_scope": "labelled_verifiable_subset_only",
+          "raw_verified_rate": null,
+          "weighted_verified_rate": null
+        },
+        "treatment_role": {
+          "sampled_n": 212,
+          "labelled_n": 0,
+          "unlabelled_n": 212,
+          "unverifiable_n": 0,
+          "unknown_n": 0,
+          "verified_n": 0,
+          "sample_label_completion": 0.0,
+          "sample_verified_coverage": 0.0,
+          "inverse_pi_label_completion": 0.0,
+          "inverse_pi_verified_coverage": 0.0,
+          "categories": {
+            "supportive": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "applied": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "distinguished": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "criticized": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "overruled": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "procedural": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "mentioned": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unknown": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unverifiable": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            }
+          },
+          "rate_scope": "labelled_verifiable_subset_only",
+          "interpretation": "descriptive_categories_not_precision",
+          "labelled_category_shares": {
+            "supportive": null,
+            "applied": null,
+            "distinguished": null,
+            "criticized": null,
+            "overruled": null,
+            "procedural": null,
+            "mentioned": null,
+            "unknown": null,
+            "unverifiable": null
+          },
+          "inverse_pi_labelled_category_shares": {
+            "supportive": null,
+            "applied": null,
+            "distinguished": null,
+            "criticized": null,
+            "overruled": null,
+            "procedural": null,
+            "mentioned": null,
+            "unknown": null,
+            "unverifiable": null
+          }
+        },
+        "origin": {
+          "sampled_n": 212,
+          "labelled_n": 0,
+          "unlabelled_n": 212,
+          "unverifiable_n": 0,
+          "unknown_n": 0,
+          "verified_n": 0,
+          "sample_label_completion": 0.0,
+          "sample_verified_coverage": 0.0,
+          "inverse_pi_label_completion": 0.0,
+          "inverse_pi_verified_coverage": 0.0,
+          "categories": {
+            "correct": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "incorrect": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unknown": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unverifiable": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            }
+          },
+          "rate_scope": "labelled_verifiable_subset_only",
+          "raw_verified_rate": null,
+          "weighted_verified_rate": null
+        }
+      }
+    },
+    "holdout": {
+      "sampled_n": 58,
+      "reviewed_rows": 0,
+      "row_label_completion": 0.0,
+      "inverse_pi_sample_weight": 75250.0,
+      "dimensions": {
+        "case_mention": {
+          "sampled_n": 58,
+          "labelled_n": 0,
+          "unlabelled_n": 58,
+          "unverifiable_n": 0,
+          "unknown_n": 0,
+          "verified_n": 0,
+          "sample_label_completion": 0.0,
+          "sample_verified_coverage": 0.0,
+          "inverse_pi_label_completion": 0.0,
+          "inverse_pi_verified_coverage": 0.0,
+          "categories": {
+            "yes": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "no": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unknown": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unverifiable": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            }
+          },
+          "rate_scope": "labelled_verifiable_subset_only",
+          "raw_verified_rate": null,
+          "weighted_verified_rate": null
+        },
+        "judgment_identity": {
+          "sampled_n": 58,
+          "labelled_n": 0,
+          "unlabelled_n": 58,
+          "unverifiable_n": 0,
+          "unknown_n": 0,
+          "verified_n": 0,
+          "sample_label_completion": 0.0,
+          "sample_verified_coverage": 0.0,
+          "inverse_pi_label_completion": 0.0,
+          "inverse_pi_verified_coverage": 0.0,
+          "categories": {
+            "correct": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "incorrect": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unknown": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unverifiable": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            }
+          },
+          "rate_scope": "labelled_verifiable_subset_only",
+          "raw_verified_rate": null,
+          "weighted_verified_rate": null
+        },
+        "treatment_role": {
+          "sampled_n": 58,
+          "labelled_n": 0,
+          "unlabelled_n": 58,
+          "unverifiable_n": 0,
+          "unknown_n": 0,
+          "verified_n": 0,
+          "sample_label_completion": 0.0,
+          "sample_verified_coverage": 0.0,
+          "inverse_pi_label_completion": 0.0,
+          "inverse_pi_verified_coverage": 0.0,
+          "categories": {
+            "supportive": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "applied": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "distinguished": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "criticized": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "overruled": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "procedural": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "mentioned": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unknown": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unverifiable": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            }
+          },
+          "rate_scope": "labelled_verifiable_subset_only",
+          "interpretation": "descriptive_categories_not_precision",
+          "labelled_category_shares": {
+            "supportive": null,
+            "applied": null,
+            "distinguished": null,
+            "criticized": null,
+            "overruled": null,
+            "procedural": null,
+            "mentioned": null,
+            "unknown": null,
+            "unverifiable": null
+          },
+          "inverse_pi_labelled_category_shares": {
+            "supportive": null,
+            "applied": null,
+            "distinguished": null,
+            "criticized": null,
+            "overruled": null,
+            "procedural": null,
+            "mentioned": null,
+            "unknown": null,
+            "unverifiable": null
+          }
+        },
+        "origin": {
+          "sampled_n": 58,
+          "labelled_n": 0,
+          "unlabelled_n": 58,
+          "unverifiable_n": 0,
+          "unknown_n": 0,
+          "verified_n": 0,
+          "sample_label_completion": 0.0,
+          "sample_verified_coverage": 0.0,
+          "inverse_pi_label_completion": 0.0,
+          "inverse_pi_verified_coverage": 0.0,
+          "categories": {
+            "correct": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "incorrect": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unknown": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            },
+            "unverifiable": {
+              "n": 0,
+              "inverse_pi_weight": 0
+            }
+          },
+          "rate_scope": "labelled_verifiable_subset_only",
+          "raw_verified_rate": null,
+          "weighted_verified_rate": null
+        }
+      }
+    }
+  },
+  "sample_coverage": {
+    "sampled_n": 270,
+    "reviewed_rows": 0,
+    "row_label_completion": 0.0,
+    "inverse_pi_sample_weight": 490577.0,
+    "dimensions": {
+      "case_mention": {
+        "sampled_n": 270,
+        "labelled_n": 0,
+        "unlabelled_n": 270,
+        "unverifiable_n": 0,
+        "unknown_n": 0,
+        "verified_n": 0,
+        "sample_label_completion": 0.0,
+        "sample_verified_coverage": 0.0,
+        "inverse_pi_label_completion": 0.0,
+        "inverse_pi_verified_coverage": 0.0,
+        "categories": {
+          "yes": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "no": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "unknown": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "unverifiable": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          }
+        },
+        "rate_scope": "labelled_verifiable_subset_only",
+        "raw_verified_rate": null,
+        "weighted_verified_rate": null
+      },
+      "judgment_identity": {
+        "sampled_n": 270,
+        "labelled_n": 0,
+        "unlabelled_n": 270,
+        "unverifiable_n": 0,
+        "unknown_n": 0,
+        "verified_n": 0,
+        "sample_label_completion": 0.0,
+        "sample_verified_coverage": 0.0,
+        "inverse_pi_label_completion": 0.0,
+        "inverse_pi_verified_coverage": 0.0,
+        "categories": {
+          "correct": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "incorrect": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "unknown": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "unverifiable": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          }
+        },
+        "rate_scope": "labelled_verifiable_subset_only",
+        "raw_verified_rate": null,
+        "weighted_verified_rate": null
+      },
+      "treatment_role": {
+        "sampled_n": 270,
+        "labelled_n": 0,
+        "unlabelled_n": 270,
+        "unverifiable_n": 0,
+        "unknown_n": 0,
+        "verified_n": 0,
+        "sample_label_completion": 0.0,
+        "sample_verified_coverage": 0.0,
+        "inverse_pi_label_completion": 0.0,
+        "inverse_pi_verified_coverage": 0.0,
+        "categories": {
+          "supportive": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "applied": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "distinguished": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "criticized": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "overruled": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "procedural": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "mentioned": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "unknown": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "unverifiable": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          }
+        },
+        "rate_scope": "labelled_verifiable_subset_only",
+        "interpretation": "descriptive_categories_not_precision",
+        "labelled_category_shares": {
+          "supportive": null,
+          "applied": null,
+          "distinguished": null,
+          "criticized": null,
+          "overruled": null,
+          "procedural": null,
+          "mentioned": null,
+          "unknown": null,
+          "unverifiable": null
+        },
+        "inverse_pi_labelled_category_shares": {
+          "supportive": null,
+          "applied": null,
+          "distinguished": null,
+          "criticized": null,
+          "overruled": null,
+          "procedural": null,
+          "mentioned": null,
+          "unknown": null,
+          "unverifiable": null
+        }
+      },
+      "origin": {
+        "sampled_n": 270,
+        "labelled_n": 0,
+        "unlabelled_n": 270,
+        "unverifiable_n": 0,
+        "unknown_n": 0,
+        "verified_n": 0,
+        "sample_label_completion": 0.0,
+        "sample_verified_coverage": 0.0,
+        "inverse_pi_label_completion": 0.0,
+        "inverse_pi_verified_coverage": 0.0,
+        "categories": {
+          "correct": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "incorrect": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "unknown": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          },
+          "unverifiable": {
+            "n": 0,
+            "inverse_pi_weight": 0
+          }
+        },
+        "rate_scope": "labelled_verifiable_subset_only",
+        "raw_verified_rate": null,
+        "weighted_verified_rate": null
+      }
+    }
+  },
+  "all_dimensions_verified": false,
+  "population_calibration_status": "not_calibrated",
+  "population_inference_allowed": false,
+  "dd_or_weight_updates": false,
+  "warnings": [
+    "Rates describe the labelled, verifiable subset and are not population calibration.",
+    "Train and holdout are reported separately; treatment roles are descriptive categories.",
+    "Incomplete or unresolved labels prevent population accuracy claims; retain the full sampled-frame coverage denominator."
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "schema_version": "retired-research-demos-v1",
+  "status": "retired",
+  "created_at_utc": "2026-10-15T05:42:48.458949+00:00",
+  "reason": "Only the five demo outputs produced before this turn adoption are superseded by active_* new-scope packets. Parent explicitly authorized direct deletion after small scope/hash/size receipt.",
+  "files": [
+    {
+      "path": "audit\\findings\\research_20261015\\group_lookup_housen.json",
+      "size_bytes": 157261,
+      "file_sha256": "47d5722367988629669865590fa4f0b424689b7e330365ffa94b23c89b637615",
+      "packet_sha256": "484d28e84c7f32e51768b8ec2cb78f9b9ff4ffc54c1103f224c21c2c7a7d9abb",
+      "run_id": "run_20261014_reliable_final",
+      "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+      "replaced_by": "audit\\findings\\research_20261015\\active_group_lookup_housen.json",
+      "removed": true
+    },
+    {
+      "path": "audit\\findings\\research_20261015\\group_lookup_housen.csv",
+      "size_bytes": 3775,
+      "file_sha256": "263e5c3fe90d02adc84e51976f145b55b56446451eb28d37ddde88019868c809",
+      "packet_sha256": "484d28e84c7f32e51768b8ec2cb78f9b9ff4ffc54c1103f224c21c2c7a7d9abb",
+      "run_id": "run_20261014_reliable_final",
+      "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+      "replaced_by": "audit\\findings\\research_20261015\\active_group_lookup_housen.csv",
+      "removed": true
+    },
+    {
+      "path": "audit\\findings\\research_20261015\\case_housen_review.json",
+      "size_bytes": 182423,
+      "file_sha256": "8396028deb05b811d52f902f4af28614b67537f840dc8ac35bd51a3e2d6a5a50",
+      "packet_sha256": "b29546cd36345693507b7aaf4a95f0ff13884806843686be21b9fa34b67bcddd",
+      "run_id": "run_20261014_reliable_final",
+      "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+      "replaced_by": "audit\\findings\\research_20261015\\active_case_housen.json",
+      "removed": true
+    },
+    {
+      "path": "audit\\findings\\research_20261015\\foreign_scope.json",
+      "size_bytes": 172109,
+      "file_sha256": "807bd686f2448fe43275db337d4a2d05ce4723ad92db0a3e07116609112fbcfa",
+      "packet_sha256": "da77e0ed2284622d21a6c1292d66ba0d9f81b11137175a7a09eb9f49349a66b2",
+      "run_id": "run_20261014_reliable_final",
+      "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+      "replaced_by": "audit\\findings\\research_20261015\\active_foreign_scope.json",
+      "removed": true
+    },
+    {
+      "path": "audit\\findings\\research_20261015\\foreign_scope.csv",
+      "size_bytes": 2062,
+      "file_sha256": "f2db380a992ef8603298acfed3e4c9dfe9cc819f37112d842539bb2068cfc0b5",
+      "packet_sha256": "da77e0ed2284622d21a6c1292d66ba0d9f81b11137175a7a09eb9f49349a66b2",
+      "run_id": "run_20261014_reliable_final",
+      "input_fingerprint": "ec0de089d6f665dd2983bd15bb6e385d72779c5f1da62053f084bc4db8301085",
+      "replaced_by": "audit\\findings\\research_20261015\\active_foreign_scope.csv",
+      "removed": true
+    }
+  ],
+  "preserved": [
+    "audit/findings/research/ historical formal 20261014 receipts",
+    "lising_source_evidence.json",
+    "motorvehicle_johnson_fr_court.json",
+    "motorvehicle_nsr_source_evidence.json"
+  ],
+  "bytes_retired": 517630,
+  "completed_at_utc": "2026-10-15T05:42:48.477466+00:00"
+}

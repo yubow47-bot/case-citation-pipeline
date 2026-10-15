@@ -1,0 +1,270 @@
+{
+  "schema_version": "research-consumer-validation-v1",
+  "verified_at_utc": "2026-10-15T05:42:36.670954+00:00",
+  "status": "passed",
+  "run_id": "run_20261015_identity_review",
+  "input_fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+  "text_policy": "en_then_fr",
+  "pointer_sha256": "8af7298a288c21d25af5328fb819ce6d30bfa79beaaaf780c2efe9ecb319811f",
+  "db_path": "D:\\cases data analisis\\data\\foundation\\research.db",
+  "db_bytes": 2620174336,
+  "db_unchanged_during_validation": true,
+  "artifacts": [
+    {
+      "path": "audit\\findings\\research_20261015\\active_group_lookup_housen.json",
+      "size_bytes": 103360,
+      "file_sha256": "cf9b5ff2a1690f93bb6c473881cec35ab5e7d4c7061e821edfca591f50567116",
+      "packet_sha256": "674a25d603a822a07f3a8c6417e89eaae0218cd2020fac6aa378d18ea08d060d",
+      "selection_mode": "active_pointer"
+    },
+    {
+      "path": "audit\\findings\\research_20261015\\active_group_lookup_seguin.json",
+      "size_bytes": 102798,
+      "file_sha256": "278254a5013dfde4200bd90d9f340eab4f80e29351f6fc141b11256a96df5e47",
+      "packet_sha256": "cfdfbcf7efdf4f176331842f9183ab3bbbb7be683fcf5280f7afe27de0a13d51",
+      "selection_mode": "active_pointer"
+    },
+    {
+      "path": "audit\\findings\\research_20261015\\active_court_decade.json",
+      "size_bytes": 147695,
+      "file_sha256": "0f71f5567e8197977446d69822c4fac265e1a61ee6ebc557c75c66e5b4a28dd6",
+      "packet_sha256": "9b1d27b2ca4863e3750f90ef43e96f86f8e93249658dea490a9d15e2c6adf22a",
+      "selection_mode": "active_pointer"
+    },
+    {
+      "path": "audit\\findings\\research_20261015\\active_foreign_scope.json",
+      "size_bytes": 118106,
+      "file_sha256": "e62adbe639526d7a88cc9e2c8a1ee5a593b095e4113287dce2c1dd01d4d1b503",
+      "packet_sha256": "7683dcb7dd3e77916d404f3e46d364e1c4f2f593c9ec9743ec86224aa520eaf1",
+      "selection_mode": "active_pointer"
+    },
+    {
+      "path": "audit\\findings\\research_20261015\\active_case_housen.json",
+      "size_bytes": 128427,
+      "file_sha256": "8b4531e1c26a17c064f7fe5997e412d6aef7a6da1b49ef2f5b59b3ada155da32",
+      "packet_sha256": "31c40523ce07ae82f0b1c0b86ea5f0559b32949fa0a1a8a60ead4ca4668672ca",
+      "selection_mode": "explicit_db"
+    },
+    {
+      "path": "audit\\findings\\research_20261015\\active_case_seguin.json",
+      "size_bytes": 125850,
+      "file_sha256": "857e80eba849ca457223764837f7f015602b1bd76fb27434f3562de0b4d3d83f",
+      "packet_sha256": "89836679f40c3035d473647faf30314a2c1e86107a104d14229c051059b8060a",
+      "selection_mode": "explicit_db"
+    }
+  ],
+  "csv_checks": [
+    {
+      "path": "audit\\findings\\research_20261015\\active_group_lookup_housen.csv",
+      "rows": 5,
+      "size_bytes": 3785,
+      "sha256": "ac8e616dfac42c33885f902cde8cb427405960d6fa2848b70d0ac7db3271ed72",
+      "scope_and_context_verified": true
+    },
+    {
+      "path": "audit\\findings\\research_20261015\\active_group_lookup_seguin.csv",
+      "rows": 5,
+      "size_bytes": 3449,
+      "sha256": "c515cc5423abb56039ad72b641c95efcc186776292f4b5570bf69162b570716f",
+      "scope_and_context_verified": true
+    },
+    {
+      "path": "audit\\findings\\research_20261015\\active_court_decade.csv",
+      "rows": 24,
+      "size_bytes": 42125,
+      "sha256": "59ff0396887329f37b804c8003498b1b6537c52ee5a2d7a2eda965c7ca1bf446",
+      "scope_and_context_verified": true
+    },
+    {
+      "path": "audit\\findings\\research_20261015\\active_foreign_scope.csv",
+      "rows": 1,
+      "size_bytes": 2065,
+      "sha256": "b74b9ec1860d24908064514a81059823f0e12caa1d3278c555bcea446c77407a",
+      "scope_and_context_verified": true
+    }
+  ],
+  "recorded_sql_replay": [
+    {
+      "packet": "active_court_decade",
+      "label": "full_table_summary",
+      "rows": 1,
+      "matches_packet": true
+    },
+    {
+      "packet": "active_court_decade",
+      "label": "document_denominators",
+      "rows": 24,
+      "matches_packet": true
+    },
+    {
+      "packet": "active_court_decade",
+      "label": "full_corpus_metadata_diagnostics",
+      "rows": 1,
+      "matches_packet": true
+    },
+    {
+      "packet": "active_court_decade",
+      "label": "court_decade_full_table",
+      "rows": 24,
+      "matches_packet": true
+    },
+    {
+      "packet": "active_foreign_scope",
+      "label": "full_table_summary",
+      "rows": 1,
+      "matches_packet": true
+    },
+    {
+      "packet": "active_foreign_scope",
+      "label": "origin_scope_before_origin_filter",
+      "rows": 1,
+      "matches_packet": true
+    },
+    {
+      "packet": "active_foreign_scope",
+      "label": "document_denominators",
+      "rows": 24,
+      "matches_packet": true
+    },
+    {
+      "packet": "active_foreign_scope",
+      "label": "full_corpus_metadata_diagnostics",
+      "rows": 1,
+      "matches_packet": true
+    }
+  ],
+  "independent_edge_aggregate": {
+    "citation_edges": 490577,
+    "citing_source_ids": 38776,
+    "cited_groups": 228102,
+    "printed_mentions": 705476
+  },
+  "full_summary": {
+    "citation_edges": 490577,
+    "citing_source_ids": 38776,
+    "cited_groups": 228102,
+    "printed_mentions": 705476,
+    "origin_determined_edges": 213764,
+    "origin_unknown_edges": 276813,
+    "foreign_edges": 1082,
+    "domestic_edges": 212682,
+    "origin_conflict_edges": 0,
+    "heuristic_only_edges": 30881,
+    "group_origin_determined": 58688,
+    "edges_missing_document_metadata": 0,
+    "edges_unknown_source_year": 0,
+    "origin_coverage": 0.4357399551956166,
+    "origin_unknown_rate": 0.5642600448043834,
+    "heuristic_only_rate": 0.06294832411629571,
+    "foreign_share_all_edges": 0.0022055660986960253,
+    "foreign_share_determined_edges": 0.0050616567803746185,
+    "group_origin_coverage": 0.25728840606395387
+  },
+  "court_edge_totals": {
+    "SCC": 178358,
+    "ONCA": 147281,
+    "BCCA": 164938
+  },
+  "matrix_rows": 24,
+  "corpus_metadata_document_rows": 49683,
+  "lookup_checks": [
+    {
+      "name_contains": "Housen",
+      "matching_groups": 16,
+      "preview_rows": 5,
+      "preview_truncated": true,
+      "first_group_id": "XC-G024431",
+      "first_group_name": "Housen v. Nikolaisen",
+      "case_review_pinned": true,
+      "unicode_version": "14.0.0"
+    },
+    {
+      "name_contains": "SÉGUIN",
+      "matching_groups": 9,
+      "preview_rows": 5,
+      "preview_truncated": true,
+      "first_group_id": "XC-G095773",
+      "first_group_name": "Séguin v. Van Dyke",
+      "case_review_pinned": true,
+      "unicode_version": "14.0.0"
+    }
+  ],
+  "evidence_checks": [
+    {
+      "packet": "active_case_housen",
+      "group_id": "XC-G024431",
+      "source_decision": "BCCA_2002bcca578",
+      "corpus_row": 13452,
+      "span": [
+        10434,
+        10445
+      ],
+      "text_field": "unofficial_text_en",
+      "language": "en",
+      "source_text_sha256": "c5c46138ca6d7ff19f4a4767e9f101c48171be322e778785734f708f7d414bc3",
+      "candidate_record": 41675,
+      "candidate_row_sha256": "e67c7fbaa6d8c32448f8ed2bf7d0d9b932aae2ce7f8a5aa143c3e154246465c3",
+      "original_row_group_reread_verified": true,
+      "original_window_and_span_sha_verified": true,
+      "field_values_sha_verified": true,
+      "full_corpus_hash_already_verified_by_cli": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3"
+    },
+    {
+      "packet": "active_case_seguin",
+      "group_id": "XC-G095773",
+      "source_decision": "ONCA_2017onca494",
+      "corpus_row": 1354,
+      "span": [
+        31214,
+        31228
+      ],
+      "text_field": "unofficial_text_en",
+      "language": "en",
+      "source_text_sha256": "8e8a38b7555133cc4beea77cc6d373a4573df1394f10cda886f508d67552355b",
+      "candidate_record": 125459,
+      "candidate_row_sha256": "9095cd787d1823ba57c02d4f939b3c8d66dc420bba7a5cfb67906e55a326ba80",
+      "original_row_group_reread_verified": true,
+      "original_window_and_span_sha_verified": true,
+      "field_values_sha_verified": true,
+      "full_corpus_hash_already_verified_by_cli": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775"
+    }
+  ],
+  "foreign_scope_context_matches_full_table": true,
+  "unknown_example": {
+    "group_id": "XC-G095773",
+    "edges": 2,
+    "origin_unknown_edges": 2,
+    "foreign_edges": 0
+  },
+  "offline_regression": {
+    "command": "python -m unittest discover -s tools/research -p test_research.py -q",
+    "tests_passed": 42,
+    "previously_completed": true,
+    "integrated_suite_parent_reported": {
+      "assertions": 885,
+      "tests": 380
+    }
+  },
+  "code_sha256": {
+    "tools\\research\\core.py": "c582632477b467aab9a3a90a46361e8f747fbf1e53e4f1d341f38d2a3d862f91",
+    "tools\\research\\research.py": "cdadb56aad4725e9c19647c4cce8c9c4c2e9f805cb653ab254b8f8f888339485",
+    "tools\\research\\test_research.py": "79559e0f002c08339301c47b2abfbd588dffbb4df019b8d57c8c16cabafb616a",
+    "tools\\research\\README.md": "b16609a5031bfe66164d7504f2d1257455d1c62e3f5f3dd0c182462981807a54"
+  },
+  "storage": {
+    "corpus_or_db_copies": 0,
+    "persistent_cache_bytes": 0,
+    "api_calls": 0,
+    "network_downloads": 0,
+    "large_db_rehashed": false,
+    "parquet_row_groups_reread": 2
+  },
+  "limitations": [
+    "16 Housen and 9 Séguin candidates remain distinct; lookup does not assert alias identity.",
+    "Only deterministic evidence previews were verified here; they are not random semantic-quality samples.",
+    "Both selected original-text checks used English fields; accent-aware name lookup does not establish French evidence coverage.",
+    "Unknown origin is not foreign; the determined subset is not assumed representative of the unknown subset.",
+    "Source IDs and cited groups are distinct counts and cannot be summed across court/decade buckets.",
+    "This receipt binds the selected run and fingerprint; filenames do not guarantee a future active run."
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "schema": "embedding_cache_usefulness_v1",
+  "run_id": "run_20261015_identity_review",
+  "run_input_fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+  "db_path": "D:\\cases data analisis\\data\\foundation\\research.db",
+  "cache_path": "D:\\cases data analisis\\data\\foundation\\emb_cache.db",
+  "source_provenance": {
+    "run_directory": "D:\\cases data analisis\\data\\run_20261015_identity_review",
+    "corpus_directory": "D:\\cases data analisis\\corpus"
+  },
+  "cache_physical_file_bytes": 86589440,
+  "cache_page_size": 4096,
+  "cache_freelist_pages": 0,
+  "embedding_input_counts": {
+    "text_records/cases": 124313,
+    "text_records/methods": 1519,
+    "edge_passages": 490577
+  },
+  "embedding_input_fingerprint": "3e13c16850c2e8a8feab3b470974e4ef1e634560b5a1e7546a7fcd831c1e632e",
+  "prepare_code_sha256": "e3d28489771c98e3fe536614b24550923386eaf3ec49618e94a0b26e7eb3d93b",
+  "edge_code_sha256": "62bd40bcb8c9900ebdf669ab5b549cdca38cc324f78700984bb6d3f6c8761186",
+  "model_dimensions": [
+    {
+      "cache_rows": 19622,
+      "cache_payload_bytes": 40185856,
+      "matched_current_rows": 19622,
+      "matched_current_payload_bytes": 40185856,
+      "unreferenced_rows": 0,
+      "unreferenced_payload_bytes": 0,
+      "invalid_shape_rows": 0,
+      "referenced_current_invalid_shape_rows": 0,
+      "referenced_current_invalid_shape_bytes": 0,
+      "model": "qwen/qwen3-embedding-8b",
+      "dim": 512,
+      "current_unique_input_hashes": 483853,
+      "current_cache_hits": 19622,
+      "current_cache_misses": 464231
+    },
+    {
+      "cache_rows": 846,
+      "cache_payload_bytes": 3465216,
+      "matched_current_rows": 846,
+      "matched_current_payload_bytes": 3465216,
+      "unreferenced_rows": 0,
+      "unreferenced_payload_bytes": 0,
+      "invalid_shape_rows": 0,
+      "referenced_current_invalid_shape_rows": 0,
+      "referenced_current_invalid_shape_bytes": 0,
+      "model": "qwen/qwen3-embedding-8b",
+      "dim": 1024,
+      "current_unique_input_hashes": 125828,
+      "current_cache_hits": 846,
+      "current_cache_misses": 124982
+    }
+  ],
+  "matched_current_payload_bytes": 43651072,
+  "unreferenced_payload_bytes": 0,
+  "mode": "read_only_sql_snapshots_no_vector_blob_loading_no_network_no_key_reads",
+  "limitations": [
+    "Payload byte counts are exact LENGTH(v), not exact physical reclaim after DELETE/VACUUM.",
+    "Unreferenced means absent from current document/edge embedding inputs; future queries or historical rebuilds may request those hashes.",
+    "All current text records and edge passages are compared; a matched hash proves cache reuse, not semantic vector accuracy.",
+    "This report does not delete rows, copy databases or call any embedding service."
+  ]
+}
