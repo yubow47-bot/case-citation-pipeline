@@ -1,0 +1,286 @@
+{
+  "schema": "citation_context_development_receipt_v2",
+  "run_id": "run_20261015_identity_review",
+  "input_fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+  "local_package": "data/experiments/citation_context_expanded120_final_20261015",
+  "cohort": "audit/findings/citation_context_20261015/cohort120.json",
+  "selection_counts": {
+    "court": {
+      "BCCA": 29,
+      "ONCA": 37,
+      "SCC": 54
+    },
+    "text_field": {
+      "unofficial_text_en": 91,
+      "unofficial_text_fr": 29
+    },
+    "marker": {
+      "id": 22,
+      "supra": 54,
+      "ibid": 24,
+      "precite": 15
+    }
+  },
+  "expanded_summary": {
+    "document_rows": 120,
+    "source_judgments": 120,
+    "full_linked_mentions": 4303,
+    "full_unlinked_barriers": 42,
+    "short_references": 578,
+    "short_by_kind": {
+      "supra": 475,
+      "ibid": 32,
+      "id": 31,
+      "precite": 40
+    },
+    "short_resolved": 213,
+    "short_by_status": {
+      "resolved": 213,
+      "blocked": 142,
+      "unresolved": 198,
+      "ambiguous": 25
+    },
+    "short_by_basis": {
+      "named_unique_prior_antecedent": 207,
+      "apparent_noncase_reference": 13,
+      "immediate_context_barrier": 38,
+      "named_or_explicit_note_antecedent_required": 156,
+      "multiple_named_authorities": 2,
+      "all_caps_id_nonreference_risk": 13,
+      "quoted_short_reference": 100,
+      "case_title_without_prior_anchor": 4,
+      "unrecognized_or_compound_case_name": 5,
+      "reporter_id_substitution": 2,
+      "named_prior_normalized_short_party": 24,
+      "quoted_antecedent_barrier": 14
+    },
+    "case_name_mentions": 3673,
+    "case_name_by_status": {
+      "resolved": 1542,
+      "blocked": 1405,
+      "ambiguous": 726
+    },
+    "case_name_resolved": 1542,
+    "observations": 4010,
+    "observations_by_status": {
+      "context_required": 3658,
+      "ambiguous": 338,
+      "suggested": 14
+    },
+    "edges_with_suggestions": 13,
+    "edges_with_procedural_signals": 0,
+    "document_target_edges": 2698,
+    "new_production_edges": 0,
+    "production_dd_changed": false
+  },
+  "original16_comparison": {
+    "markers": 99,
+    "before": {
+      "resolved": 48,
+      "blocked": 13,
+      "unresolved": 37,
+      "ambiguous": 1
+    },
+    "after": {
+      "resolved": 57,
+      "blocked": 11,
+      "unresolved": 29,
+      "ambiguous": 2
+    },
+    "changed_marker_assignments": [
+      {
+        "source_id": "BCCA_2007bcca249",
+        "kind": "supra",
+        "marker_start": 72458,
+        "before_status": "unresolved",
+        "after_status": "ambiguous",
+        "before_target": null,
+        "after_target": null,
+        "basis": "multiple_named_authorities"
+      },
+      {
+        "source_id": "ONCA_c33807",
+        "kind": "precite",
+        "marker_start": 87028,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G018970",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c33807",
+        "kind": "precite",
+        "marker_start": 104444,
+        "before_status": "blocked",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G009952",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c33807",
+        "kind": "precite",
+        "marker_start": 105702,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G018970",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c33807",
+        "kind": "precite",
+        "marker_start": 114117,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G009387",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c33807",
+        "kind": "precite",
+        "marker_start": 129499,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G009387",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c33807",
+        "kind": "precite",
+        "marker_start": 131293,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G011553",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c33807",
+        "kind": "precite",
+        "marker_start": 139071,
+        "before_status": "unresolved",
+        "after_status": "ambiguous",
+        "before_target": null,
+        "after_target": null,
+        "basis": "unrecognized_or_compound_case_name"
+      },
+      {
+        "source_id": "ONCA_c33807",
+        "kind": "precite",
+        "marker_start": 156837,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G021439",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c33807",
+        "kind": "precite",
+        "marker_start": 167531,
+        "before_status": "resolved",
+        "after_status": "resolved",
+        "before_target": "XC-G084457",
+        "after_target": "XC-G020161",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_c33807",
+        "kind": "precite",
+        "marker_start": 170673,
+        "before_status": "resolved",
+        "after_status": "resolved",
+        "before_target": "XC-G084457",
+        "after_target": "XC-G020161",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "ONCA_2023onca496",
+        "kind": "supra",
+        "marker_start": 13949,
+        "before_status": "unresolved",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G073890",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_2002scc33",
+        "kind": "supra",
+        "marker_start": 132335,
+        "before_status": "ambiguous",
+        "after_status": "resolved",
+        "before_target": null,
+        "after_target": "XC-G013131",
+        "basis": "named_unique_prior_antecedent"
+      },
+      {
+        "source_id": "SCC_1965rcs772",
+        "kind": "supra",
+        "marker_start": 26851,
+        "before_status": "blocked",
+        "after_status": "unresolved",
+        "before_target": null,
+        "after_target": null,
+        "basis": "case_title_without_prior_anchor"
+      }
+    ]
+  },
+  "focused_tests": {
+    "passed": 66,
+    "command": "python -m unittest discover -s tools/citation_context -p \"test_*.py\" -q"
+  },
+  "artifact_checks": {
+    "file_hashes": true,
+    "code_hashes": true,
+    "unique_ids": true,
+    "evidence_references": true,
+    "html_link_targets": 9149
+  },
+  "code_sha256": {
+    "cohort.py": "75b346ece9d9e9201edfc6a0ee048c3ea459d6a06f09b995784b614dc8de698c",
+    "context.py": "ccc03220435d99de099d4eb15c15e83467740e53aa7b97aa47a02840c8c2e1b1",
+    "data.py": "837ac87bf8f63e40dc7116bf2a793442805fe8401b22c9cb8fe30d6bbac9d3e2",
+    "report.py": "a3d5e032aafbdbe84d27045c4f0b68f1c97f2932c5661df507b87e8f8877ca37",
+    "shortforms.py": "782c22bd88bf6323105592e08ad02811795a25b2dd1868755537ba0ef7c2c0fe",
+    "treatment.py": "a0279cb640c93c1e9bc6b61c12bce45b6c9e975be3d9409b11ce3469e913f6b7",
+    "__init__.py": "d6f26d0edf47fd7d1fc250610bf7a7d91d643f8640ecc04c6b6d49498d8a0dda"
+  },
+  "package_files": {
+    "documents.jsonl": {
+      "bytes": 109320,
+      "sha256": "a7aba340de7a9557644d0f5ce0ca506745168d9f73ba3d94ee09fa0d0941b7cd"
+    },
+    "mentions.jsonl": {
+      "bytes": 15766683,
+      "sha256": "6ee5960a893ad2c032fc1dd33e1669459167193fb15fa4d4356d08fe56ae6ab9"
+    },
+    "observations.jsonl": {
+      "bytes": 6197597,
+      "sha256": "2c9d43101d356a1ee9608f788e23d82084cbe7a6ed553efbc6c4a84f051fb229"
+    },
+    "edges.jsonl": {
+      "bytes": 6001474,
+      "sha256": "692c479f24a2622aaaa21fc3114ea5d3552d56bc5b20bb08635170780c39e311"
+    },
+    "report.html": {
+      "bytes": 15965944,
+      "sha256": "6b7dd4cf042a9fee056f5fefdfe66d449cb8a396f9fa58dc29f44bcce1e8ec15"
+    }
+  },
+  "limitations": [
+    "Existing production identity decisions are inherited, including heuristic paths.",
+    "Only existing counted targets seed resolution; this version enriches existing edges and does not recover new case identities.",
+    "Ambiguous and blocked short references remain in the output.",
+    "Treatment outputs are machine lexical suggestions, not human labels or legal conclusions.",
+    "No signal does not establish neutral treatment; speaker/proposition context is incomplete.",
+    "Per-document edge summaries retain corpus row identity; duplicate source rows must not be added as separate DD.",
+    "Original text hashes and live full-span checks are recorded; corpus files are not fully rehashed for every experiment.",
+    "Purposeful development cohort, not an accuracy estimate.",
+    "Bare names and lexical suggestions remain experimental; quoted antecedents and generic speakers are not fully interpreted."
+  ]
+}
