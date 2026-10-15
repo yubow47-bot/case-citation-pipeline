@@ -1,0 +1,102 @@
+{
+ "generated_at": "2026-10-03T10:58:32",
+ "status": "complete",
+ "failed_step": "",
+ "schema_versions": {
+  "extract_legacy_kept_superseded": "v1.4 (frozen, diagnostic only)",
+  "extract_candidates": "candidates-2.1 (2.0 + neutral_bare trailing_paren zero-width lookahead capture)",
+  "classify": "8 + parse/arbitration evidence columns",
+  "merge": "9 + in-source arbitration, identity keys v2",
+  "decide": "10",
+  "select": "11 (threshold semantics unchanged)",
+  "registry": "1 (merge_key | decision_id | source_court | source)"
+ },
+ "params": {
+  "batch_size": 500,
+  "year_from": null,
+  "limit_batches": null,
+  "courts": [
+   "SCC",
+   "ONCA",
+   "BCCA"
+  ],
+  "anchor_corpus": [],
+  "corpus_dir": "D:\\cases data analisis\\corpus",
+  "registry_gate": "literal",
+  "mixed_key_holdout": true,
+  "select_config": "select_config.yaml (verbatim in select manifest)",
+  "threshold_dd_semantics": "unchanged (constraint 6)"
+ },
+ "input_identity": {
+  "fingerprint": "b732a969810fc5f2fc11b6e9cb060c74c39260b1bf40e6a1f337c90526deaa77",
+  "files": {
+   "pipeline/classify.py": "e294484c39beb626a608c3f55c9eec951d256793bb69501408fe3e23c0a04969",
+   "pipeline/coverage_report.py": "712788073c216c05bf238a54e2e84c8281b84a429b7b77975ce728badccbc3d8",
+   "pipeline/decide.py": "4e417874a3190e19518d58f0f9c15b62264c3b34fcc3b2239af274f182621c5c",
+   "pipeline/edges.py": "3a3eac2f1d176cd32130492cbcf0b9226a5a878e0e0ecd13bce53e6a4aedd434",
+   "pipeline/extract.py": "3ac682879daff71cacbbc9d49589eacfdee38bf98b214a3dc8fa1efaf7e98682",
+   "pipeline/merge.py": "27c9e37469407203c7dd16e06417d37f2fa7048f2e4c2468982ddfdec290166a",
+   "pipeline/normalize.py": "1da3913302f478bae435280ca6f346570de72f22767aa10f9c6c3db8f8572a65",
+   "pipeline/registry.py": "c98abef7d563f5325682d77266ded2b53a5db406e0c18847ccd84ad0d4725e11",
+   "pipeline/registry_report.py": "4db31444563c2f9bd5dd4b79c0729bebbb64103296a6ae8100f3c77e23ce59a4",
+   "pipeline/run_all.py": "992c02483b2ce0d554d8b152671c509265e8acce6b7f084e15aedb34095701d8",
+   "pipeline/select.py": "4d2d7322d102f1a36b20d22b94306e7370454da2f45f4f4552981f8021148685",
+   "pipeline/shapes.py": "73de6f28ce39a852f59acde754a5a27e52fe1cbd21493713bf1ab250ded454d4",
+   "pipeline/traceback.py": "59a6655965764a491d1eae608c6ce9d6dddc267fc8425ed7c1bf7da574a51037",
+   "decisions/bilingual_neutral_codes.csv": "dc4240597e1a066435250bab6787c54f91083e6aac08f202395022a9e9959baf",
+   "decisions/case_origin.csv": "cac292752885055bc97beba797891bf0331ea22d86b5d6963916902f705e9adc",
+   "decisions/case_origin_manual.csv": "d2cb7f9f1e4bac148145c4acf51e73e31036097092cf4bd35c3ea46365e495ab",
+   "decisions/court_designations.csv": "6434a63cf0597c31f33741b9e33bfcf30aa98cccaa45f0f030a817d969bee2fc",
+   "decisions/court_or_reporter_scope.csv": "0520b37e521e3a71db993db32f5145e5fad5b9d53b5648d2779437752970eedd",
+   "decisions/identifier_systems.csv": "bfe26cc7cd5ccae19c7d74b57e230e9eaa3738f2303eeb0fd1eb9494037cd081",
+   "decisions/neutral_court_codes.csv": "90e2c85631328f54be794cab9a4874c1f30882c783548f547939221a6627ff72",
+   "decisions/reporter_jurisdiction.csv": "47dfd7e66cb10feb86fdb34b1a89352f2d28aa52261973828cce954436bf3ad3",
+   "decisions/reporter_origin_scope.csv": "141a6edae0c2fa8ec1a1575ac8847b6a2f980fac20b1df458d1fde4bce49d019",
+   "decisions/series_prefix.csv": "4b8517a33e0f21a7cb19346def0af90957d00df029f701c907420038c734ba2e",
+   "select_config.yaml": "eed2414e9d074e08b3be6ee0b8f364f945eedc30a633156c3afc7e1cf8ecc916",
+   "corpus/SCC.parquet": "8e79cd406e302d9586ae2235e3c6c34b2797e2dbf6733872536fd2307ace6da6",
+   "corpus/ONCA.parquet": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+   "corpus/BCCA.parquet": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3"
+  },
+  "params": {
+   "batch_size": 500,
+   "year_from": null,
+   "limit_batches": null,
+   "courts": [
+    "SCC",
+    "ONCA",
+    "BCCA"
+   ],
+   "anchor_corpus": [],
+   "corpus_dir": "D:\\cases data analisis\\corpus",
+   "registry_gate": "literal",
+   "mixed_key_holdout": true,
+   "select_config": "select_config.yaml (verbatim in select manifest)",
+   "threshold_dd_semantics": "unchanged (constraint 6)"
+  }
+ },
+ "input_identity_verified_unchanged": true,
+ "dependency_versions": {
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "pyarrow": "25.0.0",
+  "yaml": "6.0.3"
+ },
+ "steps_done": [
+  "extract",
+  "classify_SCC",
+  "classify_ONCA",
+  "classify_BCCA",
+  "merge_SCC",
+  "merge_ONCA",
+  "merge_BCCA",
+  "build_registry",
+  "decide_SCC",
+  "decide_ONCA",
+  "decide_BCCA",
+  "decide_cross",
+  "registry_report",
+  "select",
+  "edges"
+ ],
+ "note": "complete 之外的 status（running/failed）对下游不是可消费的完整批次；失败目录保留，重试用新目录。status=complete 要求收尾时输入身份与启动时逐字节一致（R2-10）"
+}

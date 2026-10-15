@@ -1,0 +1,311 @@
+{
+  "generated_at": "2026-10-15T21:37:53.397515+00:00",
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "network_allowed": false,
+  "suites": [
+    {
+      "name": "test_layers",
+      "command": [
+        "pipeline/tests/test_layers.py"
+      ],
+      "exit_code": 0,
+      "seconds": 1.735,
+      "assertions": 172,
+      "unittest_cases": 0,
+      "log_truncated": false
+    },
+    {
+      "name": "test_candidates",
+      "command": [
+        "pipeline/tests/test_candidates.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.953,
+      "assertions": 378,
+      "unittest_cases": 0,
+      "log_truncated": false
+    },
+    {
+      "name": "test_shape_21",
+      "command": [
+        "pipeline/tests/test_shape_21.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.594,
+      "assertions": 76,
+      "unittest_cases": 0,
+      "log_truncated": false
+    },
+    {
+      "name": "test_registered_id",
+      "command": [
+        "pipeline/tests/test_registered_id.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.562,
+      "assertions": 87,
+      "unittest_cases": 0,
+      "log_truncated": false
+    },
+    {
+      "name": "test_bracketed_foreign_neutral",
+      "command": [
+        "pipeline/tests/test_bracketed_foreign_neutral.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.594,
+      "assertions": 5,
+      "unittest_cases": 0,
+      "log_truncated": false
+    },
+    {
+      "name": "test_non_citation_words",
+      "command": [
+        "pipeline/tests/test_non_citation_words.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.547,
+      "assertions": 167,
+      "unittest_cases": 0,
+      "log_truncated": false
+    },
+    {
+      "name": "test_identifier_identity",
+      "command": [
+        "pipeline/tests/test_identifier_identity.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.375,
+      "assertions": 0,
+      "unittest_cases": 11,
+      "log_truncated": false
+    },
+    {
+      "name": "test_court_identity",
+      "command": [
+        "pipeline/tests/test_court_identity.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.375,
+      "assertions": 0,
+      "unittest_cases": 15,
+      "log_truncated": false
+    },
+    {
+      "name": "test_run_integrity",
+      "command": [
+        "pipeline/tests/test_run_integrity.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.453,
+      "assertions": 0,
+      "unittest_cases": 3,
+      "log_truncated": false
+    },
+    {
+      "name": "test_trace_integrity",
+      "command": [
+        "pipeline/tests/test_trace_integrity.py"
+      ],
+      "exit_code": 0,
+      "seconds": 1.922,
+      "assertions": 0,
+      "unittest_cases": 6,
+      "log_truncated": false
+    },
+    {
+      "name": "test_document_aliases",
+      "command": [
+        "pipeline/tests/test_document_aliases.py"
+      ],
+      "exit_code": 0,
+      "seconds": 3.344,
+      "assertions": 0,
+      "unittest_cases": 22,
+      "log_truncated": false
+    },
+    {
+      "name": "test_replay_decide",
+      "command": [
+        "pipeline/tests/test_replay_decide.py"
+      ],
+      "exit_code": 0,
+      "seconds": 5.093,
+      "assertions": 0,
+      "unittest_cases": 18,
+      "log_truncated": false,
+      "initial_exit_code": 1,
+      "rerun_after": "Explicitly skip only known unavailable hardlink capability; keep assertions when available.",
+      "sandbox_capability_skips": 1
+    },
+    {
+      "name": "test_language_fallback",
+      "command": [
+        "pipeline/tests/test_language_fallback.py"
+      ],
+      "exit_code": 0,
+      "seconds": 1.844,
+      "assertions": 0,
+      "unittest_cases": 4,
+      "log_truncated": false
+    },
+    {
+      "name": "test_registry_languages",
+      "command": [
+        "pipeline/tests/test_registry_languages.py"
+      ],
+      "exit_code": 0,
+      "seconds": 2.094,
+      "assertions": 0,
+      "unittest_cases": 14,
+      "log_truncated": false
+    },
+    {
+      "name": "lising_identity_review",
+      "command": [
+        "pipeline/tests/test_lising_identity_review.py"
+      ],
+      "exit_code": 0,
+      "seconds": 1.359,
+      "assertions": 0,
+      "unittest_cases": 4,
+      "log_truncated": false
+    },
+    {
+      "name": "identity_separations",
+      "command": [
+        "pipeline/tests/test_identity_separations.py"
+      ],
+      "exit_code": 0,
+      "seconds": 1.469,
+      "assertions": 0,
+      "unittest_cases": 8,
+      "log_truncated": false
+    },
+    {
+      "name": "foundation",
+      "command": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/foundation",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "seconds": 165.328,
+      "assertions": 0,
+      "unittest_cases": 54,
+      "log_truncated": false
+    },
+    {
+      "name": "tools",
+      "command": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "seconds": 10.156,
+      "assertions": 0,
+      "unittest_cases": 106,
+      "log_truncated": false,
+      "initial_exit_code": 1,
+      "rerun_after": "Explicitly skip only known unavailable hardlink capability; keep assertions when available.",
+      "sandbox_capability_skips": 2
+    },
+    {
+      "name": "quality",
+      "command": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/quality/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "seconds": 15.282,
+      "assertions": 0,
+      "unittest_cases": 70,
+      "log_truncated": false
+    },
+    {
+      "name": "research",
+      "command": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/research",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "seconds": 8.484,
+      "assertions": 0,
+      "unittest_cases": 42,
+      "log_truncated": false
+    },
+    {
+      "name": "audit_readers",
+      "command": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "audit/canlii_crosscheck",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.344,
+      "assertions": 0,
+      "unittest_cases": 3,
+      "log_truncated": false
+    },
+    {
+      "name": "citation_context",
+      "command": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/citation_context",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.547,
+      "assertions": 0,
+      "unittest_cases": 104,
+      "log_truncated": false
+    }
+  ],
+  "assertions": 885,
+  "unittest_cases": 484,
+  "status": "passed",
+  "hardlink_host_checks": {
+    "execution_context": "ordinary host permissions, outside restricted sandbox",
+    "tests": 3,
+    "passed": 3,
+    "skipped": 0,
+    "tests_named": [
+      "test_hardlinks_preserve_upstream_after_source_removal",
+      "test_external_hardlink_content_is_retained_and_not_claimed_released",
+      "test_multi_link_content_with_all_links_inside_run_stays_lower_bound"
+    ]
+  },
+  "limits": "Offline regression checks and receipt retention checks are not semantic accuracy measurements.",
+  "source_hashes": {
+    "scripts/verify_offline.py": "80266a102d7e1835b9f793999d20f3a41950734359ff85fbd58364c4221d7635",
+    "pipeline/tests/test_replay_decide.py": "98dd842e1f2dab0ad1702b33a7faaebdcb5c042d049927a47af8ea4527b48110",
+    "tools/tests/test_storage.py": "c9e35890fb162b8fcf94bef38c406a4391144cb6e564b95cca6974c9e3fc7f3c"
+  }
+}

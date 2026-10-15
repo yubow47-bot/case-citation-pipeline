@@ -1,0 +1,17 @@
+{
+  "name": "run_20261003_v16f",
+  "absolute_path": "D:\\cases data analisis\\data\\run_20261003_v16f",
+  "action": "direct_delete_without_archive",
+  "before_bytes": 3301138266,
+  "file_count": 285,
+  "receipt_bytes": 93672,
+  "receipt_file_count": 34,
+  "receipt_limit_bytes": 2097152,
+  "reparse_points": "none_verified_entire_tree",
+  "status": "deleted",
+  "reason": "Superseded historical run; no production code input dependency; small manifests and logs retained",
+  "after_bytes": 0,
+  "actual_receipt_total_bytes": 94161,
+  "released_bytes_after_receipt": 3301044105,
+  "deleted_source_bytes": 3301138266
+}

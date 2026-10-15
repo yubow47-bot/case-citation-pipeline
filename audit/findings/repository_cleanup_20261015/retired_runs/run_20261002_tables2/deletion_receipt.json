@@ -1,0 +1,196 @@
+{
+  "run": "D:\\cases data analisis\\data\\run_20261002_tables2",
+  "run_status": "complete",
+  "manifest_sha256": "b917f1bbe0a54f74a78611a64771c654b370fd77c3c1f90de576db88a7090d57",
+  "before_bytes": 557841445,
+  "after_bytes": 0,
+  "receipt_directory": "D:\\cases data analisis\\data\\run_receipts\\run_20261002_tables2_deleted",
+  "removed_logical_bytes": 557841445,
+  "released_bytes": 557841445,
+  "hardlinked_content_bytes_not_counted_as_released": 0,
+  "receipt_total_bytes": 152917,
+  "net_released_content_bytes_lower_bound": 557688528,
+  "space_accounting_note": "removed_logical_bytes counts all deleted paths. released_bytes counts unique pre-delete inodes with st_nlink=1 only; multi-link content is excluded even when all links might be inside the deleted run. These are content-length lower bounds, not allocated disk blocks or measured disk-free changes. Net lower bound subtracts receipt file lengths.",
+  "retained_bytes": 146018,
+  "receipt_limit_bytes": 2097152,
+  "retained_files": [
+    {
+      "path": "run_manifest.json",
+      "bytes": 4854,
+      "sha256": "b917f1bbe0a54f74a78611a64771c654b370fd77c3c1f90de576db88a7090d57"
+    },
+    {
+      "path": "step_build_registry.log",
+      "bytes": 306,
+      "sha256": "6fe379a11c80ea4cba38e0a28518f9dcee8106d679b8543d74c139968c2c34b3"
+    },
+    {
+      "path": "step_classify_BCCA.log",
+      "bytes": 2456,
+      "sha256": "28363c285a3b0020e10ae2419d1065709192b0f8e3a7a38ef1757c8397517469"
+    },
+    {
+      "path": "step_classify_ONCA.log",
+      "bytes": 2446,
+      "sha256": "a9206bfd359092c51d09d26646da9cbf95e0d1177a36a167a9d10f0b220c5447"
+    },
+    {
+      "path": "step_classify_SCC.log",
+      "bytes": 2450,
+      "sha256": "d685bbcf66f47d931904100b97fa9d0b7037d4a751fe5a0ce1e0edc13c239d9e"
+    },
+    {
+      "path": "step_decide_BCCA.log",
+      "bytes": 2362,
+      "sha256": "44dabdcef2362c1b3523afe13099ca274b69fceed1d00c31330e460892b71e90"
+    },
+    {
+      "path": "step_decide_ONCA.log",
+      "bytes": 2456,
+      "sha256": "8411a19964d64615f4cff295a52944f8a38dacfd696c0aab599dd48f7cabe501"
+    },
+    {
+      "path": "step_decide_SCC.log",
+      "bytes": 2401,
+      "sha256": "a4ef33fdeeb27af00095037043c76d7eb67b57f29c171faf7a4d11dd2e323297"
+    },
+    {
+      "path": "step_decide_cross.log",
+      "bytes": 2163,
+      "sha256": "4ddf452d320a365950c0de5e8b08cec9ce69e44b34662751c6bcc6c41bba9af3"
+    },
+    {
+      "path": "step_edges.log",
+      "bytes": 836,
+      "sha256": "334958327f3153490071cda2aa942fcea2dafe3df62729a8b8cfcd12130e7c8c"
+    },
+    {
+      "path": "step_extract.log",
+      "bytes": 3178,
+      "sha256": "64faf431ef6a9cfb310063fd73b12f3809c5a87a4887c0efb228a6fe699cb93e"
+    },
+    {
+      "path": "step_merge_BCCA.log",
+      "bytes": 1832,
+      "sha256": "9d2b8c215cb8989cf2d6aaf25425fd1350ef4cae271be26f088c5dd830171e3c"
+    },
+    {
+      "path": "step_merge_ONCA.log",
+      "bytes": 1823,
+      "sha256": "439d24bbedeeffc2727a76ee3b7512832475d06562cdc2abace6c339bd1d79e8"
+    },
+    {
+      "path": "step_merge_SCC.log",
+      "bytes": 1742,
+      "sha256": "057c785a8d43a80089ff651f9115b6e48fd9fdc8b1fe724d0a01e896b2162d09"
+    },
+    {
+      "path": "step_registry_report.log",
+      "bytes": 235,
+      "sha256": "054e85df41cfc63b33a3bad6ee289a698a7607e3fd148f5b23c0d5f15444dc57"
+    },
+    {
+      "path": "step_select.log",
+      "bytes": 688,
+      "sha256": "3980a75e5381113603bde193e6ff49b6eddc565e1894b566ddec552007617fe7"
+    },
+    {
+      "path": "classify_out\\BCCA\\manifest.json",
+      "bytes": 2303,
+      "sha256": "2463a825f1ca0ce25a27cf75ab0b9ca0a078becdb2f265dd621125b5bea0b51b"
+    },
+    {
+      "path": "classify_out\\ONCA\\manifest.json",
+      "bytes": 2293,
+      "sha256": "cb2adb74e131f7850afabdc7b9857741363acf83803ea8f751728236ae14b1e9"
+    },
+    {
+      "path": "classify_out\\SCC\\manifest.json",
+      "bytes": 2292,
+      "sha256": "937c4d96146e5d3276f17c3be6f494ec7a47d2073ab9ddab66aa0df533101551"
+    },
+    {
+      "path": "compact_receipt.json",
+      "bytes": 56458,
+      "sha256": "156da7c676ffa65ecc29332e3dcbd92bddc0a5af1bf65c539b0c36fc02fbea65"
+    },
+    {
+      "path": "decide_out\\BCCA\\manifest.json",
+      "bytes": 1672,
+      "sha256": "c938c705aa803312d1ffcff558fe51f6e443156a5e7752bd332e86a1c9c03463"
+    },
+    {
+      "path": "decide_out\\ONCA\\manifest.json",
+      "bytes": 1763,
+      "sha256": "5cd4531a42bc6fe84022a86f7ce02130d036f398391cd810417cc44c1171eead"
+    },
+    {
+      "path": "decide_out\\SCC\\manifest.json",
+      "bytes": 1718,
+      "sha256": "128ca1dec1e240e7c1b762e49e19666ac9b532d7fdd08056cc255ac0af6be48b"
+    },
+    {
+      "path": "decide_out\\cross_court\\manifest.json",
+      "bytes": 1576,
+      "sha256": "c19577d72c9e4e9018323bb2a5edf65e85b6c2ae1c5d2b055ba33676bfd22d21"
+    },
+    {
+      "path": "edges\\manifest.json",
+      "bytes": 756,
+      "sha256": "c3b44dfd56151c448991a23a8a592810a349302093755eae4fa5bcc47c9e0d31"
+    },
+    {
+      "path": "extract_out\\BCCA\\progress.json",
+      "bytes": 21,
+      "sha256": "0c545acea10ae45c5817fec7f503721e350ff3072dedfb7a7fc72f8bbdfba1ac"
+    },
+    {
+      "path": "extract_out\\ONCA\\progress.json",
+      "bytes": 21,
+      "sha256": "8766c45ade03f56a6fd25faf69db2cf00f6817a2a1b94b0a1e16ef01782d88f3"
+    },
+    {
+      "path": "extract_out\\SCC\\progress.json",
+      "bytes": 21,
+      "sha256": "48b486677029a459bc928bf34c096ccf54ea933db66041635137e6371c16a393"
+    },
+    {
+      "path": "extract_out\\manifest.json",
+      "bytes": 4166,
+      "sha256": "4349451b9383a49f352e28b680fe6638851868684ba7d647173318ac8bad4d96"
+    },
+    {
+      "path": "merge_out\\BCCA\\manifest.json",
+      "bytes": 1520,
+      "sha256": "4d1e3110868cc7c8e426b1e51e26cf31f342bd32d99bb6f9c05be0fff97d2692"
+    },
+    {
+      "path": "merge_out\\ONCA\\manifest.json",
+      "bytes": 1511,
+      "sha256": "d65ee07728809fcc0170f45428e67ca5377721a46c56ed37a44a636b8a80f34d"
+    },
+    {
+      "path": "merge_out\\SCC\\manifest.json",
+      "bytes": 1443,
+      "sha256": "39f4b3551f5e1dcda044a5b7affa4efe491a1be313161cecf324c4a21e6ebf02"
+    },
+    {
+      "path": "registry\\ceiling.json",
+      "bytes": 32408,
+      "sha256": "73abc4f84dd4f94b757f111d8cf8a17f7b536ee8b8b943ceb552be83fe3a934b"
+    },
+    {
+      "path": "registry\\manifest.json",
+      "bytes": 684,
+      "sha256": "866350d1f81bf42f767ef33447a01b22c7f0d3195f293165b6d464a4f083e98c"
+    },
+    {
+      "path": "select_out\\manifest.json",
+      "bytes": 1164,
+      "sha256": "3b321a26c06027596c74ab13dc304dbbadd204e364ba111de9556f29ec164e02"
+    }
+  ],
+  "action": "direct_delete_without_archive",
+  "status": "deleted",
+  "created_at": "2026-10-14T23:56:54.783736+00:00"
+}

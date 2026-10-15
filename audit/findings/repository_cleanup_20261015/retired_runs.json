@@ -1,0 +1,77 @@
+{
+  "schema": "retired_run_receipts_v1",
+  "checked_date": "2026-10-15",
+  "note": "Original derived outputs were retired before this cleanup. Manifests and deletion receipts are retained, not backups of the original outputs. Historical audit summaries remain historical; current results use the separately retained active run.",
+  "runs": [
+    {
+      "run_id": "run_20261003_v16f",
+      "state": "original_outputs_retired_receipts_retained",
+      "original_outputs_present": false,
+      "original_receipt_directory": "data/run_receipts/storage_20261014/run_20261003_v16f",
+      "input_fingerprint": "4828e87658a58d2d581c42e35f64201d1392713304b9acdbe186fc50f7fb20de",
+      "local_replay_from_original_outputs_available": false,
+      "receipt_files": [
+        {
+          "path": "audit/findings/repository_cleanup_20261015/retired_runs/run_20261003_v16f/run_manifest.json",
+          "bytes": 5061,
+          "sha256": "d0e2efac5a940ecb8904c2ae6ac4e640da59fd21be56579bb2054ecf0ac354a7"
+        },
+        {
+          "path": "audit/findings/repository_cleanup_20261015/retired_runs/run_20261003_v16f/deletion_receipt.json",
+          "bytes": 634,
+          "sha256": "92227bf2e7411ceaf221779967ad2979cdbb85313096126fb1bbee8bd36f2a2b"
+        }
+      ]
+    },
+    {
+      "run_id": "run_20261002_tables2",
+      "state": "original_outputs_retired_receipts_retained",
+      "original_outputs_present": false,
+      "original_receipt_directory": "data/run_receipts/run_20261002_tables2_deleted",
+      "input_fingerprint": "a31254d5ab98f8470455de02eb82c24b68150f63ae060ddeb74502d95f9b43cf",
+      "local_replay_from_original_outputs_available": false,
+      "receipt_files": [
+        {
+          "path": "audit/findings/repository_cleanup_20261015/retired_runs/run_20261002_tables2/run_manifest.json",
+          "bytes": 4854,
+          "sha256": "b917f1bbe0a54f74a78611a64771c654b370fd77c3c1f90de576db88a7090d57"
+        },
+        {
+          "path": "audit/findings/repository_cleanup_20261015/retired_runs/run_20261002_tables2/deletion_receipt.json",
+          "bytes": 6899,
+          "sha256": "161f917154beff5519c6b8ea93e33f2b6f594cbcf87ea2264c68282c9a67e128"
+        },
+        {
+          "path": "audit/findings/repository_cleanup_20261015/retired_runs/run_20261002_tables2/compact_receipt.json",
+          "bytes": 56458,
+          "sha256": "156da7c676ffa65ecc29332e3dcbd92bddc0a5af1bf65c539b0c36fc02fbea65"
+        }
+      ]
+    },
+    {
+      "run_id": "run_20261003_selfcite",
+      "state": "original_outputs_retired_receipts_retained",
+      "original_outputs_present": false,
+      "original_receipt_directory": "data/run_receipts/run_20261003_selfcite_deleted",
+      "input_fingerprint": "b732a969810fc5f2fc11b6e9cb060c74c39260b1bf40e6a1f337c90526deaa77",
+      "local_replay_from_original_outputs_available": false,
+      "receipt_files": [
+        {
+          "path": "audit/findings/repository_cleanup_20261015/retired_runs/run_20261003_selfcite/run_manifest.json",
+          "bytes": 4854,
+          "sha256": "00ffd3e283281799bf5b5b77137010c8fcf0ada87a41cfd578f857fb0a3af55c"
+        },
+        {
+          "path": "audit/findings/repository_cleanup_20261015/retired_runs/run_20261003_selfcite/deletion_receipt.json",
+          "bytes": 6900,
+          "sha256": "a3a4f71839ea8672d849cc73ef3f5159a0fbe30a3cf008d3c3734688063691fc"
+        },
+        {
+          "path": "audit/findings/repository_cleanup_20261015/retired_runs/run_20261003_selfcite/compact_receipt.json",
+          "bytes": 56682,
+          "sha256": "1ac7155e75ec2767246e5f0e2fcd9fee4774dd9f7523045a40390e9de7609bd8"
+        }
+      ]
+    }
+  ]
+}
