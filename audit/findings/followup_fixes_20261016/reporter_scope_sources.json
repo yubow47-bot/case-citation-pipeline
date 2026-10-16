@@ -1,0 +1,798 @@
+{
+  "protocol": "reporter-identity-court-envelope-sources-v1",
+  "checked_on": "2026-10-16",
+  "purpose": "Only cannot-link support; never origin inference or positive single-court assignment. Unrecognized courts and unknown/out-of-window years abstain.",
+  "hash_semantics": "record_sha256 hashes canonical JSON facts excluding the hash field; rule evidence_sha256 hashes the full canonical evidence JSON embedded in the policy CSV. These are not hashes of complete web pages. Native text/span hashes are UTF-8 bytes.",
+  "sources": [
+    {
+      "evidence_id": "CLBC-OAC-7751",
+      "url": "https://www.courthouselibrary.ca/catalogue-item?cid=7751",
+      "checked_on": "2026-10-16",
+      "source_type": "official law-library catalogue",
+      "paraphrased_fact": "Catalogue for Ontario Appeal Cases digest identifies reports of Ontario Court of Appeal and Ontario Divisional Court judgments; digest publication starts in 1986. This is not an exhaustive exclusion of SCC leave dispositions.",
+      "record_sha256": "94de80677a8e1117f6ff864f4a87106e8e9d47fdfcae6be3286b568154dbc67b"
+    },
+    {
+      "evidence_id": "CLBC-BCAC-9107",
+      "url": "https://www.courthouselibrary.ca/catalogue-item?cid=9107",
+      "checked_on": "2026-10-16",
+      "source_type": "official law-library catalogue",
+      "paraphrased_fact": "British Columbia Appeal Cases catalogue identifies the B.C.A.C. abbreviation, B.C. Court of Appeal reporting and 1991 publication. Native sources also demonstrate Yukon appeal judgments and SCC leave dispositions.",
+      "record_sha256": "dce2a9d6c0ccb095eb152e35d7f0d58d5565f51e77756ba63ab617d33b98fc65"
+    },
+    {
+      "evidence_id": "ON-SCJ-DIVISIONAL",
+      "url": "https://www.ontariocourts.ca/scj/areas-of-law/divisional-court/",
+      "checked_on": "2026-10-16",
+      "source_type": "official court website",
+      "paraphrased_fact": "Ontario Divisional Court is a branch of the Superior Court of Justice. ONSC is used as a conservative containing-court envelope, without asserting that all ONSC judgments appear in OAC.",
+      "record_sha256": "982fccf0c074aee541ab8c2f26d8dad6c4d8020f34594dcc64dd0d1540e7501c"
+    },
+    {
+      "evidence_id": "TR-BCLR6-EXCLUSION",
+      "url": "https://store.thomsonreuters.ca/en-ca/products/british-columbia-law-reports-6th-series-book-multiple-format-30907334",
+      "checked_on": "2026-10-16",
+      "source_type": "publisher product description",
+      "paraphrased_fact": "B.C.L.R. includes B.C. civil cases, selected criminal decisions, and Supreme Court of Canada appeals from B.C.; no B.C.-only identity rule is enabled.",
+      "record_sha256": "df00be76c9dfcaabca83f77074a7aa74aea9f3de80598a22582d22694d78ff6b"
+    },
+    {
+      "evidence_id": "MLB-NBR-APPLEBY-2010",
+      "url": "https://www.slaw.ca/2010/06/23/evolution-of-bilingual-judgments-in-new-brunswick/",
+      "checked_on": "2026-10-16",
+      "source_type": "first-party publisher account",
+      "paraphrased_fact": "Publisher Eric Appleby describes NBR(2d) as all New Brunswick Court of Appeal decisions and selected lower-court judgments, beginning in 1969. The court envelope additionally permits SCC and federal appeals conservatively; no foreign-province court is inferred from the reporter name.",
+      "record_sha256": "c53b8b6d783f782229fc82bbbf7f99ee0ff40f381caf3d342c82e45710a52f36"
+    },
+    {
+      "evidence_id": "LSS-SASKR-LIBRARY-2000",
+      "url": "https://www.lawsociety.sk.ca/wp-content/uploads/2020/04/bv13i3.pdf",
+      "checked_on": "2026-10-16",
+      "source_type": "law society library first-hand collection analysis, pages 3-4",
+      "paraphrased_fact": "Law Society library analysis of 1999 Saskatchewan Reports identifies Court of Appeal, Queen’s Bench and Provincial Court decisions and occasional SCC appeals from Saskatchewan. This establishes the named court classes, including SCC, rather than a single court.",
+      "record_sha256": "26c0fe7cbc861a00a35555aa7d6e911001908e51cd2e934460a220d41ff4437c"
+    },
+    {
+      "evidence_id": "USASK-PRAIRIE-REPORTS-1993",
+      "url": "https://harvest.usask.ca/bitstreams/f650cbc6-4901-468d-9f97-f834bb83ba22/download",
+      "checked_on": "2026-10-16",
+      "source_type": "law-library bibliographic study in university institutional repository",
+      "paraphrased_fact": "Canadian Law Libraries 18(1), 1993, page 8, held by University of Saskatchewan: ManR(2d) includes Manitoba appeal and other provincial court decisions plus appeals to federal courts; SaskR includes Saskatchewan appeal/other courts and SCC appeals. Rule validity is bounded by the dated account.",
+      "record_sha256": "2e65c528e0b524fdb0684fa1ee3cdafd081a25ebaa7d4668643392a7b17bcbbd"
+    },
+    {
+      "evidence_id": "TR-ALTALR6-2019",
+      "url": "https://store.thomsonreuters.ca/en-ca/products/alberta-law-reports-6th-series-book-multiple-format-30908268",
+      "checked_on": "2026-10-16",
+      "source_type": "publisher product description",
+      "paraphrased_fact": "Publisher describes sixth-series Alberta Law Reports as significant civil/criminal judgments from Alberta courts and SCC appeals, with publication date 2019-09-23. No extension to the third series or pre-2019 decisions is made.",
+      "record_sha256": "c7ade40f9360c89c50ac263e4d70e56f98d494690a80d50db0095b6f7a46f2d3"
+    },
+    {
+      "evidence_id": "LEXIS-QL-DIRECTORY-2005",
+      "url": "https://www.lexisnexis.ca/documents/Source%20Directory%20(ENGLISH).pdf",
+      "checked_on": "2026-10-16",
+      "source_type": "publisher source directory",
+      "paraphrased_fact": "Publisher directory current to April 25, 2005: printed page 11 places BCJ under B.C. Court Decisions and expressly includes Yukon Judgments since 1973. Printed pages 13-14 list OJ as Ontario Court Decisions including historical report collections. The directory does not establish an exhaustive current court envelope; no BCJ/OJ restriction is enabled.",
+      "record_sha256": "309d77437b71ef1630a4279203a5e61fe0df43eab0efcd1172a3955be20c00fa"
+    }
+  ],
+  "native_counterexamples": [
+    {
+      "evidence_id": "NATIVE-BCAC-YKCA",
+      "source_corpus": "corpus/BCCA.parquet",
+      "corpus_sha256_recorded": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3",
+      "corpus_row": 8555,
+      "source_citation": "2015 BCCA 132",
+      "text_field": "unofficial_text_en",
+      "text_sha256": "7b7c036c85f8a4761fc99783291017e21b012d9fe4ce72ffdd27e542404c9853",
+      "span_start": 40034,
+      "span_end": 40141,
+      "span": "Versluce Estate v. Knol, 2008 YKCA 18 at para. 8, 263 B.C.A.C. 65, leave to appeal ref'd [2009] 1 S.C.R. x.",
+      "span_sha256": "5e96908169e69c87cd2632b5e9707f2ee788af7df165b0b1db8073a27d53f701",
+      "record_sha256": "9cbd64bafced18258cfb4914e7f9d10b8e1c28b84c2ed3a897ba5aa9ef7fd6f4"
+    },
+    {
+      "evidence_id": "NATIVE-BCAC-SCC",
+      "source_corpus": "corpus/BCCA.parquet",
+      "corpus_sha256_recorded": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3",
+      "corpus_row": 5591,
+      "source_citation": "2021 BCCA 241",
+      "text_field": "unofficial_text_en",
+      "text_sha256": "fcefe0ffcd8ee436322506c09725f7ba26df53d17708bd19354546e8abc03c90",
+      "span_start": 44575,
+      "span_end": 44689,
+      "span": "Mountain‑West Resources Ltd. v. Fitzgerald, 2002 BCCA 545, leave to appeal ref'd (2003), 195 B.C.A.C. 160 (S.C.C.)",
+      "span_sha256": "0ce34c42eb8dbe75732eee528cfc4d1b0994788d17f0cbc2eb9bad7d400f7182",
+      "record_sha256": "33627eab21bf4ccc56ff22658403d584a3383a653d2d68f557070e32c2d66504"
+    },
+    {
+      "evidence_id": "NATIVE-OAC-SCC",
+      "source_corpus": "corpus/ONCA.parquet",
+      "corpus_sha256_recorded": "58c31f93063c6bcc83cb2014310737932ea4396443e3015213a923528d993775",
+      "corpus_row": 2489,
+      "source_citation": "2018 ONCA 520",
+      "text_field": "unofficial_text_en",
+      "text_sha256": "2968e631fcfabcce127b4d03dfb16a767e382b21fc919ab45ed1daa46c2053cf",
+      "span_start": 1992,
+      "span_end": 2096,
+      "span": "R. v. Biddle (1993), 65 O.A.C. 263, at para. 44, leave to appeal dismissed (1994), 69 O.A.C. 47 (S.C.C.)",
+      "span_sha256": "2d4e45638e83ea751632d15b71105e66331b704b732c915b8d81f0e63162484c",
+      "record_sha256": "a8bbd50aa0dfc556753a5b7be06268c40881e2484315988e336cca2514d1a0f0"
+    },
+    {
+      "evidence_id": "NATIVE-BCAC-BCSC-UNRESOLVED",
+      "source_corpus": "corpus/BCCA.parquet",
+      "corpus_sha256_recorded": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3",
+      "corpus_row": 9226,
+      "source_citation": "2008 BCCA 500",
+      "text_field": "unofficial_text_en",
+      "text_sha256": "e3fa78bff3b989c42e96bcdde9dfbf0de3dddbcabc91fb9556267700bb7d1b56",
+      "span_start": 4786,
+      "span_end": 4901,
+      "span": "Langret Investments S.A. v. MacDonnell (1995), 13 B.C.L.R. (3d) 333, 57 B.C.A.C. 299 (B.C.S.C.) [cited to B.C.L.R.]",
+      "span_sha256": "333930fcfcb29215fc88b549f67b609dbbf7740a1afc6716625d91aae0fa1927",
+      "record_sha256": "6618d7344b4c956b5743a3e94ee9c04e3eda917cc989aaf3927afe32d982e74d"
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "RICS-OAC-1986",
+      "normalized_reporter": "oac",
+      "allowed_court_codes": "ONCA;ONSC;SCC",
+      "year_start": "1986",
+      "year_end": "2026",
+      "verification_status": "verified_court_envelope",
+      "evidence_sha256": "a48df669d5f050e27e8b9599f4b245f5da0b43a25c86577a347fc10f8ba6b34d",
+      "notes": "ONSC conservatively contains the Divisional Court. SCC leave reports are allowed. Earlier or yearless citations abstain."
+    },
+    {
+      "rule_id": "RICS-BCAC-1991",
+      "normalized_reporter": "bcac",
+      "allowed_court_codes": "BCCA;YKCA;SCC",
+      "year_start": "1991",
+      "year_end": "2026",
+      "verification_status": "verified_court_envelope",
+      "evidence_sha256": "54017ad98276c6a314ff9b22b87c2101479875d9e0539dc95e6e2a994dd4be7b",
+      "notes": "Yukon and SCC leave dispositions prevent exclusive BCCA attribution. Earlier or yearless citations abstain."
+    },
+    {
+      "rule_id": "RICS-SASKR-1980",
+      "normalized_reporter": "saskr",
+      "allowed_court_codes": "SKCA;SKQB;SKKB;SKPC;SCC",
+      "year_start": "1980",
+      "year_end": "1999",
+      "verification_status": "verified_court_envelope",
+      "evidence_sha256": "d4f3ad44cf693fe635e6da631c1d911c04a9bef82bbaa6e4dc3330bdafa76f7c",
+      "notes": "Named court classes from library sources; SCC included. No post-1999 extrapolation."
+    },
+    {
+      "rule_id": "RICS-MANR-1979",
+      "normalized_reporter": "manr",
+      "allowed_court_codes": "MBCA;MBQB;MBKB;MBPC;SCC;FC;FCA",
+      "year_start": "1979",
+      "year_end": "1993",
+      "verification_status": "verified_court_envelope",
+      "evidence_sha256": "7db1e2b863e4de4349c22c8e518c34238431edd0d449aa490e1046cc1dc79c17",
+      "notes": "Federal appeals explicitly allowed. First series and post-1993 rows stay unknown under this dated source."
+    },
+    {
+      "rule_id": "RICS-ALTALR6-2019",
+      "normalized_reporter": "altalr",
+      "allowed_court_codes": "ABCA;ABQB;ABKB;ABPC;ABCJ;SCC",
+      "year_start": "2019",
+      "year_end": "2026",
+      "verification_status": "verified_court_envelope",
+      "evidence_sha256": "4374aa39a6432331479ff2177e329682b23536917b44f269764c7d8154795090",
+      "notes": "Sixth-series publication window only; do not apply the description to third-series cases from 1995."
+    },
+    {
+      "rule_id": "RICS-NBR-1969",
+      "normalized_reporter": "nbr",
+      "allowed_court_codes": "NBCA;NBQB;NBKB;NBPC;SCC;FC;FCA",
+      "year_start": "1969",
+      "year_end": "2010",
+      "verification_status": "verified_court_envelope",
+      "evidence_sha256": "4624c74fd2f7500820e5e990e37ca8bdf729101dbf8e728ab2af69a9b7e31a98",
+      "notes": "Publisher first-hand account; federal courts retained as a conservative superset, not asserted publication coverage. Dated evidence stops at 2010."
+    }
+  ],
+  "excluded_reporters": [
+    "B.C.L.R.: publisher explicitly includes Supreme Court of Canada appeals; no restriction enabled."
+  ],
+  "open_negative_control": "NATIVE-BCAC-BCSC-UNRESOLVED prints BCSC for a yearless BCAC citation. No restriction is emitted for that row; investigate the printed attribution before extending the policy to yearless keys.",
+  "real_output_check": {
+    "source_run": "data/run_20261016_fixes_full3",
+    "rules": 6,
+    "row_count": 255977,
+    "rows_with_known_in_window_envelope": 4070,
+    "historical_rows_with_self_disjoint_positive_court": 1,
+    "historical_conflict_keys": [
+      "|211|nbr|2d|1"
+    ],
+    "current_rows_with_self_disjoint_positive_court": 0,
+    "current_conflict_keys": [],
+    "classification_refresh_scope": "Retained output rows; recompute the sole conflicting Ryan PC designation with the current classifier using its verified native raw PC. All other retained positive court observations are unchanged. This is not a full classify/rerun.",
+    "refreshed_candidate": {
+      "candidate_id": "ONCA:22947:29083:29108:shape_year_vol_page",
+      "raw": "PC",
+      "status": "ambiguous_designation",
+      "observed_deciding_court": "",
+      "evidence_id": "court_designations:pc"
+    },
+    "provincial_collision_probe_groups": 70,
+    "groups_with_new_scope_vs_positive_court_cannot_link": 7,
+    "groups_without_established_disjoint_court_evidence": 63,
+    "affected_groups": [
+      {
+        "group_id": "XC-G017790",
+        "name": "R. v. Nguyen",
+        "dd": 51,
+        "cannot_link_probes": [
+          {
+            "restricted_key": "1996|92|oac||200",
+            "allowed_courts": [
+              "court:csc",
+              "court:onca",
+              "court:onsc"
+            ],
+            "conflicting_key": "1997||bcj||2121",
+            "positive_courts": [
+              "court:bcca"
+            ],
+            "printed_court": "British Columbia Court of Appeal"
+          },
+          {
+            "restricted_key": "1996|92|oac||200",
+            "allowed_courts": [
+              "court:csc",
+              "court:onca",
+              "court:onsc"
+            ],
+            "conflicting_key": "|119|ccc|3d|269",
+            "positive_courts": [
+              "court:bcca"
+            ],
+            "printed_court": "British Columbia Court of Appeal"
+          }
+        ]
+      },
+      {
+        "group_id": "XC-G013484",
+        "name": "R. v. Johnson",
+        "dd": 20,
+        "cannot_link_probes": [
+          {
+            "restricted_key": "1994|45|bcac||102",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "|79|ccc|3d|42",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1994|45|bcac||102",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1993|12|or|3d|340",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          }
+        ]
+      },
+      {
+        "group_id": "XC-G017283",
+        "name": "R. v. Mitchell",
+        "dd": 20,
+        "cannot_link_probes": [
+          {
+            "restricted_key": "1998|104|bcac||263",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1997|36|or|3d|643",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1998|104|bcac||263",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "|121|ccc|3d|139",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1998|104|bcac||263",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "|129|ccc|3d|139",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1998|104|bcac||263",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1998|36|or|3d|643",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          }
+        ]
+      },
+      {
+        "group_id": "XC-G015394",
+        "name": "R. v. Legere",
+        "dd": 14,
+        "cannot_link_probes": [
+          {
+            "restricted_key": "|156|nbr|2d|321",
+            "allowed_courts": [
+              "court:caf",
+              "court:cf",
+              "court:csc",
+              "court:nbbr",
+              "court:nbca",
+              "court:nbcp"
+            ],
+            "conflicting_key": "|95|ccc|3d|555",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "|156|nbr|2d|321",
+            "allowed_courts": [
+              "court:caf",
+              "court:cf",
+              "court:csc",
+              "court:nbbr",
+              "court:nbca",
+              "court:nbcp"
+            ],
+            "conflicting_key": "1995|22|or|3d|89",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          }
+        ]
+      },
+      {
+        "group_id": "XC-G017297",
+        "name": "R. v. Clarke",
+        "dd": 12,
+        "cannot_link_probes": [
+          {
+            "restricted_key": "1997|97|bcac||247",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1998|112|oac||233",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1997|97|bcac||247",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1998|18|cr|5d|219",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1997|97|bcac||247",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "|129|ccc|3d|1",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          }
+        ]
+      },
+      {
+        "group_id": "XC-G012422",
+        "name": "R. v. Richardson",
+        "dd": 11,
+        "cannot_link_probes": [
+          {
+            "restricted_key": "1991|7|bcac||79",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "|74|ccc|3d|15",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1991|7|bcac||79",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1992|9|or|3d|194",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          }
+        ]
+      },
+      {
+        "group_id": "XC-G018269",
+        "name": "R. v. Anderson",
+        "dd": 5,
+        "cannot_link_probes": [
+          {
+            "restricted_key": "1998|104|bcac||308",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1997||oj||2477",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1998|113|bcac||310",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1997||oj||2477",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          }
+        ]
+      }
+    ],
+    "scope": "Eligibility probes, not population precision or an assertion that 70 groups are errors."
+  },
+  "tests": {
+    "command": "python pipeline/tests/test_reporter_identity_scope.py",
+    "status": "passed",
+    "tests": 15,
+    "composition": "11 policy/envelope and 4 ledger/union integration tests"
+  },
+  "bounded_extension_review": {
+    "requested_limit_minutes": 10,
+    "rules_added": 4,
+    "not_enabled": {
+      "ar": "No primary publisher/library text establishing the complete court classes was found in bounded search; a third-party reproduction of a former publisher description is insufficient.",
+      "oj": "Publisher directory lists historical collections, not an exhaustive contemporary allowed court set.",
+      "bcj": "Publisher explicitly includes Yukon; no exhaustive contemporary court set established.",
+      "nsr": "Historical NSR catalogue and official court history do not establish a safe court envelope for modern NSR(2d).",
+      "altalr_before_2019": "Current publisher description is specifically sixth series; not retroactively applied to third-series 1995 keys."
+    },
+    "interpretation": "The 70 provincial-reporter collision groups are probes, not 70 established identity errors. Sources may have federal/SCC appeal coverage, historical reporting differences, missing years or source citation mistakes."
+  },
+  "initial_two_rule_real_output_check": {
+    "source_run": "data/run_20261016_fixes_full3",
+    "row_count": 255977,
+    "rows_with_known_in_window_envelope": 2999,
+    "rows_with_self_disjoint_positive_court": 0,
+    "self_disjoint_examples": [],
+    "provincial_collision_probe_groups": 70,
+    "groups_with_new_scope_vs_positive_court_cannot_link": 6,
+    "groups_without_established_disjoint_court_evidence": 64,
+    "affected_groups": [
+      {
+        "group_id": "XC-G017790",
+        "name": "R. v. Nguyen",
+        "dd": 51,
+        "cannot_link_probes": [
+          {
+            "restricted_key": "1996|92|oac||200",
+            "allowed_courts": [
+              "court:csc",
+              "court:onca",
+              "court:onsc"
+            ],
+            "conflicting_key": "1997||bcj||2121",
+            "positive_courts": [
+              "court:bcca"
+            ],
+            "printed_court": "British Columbia Court of Appeal"
+          },
+          {
+            "restricted_key": "1996|92|oac||200",
+            "allowed_courts": [
+              "court:csc",
+              "court:onca",
+              "court:onsc"
+            ],
+            "conflicting_key": "|119|ccc|3d|269",
+            "positive_courts": [
+              "court:bcca"
+            ],
+            "printed_court": "British Columbia Court of Appeal"
+          }
+        ]
+      },
+      {
+        "group_id": "XC-G013484",
+        "name": "R. v. Johnson",
+        "dd": 20,
+        "cannot_link_probes": [
+          {
+            "restricted_key": "1994|45|bcac||102",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "|79|ccc|3d|42",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1994|45|bcac||102",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1993|12|or|3d|340",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          }
+        ]
+      },
+      {
+        "group_id": "XC-G017283",
+        "name": "R. v. Mitchell",
+        "dd": 20,
+        "cannot_link_probes": [
+          {
+            "restricted_key": "1998|104|bcac||263",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1997|36|or|3d|643",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1998|104|bcac||263",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "|121|ccc|3d|139",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1998|104|bcac||263",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "|129|ccc|3d|139",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1998|104|bcac||263",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1998|36|or|3d|643",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          }
+        ]
+      },
+      {
+        "group_id": "XC-G017297",
+        "name": "R. v. Clarke",
+        "dd": 12,
+        "cannot_link_probes": [
+          {
+            "restricted_key": "1997|97|bcac||247",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1998|112|oac||233",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1997|97|bcac||247",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1998|18|cr|5d|219",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1997|97|bcac||247",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "|129|ccc|3d|1",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          }
+        ]
+      },
+      {
+        "group_id": "XC-G012422",
+        "name": "R. v. Richardson",
+        "dd": 11,
+        "cannot_link_probes": [
+          {
+            "restricted_key": "1991|7|bcac||79",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "|74|ccc|3d|15",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1991|7|bcac||79",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1992|9|or|3d|194",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          }
+        ]
+      },
+      {
+        "group_id": "XC-G018269",
+        "name": "R. v. Anderson",
+        "dd": 5,
+        "cannot_link_probes": [
+          {
+            "restricted_key": "1998|104|bcac||308",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1997||oj||2477",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          },
+          {
+            "restricted_key": "1998|113|bcac||310",
+            "allowed_courts": [
+              "court:bcca",
+              "court:csc",
+              "court:ykca"
+            ],
+            "conflicting_key": "1997||oj||2477",
+            "positive_courts": [
+              "court:onca"
+            ],
+            "printed_court": "Ontario Court of Appeal"
+          }
+        ]
+      }
+    ],
+    "scope": "Constraint eligibility on retained output, not a full rerun, accuracy estimate or claim that every remaining provincial-reporter pair is an error."
+  },
+  "new_abbreviation_conflict": {
+    "source_corpus": "corpus/ONCA.parquet",
+    "corpus_row": 22947,
+    "source_citation": "2021 ONCA 256",
+    "merge_key": "|211|nbr|2d|1",
+    "year_printed": "1999",
+    "native_quote": "R. v. Ryan, (1999), 211 N.B.R. (2d) 1 (PC)",
+    "observed_by_old_classifier": "Judicial Committee of the Privy Council",
+    "diagnosis": "PC after this Canadian citation is a provincial-court abbreviation; punctuation stripping conflates it with P.C. for Privy Council. Classification owner and parent notified.",
+    "text_field": "unofficial_text_en",
+    "text_sha256": "83e7c85c7ab679e58f93f9f13ad75e7e8a65ed19fa6afc2eeff0302ad3333adf",
+    "span_start": 29071,
+    "span_end": 29113,
+    "span_sha256": "c6e3fa592715274c7b669623e270252410a356ee0c3aa1d27500809e428f063b",
+    "candidate_id": "ONCA:22947:29083:29108:shape_year_vol_page",
+    "citation_start": 29083,
+    "citation_end": 29108,
+    "followup": "Classification owner implemented bare PC/P C abstention; NBR rule enabled after checking the current classifier. P.C. remains recognized."
+  },
+  "final_scope_code_identity": {
+    "pipeline/classify.py": "5114f5180361efbf431d3dd2b5ed0d50547b91f0e3d49283f0326a54d547b8cc",
+    "pipeline/reporter_identity_scope.py": "b3e882ee5066d9d683a8cac1ddbb7ab65c1435709ad5b320f82c5cb5f989ffab",
+    "decisions/reporter_identity_court_sets.csv": "a120f43c81fd88bfca6946c4339a6b709eef228ed3006814d63da303d9e99db7"
+  }
+}

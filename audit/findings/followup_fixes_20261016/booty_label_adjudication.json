@@ -1,0 +1,49 @@
+{
+  "protocol": "known-model-label-adjudication-v1",
+  "sample_id": "6365cf281c02e91acc0c191aed37f50f22f08146838486d2ca60012b5c89c979",
+  "assessment_method": "agent_source_review_not_human",
+  "previous_model_claim": "376 and 375 establish two distinct Booty judgments",
+  "assessment": "previous error label not supported; native pinpoint and parallel report corroborate a printed typo in the citing judgment",
+  "reason": "Drover prints Booty v Hutton 2009 BCCA 376 at para26 and 275 BCAC139; native Booty 2009 BCCA375 para26 states exactly the rebuttable presumption cited by Drover. Different printed numbers alone do not establish two genuine judgments. The historical review label is preserved; this supplemental adjudication disputes it. No forced split is introduced merely to clear an old model label.",
+  "sources": [
+    {
+      "label": "target_header",
+      "source_corpus": "corpus/BCCA.parquet",
+      "corpus_sha256": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3",
+      "corpus_row": 8964,
+      "citation": "2009 BCCA 375",
+      "text_field": "unofficial_text_en",
+      "text_sha256": "16ef673410097be17c763f27f867458b90090157deb39675cb105283d4f6a6a0",
+      "span_start": 0,
+      "span_end": 1200,
+      "span_sha256": "360b47821b2cc44f8ddae063c671b68502542e20eee3f25fa8b9770aff21a7f4",
+      "text": "\n2009 BCCA 375 Booty v. Hutton\nCOURT OF APPEAL FOR BRITISH COLUMBIA\nCitation:\nBooty v. Hutton,\n2009 BCCA 375\nDate: 20090828\nDocket: CA022525; CA037153\nDocket: CA022525\nBetween:\nCharlein Booty\nRespondent\n(Petitioner)\nAnd\nGordon Stanford Hutton (also known as Gordon Hutton)\n(Allen Hutton, Agent)\nAppellant\n(Respondent)\n- and -\nDocket: CA037153\nBetween:\nGordon Stanford Hutton and\nAllen Gordon Hutton\nAppellants\n(Plaintiffs)\nAnd\nCharlein Booty\nRespondent\n(Defendant)\nBefore:\nThe Honourable Mr. Justice Tysoe\n(In Chambers)\nOn appeal from: Supreme Court of British Columbia,\nNovember 20, 1996 (Booty v. Hutton, Docket A932373) and\nSeptember 22, 2004 (Booty v. Hutton, Dockets A932373 and S016658)\nAppearing on his own behalf and as agent for the Estate of Gordon Stanford Hutton:\nA. Hutton\nCounsel for the Respondent:\nD. H. Unterman\nPlace and Date of Hearing:\nVancouver, British Columbia\nJuly 24, 2009\nPlace and Date of Judgment:\nVancouver, British Columbia\nAugust 28, 2009\nReasons for Judgment of the Honourable Mr. Justice Tysoe:\n[1] Allen Gordon Hutton (\"Mr. Hutton Jr.\"), on his own behalf and as agent for the estate of his father, Gordon Stanford Hutton (\"Mr. Hutton Sr.\"), has brought two applicat"
+    },
+    {
+      "label": "target_pinpoint",
+      "source_corpus": "corpus/BCCA.parquet",
+      "corpus_sha256": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3",
+      "corpus_row": 8964,
+      "citation": "2009 BCCA 375",
+      "text_field": "unofficial_text_en",
+      "text_sha256": "16ef673410097be17c763f27f867458b90090157deb39675cb105283d4f6a6a0",
+      "span_start": 11518,
+      "span_end": 12036,
+      "span_sha256": "cb4c05e70b38018a5be3026b80c0ed4abd5f496796dbe5ea46a097188fa2547e",
+      "text": "[26] Ms. Booty has not put forward any particulars of prejudice she has suffered as a result of the delay, but as Madam Justice Saunders commented in Greither v. Greither, 2005 BCCA 339 at para. 20, there is always some prejudice in a delay in pursuing an appeal. Where the delay is inordinate and inexcusable, a rebuttable presumption of prejudice arises: see Busse v. Robinson Morelli Chertkow, 1999 BCCA 313, [1999] 10 W.W.R. 692 at para. 18. In the case at bar, the presumption of prejudice has not been rebutted.\n"
+    },
+    {
+      "label": "citing_reference",
+      "source_corpus": "corpus/BCCA.parquet",
+      "corpus_sha256": "b816c3679b40fbf55060d325674af3d8e58650a78123a9ec00d38d3112b29ad3",
+      "corpus_row": 8555,
+      "citation": "2015 BCCA 132",
+      "text_field": "unofficial_text_en",
+      "text_sha256": "7b7c036c85f8a4761fc99783291017e21b012d9fe4ce72ffdd27e542404c9853",
+      "span_start": 39753,
+      "span_end": 40142,
+      "span_sha256": "f65dab31d70d847bfe46d218876077cf05f7cb04302c71010cb64ecfb556c771",
+      "text": "[71] As there has been inordinate and inexcusable delay, a rebuttable presumption of prejudice arises: Booty v. Hutton, 2009 BCCA 376 at para. 26, 275 B.C.A.C. 139. That presumption includes the fact that the respondents have been denied the orderly conduct of the Service Appeal: Versluce Estate v. Knol, 2008 YKCA 18 at para. 8, 263 B.C.A.C. 65, leave to appeal ref'd [2009] 1 S.C.R. x.\n"
+    }
+  ]
+}

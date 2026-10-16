@@ -16,6 +16,9 @@ class ProfileEvidenceTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
+        self.root_patch = patch.object(common, 'ROOT', Path(self.temp.name))
+        self.root_patch.start()
+        self.addCleanup(self.root_patch.stop)
         self.run = Path(self.temp.name) / 'run_fixture'
         self.mentions = self.run / 'merge_out' / 'SCC' / 'mentions_candidates.csv'
         self.mentions.parent.mkdir(parents=True)

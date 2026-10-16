@@ -89,10 +89,12 @@ class LisingIdentityReviewTests(unittest.TestCase):
         self.assertEqual(self.sources(effective,upper),self.sources(old_effective,old_upper))
         self.assertEqual(len(self.sources(effective,upper)),85)
         self.assertNotIn(UPPER_SELF,self.sources(effective,upper))
-        self.assertEqual(self.sources(effective,self.group(fixed,'BCCA',LOWER)),{'BCCA_2005bcca639'})
-        # The SCC appeal's reference to its lower judgment is a true non-self
-        # citation and remains counted in the lower reporter component.
-        self.assertEqual(self.sources(effective,self.group(fixed,'SCC',LOWER)),{UPPER_SELF})
+        # PROBLEMS #135: the same printed report cited from two courts is one
+        # component. The SCC appeal's reference to its lower judgment is a true
+        # non-self citation and stays counted there, apart from the appeal.
+        self.assertEqual(self.group(fixed,'BCCA',LOWER),self.group(fixed,'SCC',LOWER))
+        self.assertEqual(self.sources(effective,self.group(fixed,'BCCA',LOWER)),
+                         {'BCCA_2005bcca639',UPPER_SELF})
         self.assertEqual(len(fixed),len(old))
         self.assertGreater(stats['identity_clusters_split_by_court'],0)
 

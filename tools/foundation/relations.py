@@ -3,6 +3,13 @@
   same_case_history  the cited group also contains a citation printed by the source judgment itself
                      (its citation_en / citation2_en): the source and the cited judgment are two levels of
                      the same litigation (the Supreme Court judgment naming the appeal court below it).
+  probable_same_litigation
+                     the source judgment's own title equals the cited group's title (case-insensitive,
+                     punctuation and a final citation year ignored) and the cited group's printed year is
+                     0-6 years before the source. A title match is not identity proof: it marks the
+                     earlier stages of one proceeding (the judgment under appeal, a prior ruling in the
+                     same file) and can include a different case with the same common title (PROBLEMS #140;
+                     a 150-edge probe found history wording or a header citation in 128).
   other_judgment     everything else: another judgment named by the source (authority, comparison, ...).
 
 DD counts both: it is the number of distinct source judgments that name the case (decision of
@@ -17,10 +24,33 @@ import argparse
 import collections
 import csv
 import json
+import re
 from pathlib import Path
 from common import ROOT, DEFAULT_DB, connect, rows, resolve_artifact
 
 csv.field_size_limit(10**9)
+HISTORY_WINDOW_YEARS = 6
+
+
+def title_key(name):
+    """Comparable title: lowercase letters and digits, without a final `(YYYY)` citation year."""
+    name = re.sub(r'\s*\((?:1[6-9]|20)\d{2}\)$', '', name or '')
+    return re.sub(r'[^a-z0-9]', '', name.lower())
+
+
+def year_of(text):
+    m = re.match(r'\s*((?:1[6-9]|20)\d{2})', text or '')
+    return int(m.group(1)) if m else None
+
+
+def relation_of(own_hit, source_title, source_year, cited_title, cited_year):
+    """One edge's relation type from identity first, then the dated title match."""
+    if own_hit:
+        return 'same_case_history'
+    if (source_title and source_title == cited_title and source_year is not None
+            and cited_year is not None and 0 <= source_year - cited_year <= HISTORY_WINDOW_YEARS):
+        return 'probable_same_litigation'
+    return 'other_judgment'
 
 
 def label(run_dir, db_path=DEFAULT_DB):
@@ -40,13 +70,19 @@ def label(run_dir, db_path=DEFAULT_DB):
         keys_of = collections.defaultdict(set)      # group -> merge keys
         for g, mk in db.execute('SELECT DISTINCT merged_group_id,merge_key FROM members WHERE run_id=?', (run_id,)):
             keys_of[g].add(mk)
+        sources = {sid: (title_key(name), year_of(date)) for sid, name, date in db.execute(
+            'SELECT source_id,name,decision_date FROM documents WHERE run_id=?', (run_id,))}
+        groups = {gid: (title_key(name), year_of(year)) for gid, name, year in db.execute(
+            'SELECT group_id,name,year_printed FROM case_groups WHERE run_id=?', (run_id,))}
         counts = collections.Counter()
         records = []
         for s, g in db.execute('SELECT source_decision,resolved_cited_case FROM citation_edges WHERE run_id=?', (run_id,)):
             if not have_own:
                 t = 'unknown'
             else:
-                t = 'same_case_history' if any(s in own.get(k, ()) for k in keys_of[g]) else 'other_judgment'
+                st, sy = sources.get(s, ('', None))
+                gt, gy = groups.get(g, ('', None))
+                t = relation_of(any(s in own.get(k, ()) for k in keys_of[g]), st, sy, gt, gy)
             counts[t] += 1
             records.append((run_id, s, g, t))
         with db:

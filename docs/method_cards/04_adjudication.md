@@ -2,6 +2,16 @@
 
 Current operational rules were extended on 2026-10-15. The dated historical measurements below remain historical; the first reliable release is recorded in `audit/findings/project_review_20261014/release_summary_final.json` and subsequent identity review in `audit/findings/project_review_20261015/release_summary_final.json`.
 
+## Current evidence contracts (2026-10-16)
+
+Each group represents one judgment. Appeal-history connectors separate judgments of a proceeding; they never establish identity. New CLI runs require `history_pairs.csv` inputs. The explicit `--history-input-mode legacy-none` mode is for historical artifacts or fixtures without those records. Every applied history exclusion cites the exact source instance, CSV record, candidate, connector and logical CSV byte hash; those hashes remain verifiable after gzip compaction.
+
+`decisions/identity_pair_separations.csv` supplies reviewed negative facts for rulings that share a title and court. Both endpoints must match the native corpus document, text, citation offsets and constructed keys. The loader checks source byte hashes on every call; cached Parquet parsing cannot hide a changed source. `reporter_identity_court_sets.csv` supplies conservative possible-court sets within sourced date windows. These sets only exclude incompatible identities and never assign origin or a positive deciding court. Provincial reporter labels alone cannot prove that two references name different judgments: reporters can include SCC, Yukon and federal decisions.
+
+The exact R.C.S./S.C.R. normalization cites its verified bilingual policy row. A complete reporter key can join across citing courts only while document, identifier, deciding-court, history and reviewed-pair guards all pass. Evidence, constraints, conflicts and final memberships are retained in four identity trace tables for every declared court and the cross-court scope. The release gate checks all scopes, required seals, source facts and final membership; see [verification gates](07_verification_gates.md).
+
+`probable_same_litigation` is a separate retrieval label based on title and nearby year. It does not prove identity and does not change DD. Agent-reviewed facts and source checks are distinct from independent human accuracy labels.
+
 ## What this layer does
 
 The only judgements that require "knowing which case this is first", which is why it comes after merging. **DD is finally counted here**, and case identity (which printed strings are the same case) is established here too.

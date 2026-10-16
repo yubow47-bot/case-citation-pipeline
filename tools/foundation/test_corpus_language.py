@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -18,6 +19,9 @@ class CorpusLanguageTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
+        self.root_patch = patch.object(common, 'ROOT', self.root)
+        self.root_patch.start()
+        self.addCleanup(self.root_patch.stop)
         self.corpus = self.root / 'corpus'
         self.corpus.mkdir()
         self.quote = '2000 SCC 1'

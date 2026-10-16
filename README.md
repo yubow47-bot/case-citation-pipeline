@@ -117,7 +117,7 @@ flowchart LR
 2. **Label** each one: what kind of citation, which country, and whether it is only a look-alike or a judgment citing itself.
 3. **Combine** identical citations and resolve text that could be read two ways.
 4. **Decide** which different citations are the same case — for example a case number and a law-report reference printed side by side — and keep apart different cases with the same name.
-5. **Select** by DD (the number of different judgments citing each case). Cases with DD of 5 or more are kept as the main result; groups below 5 are flagged as below the cut-off, not removed.
+5. **Select** by DD (the number of different judgments citing each case). The default view keeps DD of 1 or more; optional profiles apply higher cut-offs. Every group remains available in the output tables.
 
 The steps keep their own outputs and decision evidence, so an unexpected count can be traced back through the grouping and parsing decisions to the text. The [reference tables](decisions/) record the evidence used by the rules. When origin cannot be established, it remains unknown. Earlier and later judgments in the same litigation must be distinguished from multiple references to one judgment.
 

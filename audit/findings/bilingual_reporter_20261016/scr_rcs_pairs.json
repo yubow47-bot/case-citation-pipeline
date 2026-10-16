@@ -1,0 +1,29 @@
+{
+ "corpus": "corpus/SCC.parquet",
+ "rows": 10891,
+ "same_row_pairs_agreeing": 7959,
+ "same_row_pairs_disagreeing": 0,
+ "disagreements": [],
+ "examples": [
+  [
+   "[1992] 1 SCR 866",
+   "[1992] 1 RCS 866"
+  ],
+  [
+   "[1992] 1 SCR 866",
+   "[1992] 1 RCS 866"
+  ],
+  [
+   "[1992] 1 SCR 875",
+   "[1992] 1 RCS 875"
+  ],
+  [
+   "[1992] 1 SCR 875",
+   "[1992] 1 RCS 875"
+  ],
+  [
+   "[1992] 1 SCR 877",
+   "[1992] 1 RCS 877"
+  ]
+ ]
+}

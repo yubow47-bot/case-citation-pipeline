@@ -1,0 +1,1116 @@
+{
+  "scope": "All 38 frozen residual probe pairs; triage, not negative facts.",
+  "pairs": [
+    {
+      "court": "BCCA",
+      "left": "1881|20|chd||389",
+      "right": "1882|51|ljch||503",
+      "group": "XC-G000709",
+      "dd": 1,
+      "name": "Golden v. Gillam",
+      "occurrences": [
+        {
+          "source_decision": "BCCA_2002bcca474",
+          "corpus_row": 13543,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "e7b75861e143b2b5b2f79bd569822d2c663b98cf02246ce1bf7419531a8add34",
+          "left_start": 18517,
+          "left_end": 18537,
+          "left_raw": "(1881) 20 Ch. D. 389",
+          "right_start": 18545,
+          "right_end": 18567,
+          "right_raw": "(1882) 51 L.J. Ch. 503",
+          "actual_gap": " (aff'd ",
+          "span_start": 18337,
+          "span_end": 18747,
+          "span_sha256": "af97b318d694e5e765959fd828d72d70cbae2b7befedd797840f66c28c4bd339",
+          "window": " had intended to delay or hinder their creditors. This was made clear in Gresham v. Gresham (1993) 18 C.B.R. (3d) 201 at 203-4, where this court cited Re Johnson; Golden v. Gillam (1881) 20 Ch. D. 389 (aff'd (1882) 51 L.J. Ch. 503 (C.A.)) for the proposition that a plaintiff may \"undertake to impeach for mala fides a deed which has been executed for valuable consideration\", although such an undertaking is l"
+        }
+      ]
+    },
+    {
+      "court": "BCCA",
+      "left": "1935||scr||628",
+      "right": "1934|3|wwr||441",
+      "group": "XC-G002524",
+      "dd": 12,
+      "name": "Swartz v. Wills",
+      "occurrences": [
+        {
+          "source_decision": "BCCA_1999bcca180",
+          "corpus_row": 5164,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "2369b26f72b2d40d15b9334757e27680734bde16b1559c398340fcee9d94fc40",
+          "left_start": 6838,
+          "left_end": 6852,
+          "left_raw": "[1935] SCR 628",
+          "right_start": 6869,
+          "right_end": 6885,
+          "right_raw": "[1934] 3 WWR 441",
+          "actual_gap": ", which reversed ",
+          "span_start": 6658,
+          "span_end": 7065,
+          "span_sha256": "6c103d2116871a09598268dee7cf71027a3e790e0ee1aa3bdbf16af7134fefbb",
+          "window": "ing the intersection from his right and to make way for them. If drivers approaching the same intersection from his left do the same, collisions cannot occur: Wills v. Swartz Bros [1935] SCR 628, which reversed [1934] 3 WWR 441. The right-of-way of a driver in a dominant position is not an absolute right because if there is an apparent danger confronting such dominant driver he cannot ignore or disregard"
+        },
+        {
+          "source_decision": "BCCA_1999bcca180",
+          "corpus_row": 5164,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "2369b26f72b2d40d15b9334757e27680734bde16b1559c398340fcee9d94fc40",
+          "left_start": 11346,
+          "left_end": 11360,
+          "left_raw": "[1935] SCR 628",
+          "right_start": 11377,
+          "right_end": 11393,
+          "right_raw": "[1934] 3 WWR 441",
+          "actual_gap": ", which reversed ",
+          "span_start": 11166,
+          "span_end": 11573,
+          "span_sha256": "88ff1f233af72543a5393067341e880bd776fde1aaae75cef84f7aab7b0ef379",
+          "window": "drivers approaching from his right and to make way for them. If drivers approaching the same intersection from his left do the same, collisions cannot occur: Wills v. Swartz Bros. [1935] SCR 628, which reversed [1934] 3 WWR 441.\"\n(Words in bold and underlining added)\nReasons for Judgment, A.B. p. 113, para [11]\nObviously, when Schulz, J.A. was talking about drivers approaching from the left doing \"the sa"
+        }
+      ]
+    },
+    {
+      "court": "BCCA",
+      "left": "1978||canlii||3967",
+      "right": "1979|95|dlr|3d|193",
+      "group": "XC-G006449",
+      "dd": 2,
+      "name": "Riddle v. University of Victoria",
+      "occurrences": [
+        {
+          "source_decision": "BCCA_2026bcca309",
+          "corpus_row": 14581,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "a03b59803314fe075c7cc32cc5e99b395310bdb356b0b703e6fb79793289ccf0",
+          "left_start": 37155,
+          "left_end": 37171,
+          "left_raw": "1978 CanLII 3967",
+          "right_start": 37191,
+          "right_end": 37217,
+          "right_raw": "(1979), 95 D.L.R. (3d) 193",
+          "actual_gap": " [Riddle SC], aff'd ",
+          "span_start": 36975,
+          "span_end": 37397,
+          "span_sha256": "3a960804e16e58d577d5af379243cb06fe358f77810510d4e6fee02a9a836c24",
+          "window": "er v. Governors of the University of Alberta (1975), 63 D.L.R. (3d) 684 (Alta. S.C.), 1975 CanLII 2493; and Riddle v. University of Victoria (1978), 84 D.L.R. (3d) 164 (B.C.S.C.), 1978 CanLII 3967 [Riddle SC], aff'd (1979), 95 D.L.R. (3d) 193 (C.A.), 1979 CanLII 2774 [Riddle CA], leave to appeal ref'd (1979), 95 D.L.R. (3d) 193n.\n[61] However, the decision in King v. University of Saskatchewan, [1969] S.C.R. 678, 1969 "
+        }
+      ]
+    },
+    {
+      "court": "BCCA",
+      "left": "1984|42|cr|3d|376",
+      "right": "|16|ccc|3d|30",
+      "group": "XC-G008387",
+      "dd": 15,
+      "name": "R. v. Scherer",
+      "occurrences": [
+        {
+          "source_decision": "BCCA_2002bcca583",
+          "corpus_row": 13457,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "cb65a4cdf1be8cc7edbe0c11da160cd75815ca38cdfaf7d08244065e19baca32",
+          "left_start": 11437,
+          "left_end": 11461,
+          "left_raw": "(1984), 42 C.R. (3d) 376",
+          "right_start": 11497,
+          "right_end": 11522,
+          "right_raw": "(1984), 16 C.C.C. (3d) 30",
+          "actual_gap": " (leave to appeal to S.C.C. refused ",
+          "span_start": 11257,
+          "span_end": 11702,
+          "span_sha256": "184d764c7c801a6cc08fd3a5e52199ea16445c4482f239cab28fbb17ca46e36d",
+          "window": "t concluded in that case that \"the claims of the victims of the fraudulent acts should be paramount\".\n[13] The Ontario Court of Appeal came to the same conclusion in R. v. Scherer (1984), 42 C.R. (3d) 376 (leave to appeal to S.C.C. refused (1984), 16 C.C.C. (3d) 30), which also involved a solicitor who had misappropriated client funds.\n[14] A similar result was reached by this Court in R. v. Moscone, [1985] B.C.J. No. 1755 (Q.L.), with respe"
+        }
+      ]
+    },
+    {
+      "court": "BCCA",
+      "left": "1988||bcwld||2123",
+      "right": "1989|41|bclr|2d|239",
+      "group": "XC-G010625",
+      "dd": 3,
+      "name": "Barclay Construction Corp. v. Bank of Montreal",
+      "occurrences": [
+        {
+          "source_decision": "BCCA_2022bcca360",
+          "corpus_row": 6239,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "61fc6437caff8941740dad61c302ad60ece248b00e10daf8cef043003912988e",
+          "left_start": 56992,
+          "left_end": 57014,
+          "left_raw": "[1988] B.C.W.L.D. 2123",
+          "right_start": 57041,
+          "right_end": 57067,
+          "right_raw": "[1989]41 B.C.L.R. (2d) 239",
+          "actual_gap": " at para. 27 (S.C.) (aff'd ",
+          "span_start": 56812,
+          "span_end": 57247,
+          "span_sha256": "6e30b26437de84ee1d3fbc245767fca2ea37b314128978876e293ad3af40f5ad",
+          "window": "e to the initiation of a claim. \"The debt which constitutes the cause of action arises instantly on the loan\": Barclay Construction Corp. v. Bank of Montreal, [1988] 6 W.W.R. 707, [1988] B.C.W.L.D. 2123 at para. 27 (S.C.) (aff'd [1989]41 B.C.L.R. (2d) 239 (C.A.)), citing Norton v. Ellam (1837), 2 M. & W. 461, 150 E.R. 839 (Ex. Ct.).\n[72] However, in my opinion, a cause of action does not arise on the creation of a resulting trust. "
+        }
+      ]
+    },
+    {
+      "court": "BCCA",
+      "left": "2002|1|cnlr||57",
+      "right": "2003||scc||71",
+      "group": "XC-G023877",
+      "dd": 127,
+      "name": "British Columbia (Minister of Forests) v. Okanagan Indian Band",
+      "occurrences": [
+        {
+          "source_decision": "BCCA_2004bcca106",
+          "corpus_row": 11981,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "26264f5dffeeda83761506f15293f657c31e99430ba6fb51d9f8c3b8e88616d2",
+          "left_start": 12646,
+          "left_end": 12666,
+          "left_raw": "[2002] 1 C.N.L.R. 57",
+          "right_start": 12693,
+          "right_end": 12704,
+          "right_raw": "2003 SCC 71",
+          "actual_gap": " at ¶ 36 (B.C.C.A.), aff'd ",
+          "span_start": 12466,
+          "span_end": 12884,
+          "span_sha256": "8af4829cb58c31b42ca00ce54f4e39ffe3d58adf0f8aa24bf25220d3d898d05f",
+          "window": "ent to defray the costs of private litigation would be tantamount to the creation of an affirmative action program: British Columbia (Minister of Forests) v. Okanagan Indian Band, [2002] 1 C.N.L.R. 57 at ¶ 36 (B.C.C.A.), aff'd 2003 SCC 71. Mr. Justice Vickers did not err when he found no violation of s. 15(1) of the Charter.\nSection 35 of the Constitution Act, 1982\n[22] Section 35 of the Constitution Act, 1982 requ"
+        }
+      ]
+    },
+    {
+      "court": "BCCA",
+      "left": "2008||oj||2526",
+      "right": "2009||onca||418",
+      "group": "XC-G033902",
+      "dd": 1,
+      "name": "Research Capital Corporation v. Skyservice Airlines Inc",
+      "occurrences": [
+        {
+          "source_decision": "BCCA_2010bcca603",
+          "corpus_row": 10359,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "128181a3bdc79452212844b144ec48b6137b355c987e1af60cdefc6972569ffe",
+          "left_start": 14511,
+          "left_end": 14527,
+          "left_raw": "[2008] O.J. 2526",
+          "right_start": 14562,
+          "right_end": 14575,
+          "right_raw": "2009 ONCA 418",
+          "actual_gap": " (S.C.) at paragraphs 34-36, aff'd ",
+          "span_start": 14331,
+          "span_end": 14755,
+          "span_sha256": "bc1eaa708fed92618715bc9bc08d7cb1f8e9e6816453cfb2dc8630f1e90337d3",
+          "window": "hareholder. Oppression remedies are not intended to be a substitute for an action in contract, tort or misrepresentation: Research Capital Corporation v. Skyservice Airlines Inc., [2008] O.J. 2526 (S.C.) at paragraphs 34-36, aff'd 2009 ONCA 418; J.S.M. Corp. (Ontario.) Ltd. v. Brick Furniture Warehouse Ltd., 2008 ONCA 183, 41 B.L.R. (4th) 51; and Naneff v. Con-Crete Holdings Limited et al., [1995] 23 O.R. (3d) 481 (C.A.)"
+        }
+      ]
+    },
+    {
+      "court": "BCCA",
+      "left": "2017||bcca||385",
+      "right": "2018||canlii||35648",
+      "group": "XC-G045544",
+      "dd": 2,
+      "name": "United States of America v. Cameron",
+      "occurrences": [
+        {
+          "source_decision": "BCCA_2023bcca186",
+          "corpus_row": 6451,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "555813f84843fcb6bbabe0c01359b3750d0a1e90fdb1cb98c66e37ef633a2fc9",
+          "left_start": 58097,
+          "left_end": 58110,
+          "left_raw": "2017 BCCA 385",
+          "right_start": 58173,
+          "right_end": 58190,
+          "right_raw": "2018 CanLII 35648",
+          "actual_gap": " at para. 32, application for leave to appeal to SCC dismissed ",
+          "span_start": 57917,
+          "span_end": 58370,
+          "span_sha256": "f21d07478090928261d13ab62fc4a5e81207774aeae4ca23bb75024367149bdb",
+          "window": "an, 2016 SCC 27 fit within the extradition process given the \"participation by a treaty partner within the envelope of the comity of nations\": United States of America v. Cameron, 2017 BCCA 385 at para. 32, application for leave to appeal to SCC dismissed 2018 CanLII 35648.\n[85] However, where delay compromises the fairness of the extradition proceedings or is \"clearly unacceptable\", it may constitute a breach of the principles of natural justice or"
+        },
+        {
+          "source_decision": "BCCA_2024bcca201",
+          "corpus_row": 4233,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "86e5fc7e8d24886363b8f35552b9436ad1674e439ea4ad9cce8ff72c92ea38d8",
+          "left_start": 31116,
+          "left_end": 31129,
+          "left_raw": "2017 BCCA 385",
+          "right_start": 31192,
+          "right_end": 31209,
+          "right_raw": "2018 CanLII 35648",
+          "actual_gap": " at para. 32, application for leave to appeal to SCC dismissed ",
+          "span_start": 30936,
+          "span_end": 31389,
+          "span_sha256": "b8a8c928c8a7dee3c0f6f33a637db1926abf7af2a686634d4e10a744f2d88eb7",
+          "window": "an, 2016 SCC 27 fit within the extradition process given the \"participation by a treaty partner within the envelope of the comity of nations\": United States of America v. Cameron, 2017 BCCA 385 at para. 32, application for leave to appeal to SCC dismissed 2018 CanLII 35648.\n[Emphasis added.]\n[39] I agree with Fisher J.A. that the Jordan framework has no application in the extradition context, which views delay through a different lens: see Argentina"
+        }
+      ]
+    },
+    {
+      "court": "BCCA",
+      "left": "2021||bcca||176",
+      "right": "2021||canlii||126365",
+      "group": "XC-G050426",
+      "dd": 21,
+      "name": "1193652 B.C. Ltd. v. New Westminster (City)",
+      "occurrences": [
+        {
+          "source_decision": "BCCA_2026bcca163",
+          "corpus_row": 14447,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "5b9d7a588a1d4afc861b67613ff64d4f6fd45a11b7eda28f9b9b464960ba3202",
+          "left_start": 28041,
+          "left_end": 28054,
+          "left_raw": "2021 BCCA 176",
+          "right_start": 28099,
+          "right_end": 28117,
+          "right_raw": "2021 CanLII 126365",
+          "actual_gap": " at para. 86 (leave to appeal to SCC denied, ",
+          "span_start": 27861,
+          "span_end": 28297,
+          "span_sha256": "eb74f0549cb2994155b051df30d5cce751ba7f12028e5ae0a8e14938d9f88be9",
+          "window": "w issue; and (3) do the interests of justice support making an exception to the general rule against considering new issues on appeal: 1193652 B.C. Ltd. v. New Westminster (City), 2021 BCCA 176 at para. 86 (leave to appeal to SCC denied, 2021 CanLII 126365 (SCC)).\n[44] In my view, this issue is not truly new. It was not raised by the Landlord in the judicial review, but it was raised by the arbitrator and addressed in his reasons. A"
+        }
+      ]
+    },
+    {
+      "court": "BCCA",
+      "left": "2021||qcca||873",
+      "right": "2022||canlii||16716",
+      "group": "XC-G051486",
+      "dd": 1,
+      "name": "Air Canada v. P.A",
+      "occurrences": [
+        {
+          "source_decision": "BCCA_2025bcca134",
+          "corpus_row": 3415,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "fe899d12461f3d91d6b0ad3856b07e68be106d22c6ed101fb760b386dd033dc0",
+          "left_start": 15847,
+          "left_end": 15860,
+          "left_raw": "2021 QCCA 873",
+          "right_start": 15886,
+          "right_end": 15903,
+          "right_raw": "2022 CanLII 16716",
+          "actual_gap": " (leave to appeal denied, ",
+          "span_start": 15667,
+          "span_end": 16083,
+          "span_sha256": "f285ded4f87c361b9db9f7de547ffcaeeef92c68ad1fe99c42234a069ec0ce21",
+          "window": "s for additional fares for extra seating or space on domestic and international flights was not ousted by the legislation: at paras. 5, 20, 36, 58-59; see also Air Canada v. P.A., 2021 QCCA 873 (leave to appeal denied, 2022 CanLII 16716).\n[20] Pursuant to s. 171 of the Canada Transportation Act, the Agency and the CHR Commission must coordinate their activities in relation to the transportation of persons with di"
+        }
+      ]
+    },
+    {
+      "court": "BCCA",
+      "left": "|130|ccc|3d|413",
+      "right": "1999|61|crr|2d|376",
+      "group": "XC-G018357",
+      "dd": 6,
+      "name": "R. v. Lal",
+      "occurrences": [
+        {
+          "source_decision": "BCCA_2004bcca484",
+          "corpus_row": 12121,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "3c6d8d25359b8ccaf81de39db8cab18357fcf32c2945dde2923a3af704c52a9b",
+          "left_start": 20711,
+          "left_end": 20730,
+          "left_raw": "130 C.C.C. (3d) 413",
+          "right_start": 20764,
+          "right_end": 20790,
+          "right_raw": "(1999), 61 C.R.R. (2d) 376",
+          "actual_gap": " ¶ 18-20, leave to appeal refused ",
+          "span_start": 20531,
+          "span_end": 20970,
+          "span_sha256": "48aa15968d0c197fa66268da3c5453218405ed1eb21efdc4b98a007bd55cf313",
+          "window": " e.g. R. v. Ferris (1998), 50 B.C.L.R. (3d) 109, 126 C.C.C. (3d) 298 ¶ 37-39 (C.A.), leave to appeal refused [1998] S.C.C.A. No. 424 (Q.L.); and R. v. Lal (1998), 113 B.C.A.C. 47, 130 C.C.C. (3d) 413 ¶ 18-20, leave to appeal refused (1999), 61 C.R.R. (2d) 376.\n[36] With respect to the first criterion, although Iacobucci J. expressed a preference for the term \"reasonable grounds to detain\", this essentially refers to the same \"articulab"
+        }
+      ]
+    },
+    {
+      "court": "BCCA",
+      "left": "|131|ccc|3d|306",
+      "right": "|140|ccc|3d|225",
+      "group": "XC-G056598",
+      "dd": 3,
+      "name": "R. v. Timm",
+      "occurrences": [
+        {
+          "source_decision": "BCCA_2006bcca281",
+          "corpus_row": 1579,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "c88eda758035fca5d5004bd96afbd05772c9da3c1f64c6abeba186900b2f3884",
+          "left_start": 12852,
+          "left_end": 12879,
+          "left_raw": "(1998), 131 C.C.C. (3d) 306",
+          "right_start": 12913,
+          "right_end": 12940,
+          "right_raw": "(1999), 140 C.C.C. (3d) 225",
+          "actual_gap": " (Qc. C.A.), at pp. 319/20, aff'd ",
+          "span_start": 12672,
+          "span_end": 13120,
+          "span_sha256": "9321d99e88af83309dea9fe7cce1935cf12df1b406f4e0d67152f8c3cf04038a",
+          "window": "y in R. v. Carpenter, 2001 BCCA 31, paras. 70-1; R. v. Roy (2003), 180 C.C.C. (3d) 298 (Ont. C.A.), para. 13; R. v Otis (2000), 151 C.C.C. (3d) 416 (Qc. C.A.), para 54; R. v. Timm (1998), 131 C.C.C. (3d) 306 (Qc. C.A.), at pp. 319/20, aff'd (1999), 140 C.C.C. (3d) 225 (S.C.C.); and R. v. Teske, [2005] O.J. No. 3759 (C.A.), para. 65. These cases all recognize that the police are not precluded from using reasonable persuasion to encourage a detai"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "1952|3|dlr||681",
+      "right": "1953||own||140",
+      "group": "XC-G071540",
+      "dd": 3,
+      "name": "Pflug and Pflug v. Collins",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_2018onca897",
+          "corpus_row": 2974,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "4cc02efd739103bcb839d3475922505ae084a167342a3064d8f908e8ba1bfe89",
+          "left_start": 5537,
+          "left_end": 5556,
+          "left_raw": "[1952] 3 D.L.R. 681",
+          "right_start": 5577,
+          "right_end": 5594,
+          "right_raw": "[1953] O.W.N. 140",
+          "actual_gap": " at p. 689 [affirmed ",
+          "span_start": 5357,
+          "span_end": 5774,
+          "span_sha256": "d046a2362b2157f233ce7d62304dcb1a36ad600e4cb239218693101f82534a1a",
+          "window": " to the exercise of an easement, even an excessive exercise of an easement, rather than to adverse possession of the fee.\nIn Pflug and Pflug v. Collins, [1952] O.R. 519 at p. 527, [1952] 3 D.L.R. 681 at p. 689 [affirmed [1953] O.W.N. 140, [1953] 1 D.L.R. 841], Mr. Justice Wells (as he then was) made it clear that a person claiming a possessory title must establish (1) actual possession for the statutory period by "
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "1974||oj||1856",
+      "right": "|22|ccc|2d|19",
+      "group": "XC-G072600",
+      "dd": 5,
+      "name": "R. v. Hawke",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_2020onca260",
+          "corpus_row": 10241,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "1f8a0d5ab59c716ed414a3a872da895ec4d15753234e17aefdb1f250fcd345d3",
+          "left_start": 62975,
+          "left_end": 62995,
+          "left_raw": "[1974] O.J. No. 1856",
+          "right_start": 63070,
+          "right_end": 63095,
+          "right_raw": "(1975), 22 C.C.C. (2d) 19",
+          "actual_gap": " (Ont. H.C.), made a pertinent comment at para. 29, rev’d on other grounds ",
+          "span_start": 62795,
+          "span_end": 63275,
+          "span_sha256": "f50ac4ae6bdc2e38ae2092c8b6b7c131bef685c410a3341d134605609395244e",
+          "window": "examination, “[n]o counsel can abuse any witness.” This is the point of r. 53.01(2) of the Rules of Civil Procedure.\n[128] The trial judge in R. v. Hawke, (1974), 3 O.R. (2d) 201, [1974] O.J. No. 1856 (Ont. H.C.), made a pertinent comment at para. 29, rev’d on other grounds (1975), 22 C.C.C. (2d) 19, [1975] O.J. No. 2200 (Ont. C.A.): “And I would think that in appropriate situations, any trial Judge would at least protect the witness who was asked a demeaning question where t"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "1980|125|dlr|3d|177",
+      "right": "1981|33|or|2d|585",
+      "group": "XC-G073343",
+      "dd": 2,
+      "name": "Dodgson v. Topolinsky",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_c40232",
+          "corpus_row": 7571,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "b65fa09a70dc6200a37e9bc093044ba142a28bcc7b9c81063a2f7a03cb2a24f8",
+          "left_start": 20176,
+          "left_end": 20203,
+          "left_raw": "(1980), 125 D.L.R. (3d) 177",
+          "right_start": 20232,
+          "right_end": 20256,
+          "right_raw": "(1981), 33 O.R. (2d) 585",
+          "actual_gap": " (Ont. H.C.) - 15%, affirmed ",
+          "span_start": 19996,
+          "span_end": 20436,
+          "span_sha256": "bb8b1b590095ab1bc8caa4fa9d58deb29eba978d31c2b3206c74c53c422ab405",
+          "window": " a notation to show the apportionment of contributory fault in each case. I reproduce that list here:\nJackson v. Millar, [1972] 2 O.R. 197 (Ont. H.C.) - 10%.\nDodgson v. Topolinsky (1980), 125 D.L.R. (3d) 177 (Ont. H.C.) - 15%, affirmed (1981), 33 O.R. (2d) 585 (C.A.).\nPugliese v. Macrillo Estate (1988), 67 O.R. (2d) 641 (H.C.) - 20% (includes other factors).\nThurmeier v. Bray (1990), 83 Sask.R. 183 (Q.B.) - 15%.\nOhlheiser v. Cummings, ["
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "1981|34|or|2d|236",
+      "right": "1982|35|or|2d|64",
+      "group": "XC-G073573",
+      "dd": 2,
+      "name": "Johnson v. Adamson",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_c38528",
+          "corpus_row": 17371,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "72fc05786b8cd3db731c2f14500bd7ab88aca941338124d3d66436a455498c26",
+          "left_start": 6575,
+          "left_end": 6599,
+          "left_raw": "(1981), 34 O.R. (2d) 236",
+          "right_start": 6663,
+          "right_end": 6687,
+          "right_raw": "(1982), 35 O.R. (2d) 64n",
+          "actual_gap": " (C.A.) [Leave to appeal to the Supreme Court of Canada refused ",
+          "span_start": 6395,
+          "span_end": 6867,
+          "span_sha256": "318031568b4e497673cd6f5d88c8e9d1d53aaaac41fda5a539ada1d4aa2b32ae",
+          "window": " with allowance for inadequacies due to drafting deficiencies: Nash v. Ontario (1995), 27 O.R. (3d) 1 (C.A.). The novelty of a cause of action is of no concern: Johnson v. Adamson (1981), 34 O.R. (2d) 236 (C.A.) [Leave to appeal to the Supreme Court of Canada refused (1982), 35 O.R. (2d) 64n].\n[11] Importantly, matters of law that have not been fully settled in the jurisprudence should not be disposed of pursuant to Rule 21.01(1)(b): Nash, supra, The analysis in this "
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "1987|1|aller||81",
+      "right": "1987|3|aller||565",
+      "group": "XC-G074695",
+      "dd": 1,
+      "name": "Pagnan SpA v. Tradax Ocean Transportation SA",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_2007onca59",
+          "corpus_row": 6584,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "ed63abc67d49bf05325d59b63809ba497ddfb3627fa71d1a9b8b7c6d4ba2fa24",
+          "left_start": 55166,
+          "left_end": 55186,
+          "left_raw": "[1987] 1 All E.R. 81",
+          "right_start": 55211,
+          "right_end": 55232,
+          "right_raw": "[1987] 3 All E.R. 565",
+          "actual_gap": " (Q.B.), Steyn J., aff’d ",
+          "span_start": 54986,
+          "span_end": 55412,
+          "span_sha256": "7e34f323f8c4c6aab39900984e1d2b2b1a70f64601e74ecee66a3f9b1415972f",
+          "window": "“1”. For ease of reference, I have added the numbers in parentheses.\n[2] Lord Steyn has taken the same approach in his judgments: see Pagnan SpA v. Tradax Ocean Transportation SA, [1987] 1 All E.R. 81 (Q.B.), Steyn J., aff’d [1987] 3 All E.R. 565 (\nC.A.\n). See also Toronto-Dominion Bank v. Leigh Instruments Ltd. (1999), 178 D.L.R. (4th) 634 at 639 (Ont. C.A.); Lewison, The Interpretation of Contracts, supra, at 5, 22-24; M"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "1988||ilr||1",
+      "right": "1988||ilr||8865",
+      "group": "XC-G075162",
+      "dd": 3,
+      "name": "Peet v. Ethier",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_2012onca338",
+          "corpus_row": 18460,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "b87f115687141743f92ccaf3bdbb66cccdbeb6eef68c9c3decc8dfb42f498047",
+          "left_start": 5296,
+          "left_end": 5311,
+          "left_raw": "[1988] I.L.R. 1",
+          "right_start": 5337,
+          "right_end": 5355,
+          "right_raw": "[1988] I.L.R. 8865",
+          "actual_gap": "-2261 (Sask. Q.B.), aff’d ",
+          "span_start": 5116,
+          "span_end": 5535,
+          "span_sha256": "f11a919b76a1f6d0607b3736dd1f2942b9a4a1053a0c722e52b03606d70ff0d7",
+          "window": "ee for example, Vanderwal v. State Farm Mutual Automobile Insurance Co. (1994), 20 O.R. (3d) 401 (Div. Ct.); Northover v. Regier, [2001] I.L.R. 1-3889 (Ont. S.C.); Peet v. Ethier, [1988] I.L.R. 1-2261 (Sask. Q.B.), aff’d [1988] I.L.R. 8865 (Sask. C.A.). These authorities suggest that the legal authority to drive, at any given time, depends on the existence of a valid licence issued by the responsible regulatory auth"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "1990|70|or||2",
+      "right": "1991|2|scr||456",
+      "group": "XC-G012098",
+      "dd": 25,
+      "name": "Waldick v. Malcolm",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_2026onca371",
+          "corpus_row": 16983,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "2bb0c9a1771249cea14cfdd7853f54c117e6515612b77bef140f2f416ea8f4a8",
+          "left_start": 11266,
+          "left_end": 11283,
+          "left_raw": "(1990), 70 O.R. 2",
+          "right_start": 11335,
+          "right_end": 11354,
+          "right_raw": "[1991] 2 S.C.R. 456",
+          "actual_gap": "(d) 717 (C.A.) (“Waldick (ONCA)”), at p. 723, aff’d ",
+          "span_start": 11086,
+          "span_end": 11534,
+          "span_sha256": "d773956ee2fd0aebb4bf285ba2849800f946c9b413282d5013e61ad60635c035",
+          "window": " the premises and the property brought on the premises by those persons are reasonably safe while on the premises”.\n[29] This court considered that provision in Waldick v. Malcolm (1990), 70 O.R. 2(d) 717 (C.A.) (“Waldick (ONCA)”), at p. 723, aff’d [1991] 2 S.C.R. 456:\nA similarly worded statement of an occupier's duty occurs in all other Occupiers' Liability Acts. All courts have agreed that the section imposes on occupiers an affirmative duty"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "1990||ilr||1",
+      "right": "1991|3|ccli|2d|203",
+      "group": "XC-G075715",
+      "dd": 4,
+      "name": "Gulf Plastics Ltd. v. Cornhill Insurance Co. Ltd",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_c34246c34251c34253c34282c34289c34290c34293c34316c34336c35599",
+          "corpus_row": 12963,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "6236ec9b78af1bdd76c7633b9dfab208b28ceaae9cc1ced3cd479d2a1a5d7522",
+          "left_start": 26351,
+          "left_end": 26366,
+          "left_raw": "[1990] I.L.R. 1",
+          "right_start": 26389,
+          "right_end": 26416,
+          "right_raw": "(1991), 3 C.C.L.I. (2d) 203",
+          "actual_gap": "-2644 (B.C.S.C.) aff’d ",
+          "span_start": 26171,
+          "span_end": 26596,
+          "span_sha256": "36a2358ac3be025be1beb56eaade5eeec2a52e4db7ff36d198c688f46e9df6c4",
+          "window": "ave found that the damage to property was covered by the CGL policies: Ontario (Attorney General) v. Fatehi, [1984] 2 S.C.R. 536;Gulf Plastics Ltd. v. Cornhill Insurance Co. Ltd., [1990] I.L.R. 1-2644 (B.C.S.C.) aff’d (1991), 3 C.C.L.I. (2d) 203 (B.C.C.A.); and (Carwold) Concrete and Gravel Ltd.v. General Security Insurance Co. of Canada (1984), 17 C.C.L.I. 241 (Alta. C.A.).The trial judge concluded that the damage, to th"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "1996|28|or|3d|188",
+      "right": "1997|97|oac||241",
+      "group": "XC-G016360",
+      "dd": 6,
+      "name": "Fecht v. Deloittte & Touche",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_2013onca264",
+          "corpus_row": 19852,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "882dbb2d9f8d2b271bfcdfd8a75963da58c86c4c0d4b31ba0eeba00f483eca59",
+          "left_start": 38296,
+          "left_end": 38320,
+          "left_raw": "(1996), 28 O.R. (3d) 188",
+          "right_start": 38350,
+          "right_end": 38371,
+          "right_raw": "(1997), 97 O.A.C. 241",
+          "actual_gap": " (Gen. Div.), para. 23; aff’d ",
+          "span_start": 38116,
+          "span_end": 38551,
+          "span_sha256": "0df01e64e2f3d7b65ac4fea283fd4f263d391baa7ed6cfd4074927580865b239",
+          "window": "ence to be used at trial, there is no rule against making such an order in relation to pre-trial proceedings: Zingre, para. 22; De Havilland, para. 31; Fecht v. Deloittte & Touche (1996), 28 O.R. (3d) 188 (Gen. Div.), para. 23; aff’d (1997), 97 O.A.C. 241.\n[64] Second, the factor of the evidence being “not otherwise obtainable” does not mean that no evidence on the subject in issue is available. Rather, it means that “evidence of t"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "1996|34|ccli|2d|119",
+      "right": "1996|29|or|3d|720",
+      "group": "XC-G078078",
+      "dd": 2,
+      "name": "Macartney v. Islic",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_c43429",
+          "corpus_row": 7765,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "a6e33ad2f360b24dbc105663b99d7bed271a5381fb5c0ef6b465c1359818aeb9",
+          "left_start": 20242,
+          "left_end": 20270,
+          "left_raw": "(1996), 34 C.C.L.I. (2d) 119",
+          "right_start": 20305,
+          "right_end": 20329,
+          "right_raw": "(1996), 29 O.R. (3d) 720",
+          "actual_gap": " (Ont. Ct. J. (Gen. Div.)), varied ",
+          "span_start": 20062,
+          "span_end": 20509,
+          "span_sha256": "359d84e1565a4c775169fbd20f13f9ae51ae715a66e8b05a03e6ca12e00c6d40",
+          "window": "gories: (a) those that limit their inquiry to reasonable foreseeability, tending “to shroud social policy considerations behind the veil of foreseeability”: see Macartney v. Islic (1996), 34 C.C.L.I. (2d) 119 (Ont. Ct. J. (Gen. Div.)), varied (1996), 29 O.R. (3d) 720 (Ct. J. (Gen. Div.)), varied (2000), 46 O.R. (3d) 669 (C.A.); Ashley Estate v. Goodman, [1994] O.J. No. 1672 (Ct. J. (Gen. Div.)); (b) those that refer to the debate, without indi"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "1998|38|or|3d|590",
+      "right": "1999|44|or|3d|545",
+      "group": "XC-G079389",
+      "dd": 10,
+      "name": "Vijeykumar v. State Farm Mutual Automobile Insurance Co",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_2012onca384",
+          "corpus_row": 18596,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "5b45dab3e78b7878002fa95015c92f1b1926f6ecf46f7fe14a912b65db8c249f",
+          "left_start": 23697,
+          "left_end": 23721,
+          "left_raw": "(1998), 38 O.R. (3d) 590",
+          "right_start": 23758,
+          "right_end": 23782,
+          "right_raw": "(1999), 44 O.R. (3d) 545",
+          "actual_gap": " (C.J. (Gen. Div.)) at p. 610; aff’d ",
+          "span_start": 23517,
+          "span_end": 23962,
+          "span_sha256": "fb6dfb6d54047ce3d07594d7e91d2d38177199e44600a062ade6c1cf1ef9ab25",
+          "window": "06, C. 21, Sched. F, s. 56. Equally, however, the court should not presume the law is the same despite the amendment: see Vijeyekumar v. State Farm Mutual Automobile Insurance Co. (1998), 38 O.R. (3d) 590 (C.J. (Gen. Div.)) at p. 610; aff’d (1999), 44 O.R. (3d) 545 (C.A.). The amendment standing alone is a neutral consideration. In this case, however, it turns an unclear and ambiguous legislative intent into a clear and unambiguous legislati"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "1998|50|ccli|2d|173",
+      "right": "1999||oj||3468",
+      "group": "XC-G079527",
+      "dd": 1,
+      "name": "Jackson v. Dennis",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_c41218",
+          "corpus_row": 8165,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "e0c45362e7268b267b0af58a46f345b9180a83f3e81fbe5292772dbb828a7407",
+          "left_start": 11748,
+          "left_end": 11776,
+          "left_raw": "(1998), 50 C.C.L.I. (2d) 173",
+          "right_start": 11805,
+          "right_end": 11825,
+          "right_raw": "[1999] O.J. No. 3468",
+          "actual_gap": " (Ct. J. (Gen. Div.)), aff'd ",
+          "span_start": 11568,
+          "span_end": 12005,
+          "span_sha256": "ff20f5078440294ebe7b23b531ae63aa06d0bca5774df1ec66236012bdb61d41",
+          "window": "required to pay premiums on the policy while the appellant, who owned the vehicle, could claim its value if it was destroyed during the period of the lease: See Jackson v. Dennis, (1998), 50 C.C.L.I. (2d) 173 (Ct. J. (Gen. Div.)), aff'd [1999] O.J. No. 3468 (C.A.).\n[24] As the owner of the vehicle, the appellant suffered the loss when the vehicle was damaged. It may be important for Beals to be a party to the insurance contract for p"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "1998||oj||5342",
+      "right": "1999||oj||4602",
+      "group": "XC-G079796",
+      "dd": 1,
+      "name": "Relying on MacKenzie v. Matthews",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_2023onca477",
+          "corpus_row": 22160,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "be992b54fa30fd88c7cc819cf3fad228a3b859cacfffd8f9b5d114cf732ed549",
+          "left_start": 22510,
+          "left_end": 22526,
+          "left_raw": "[1998] O.J. 5342",
+          "right_start": 22572,
+          "right_end": 22592,
+          "right_raw": "[1999] O.J. No. 4602",
+          "actual_gap": " (Ont. Gen. Div.), at paras. 30 and 31, aff’d ",
+          "span_start": 22330,
+          "span_end": 22772,
+          "span_sha256": "123a790206d877c31ddbce1fb08aee56ae6e3a50d26d1d3bb25d07fed66dbb59",
+          "window": "llary rights doctrine in his reasons and by failing to hold that ancillary rights under the Easement include parking rights on the Property.\n[53] Relying on MacKenzie v. Matthews, [1998] O.J. 5342 (Ont. Gen. Div.), at paras. 30 and 31, aff’d [1999] O.J. No. 4602 (Ont. C.A.), and Moncrief v. Jamieson, [2007] U.K.H.L. 42, LTC submits that even where an easement does not expressly refer to “parking”, if parking rights are reasonably necessar"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "2007||canlii||23362",
+      "right": "2008||onca||202",
+      "group": "XC-G086571",
+      "dd": 1,
+      "name": "Tasker v. Badgerow",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_2015onca233",
+          "corpus_row": 3121,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "7c2333e2ab277c2d2dc6a080e8d47604b868d4085624dbf9c07437ac7765737e",
+          "left_start": 8837,
+          "left_end": 8854,
+          "left_raw": "2007 CanLII 23362",
+          "right_start": 8913,
+          "right_end": 8926,
+          "right_raw": "2008 ONCA 202",
+          "actual_gap": " 4086 (Ont. S.C.), at paras. 47-49, aff’d on other grounds ",
+          "span_start": 8657,
+          "span_end": 9106,
+          "span_sha256": "f0aba9dfee79eaf7c399c4ca624da68902aaf324bf9369c6fc601dfea5768628",
+          "window": "e parties do not contemplate as applying to another part will not constitute an acknowledgement sufficient to interrupt adverse possession on that latter part: Tasker v. Badgerow, 2007 CanLII 23362 4086 (Ont. S.C.), at paras. 47-49, aff’d on other grounds 2008 ONCA 202.\nD. THE DECISION AT TRIAL [14] The trial judge granted the McClatchies ownership of Part R-1 by adverse possession pursuant to ss. 4 and 15 of the Real Property Limitations Act. H"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "2007||onca||546",
+      "right": "2008|397|oac||397",
+      "group": "XC-G032561",
+      "dd": 10,
+      "name": "R. v. W.V",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_2016onca411",
+          "corpus_row": 4720,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "35e396e4b6d9e350ca88926847d94a85bbe17dc0ceabfd85c356bf962cb2468f",
+          "left_start": 33024,
+          "left_end": 33037,
+          "left_raw": "2007 ONCA 546",
+          "right_start": 33091,
+          "right_end": 33113,
+          "right_raw": "(2008), 397 O.A.C. 397",
+          "actual_gap": ", at paras. 12-13, and 26-27, leave to appeal refused ",
+          "span_start": 32844,
+          "span_end": 33293,
+          "span_sha256": "ede6b9a634406786019e7b3467da89dcff102e1d2fba71ee4c3e1c474d284b0b",
+          "window": "edial authority of s. 686(1)(b)(iv): see, for example, R. v. Bain (1989), 47 C.C.C. (3d) 250 (Ont. C.A.), at pp. 253-54, reversed on other grounds, [1992] 1 S.C.R. 91; R. v. W.V., 2007 ONCA 546, at paras. 12-13, and 26-27, leave to appeal refused (2008), 397 O.A.C. 397 (note); and R. v. Noureddine, 2015 ONCA 770, 128 O.R. (3d) 23, at paras. 49-50.\n[82] In a similar way, where a court’s authority to try an accused depends on that accused’s electi"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "|133|ccc||174",
+      "right": "1962||scr||ro:x",
+      "group": "XC-G071898",
+      "dd": 2,
+      "name": "R. v. Schultz",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_2018onca1016",
+          "corpus_row": 2653,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "35726d039781ac8fd1b058bb54c2ca78b23dc297c7eb0df944e660b6ad54f226",
+          "left_start": 15907,
+          "left_end": 15929,
+          "left_raw": "(1962), 133 C.C.C. 174",
+          "right_start": 15975,
+          "right_end": 15990,
+          "right_raw": "[1962] S.C.R. x",
+          "actual_gap": " (Alta. S.C.(A.D.)), leave to appeal refused, ",
+          "span_start": 15727,
+          "span_end": 16170,
+          "span_sha256": "65d593fb8ec139383538d9d5c070615f1fa8a49e3013c8873b99bd9e734d6b74",
+          "window": "mmitting an aggravated assault, contrary to Section 268 of the Criminal Code of Canada.”\n[30] “Maim” is not defined in the Criminal Code.\n[31] Based on his review of R. v. Schultz (1962), 133 C.C.C. 174 (Alta. S.C.(A.D.)), leave to appeal refused, [1962] S.C.R. x, and the cases that have come after it, the trial judge concluded that there were two possible definitions of the word “maim”. He wrote, at para. 155:\nOne contemplates that a comp"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "|139|ccc|3d|449",
+      "right": "1999||sccanos||560",
+      "group": "XC-G056848",
+      "dd": 11,
+      "name": "R. v. Cavan",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_c33980",
+          "corpus_row": 15891,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "3b3457fb8e334b638875d4a92538943dd36623d8dd89c18c28d10e829f61bb84",
+          "left_start": 48023,
+          "left_end": 48050,
+          "left_raw": "(1999), 139 C.C.C. (3d) 449",
+          "right_start": 48117,
+          "right_end": 48141,
+          "right_raw": "[1999] S.C.C.A. Nos. 560",
+          "actual_gap": " (Ont. C.A.), applications for leave to appeal to S.C.C. dismissed ",
+          "span_start": 47843,
+          "span_end": 48321,
+          "span_sha256": "bcb07013cab50a32eb4db27ceefeccfc9e5d451fb43f485fa1787f6136dd1889",
+          "window": " because an accused’s constitutional right to this disclosure cannot be allowed to become a “trap” for him or her: R. v. White (1999), 132 C.C.C. (3d) 373 (Ont. C.A.); R. v. Cavan (1999), 139 C.C.C. (3d) 449 (Ont. C.A.), applications for leave to appeal to S.C.C. dismissed [1999] S.C.C.A. Nos. 560 and 600.\n[72] After counsel for the Crown had vetted his proposed line of cross‑examination with the trial judge, who found that it was proper, the trial judge twice gave the foll"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "|58|ar||66",
+      "right": "1985|1|scr||ro:ix",
+      "group": "XC-G074243",
+      "dd": 2,
+      "name": "Leontowicz v. Seaboard Life Insurance Co",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_c40273",
+          "corpus_row": 16451,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "28347ed505d0b29bd590627a8e73050b9ef5320254ced3b52dfa893b20627698",
+          "left_start": 7777,
+          "left_end": 7795,
+          "left_raw": "(1984), 58 A.R. 66",
+          "right_start": 7830,
+          "right_end": 7848,
+          "right_raw": "[1985] 1 S.C.R. ix",
+          "actual_gap": " (C.A.), (leave to appeal refused, ",
+          "span_start": 7597,
+          "span_end": 8028,
+          "span_sha256": "fedf1f6c94bc797bbe927ba055fb02adb3bd8b2012cb5fef3f6eafa754aa7f90",
+          "window": "R. (2d) 297 (B.C.C.A.), affirmed (1964), 42 D.L.R. (2d) 401 (S.C.C.); Smith v. British Pacific Life Insurance Co., [1965] S.C.R. 434; and Leontowicz v. Seaboard Life Insurance Co. (1984), 58 A.R. 66 (C.A.), (leave to appeal refused, [1985] 1 S.C.R. ix).\n[14] Martin involved a physician who died from a drug overdose caused by a self-inflicted intravenous injection of demerol. The level of demerol found in the physician’s blood w"
+        }
+      ]
+    },
+    {
+      "court": "ONCA",
+      "left": "|94|ccc|3d|459",
+      "right": "1994||scca||544",
+      "group": "XC-G069439",
+      "dd": 3,
+      "name": "R. v. M. (R.A.)",
+      "occurrences": [
+        {
+          "source_decision": "ONCA_c41280",
+          "corpus_row": 7890,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "211c0c207c56277f4c84af047fa4fc7fe3621370f4094b56b0ae74a5872d71ee",
+          "left_start": 31812,
+          "left_end": 31838,
+          "left_raw": "(1994), 94 C.C.C. (3d) 459",
+          "right_start": 31895,
+          "right_end": 31918,
+          "right_raw": "[1994] S.C.C.A. No. 544",
+          "actual_gap": " (Man. C.A.), application for leave to appeal dismissed, ",
+          "span_start": 31632,
+          "span_end": 32098,
+          "span_sha256": "23078d737f1cab9c51a516c3759567ce5fee4a9f510f0cb55781a761151f884c",
+          "window": " the circumstances of that offence as similar fact evidence at a subsequent trial for a different offence: see R. v. Cullen (1989), 52 C.C.C. (3d) 459 (Ont. C.A.); R. v. M. (A.R.) (1994), 94 C.C.C. (3d) 459 (Man. C.A.), application for leave to appeal dismissed, [1994] S.C.C.A. No. 544; R. v. S.(P.) (2000), 144 C.C.C. (3d) 120 (Ont. C.A.), application for leave to appeal dismissed, [2000] S.C.C.A. No. 486; R. v. Akins (2002), 164 C.C.C. (3d) 289 (Ont. C.A.). Thr"
+        }
+      ]
+    },
+    {
+      "court": "SCC",
+      "left": "1903|6|olr||532",
+      "right": "1904|7|olr||72",
+      "group": "XC-G126782",
+      "dd": 1,
+      "name": "Burdett v. Fader",
+      "occurrences": [
+        {
+          "source_decision": "SCC_19851scr2",
+          "corpus_row": 2446,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "7b5149ecbeae81d1fdc56dad5ac2929f3774a064702ce350b820a742f141dd7c",
+          "left_start": 7253,
+          "left_end": 7273,
+          "left_raw": "(1903), 6 O.L.R. 532",
+          "right_start": 7284,
+          "right_end": 7303,
+          "right_raw": "(1904), 7 O.L.R. 72",
+          "actual_gap": " (affirmed ",
+          "span_start": 7073,
+          "span_end": 7483,
+          "span_sha256": "da2bd347ef8f32a7dbb1be6f7e1f5f6ecf19b2d16530ac6b5df5db8b5514f6e5",
+          "window": " Ohio Railway Co. v. Ball, [1953] O.R. 843; American Cyanamid Co. v. Ethicon Ltd., [1975] A.C. 396; Law Society of Upper Canada v. MacNaughton, [1942] O.W.N. 551; Burdett v. Fader (1903), 6 O.L.R. 532 (affirmed (1904), 7 O.L.R. 72); Barclay‑Johnson v. Yuill, [1980] 3 All E.R. 190; OSF Industries Ltd. v. Marc‑Jay Investments Inc. (1978), 88 D.L.R. (3d) 446, 7 C.P.C. 57; Bedell v. Gefaell (No. 2), [1938] O.R."
+        },
+        {
+          "source_decision": "SCC_19851scr2",
+          "corpus_row": 2446,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "7b5149ecbeae81d1fdc56dad5ac2929f3774a064702ce350b820a742f141dd7c",
+          "left_start": 20035,
+          "left_end": 20055,
+          "left_raw": "(1903), 6 O.L.R. 532",
+          "right_start": 20067,
+          "right_end": 20086,
+          "right_raw": "(1904), 7 O.L.R. 72",
+          "actual_gap": ", (affirmed ",
+          "span_start": 19855,
+          "span_end": 20266,
+          "span_sha256": "26e0ae63cb01e3f72a55e67d1a37fa04ec6d7ca3ef8ce870af85189eadfab3cb",
+          "window": " established by the judgment or decree.\nSimilarly, the limited availability of an injunction to enjoin a defendant from disposing of his assets was referred to in Burdett v. Fader (1903), 6 O.L.R. 532, (affirmed (1904), 7 O.L.R. 72), at p. 533, by Boyd C.:\nThe plaintiff may or may not get judgment in the case, but he proposes to restrain the sale or disposition of this stock by the defendant till that is fin"
+        }
+      ]
+    },
+    {
+      "court": "SCC",
+      "left": "1925||ch||407",
+      "right": "1925||ch||500",
+      "group": "XC-G131867",
+      "dd": 2,
+      "name": "Re City Equitable Fire Insurance Co",
+      "occurrences": [
+        {
+          "source_decision": "SCC_19954scr5",
+          "corpus_row": 5850,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "621ce5cdd5df312b91eaae937b66c9fd7e3aecec8b87799cd783c4ebad198cec",
+          "left_start": 62526,
+          "left_end": 62540,
+          "left_raw": "[1925] Ch. 407",
+          "right_start": 62562,
+          "right_end": 62576,
+          "right_raw": "[1925] Ch. 500",
+          "actual_gap": ", per Romer J., aff'd ",
+          "span_start": 62346,
+          "span_end": 62756,
+          "span_sha256": "eba9145d5f3cf50d8b92f4155642261b45d351cfdf837b37c95e77f83d104160",
+          "window": " left to that official and, in the absence of grounds for suspicion, the director is justified in trusting that official to perform the duty: Re City Equitable Fire Insurance Co., [1925] Ch. 407, per Romer J., aff'd [1925] Ch. 500 (C.A.). Consequently, directors will be held liable for the misdeeds of officials of the company only if they have been personally negligent or if they have acted unreasonably in "
+        }
+      ]
+    },
+    {
+      "court": "SCC",
+      "left": "1948|2|wwr||135",
+      "right": "1948|2|wwr||958",
+      "group": "XC-G137123",
+      "dd": 1,
+      "name": "Yaeger v. Heilman",
+      "occurrences": [
+        {
+          "source_decision": "SCC_1972scr879",
+          "corpus_row": 10821,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "a0a1b2449956ff1e81d71aafdeb0f8e49650aa201a793c4823382466b63fc796",
+          "left_start": 3475,
+          "left_end": 3494,
+          "left_raw": "[1948] 2 W.W.R. 135",
+          "right_start": 3505,
+          "right_end": 3524,
+          "right_raw": "[1948] 2 W.W.R. 958",
+          "actual_gap": " [affirmed ",
+          "span_start": 3295,
+          "span_end": 3704,
+          "span_sha256": "4a21c272cf965f9759cad5e3361571db162b4c8fa722fff171a78b9bfb0023ba",
+          "window": "bility which that status involved under the provisions of s. 130.\nChuwick v. Bevans et al. (1964), 49 W.W.R. 699; Furjes v. Goodman et al. (1956), 19 W.W.R. 26; Yaeger v. Heilman, [1948] 2 W.W.R. 135 [affirmed [1948] 2 W.W.R. 958], followed.\nAPPEAL from a judgment of the Supreme Court of Alberta, Appellate Division[1], reversing a judgment of Greschuk J. Appeal allowed and judgment at trial restored.\nL.L. "
+        }
+      ]
+    },
+    {
+      "court": "SCC",
+      "left": "1959||scr||797",
+      "right": "1959||queqb||175",
+      "group": "XC-G139827",
+      "dd": 2,
+      "name": "David v. Ville de Jacques-Cartier",
+      "occurrences": [
+        {
+          "source_decision": "SCC_19782scr864",
+          "corpus_row": 7847,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "a41310d88f6bea7f047d12cd6e7d1c8f0f4c45bce606b5f68b7608893fe250a7",
+          "left_start": 10719,
+          "left_end": 10736,
+          "left_raw": "[1959] S.C.R. 797",
+          "right_start": 10789,
+          "right_end": 10809,
+          "right_raw": "[1959] Que. Q.B. 175",
+          "actual_gap": ". sub. nom. David c. Ville de Jacques-Cartier, aff’g ",
+          "span_start": 10539,
+          "span_end": 10989,
+          "span_sha256": "33234465d8c207bb42d554acc9e761a5457343e54b39fbf82bd9bc11accbefe8",
+          "window": "the appellant: Poupart, Thomas, Lesage & Goulston, Montreal\nSolicitors for the respondent: de Grandpré, Colas, Amyot, Lesage, Deschênes & Godin, Montreal.\n[1] [1975] C.A. 595.\n[2] [1959] S.C.R. 797. sub. nom. David c. Ville de Jacques-Cartier, aff’g [1959] Que. Q.B. 175.\n[3] (1917), 59 S.C.R. 508.\n[4] (1920), 60 S.C.R. 181.\n[5] (1921), 61 S.C.R. 535.\n[6] [1978] 1 S.C.R. 988, aff’g [1977] R.P. 313.\n[7] (1898), 9 Que. K.B. 101, aff’d Cout. S.C. 182"
+        }
+      ]
+    },
+    {
+      "court": "SCC",
+      "left": "1994|3|wwr||73",
+      "right": "1994|3|scr||ro:viii",
+      "group": "XC-G152316",
+      "dd": 3,
+      "name": "Martselos Services Ltd. v. Arctic College",
+      "occurrences": [
+        {
+          "source_decision": "SCC_19991scr619",
+          "corpus_row": 6151,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "c33cdc68a1410a536a027efcf2735c13a8854c2d03ecea9708d319ad815ab39b",
+          "left_start": 8472,
+          "left_end": 8490,
+          "left_raw": "[1994] 3 W.W.R. 73",
+          "right_start": 8535,
+          "right_end": 8555,
+          "right_raw": "[1994] 3 S.C.R. viii",
+          "actual_gap": ", application for leave to appeal dismissed, ",
+          "span_start": 8292,
+          "span_end": 8735,
+          "span_sha256": "f3ab5bcb2de04d6faf26aef29933cc1eafa1328ff17b8aa216ea33f932631074",
+          "window": "t Ltd. v. Ellis-Don Ltd. (1992), 132 A.R. 161, aff’d (1994), 157 A.R. 274, application for leave to appeal dismissed, [1995] 2 S.C.R. v; Martselos Services Ltd. v. Arctic College, [1994] 3 W.W.R. 73, application for leave to appeal dismissed, [1994] 3 S.C.R. viii; Blackpool and Fylde Aero Club Ltd. v. Blackpool Borough Council, [1990] 3 All E.R. 25; Hughes Aircraft Systems International v. Airservices Australia (1997), 146 A.L.R. 1; Pratt "
+        },
+        {
+          "source_decision": "SCC_19991scr619",
+          "corpus_row": 6151,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "c33cdc68a1410a536a027efcf2735c13a8854c2d03ecea9708d319ad815ab39b",
+          "left_start": 18247,
+          "left_end": 18265,
+          "left_raw": "[1994] 3 W.W.R. 73",
+          "right_start": 18323,
+          "right_end": 18343,
+          "right_raw": "[1994] 3 S.C.R. viii",
+          "actual_gap": " (N.W.T.C.A.), application for leave to appeal dismissed, ",
+          "span_start": 18067,
+          "span_end": 18523,
+          "span_sha256": "0f3f4df8a7589c2606ee68078827fb1a7dcdbfa8c6a16614448111b62a35351e",
+          "window": "d not be overridden by a term implied by virtue of custom or industry usage to the effect that the lowest valid tender must be accepted: Martselos Services Ltd. v. Arctic College, [1994] 3 W.W.R. 73 (N.W.T.C.A.), application for leave to appeal dismissed, [1994] 3 S.C.R. viii, and other cases.\n12 McClung J.A. held that the meaning of the privilege clause was not ambiguous, and was placed in the bidding process to protect the expenditure of public funds"
+        }
+      ]
+    },
+    {
+      "court": "SCC",
+      "left": "|26|ccc||278",
+      "right": "1916|54|scr||7",
+      "group": "XC-G129649",
+      "dd": 1,
+      "name": "Veronneau v. The King",
+      "occurrences": [
+        {
+          "source_decision": "SCC_19902scr30",
+          "corpus_row": 8267,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "98a40fd7c53a4b8ff8e8f3fea4a4814a9a1987427f65e6dd6bdf30eb97fa5b87",
+          "left_start": 4643,
+          "left_end": 4664,
+          "left_raw": "(1916), 26 C.C.C. 278",
+          "right_start": 4672,
+          "right_end": 4691,
+          "right_raw": "(1916), 54 S.C.R. 7",
+          "actual_gap": " (aff'd ",
+          "span_start": 4463,
+          "span_end": 4871,
+          "span_sha256": "e85208238d29963a2abb94f55fd598a29cc2d30ce04b745c98c91331e659d69c",
+          "window": "n (1985), 23 C.C.C. (3d) 1, leave to appeal refused, [1986] 1 S.C.R. xiii; R. v. Fox (1986), 24 C.C.C. (3d) 366, leave to appeal refused, [1986] 1 S.C.R. ix; Veronneau v. The King (1916), 26 C.C.C. 278 (aff'd (1916), 54 S.C.R. 7); R. v. Dossi (1918), 13 Cr. App. R. 158; R. v. James (1923), 17 Cr. App. R. 116; R. v. England (1920), 35 C.C.C. 141; R. v. Ball (1953), 17 C.R. 244; R. v. Hindle (1955), 113 C.C"
+        }
+      ]
+    },
+    {
+      "court": "SCC",
+      "left": "|6|rfl|3d|1",
+      "right": "|21|rfl|3d|115",
+      "group": "XC-G110101",
+      "dd": 2,
+      "name": "C.C.A.S. of Metro. Toronto v. H.(K.)",
+      "occurrences": [
+        {
+          "source_decision": "SCC_19942scr165",
+          "corpus_row": 5628,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "a48e3dd66f7c7ed9c69416c0b7012a449f42ba0afe31b1fdb40d211933f0d287",
+          "left_start": 11093,
+          "left_end": 11116,
+          "left_raw": "(1987), 6 R.F.L. (3d) 1",
+          "right_start": 11153,
+          "right_end": 11179,
+          "right_raw": "(1988), 21 R.F.L. (3d) 115",
+          "actual_gap": " (Ont. Prov. Ct. (Fam. Div.)), rev'd ",
+          "span_start": 10913,
+          "span_end": 11359,
+          "span_sha256": "78d906744bf069554dadcc26fcc2aec008ef75c710c74ad2eee420fe449235d6",
+          "window": "dren's Aid Society of Winnipeg v. Frohnen, [1975] 2 W.W.R. 27; In re McGrath, [1893] 1 Ch. 143; Re Moores and Feldstein (1973), 12 R.F.L. 273; C.C.A.S. of Metro. Toronto v. H.(K.) (1987), 6 R.F.L. (3d) 1 (Ont. Prov. Ct. (Fam. Div.)), rev'd (1988), 21 R.F.L. (3d) 115 (Ont. Dist. Ct.), aff'd sub nom. G.(C.) v. H.(J.) (1989), 23 R.F.L. (3d) 300; G. (A.) v. C.C.A.S., Metro. Toronto, Ont. Gen. Div., No. 105/89, September 19, 1990, summarized at [1"
+        },
+        {
+          "source_decision": "SCC_19942scr165",
+          "corpus_row": 5628,
+          "text_field": "unofficial_text_en",
+          "text_sha256": "a48e3dd66f7c7ed9c69416c0b7012a449f42ba0afe31b1fdb40d211933f0d287",
+          "left_start": 73862,
+          "left_end": 73885,
+          "left_raw": "(1987), 6 R.F.L. (3d) 1",
+          "right_start": 73925,
+          "right_end": 73951,
+          "right_raw": "(1988), 21 R.F.L. (3d) 115",
+          "actual_gap": " (Ont. Prov. Ct. (Fam. Div.)), reversed ",
+          "span_start": 73682,
+          "span_end": 74131,
+          "span_sha256": "90777439eee2b77c07c9edcbbbfa5d047ebc3e084cf9aaec0bd1b4c53c8b3521",
+          "window": "3) imports such considerations as the relevance of a child's emotional needs, the significance of continuity of care and the child's views. In C.C.A.S. of Metro. Toronto v. H.(K.) (1987), 6 R.F.L. (3d) 1 (Ont. Prov. Ct. (Fam. Div.)), reversed (1988), 21 R.F.L. (3d) 115 (Ont. Dist. Ct.), affirmed (sub nom. G.(C.) v. H.(J.) (1989), 23 R.F.L. (3d) 300 (Ont. C.A.)), in reversing the trial judge's finding, the District Court concluded that the judge "
+        }
+      ]
+    }
+  ]
+}

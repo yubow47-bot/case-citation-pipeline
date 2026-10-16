@@ -33,7 +33,8 @@ MAX_OCCURRENCES = 12
 BATCHES = 3
 PARAGRAPH_BREAK = re.compile(r"\n[ \t]*\n|\n(?=[ \t]*(?:\[\d+[a-z]?\]|\d+[.)][ \t]))", re.I)
 PROOF_TABLES = (
-    "neutral_court_codes.csv", "court_designations.csv", "bilingual_neutral_codes.csv",
+    "neutral_court_codes.csv", "court_designations.csv", "court_designation_codes.csv",
+    "bilingual_neutral_codes.csv",
     "identity_court_scope.csv", "identity_court_facts.csv", "identity_separations.csv",
 )
 
@@ -244,7 +245,7 @@ def _court_proofs(source, members, snapshots):
                 match = row.get("merge_key") in identity["keys"] or row.get("evidence_id") in identity["evidence_ids"]
                 if name == "neutral_court_codes.csv":
                     match = _nk(row.get("court_code")) in identity["codes"]
-                elif name == "court_designations.csv":
+                elif name in ("court_designations.csv", "court_designation_codes.csv"):
                     match = _nk(row.get("normalized_key")) in identity["designations"]
                 elif name == "bilingual_neutral_codes.csv":
                     match = bool({_nk(row.get("code_en")), _nk(row.get("code_fr"))} & identity["codes"])

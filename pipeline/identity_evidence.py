@@ -8,7 +8,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from normalize import nk
-from artifacts import open_csv
+from artifacts import open_csv, resolve as resolve_artifact, sha256_logical_csv_bytes
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -197,6 +197,28 @@ def identifier_system_of(merge_key):
         return None
     return load_identifier_systems().get(nk(p[2]))
 
+_BILINGUAL_REPORTER_CACHE = None
+
+
+def load_bilingual_reporters():
+    """PROBLEMS #139: verified French reporter titles -> English key part (rcs -> scr)."""
+    global _BILINGUAL_REPORTER_CACHE
+    if _BILINGUAL_REPORTER_CACHE is not None:
+        return _BILINGUAL_REPORTER_CACHE
+    path = os.path.join(DECISIONS, "bilingual_reporter_abbreviations.csv")
+    out = {}
+    if os.path.exists(path):
+        with open(path, encoding="utf-8", newline="") as f:
+            for r in csv.DictReader(f):
+                if (r.get("verification_status") or "").strip() != "verified_corpus_metadata":
+                    continue
+                if not (r.get("source") and r.get("source_locator")):
+                    raise ValueError("Bilingual reporter row lacks source")
+                out[nk(r.get("abbreviation_fr") or "")] = nk(r.get("abbreviation_en") or "")
+    _BILINGUAL_REPORTER_CACHE = out
+    return out
+
+
 def load_bilingual():
     """Cache only explicitly verified bilingual code equivalences, without direction."""
     global _BILINGUAL_CACHE
@@ -348,6 +370,16 @@ class CourtEvidence:
         for r in self.read(decisions / "bilingual_neutral_codes.csv"):
             if r.get("verification_status") == "verified_explicit_equivalence":
                 self.union(_court_nk(r.get("code_en")), _court_nk(r.get("code_fr")))
+        # A designation reaches a court code only through an explicit sourced
+        # row. Matching normalized strings (B.C.C.A. = BCCA) is a coincidence
+        # that leaves Ont.C.A. and P.C. without any court token.
+        for r in self.read(decisions / "court_designation_codes.csv"):
+            if r.get("verification_status") != "verified_official_source":
+                continue
+            code = _court_nk(r.get("court_code"))
+            if not (r.get("source") and r.get("source_locator")) or code not in self.known:
+                raise ValueError("Court designation code row lacks a source or a known court code")
+            self.union(_court_nk(r.get("normalized_key")), code)
         components = defaultdict(set)
         for code in self.known:
             components[self.find(code)].add(code)
@@ -357,7 +389,8 @@ class CourtEvidence:
             if known:
                 self.tokens[alias] = "court:" + min(known)
         for r in self.read(decisions / "identity_court_scope.csv"):
-            if r.get("verification_status") == "verified_existing_statute":
+            # PROBLEMS #141: a print-evidence row names a leave-only SCC reporter.
+            if r.get("verification_status") in ("verified_existing_statute", "verified_print_evidence"):
                 self.scope[(r.get("citation_kind"), _court_nk(r.get("printed_key")))].append(r)
         # A curated exact key is supported by a separately verified native
         # corpus span, never by the citing court or a national reporter label.
@@ -442,11 +475,13 @@ class EvidenceSnapshot:
                   'occurrence_count', 'canonical_string')
     POLICY_FILES = ('identifier_systems.csv', 'bilingual_neutral_codes.csv',
                     'neutral_court_codes.csv', 'court_designations.csv',
+                    'court_designation_codes.csv', 'court_designation_reporter_scope.csv',
                     'identity_court_scope.csv', 'identity_court_facts.csv',
-                    'identity_separations.csv')
+                    'identity_separations.csv', 'bilingual_reporter_abbreviations.csv',
+                    'reporter_identity_court_sets.csv')
 
     def __init__(self, rows, did_idx, scope, registry=None, own_cites=None,
-                 separations=None):
+                 separations=None, history=None, pair_separations=None):
         self.scope, self.records = scope, []
         self.evidence_ids = set()
         self.qualified_native_facts = defaultdict(set)
@@ -458,6 +493,10 @@ class EvidenceSnapshot:
         self.policy_candidates = defaultdict(list)
         self.policy_exact = defaultdict(list)
         self.policy_cache = {}
+        self.history_facts_by_instance = {}
+        self.bilingual_reporter_facts = {}
+        self.pair_cannot_links = []
+        self.reporter_scope_by_row = {}
         for row in rows:
             key = row_key(row)
             self.add(row.get('court', ''), key, row['merge_key'], 'row_observation',
@@ -490,6 +529,19 @@ class EvidenceSnapshot:
                                     'sha256': digest})
                     self.policy_ids.add(eid)
                     self.policy_records.append((eid, name, policy))
+                    if name == 'bilingual_reporter_abbreviations.csv' and (policy.get('verification_status') or '').strip() == 'verified_corpus_metadata':
+                        alias = nk(policy.get('normalized_fr') or '')
+                        target = nk(policy.get('normalized_en') or '')
+                        if not alias or not target or alias == target:
+                            raise ValueError('Verified bilingual reporter policy has invalid normalized keys')
+                        if nk(policy.get('abbreviation_fr') or '') != alias or nk(policy.get('abbreviation_en') or '') != target:
+                            raise ValueError('Bilingual reporter policy normalized keys do not match printed abbreviations')
+                        if not (policy.get('source') and policy.get('source_locator')):
+                            raise ValueError('Verified bilingual reporter policy lacks a source locator')
+                        prior = self.bilingual_reporter_facts.get(alias)
+                        if prior and prior['target'] != target:
+                            raise ValueError('Conflicting verified bilingual reporter mappings')
+                        self.bilingual_reporter_facts[alias] = {'target': target, 'evidence_id': eid, 'record': policy}
         for record in self.policy_records:
             eid, name, policy = record
             if policy.get('merge_key'):
@@ -499,10 +551,35 @@ class EvidenceSnapshot:
                              ('printed_token', 'code_en', 'code_fr', 'court_code',
                               'normalized_key', 'canonical_court', 'printed_key')} - {''}:
                     self.policy_candidates[code].append(record)
+        self._add_history_facts(history or {})
+        self._add_pair_separation_facts(pair_separations or ())
         from identity_courts import CourtEvidence
         courts = CourtEvidence()
+        from reporter_identity_scope import load_scope_rules, scope_evidence, allowed_courts
+        scope_rules = load_scope_rules()
+        scope_policy_ids = {policy.get('rule_id'): eid
+                            for eid, name, policy in self.policy_records
+                            if name == 'reporter_identity_court_sets.csv'}
         starts = neutral_start(rows)
         for row in rows:
+            scopes = scope_evidence(row, scope_rules, court_tokens=courts.tokens)
+            scope_fact_ids = []
+            for scope_fact in scopes:
+                policy_eid = scope_policy_ids.get(scope_fact['rule_id'])
+                if not policy_eid:
+                    raise ValueError('Reporter court envelope lacks its exact policy snapshot fact')
+                scope_value = dict(scope_fact, policy_evidence_id=policy_eid)
+                scope_fact_ids.append(self.add(
+                    row.get('court', ''), row_key(row), row['merge_key'],
+                    'reporter_identity_court_envelope', scope_value,
+                    {'artifact': scope_fact['source_locator'].split('#', 1)[0],
+                     'rule_id': scope_fact['rule_id'],
+                     'policy_evidence_id': policy_eid,
+                     'evidence_sha256': scope_fact['evidence_sha256']}))
+            self.reporter_scope_by_row[row_key(row)] = {
+                'allowed_courts': sorted(allowed_courts(
+                    row, scope_rules, court_tokens=courts.tokens)),
+                'evidence_ids': sorted(scope_fact_ids)}
             found = courts.evidence(row, before_start=(not _self_of(row) and
                                     _before_start(row['merge_key'], starts)))
             self.add(row.get('court', ''), row_key(row), row['merge_key'],
@@ -516,6 +593,10 @@ class EvidenceSnapshot:
                          {'input_row_key': row_key(row), 'phase': 'document_alias',
                           'policy_evidence_ids': self.applicable_policies(row, 'court')})
 
+    def reporter_scope_info(self, row):
+        return self.reporter_scope_by_row.get(
+            row_key(row), {'allowed_courts': [], 'evidence_ids': []})
+
     def add(self, court, key, merge_key, kind, value, sources):
         payload = {'scope': self.scope, 'court': court, 'row_key': key,
                    'merge_key': merge_key, 'fact_kind': kind,
@@ -528,6 +609,138 @@ class EvidenceSnapshot:
         if merge_key and not key:
             self.by_key[merge_key].add(eid)
         return eid
+
+    def bilingual_reporter_fact(self, alias, target):
+        mapping = self.bilingual_reporter_facts.get(nk(alias))
+        if not mapping or mapping['target'] != nk(target):
+            raise ValueError('Bilingual reporter normalization lacks the exact verified policy fact')
+        return mapping['evidence_id']
+
+    def _add_history_facts(self, history):
+        expected_fields = {'source_decision_citation', 'corpus_row_index', 'instance',
+                           'side', 'merge_key', 'candidate_id', 'connector',
+                           'connector_sha256', 'source_locator'}
+        source_hashes = {}
+        source_rows = {}
+        for instance, record in sorted(history.items()):
+            before = set(record.get('before', ()))
+            after = set(record.get('after', ()))
+            rows = record.get('records') or ()
+            if not before or not after or before & after or not rows:
+                raise ValueError('History instance lacks a complete, non-overlapping provenance record')
+            observed = {'before': set(), 'after': set()}
+            fact_ids = []
+            for item in rows:
+                if not expected_fields <= set(item):
+                    raise ValueError('History provenance record is missing required fields')
+                if item['instance'] != instance or item['side'] not in observed:
+                    raise ValueError('History provenance record is bound to the wrong instance or side')
+                if not item['source_decision_citation'] or not item['candidate_id'] or not item['merge_key'] or not item['connector']:
+                    raise ValueError('History provenance record has an empty source, candidate, key, or connector')
+                locator = item['source_locator']
+                if (not isinstance(locator, dict) or not locator.get('artifact')
+                        or not locator.get('resolved_artifact') or not locator.get('record')):
+                    raise ValueError('History provenance record lacks a verifiable source locator')
+                if not isinstance(locator.get('sha256'), str) or len(locator['sha256']) != 64:
+                    raise ValueError('History source locator lacks a SHA-256 digest')
+                if locator.get('hash_scope') != 'logical_csv_bytes':
+                    raise ValueError('History source locator must hash logical CSV bytes')
+                artifact = locator['resolved_artifact']
+                logical_artifact = locator['artifact']
+                if not isinstance(logical_artifact, str) or not isinstance(artifact, str):
+                    raise ValueError('History source locator paths must be strings')
+                if logical_artifact not in source_hashes:
+                    source_hashes[logical_artifact] = sha256_logical_csv_bytes(logical_artifact)
+                if source_hashes[logical_artifact] != locator['sha256']:
+                    raise ValueError('History source artifact changed after it was loaded')
+                try:
+                    source_record_no = int(locator['record'])
+                except (TypeError, ValueError):
+                    raise ValueError('History source locator record is not an integer')
+                if source_record_no < 2:
+                    raise ValueError('History source locator record must identify a data row')
+                if logical_artifact not in source_rows:
+                    with open_csv(logical_artifact) as stream:
+                        reader = csv.DictReader(stream, strict=True)
+                        source_rows[logical_artifact] = {
+                            record_no: source_row
+                            for record_no, source_row in enumerate(reader, start=2)
+                        }
+                source_record = source_rows[logical_artifact].get(source_record_no)
+                if source_record is None or None in source_record:
+                    raise ValueError('History source locator does not identify a complete CSV row')
+                for field in ('source_decision_citation', 'corpus_row_index', 'instance',
+                              'side', 'merge_key', 'candidate_id'):
+                    if (source_record.get(field) or '').strip() != item[field]:
+                        raise ValueError('History source locator is bound to a different source row')
+                if (source_record.get('connector') or '') != item['connector']:
+                    raise ValueError('History connector differs from its located source row')
+                connector_hash = hashlib.sha256(item['connector'].encode('utf-8')).hexdigest()
+                if connector_hash != item['connector_sha256']:
+                    raise ValueError('History connector hash does not match its value')
+                observed[item['side']].add(item['merge_key'])
+                payload = {field: item[field] for field in sorted(expected_fields)}
+                fact_ids.append(self.add('', '', item['merge_key'], 'appeal_history_instance', payload, locator))
+            if observed != {'before': before, 'after': after}:
+                raise ValueError('History evidence records do not bind to the declared before/after keys')
+            if len({(r['source_decision_citation'], r['corpus_row_index'], r['connector'], r['connector_sha256']) for r in rows}) != 1:
+                raise ValueError('History instance mixes source documents or connector values')
+            supplied = record.get('evidence_ids')
+            if supplied is not None and set(supplied) != set(fact_ids):
+                raise ValueError('History instance evidence IDs do not match immutable source facts')
+            self.history_facts_by_instance[instance] = tuple(sorted(fact_ids))
+
+    def _add_pair_separation_facts(self, separations):
+        seen = set()
+        for separation in separations:
+            left = separation.get('left_merge_key')
+            right = separation.get('right_merge_key')
+            relation_type = separation.get('relation_type')
+            table_evidence_id = separation.get('table_evidence_id')
+            source_detail = separation.get('source_detail')
+            if not left or not right or left == right or not relation_type:
+                raise ValueError('Verified pair separation has invalid keys or relation type')
+            if not table_evidence_id or not isinstance(source_detail, dict) or not source_detail:
+                raise ValueError('Verified pair separation lacks native evidence provenance')
+            from identity_pairs import evidence_id as pair_table_evidence_id
+            table_record = {k: v for k, v in separation.items()
+                            if k not in ('table_evidence_id', 'source_detail')}
+            if (separation.get('evidence_id') != table_evidence_id
+                    or pair_table_evidence_id(table_record) != table_evidence_id):
+                raise ValueError('Verified pair separation changed after native source validation')
+            try:
+                table_right_source = json.loads(separation['right_proof_json'])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError('Verified pair separation has an invalid table-bound right source proof') from exc
+            expected_source = {'artifact': 'decisions/identity_pair_separations.csv',
+                               'table_evidence_id': table_evidence_id,
+                               'source_corpus': separation.get('source_corpus'),
+                               'corpus_row': separation.get('corpus_row'),
+                               'source_decision': separation.get('source_decision'),
+                               'text_field': separation.get('text_field'),
+                               'span_start': separation.get('span_start'),
+                               'span_end': separation.get('span_end'),
+                               'span_sha256': separation.get('span_sha256'),
+                               'right_source': table_right_source,
+                               'source_locator': separation.get('source_locator')}
+            if source_detail != expected_source:
+                raise ValueError('Verified pair separation source detail is misbound')
+            signature = (left, right, relation_type, table_evidence_id)
+            if signature in seen:
+                continue
+            seen.add(signature)
+            value = dict(separation)
+            eid = self.add('', '', left, 'verified_pair_separation', value, source_detail)
+            self.pair_cannot_links.append({
+                'left_merge_key': left, 'right_merge_key': right,
+                'relation_type': relation_type, 'evidence_id': eid,
+                'source_detail': source_detail, 'table_evidence_id': table_evidence_id})
+
+    def history_instance_facts(self, instance):
+        facts = self.history_facts_by_instance.get(instance)
+        if not facts:
+            raise ValueError('History constraint references an instance without snapshot facts')
+        return facts
 
     def native_proof_facts(self, decision_id, native_evidence_ids):
         """Resolve every native proof only within its exact qualified document."""
@@ -560,7 +773,8 @@ class EvidenceSnapshot:
                 applies = code in (nk(policy.get('code_en') or ''), nk(policy.get('code_fr') or ''))
             elif name == 'neutral_court_codes.csv':
                 applies = code == nk(policy.get('court_code') or '')
-            elif name == 'court_designations.csv':
+            elif name in ('court_designations.csv', 'court_designation_codes.csv',
+                          'court_designation_reporter_scope.csv'):
                 applies = bool(observed) and observed in (
                     nk(policy.get('normalized_key') or ''), nk(policy.get('canonical_court') or ''))
             elif name == 'identity_court_scope.csv':

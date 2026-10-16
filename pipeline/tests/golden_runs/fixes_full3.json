@@ -1,0 +1,23 @@
+{
+  "schema": "run-golden-v1",
+  "provenance": "Frozen characterization of the sealed 2026-10-16 candidate, independently checked against fix_batch_20261016/validation.json and court trace counts. Not a human accuracy gold set. The checker cannot rewrite this file.",
+  "snapshot": {
+    "courts": ["BCCA", "ONCA", "SCC"],
+    "by_court": {
+      "BCCA": {"rows": 74263, "groups": 70070},
+      "ONCA": {"rows": 65510, "groups": 61216},
+      "SCC": {"rows": 116204, "groups": 112392}
+    },
+    "cross_court": {"rows": 255977, "groups": 214840, "groups_dd_positive": 212571, "groups_dd_ge5": 15063, "edges": 488021},
+    "probes": {
+      "1964||ac||465": [["Hedley Byrne & Co. v. Heller & Partners Ltd", 70]],
+      "1951||ac||601": [["Nance v. British Columbia Electric Railway Co", 87]],
+      "|71|ccc|3d|1": [["R. v. Morin", 35]],
+      "|135|ccc|3d|41": [["R. v. McKnight", 71]],
+      "1992|2|scr||168": [["R. v. Bennett", 9]],
+      "1991|3|or|3d|193": [["R. v. Bennett", 15]],
+      "1994|18|or|3d|385": [["Hill v. Church of Scientology of Toronto", 7]],
+      "1995|2|scr||1130": [["Hill v. Church of Scientology of Toronto", 206]]
+    }
+  }
+}

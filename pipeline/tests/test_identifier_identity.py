@@ -141,11 +141,39 @@ class IdentifierIdentityTests(unittest.TestCase):
         out, _, _ = decide.adjudicate(members, did, {}, {}, "XC", Counter(), False)
         self.assertEqual(len({r["merged_group_id"] for r in out}), 2)
 
-    def test_reporter_names_keep_existing_policy(self):
+    def test_same_full_reporter_key_joins_across_courts(self):
+        """PROBLEMS #135: one printed report is one citation in every court."""
         members = [row("2011|1|scr||3", kind="reporter", name="X v. Y"),
                    row("2011|1|scr||3", court="ONCA", kind="reporter", name="")]
         out, _, _ = decide.adjudicate(members, {}, {}, {}, "XC", Counter(), False)
-        self.assertEqual(len({r["merged_group_id"] for r in out}), 2)
+        self.assertEqual(len({r["merged_group_id"] for r in out}), 1)
+
+    def test_same_reporter_key_titles_differ_still_joins(self):
+        members = [row("1964||ac||465", kind="reporter", name="Hedley Byrne & Co. v. Heller & Partners Ltd"),
+                   row("1964||ac||465", court="ONCA", kind="reporter", name="Hedley Byrne & Co Ltd v Heller & Partners Ltd")]
+        did = {m["row_key"]: {m["court"] + "_D"} for m in members}
+        out, _, _ = decide.adjudicate(members, did, {}, {}, "XC", Counter(), False)
+        self.assertEqual(len({r["merged_group_id"] for r in out}), 1)
+        self.assertEqual({r["distinct_decisions_count"] for r in out}, {2})
+
+    def test_french_supreme_court_reports_title_joins_english(self):
+        """PROBLEMS #139: [1990] 1 R.C.S. 123 is the report [1990] 1 S.C.R. 123."""
+        members = [row("1990|1|scr||123", kind="reporter", name="X v. Y"),
+                   row("1990|1|rcs||123", court="ONCA", kind="reporter", name="")]
+        out, _, _ = decide.adjudicate(members, {}, {}, {}, "XC", Counter(), False)
+        self.assertEqual(len({r["merged_group_id"] for r in out}), 1)
+
+    def test_same_reporter_key_never_bridges_two_neutral_numbers(self):
+        members = [row("2011||scc||10", kind="neutral", name="X v. Y"),
+                   row("2011|1|scr||3", kind="reporter", name="X v. Y"),
+                   row("2011||scc||99", court="ONCA", kind="neutral", name="P v. Q"),
+                   row("2011|1|scr||3", court="ONCA", kind="reporter", name="P v. Q")]
+        did = {m["row_key"]: {m["court"] + "_D" + m["merge_key"]} for m in members}
+        out, _, _ = decide.adjudicate(members, did, {}, {}, "XC", Counter(), False)
+        groups_of = {}
+        for r in out:
+            groups_of.setdefault(r["merged_group_id"], set()).add(r["merge_key"])
+        self.assertFalse(any({"2011||scc||10", "2011||scc||99"} <= keys for keys in groups_of.values()))
 
     def test_local_conflict_keeps_evidence_with_determined_member(self):
         determined = {"identity_basis": "anchor", "member_origin_country": "GB",

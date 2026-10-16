@@ -1,0 +1,214 @@
+{
+ "protocol": "fix-batch-20261016-v1",
+ "base": "data/run_20261016_country_complete",
+ "new": "data/run_20261016_fixes_full3",
+ "base_manifest_status": "complete",
+ "new_manifest_status": "complete",
+ "before": {
+  "rows": 261029,
+  "groups": 230449,
+  "groups_dd_gt0": 228102,
+  "groups_dd_ge5": 14003,
+  "edges": 490577,
+  "excluded_self": 5077,
+  "country_groups_pct": 87.33,
+  "country_edges_pct": 93.34,
+  "undetermined_groups": 28852,
+  "merge_keys_in_multiple_groups": 11644,
+  "groups_with_two_printed_courts": 42,
+  "groups_with_two_provincial_reporters": 78,
+  "history_pairs_probe": 9647,
+  "history_pairs_inside_one_group": 1703,
+  "empty_display_name_with_named_member": 522,
+  "empty_display_name_dd_ge5": 725,
+  "display_names_with_prose_lead_in": 4203,
+  "display_names_with_final_year": 2093,
+  "relation_labels": {
+   "other_judgment": 485729,
+   "same_case_history": 5,
+   "probable_same_litigation": 4843
+  },
+  "probes": {
+   "1964||ac||465": [
+    [
+     "XC-G004211",
+     48,
+     "Hedley Byrne & Co. v. Heller & Partners Ltd"
+    ],
+    [
+     "XC-G004374",
+     17,
+     "Hedley Byrne & Co Ltd v Heller & Partners Ltd"
+    ],
+    [
+     "XC-G073254",
+     5,
+     "Hedley Byrne & Co. v. Heller & Partners Ltd. (1963)"
+    ]
+   ],
+   "1951||ac||601": [
+    [
+     "XC-G003327",
+     58,
+     "Nance v. British Columbia Electric Railway"
+    ],
+    [
+     "XC-G072610",
+     2,
+     ""
+    ],
+    [
+     "XC-G144361",
+     28,
+     "Nance v. British Columbia Electric Railway Co"
+    ]
+   ],
+   "|71|ccc|3d|1": [
+    [
+     "XC-G068518",
+     13,
+     "R. v. Morin"
+    ],
+    [
+     "XC-G122805",
+     22,
+     "R. v. Askov"
+    ]
+   ],
+   "|135|ccc|3d|41": [
+    [
+     "XC-G057193",
+     33,
+     "R. v. Shropshire"
+    ],
+    [
+     "XC-G082777",
+     38,
+     "R. v. McKnight"
+    ]
+   ],
+   "1992|2|scr||168": [
+    [
+     "XC-G013121",
+     13,
+     "R. v. Bennett"
+    ]
+   ],
+   "1991|3|or|3d|193": [
+    [
+     "XC-G012399",
+     2,
+     ""
+    ],
+    [
+     "XC-G013121",
+     13,
+     "R. v. Bennett"
+    ]
+   ],
+   "1994|18|or|3d|385": [
+    [
+     "XC-G015788",
+     206,
+     "Hill v. Church of Scientology of Toronto"
+    ],
+    [
+     "XC-G161766",
+     1,
+     ""
+    ]
+   ],
+   "1995|2|scr||1130": [
+    [
+     "XC-G015788",
+     206,
+     "Hill v. Church of Scientology of Toronto"
+    ]
+   ]
+  }
+ },
+ "after": {
+  "rows": 255977,
+  "groups": 214840,
+  "groups_dd_gt0": 212571,
+  "groups_dd_ge5": 15063,
+  "edges": 488021,
+  "excluded_self": 5018,
+  "country_groups_pct": 89.07,
+  "country_edges_pct": 94.67,
+  "undetermined_groups": 23212,
+  "merge_keys_in_multiple_groups": 65,
+  "groups_with_two_printed_courts": 0,
+  "groups_with_two_provincial_reporters": 70,
+  "history_pairs_probe": 9647,
+  "history_pairs_inside_one_group": 38,
+  "empty_display_name_with_named_member": 0,
+  "empty_display_name_dd_ge5": 618,
+  "display_names_with_prose_lead_in": 54,
+  "display_names_with_final_year": 0,
+  "relation_labels": {
+   "other_judgment": 482577,
+   "probable_same_litigation": 5436,
+   "same_case_history": 8
+  },
+  "probes": {
+   "1964||ac||465": [
+    [
+     "XC-G004165",
+     70,
+     "Hedley Byrne & Co. v. Heller & Partners Ltd"
+    ]
+   ],
+   "1951||ac||601": [
+    [
+     "XC-G003296",
+     87,
+     "Nance v. British Columbia Electric Railway Co"
+    ]
+   ],
+   "|71|ccc|3d|1": [
+    [
+     "XC-G067837",
+     35,
+     "R. v. Morin"
+    ]
+   ],
+   "|135|ccc|3d|41": [
+    [
+     "XC-G020622",
+     71,
+     "R. v. McKnight"
+    ]
+   ],
+   "1992|2|scr||168": [
+    [
+     "XC-G012858",
+     9,
+     "R. v. Bennett"
+    ]
+   ],
+   "1991|3|or|3d|193": [
+    [
+     "XC-G012156",
+     15,
+     "R. v. Bennett"
+    ]
+   ],
+   "1994|18|or|3d|385": [
+    [
+     "XC-G077037",
+     7,
+     "Hill v. Church of Scientology of Toronto"
+    ]
+   ],
+   "1995|2|scr||1130": [
+    [
+     "XC-G015464",
+     206,
+     "Hill v. Church of Scientology of Toronto"
+    ]
+   ]
+  }
+ },
+ "scope": "Run-level counts and fixed probes. Not an accuracy estimate; no human labels."
+}

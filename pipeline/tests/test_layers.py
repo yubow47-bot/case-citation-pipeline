@@ -173,6 +173,41 @@ def test_classifier():
     check("party_initials" not in (r["rejected_reason"] or ""),
           "#37 前文别处出现 R. v. A.B. 不误杀（宽口径会误杀 15,999 行）")
 
+    # ---- PROBLEMS #133: federal_statute only when the statute is in or cut by the match
+    r = c.run_row(_row("shape_neutral_bare", "2016 ONCA 118", token="ONCA", year_start="2016",
+                       page="118", preceding_text="s. 7 of the Criminal Code, R.S.C. 1985, c. C-46: Re Benjamin, "))
+    check("federal_statute" not in (r["rejected_reason"] or ""),
+          "#133 a statute earlier in the window does not reject the following case citation")
+    r = c.run_row(_row("shape_bracket", "[1982] 2 S.C.R. 368", token="S.C.R.", vol="2",
+                       year_start="1982", page="368",
+                       preceding_text="APPEAL under the Income Tax Act, S.C. 1970-71-72, c. 63; see "))
+    check("federal_statute" not in (r["rejected_reason"] or ""),
+          "#133 statute then prose then case citation: the citation is kept")
+    r = c.run_row(_row("shape_vol_abbr_page", "46 Culpable Homicide 252", abbr="Culpable Homicide",
+                       vol="46", page="252", preceding_text="Criminal Code, R.S.C. 1985, c. C-"))
+    check("federal_statute" in r["rejected_reason"],
+          "#133 chapter number cut by the match (`c. C-` + `46 ...`) is still rejected")
+    r = c.run_row(_row("shape_vol_abbr_page", "20 Urinalysis 54", abbr="Urinalysis", vol="20",
+                       page="54", preceding_text="Corrections and Conditional Release Act, S.C. 1992, c. "))
+    check("federal_statute" in r["rejected_reason"], "#133 numeric chapter cut by the match is rejected")
+    r = c.run_row(_row("shape_vol_abbr_page", "160 R.S.C. 1927", abbr="R.S.C.", vol="160",
+                       page="1927", preceding_text="Royal Canadian Mounted Police Act (c. "))
+    check("federal_statute" in r["rejected_reason"], "#133 statute printed inside the match is rejected")
+
+    # ---- PROBLEMS #136: bare (C.A.) resolved only through a verified reporter scope row
+    cd = {"ca": {"status": "ambiguous_designation", "canonical_court": ""},
+          "ontca": {"status": "recognized", "canonical_court": "Ontario Court of Appeal"}}
+    scope = {("ca", "or"): {"canonical_court": "Ontario Court of Appeal"}}
+    st, oc, ev = classify.classify_court_designation("C.A.", cd, scope, "O.R.")
+    check((st, oc) == ("recognized", "Ontario Court of Appeal") and ev.startswith("court_designation_reporter_scope:"),
+          "#136 (C.A.) after O.R. names the Ontario Court of Appeal")
+    st, oc, _ = classify.classify_court_designation("C.A.", cd, scope, "C.C.C.")
+    check((st, oc) == ("ambiguous_designation", ""), "#136 (C.A.) after a national reporter stays ambiguous")
+    st, oc, _ = classify.classify_court_designation("C.A.", cd, None, "O.R.")
+    check((st, oc) == ("ambiguous_designation", ""), "#136 no scope table, no court")
+    st, oc, _ = classify.classify_court_designation("Ont. C.A.", cd, scope, "C.C.C.")
+    check((st, oc) == ("recognized", "Ontario Court of Appeal"), "#136 recognized designations are unchanged")
+
     # ---- PROBLEMS #85：日期形态 date_form（分类层行级拒绝，不删行）
     r = c.run_row(_row("shape_vol_abbr_page", "1 June 2007", abbr="June", vol="1", page="2007"))
     check(("date_form" in r["rejected_reason"]) and r["citation_kind"] == "reporter"
@@ -356,8 +391,26 @@ def test_nested_french_reference_name():
     check(classify._nested_french_reference_name(classify._cite_segment(later)) is None,
           "A later v. anchor defers to the original last-anchor route")
     row = split(later)
-    check((row["candidate_case_name"], row["name_rejected_reason"]) == ("Alpha v. Beta", ""),
-          "The original route's exact result is preserved after a later v. anchor")
+    check((row["candidate_case_name"], row["name_rejected_reason"]) == ("Later v. Party", ""),
+          "#137 a later v. anchor owns the citation that follows it")
+    for pre, want in (
+            (": see R. v. Askov (1990), 59 C.C.C. (3d) 449 at 483-84, and R. v. Morin (1992), ",
+             "R. v. Morin"),
+            ("; R. v. Shropshire, [1995] 4 S.C.R. 227). As Laskin J.A. explained in R. v. McKnight (1999), ",
+             "R. v. McKnight"),
+            (": R. v. Friesen, 2020 SCC 9 at para. 26, citing R. v. McKnight ", "R. v. McKnight"),
+            ("; R. v. Grover (1990), 56 C.C.C. (3d) 532 (Ont. C.A.), aff'd R. v. Grover, ", "R. v. Grover"),
+            ("; Smith v. Jones, ", "Smith v. Jones"),
+            ("; Browne v. Dunn (1893), ", "Browne v. Dunn"),
+            ("; and R. v. Last, ", "R. v. Last"),
+            ("; see, e.g., Smith v. Jones, ", "Smith v. Jones"),
+            ("; see, for example, Smith v. Jones, ", "Smith v. Jones"),
+            ("\n[72] And in Farej v. Fellows, ", "Farej v. Fellows"),
+            (": As noted in R. v. Brand, ", "R. v. Brand"),
+            ("; Andrews v. Law Society of British Columbia, ", "Andrews v. Law Society of British Columbia"),
+            ("; Orr v. Orr, ", "Orr v. Orr"),
+            ("; Voyageur (1969) Inc. v. Smith, ", "Voyageur (1969) Inc. v. Smith")):
+        check(split(pre)["candidate_case_name"] == want, "#137 string citation name: %r" % want)
     check(split("; R. v. Johnson ")["candidate_case_name"] == "R. v. Johnson",
           "The legitimate Chartrand 1984 Johnson reference keeps its name")
 
@@ -720,14 +773,20 @@ def test_mini_chain():
              "--input", os.path.join(tmp, "classify", court, "classified.csv"),
              "--output", os.path.join(tmp, "merge", court))
         _run("decide.py", "--court", court,
+             "--history-input-mode", "legacy-none",  # Synthetic legacy merge has no history artifact.
              "--input", os.path.join(tmp, "merge", court, "merged.csv"),
              "--folded-log", os.path.join(tmp, "merge", court, "folded_log.csv"),
              "--decision-ids", os.path.join(tmp, "merge", court, "decision_ids.csv"),
              "--output", os.path.join(tmp, "decide", court))
     _run("decide.py", "--cross-court",
+         "--history-input-mode", "legacy-none",
          "--inputs", os.path.join(tmp, "decide", "SCC", "decided.csv"),
          os.path.join(tmp, "decide", "ONCA", "decided.csv"),
          "--output", os.path.join(tmp, "decide", "cross"))
+    for scope in ("SCC", "ONCA", "cross"):
+        with open(os.path.join(tmp, "decide", scope, "manifest.json"), encoding="utf-8") as f:
+            check(json.load(f)["schema_version"] == 15,
+                  "decide manifest reports the same current schema for full and replay runs")
     cfg = os.path.join(tmp, "select.yaml")
     with open(cfg, "w", encoding="utf-8") as f:
         f.write("t:\n  threshold_dd: 2\n")

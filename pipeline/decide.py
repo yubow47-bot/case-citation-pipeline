@@ -136,9 +136,11 @@ from urllib.parse import quote
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk                                      # noqa: E402
-from artifacts import open_csv                               # noqa: E402
+from artifacts import (open_csv, resolve as resolve_artifact,
+                       sha256_logical_csv_bytes)  # noqa: E402
 from identity_constraints import ConstraintLedger
 from identity_evidence import EvidenceSnapshot
+from identity_pairs import load_pair_separations
 from identity_evidence import (
     load_identity_separations,
     load_case_origin,
@@ -721,13 +723,18 @@ def build_effective_sources(group_rows, ids, selfd, did_idx, stats):
 def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin,
                scope_idx=None, reporter_idx=None, registry=None, typo_over=None,
                holdout=None,
-               gate="literal", own_cites=None, identity_separations=None, trace=None):
+               gate="literal", own_cites=None, identity_separations=None, trace=None,
+               history=None, pair_separations=None):
     if trace is None:
+        if pair_separations is None:
+            pair_separations = load_pair_separations(
+                keys={r['merge_key'] for r in rows})
         trace = ConstraintLedger(EvidenceSnapshot(rows, did_idx, prefix, registry,
-                                                  own_cites, identity_separations))
+                                                  own_cites, identity_separations, history,
+                                                  pair_separations))
     clusters, start = solve_identity(rows, did_idx, prefix, stats, registry,
                                     typo_over, holdout, gate, own_cites,
-                                    identity_separations, trace)
+                                    identity_separations, trace, history)
 
     out, out_ids, eff_rows = [], [], []
     for gseq, (members, reason, seq) in enumerate(clusters):
@@ -746,7 +753,10 @@ def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin
         stats["self_ids_removed"] += len(ids & selfd)
         ids -= selfd
         occ = sum(key_occ(m) for m in members)
-        primary = min(members, key=lambda m: (-key_occ(m), row_key(m)))
+        # PROBLEMS #143: the group is shown by its most-cited *named* row; an
+        # unnamed row is primary only when no member carries a name.
+        primary = min(members, key=lambda m: (not (m.get("case_name_modal") or "").strip(),
+                                              -key_occ(m), row_key(m)))
 
         # 上界计数（不是判定，混着笔误变体与双语代码，见 PROBLEMS #49）
         if len({m["merge_key"] for m in members
@@ -806,6 +816,79 @@ def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin
                                                 did_idx, stats))
     stats["groups_out"] = len(clusters)
     return out, out_ids, eff_rows
+
+
+def load_history_instances(paths, mode='required'):
+    """Load #142 split-only history pairs with immutable source locators.
+
+    New runs must supply every expected file. Legacy runs without history must opt
+    into mode='legacy-none'; missing files are never silently treated as no history.
+    """
+    if mode not in ('required', 'legacy-none'):
+        raise ValueError('Unknown history input mode')
+    paths = list(paths or ())
+    if mode == 'legacy-none':
+        if paths:
+            raise ValueError('legacy-none mode cannot be combined with history-pair files')
+        return {}
+    if not paths:
+        raise FileNotFoundError('History-pair inputs are required; declare legacy-none for an old run')
+    out = defaultdict(lambda: {'before': set(), 'after': set(), 'records': []})
+    required = {'source_decision_citation', 'corpus_row_index', 'instance', 'side',
+                'merge_key', 'candidate_id', 'connector'}
+    for path in paths:
+        # Keep the manifest's logical path in the fact, but read/hash the
+        # retained artifact (which can be a .gz when the logical .csv is absent).
+        logical_artifact = os.path.normpath(os.fspath(path)).replace('\\', '/')
+        actual_artifact = resolve_artifact(path)
+        digest = sha256_logical_csv_bytes(path)
+        try:
+            stream = open_csv(path)
+            with stream:
+                reader = csv.DictReader(stream, strict=True)
+                if not reader.fieldnames or not required <= set(reader.fieldnames):
+                    raise ValueError('History-pair file has a missing or invalid header: ' + os.path.abspath(path))
+                for record_no, r in enumerate(reader, start=2):
+                    try:
+                        if None in r or any(not (r.get(name) or '').strip() for name in
+                                            ('source_decision_citation', 'corpus_row_index', 'instance',
+                                             'merge_key', 'candidate_id', 'connector')):
+                            raise ValueError('blank or excess CSV fields')
+                        if not r['corpus_row_index'].strip().isdigit():
+                            raise ValueError('corpus_row_index must be a nonnegative integer')
+                        side = (r.get('side') or '').strip()
+                        if side not in ('before', 'after'):
+                            raise ValueError('side must be before or after')
+                        iid = r['instance'].strip()
+                        key = r['merge_key'].strip()
+                        connector = r['connector']
+                        item = {
+                            'source_decision_citation': r['source_decision_citation'].strip(),
+                            'corpus_row_index': (r.get('corpus_row_index') or '').strip(),
+                            'instance': iid, 'side': side, 'merge_key': key,
+                            'candidate_id': r['candidate_id'].strip(),
+                            'connector': connector,
+                            'connector_sha256': hashlib.sha256(connector.encode('utf-8')).hexdigest(),
+                            'source_locator': {'artifact': logical_artifact,
+                                               'resolved_artifact': os.path.abspath(actual_artifact).replace('\\', '/'),
+                                               'record': record_no, 'sha256': digest,
+                                               'hash_scope': 'logical_csv_bytes'}
+                        }
+                        record = out[iid]
+                        record[side].add(key)
+                        record['records'].append(item)
+                    except (KeyError, TypeError, ValueError) as exc:
+                        raise ValueError('Invalid history-pair record %s:%s: %s' %
+                                         (os.path.abspath(path), record_no, exc)) from exc
+        except csv.Error as exc:
+            raise ValueError('Malformed history-pair CSV: ' + os.path.abspath(path)) from exc
+    for iid, record in out.items():
+        if not record['before'] or not record['after'] or record['before'] & record['after']:
+            raise ValueError('Incomplete or contradictory history instance: ' + iid)
+        if len({(r['source_decision_citation'], r['corpus_row_index'], r['connector'],
+                 r['connector_sha256']) for r in record['records']}) != 1:
+            raise ValueError('History instance mixes source documents or connector values: ' + iid)
+    return {k: dict(v) for k, v in out.items()}
 
 
 def add_court_designation_columns(group_rows, stats):
@@ -898,10 +981,17 @@ def main():
                          "挂靠打散，见 PROBLEMS #88 与 implementation/"
                          "report_88_89_registry.md）；保留供后续测量。默认 literal，"
                          "见 manifest.registry_gate")
+    ap.add_argument("--history-pairs", nargs="*", default=[],
+                    help="PROBLEMS #142: merge_out/<COURT>/history_pairs.csv; appeal-history sides are split only")
+    ap.add_argument("--history-input-mode", choices=("required", "legacy-none"),
+                    default="required",
+                    help="required for current runs; explicitly use legacy-none only for pre-history runs")
     ap.add_argument("--output", required=True)
     a = ap.parse_args()
 
     stats = Counter()
+    history = load_history_instances(a.history_pairs, a.history_input_mode)
+    stats["history_instances_loaded"] = len(history)
     registry = load_registry(a.registry)
     own_cites = load_own_citations(a.own_citations)
     separations = load_identity_separations()
@@ -948,13 +1038,16 @@ def main():
 
     stats["input_rows"] = len(rows)
     in_occ_total = sum(key_occ(r) for r in rows)
+    pair_separations = load_pair_separations(keys={r['merge_key'] for r in rows})
+    stats["verified_pair_separations_loaded"] = len(pair_separations)
     trace = ConstraintLedger(EvidenceSnapshot(rows, did_idx, prefix, registry,
-                                             own_cites, separations), a.output)
+                                             own_cites, separations, history, pair_separations), a.output)
     out, out_ids, eff_rows = adjudicate(rows, did_idx, origin_idx, folded_idx,
                                         prefix, stats, redo, scope_idx,
                                         reporter_idx, registry, typo_over,
                                         holdout,
-                                        a.registry_gate, own_cites, separations, trace)
+                                        a.registry_gate, own_cites, separations, trace,
+                                        history, pair_separations)
     trace_manifest = trace.close()
     # PROBLEMS #62：同名、年份相差 ≤1 的同级组。只在跨法院轮算——跨院合并跑完才是
     # 最终分组；院内轮该列留空（它不是产品列，选取层读的是跨院产出）
@@ -1052,7 +1145,7 @@ def main():
         "mode": "cross_court" if a.cross_court else "in_court",
         "label": label,
         "spec_section": "10",
-        "schema_version": 14,
+        "schema_version": 15,
         "identity_trace": trace_manifest,
         "document_alias_policy": "Qualified source-unique metadata/header proof only; whole-component neutral/vendor/court cannot-links remain enforced.",
         "registry_file": a.registry or "",

@@ -19,6 +19,17 @@ def open_csv(path):
     return (gzip.open if path.suffix == ".gz" else open)(path, "rt", encoding="utf-8-sig", newline="")
 
 
+def sha256_logical_csv_bytes(path):
+    """Hash the logical CSV bytes, independent of plain/gzip retention."""
+    path = resolve(path)
+    opener = gzip.open if path.suffix == ".gz" else open
+    digest = hashlib.sha256()
+    with opener(path, "rb") as source:
+        for block in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
 def sha256(path):
     digest = hashlib.sha256()
     with Path(path).open("rb") as f:

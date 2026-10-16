@@ -24,7 +24,11 @@
      不与精确命中混同。
   2. §8.4 两条正则的作用域，规格只写 s 未定义。实测：只看 raw_string 时
      两条规则命中数均为 0（死代码，正是 §7.3 警告的模式）。故 FED_STATUTE
-     作用于 preceding_text + raw_string；PARTY_INITIALS 采精确口径——
+     作用于 preceding_text + raw_string；2026-10-16 (PROBLEMS #133) narrowed:
+     the statute must be printed inside the match, or end right before it with
+     the chapter number cut by the match start. Any statute anywhere in the
+     120-character window had rejected ~1,800 real case citations
+     (`Criminal Code, R.S.C. 1985, c. C-46: R. v. X, 2016 ONCA 118`)。PARTY_INITIALS 采精确口径——
      要求前文正好以 R. v. 结尾**且**本行 raw 以 X.Y. 起头（实测 92 行）。
      宽口径「前文任意位置出现 R. v. A.B.」命中 15,999 行，会把大量真引证
      误杀，正踩 §8.8 警告的「引用次数被系统性低估」。
@@ -62,6 +66,8 @@ from collections import Counter, defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk, normalize_code                      # noqa: E402
+from shapes import SHAPES as _CONTEXT_SHAPES                  # noqa: E402
+from shapes import load_compound_locator_rows                # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -98,7 +104,10 @@ NEW_COLUMNS = ["citation_kind", "abbreviation", "jurisdiction",
                # R4（D1）：法院标注识别——只写 observed_deciding_court；**绝不**写
                # jurisdiction 或来源地（D2：无 court→origin 规则）。
                "court_designation_status", "observed_deciding_court",
-               "court_designation_evidence_id"]
+               "court_designation_evidence_id",
+               # Verified syntax only, never jurisdiction. Merge consumes the
+               # row proof without reading a source-policy table itself.
+               "compound_locator_rule_id"]
 
 # 年份形状（4 位数字），用于 year/vol 同形判定
 _YEAR_SHAPE_RE = re.compile(r"^(?:1[6-9]|20)\d{2}$")
@@ -112,7 +121,11 @@ def _unpad(k):
 # ---------------------------------------------------------------- §8.4 Step 2
 FED_STATUTE = re.compile(r"(?:^|[\s(\[])(?:R\.S\.C\.|S\.C\.)\s*(?:18|19|20)\d{2}")
 CHAPTER = re.compile(r"\bc\.\s*(?:[A-Z]|\d)")
-PARTY_TAIL = re.compile(r"\bR\.\s*v\.\s*$")        # 前文正好以 R. v. 结尾
+# PROBLEMS #133: the statute citation ends exactly where the match starts, i.e.
+# the shape layer read the chapter number (`c. C-` + `46 ...`) as a volume.
+FED_STATUTE_CUT = re.compile(r"(?:^|[\s(\[])(?:R\.S\.C\.|S\.C\.)\s*(?:18|19|20)\d{2}"
+                             r"(?:[-‑–]\d{2,4})*,?\s*c\.\s*(?:[A-Z]{1,2}\s*[-‑–]?\s*)?$")
+PARTY_TAIL = re.compile(r"\bR\.\s*(?:v|c)\.\s*$")  # R. v. / French Crown R. c.
 PARTY_HEAD = re.compile(r"^[A-Z]\.\s*[A-Z]\.")     # 本行 raw 以缩写型姓名起头
 
 # PROBLEMS #85：日期形态（判决头/协定日期 `1 June 2007`）与 shape_vol_abbr_page
@@ -148,12 +161,21 @@ DATE_FORM_VOL_MIN, DATE_FORM_VOL_MAX = 1, 31
 DATE_FORM_PAGE_MIN, DATE_FORM_PAGE_MAX = 1600, 2099
 
 # ---------------------------------------------------------------- §8.7 Step 5
-V_RE = re.compile(r"\bv\.?(?=\s)")
+# French criminal citations print R. c. X. Keep this alternate anchor bounded
+# to the Crown's printed R.; a bare c. remains a chapter/section marker.
+V_RE = re.compile(r"\bv\.?(?=\s)|\bR\.\s*c\.(?=\s)")
 _ADMIT_LEAD_CHARS = set("[(«\"'‘“….")
 _ADMIT_VERB_RE = re.compile(
     r"(?:citing|see also|see|per|applied|considered|referred to|"
     r"following|approving|distinguished|overruled|cf)\s+", re.IGNORECASE)
 _ADMIT_IN_RE = re.compile(r"in\s+(?!re\s)", re.IGNORECASE)
+# PROBLEMS #137: list connectors and signals that open a citation segment
+# (`; and R. v. Last`, `see, e.g., Smith v. Jones`, `As noted in R. v. Brand`).
+# Each needs a following comma/space, so names such as Andrews or Orr survive.
+_ADMIT_LEADIN_RE = re.compile(
+    r"(?:and|or|but|also|as\s+(?:noted\s+in|per)|see,?\s+(?:for\s+example|for\s+instance|e\.\s?g\.|generally|"
+    r"also|in\s+particular)|e\.\s?g\.|i\.\s?e\.|for\s+example|for\s+instance|compare)[,:]?\s+",
+    re.IGNORECASE)
 # PROBLEMS #57：分号后以这些词起头，是**同一案子**的上诉沿革（R. v. Grover (1990), 56 C.C.C.
 #   (3d) 532 (Ont. C.A.); aff'd [1991] 3 S.C.R. 387），本行引证仍属分号前的案名。词表取自
 #   全量实测：分号后以字母起头的 3,408 行里，表示本案沿革的只有 aff'd/affirmed（73）与
@@ -264,6 +286,30 @@ def load_non_citation_words():
     return out
 
 
+def load_non_case_sources():
+    """PROBLEMS #138: `non_case_sources.csv` -> {'exact': {nk: material}, 'suffix': [(regex, material)]}.
+    Periodicals, treaty series and statutes printed in the reporter slot. Only
+    verified rows with a source; registered reporters are never matched (step2)."""
+    out = {"exact": {}, "suffix": []}
+    path = os.path.join(DECISIONS, "non_case_sources.csv")
+    if not os.path.exists(path):
+        return out
+    with open(path, encoding="utf-8", newline="") as f:
+        for r in csv.DictReader(f):
+            if (r.get("verification_status") or "") not in ("verified_official_source",
+                                                             "verified_print_evidence"):
+                continue
+            if not (r.get("source") and r.get("source_locator") and r.get("material_type")):
+                raise ValueError("non_case_sources row lacks source or material type")
+            form = (r.get("printed_form") or "").strip()
+            if r.get("match_type") == "exact":
+                out["exact"][nk(form)] = r["material_type"]
+            elif r.get("match_type") == "suffix":
+                pattern = r"(?<=[\s.])" + r"\s*".join(map(re.escape, form.split())) + r"$"
+                out["suffix"].append((re.compile(pattern, re.IGNORECASE), r["material_type"]))
+    return out
+
+
 # ------------------------------------------------------------------- 决策表 IO
 def load_table(name):
     """读一张决策表。空表（只有表头）返回空列表——空表不是故障（§13.4）。"""
@@ -292,7 +338,24 @@ def load_court_designations():
     return out
 
 
-def classify_court_designation(raw, cd_idx):
+def load_court_designation_reporter_scope():
+    """PROBLEMS #136: `court_designation_reporter_scope.csv` -> {(nk(designation),
+    nk(reporter)): row}. Only verified rows; both keys are printed facts."""
+    path = os.path.join(DECISIONS, "court_designation_reporter_scope.csv")
+    out = {}
+    if os.path.exists(path):
+        with open(path, encoding="utf-8", newline="") as f:
+            for r in csv.DictReader(f):
+                if (r.get("verification_status") or "").strip() != "verified_reporter_scope":
+                    continue
+                if not (r.get("source") and r.get("source_locator") and r.get("canonical_court")):
+                    raise ValueError("court_designation_reporter_scope row lacks source or court")
+                out[(nk(r.get("printed_designation") or ""),
+                     nk(r.get("reporter_abbreviation") or ""))] = r
+    return out
+
+
+def classify_court_designation(raw, cd_idx, scope_idx=None, reporter=""):
     """R4（D1）：对抓到的标注原文做**法院识别**（只认法院，不碰来源地）。
 
     返回 (status, observed_deciding_court, evidence_id)：
@@ -312,8 +375,20 @@ def classify_court_designation(raw, cd_idx):
     if hit is not None:
         st = (hit.get("status") or "").strip()
         court = (hit.get("canonical_court") or "").strip()
+        # ONCA_2021onca256 prints Ryan, 211 N.B.R. (2d) 1 (PC): the
+        # unpunctuated label there denotes a Provincial Court, not the JCPC.
+        # Normalization must not turn that weaker printed form into P.C.'s
+        # registered meaning. Abstain without inventing a provincial court.
+        if key == "pc" and re.fullmatch(r"P\s*C", t, re.IGNORECASE):
+            return "ambiguous_designation", "", "court_designations:" + key
         if st == "recognized" and court:
             return "recognized", court, "court_designations:" + key
+        # PROBLEMS #136: a bare (C.A.) after a reporter that prints one
+        # province's decisions names that province's Court of Appeal.
+        scoped = (scope_idx or {}).get((key, nk(reporter))) if st == "ambiguous_designation" else None
+        if scoped is not None:
+            return ("recognized", scoped["canonical_court"].strip(),
+                    "court_designation_reporter_scope:" + key + "|" + nk(reporter))
         return st or "unrecognized", "", "court_designations:" + key
     low = t.lower()
     if t.isdigit():
@@ -347,6 +422,18 @@ def load_volume_systems():
                 if k and vs in ("year_volume", "continuous"):
                     vals[k].add(vs)
     return {k: next(iter(v)) for k, v in vals.items() if len(v) == 1}
+
+
+def load_runtime_tables():
+    """The CLI and native audit probes must load the same policy evidence."""
+    tables = {name: load_table(name + ".csv") for name in
+              ("neutral_court_codes", "reporter_jurisdiction", "series_prefix", "case_origin")}
+    tables.update(identifier_systems=load_identifier_systems(), id_prefixes=load_id_prefixes(),
+                  non_citation_words=load_non_citation_words(), non_case_sources=load_non_case_sources(),
+                  volume_system=load_volume_systems(), court_designations=load_court_designations(),
+                  court_designation_reporter_scope=load_court_designation_reporter_scope(),
+                  reporter_compound_locators=load_compound_locator_rows())
+    return tables
 
 
 def build_index(rows, field):
@@ -617,8 +704,8 @@ def _trim_prose_left(s):
     return rest, True
 
 
-def admit_candidate(cand):
-    s = cand
+def _strip_name_leadin(s):
+    """Remove only the existing closed citation signals at a name's left edge."""
     while True:
         before = s
         i = 0
@@ -626,6 +713,9 @@ def admit_candidate(cand):
             i += 1
         s = s[i:]
         m = _ADMIT_PARA_RE.match(s)         # PROBLEMS #43：剥判决书段落编号残尾
+        if m:
+            s = s[m.end():]
+        m = _ADMIT_LEADIN_RE.match(s)
         if m:
             s = s[m.end():]
         m = _ADMIT_VERB_RE.match(s)
@@ -636,18 +726,52 @@ def admit_candidate(cand):
             s = s[m.end():]
         if s == before:
             break
+    return s
+
+
+def admit_candidate(cand, bounded_name=False):
+    s = _strip_name_leadin(cand)
     # PROBLEMS #45：剥尾部吞进来的平行引证。安全闸——剥完不得把定义案名的「v.」剥掉，
     # 且须仍含字母（Unicode），否则视为判据打偏，原样退回。首版的闸是「>= 6 字符且含
     # 3 个连续 ASCII 字母」，把缩写姓名（R. v. R.E.M.）、两字姓（R. v. Vu）、带重音的
     # 姓（R. v. Côté）全挡在门外、尾巴原样留着——#50 审计实测它是异名碎片的最大来源
     _t = _ADMIT_CITE_TAIL_RE.sub("", s).strip().rstrip(",;").strip()
-    if re.search(r"[^\W\d_]", _t) and (V_RE.search(_t) or not V_RE.search(s)):
+    # A citation tail must not erase a later case-name anchor and leave the
+    # earlier case's title attached to the current report. If the boundary
+    # cannot be proved by _last_case_name_run, keep multi_v explicit below.
+    if (re.search(r"[^\W\d_]", _t)
+            and len(list(V_RE.finditer(_t))) == len(list(V_RE.finditer(s)))):
         s = _t
     s = re.sub(r"[,;:.\s]+$", "", s)
+    # PROBLEMS #137: `R. v. Morrissey (1995), 97 C.C.C. (3d) 193` prints the
+    # citation's year right after the name; it is not part of the title. Only a
+    # final year group is removed (`Voyageur (1969) Inc.` keeps its inner year).
+    _y = re.sub(r"\s*\[?\((?:1[6-9]|20)\d{2}(?:[-–]\d{2,4})?\)$", "", s).rstrip(" ,;")
+    if _y != s and re.search(r"[^\W\d_]", _y):
+        s = _y
+
+    # The new string-citation/French Crown routes must not restore citation
+    # commentary as part of a title. These are closed grammatical signals,
+    # applied only on those routes, not a general first-word name heuristic.
+    if bounded_name or re.search(r"\bR\.\s*c\.(?=\s)", s):
+        s = _trim_closed_context_prefix(s)
+        s = _trim_context_prose(s)
 
     # PROBLEMS #61：左侧吞进来的整句散文（近旁没有 ; : 换行 时）。放在剥尾之后、
     # 长度等闸之前——切短了可能正好把一条 too_long 救回来
-    s, _fired = _trim_prose_left(s)
+    # The string-citation route has already proved the left title boundary.
+    # Do not run the generic prose heuristic through a French institution's
+    # internal local number or lowercase descriptive words a second time.
+    anchor = list(V_RE.finditer(s))
+    left_words = re.findall(r"\S+", s[:anchor[-1].start()]) if anchor else []
+    unknown_words = [word.strip("().,&;:'’“”[]") for word in left_words
+                     if not _name_like(word) and not _is_boundary(word)]
+    french_title = (bounded_name and unknown_words
+                    and (any(word.strip("().,&;:'’“”[]") in _FR_CONNECTOR for word in left_words)
+                         or any(any(ord(c) > 127 and c.isalpha() for c in word) for word in unknown_words))
+                    and not any(_context_signal(word) for word in unknown_words))
+    if not french_title:
+        s, _fired = _trim_prose_left(s)
 
     if len(s) > 120:
         return None, "too_long"
@@ -658,6 +782,281 @@ def admit_candidate(cand):
     if not s:
         return None, "empty_after_clean"
     return s, None
+
+
+# PROBLEMS #137: a string citation puts an earlier case and its citation before
+# this citation's own name (`R. v. Askov (1990), 59 C.C.C. (3d) 449 at 483-84, and
+# R. v. Morin (1992), [row]`). #45's tail strip then cut at Askov's citation and
+# kept Askov's name for Morin's report. Reuse the extraction layer's printed
+# citation shapes on this row's preceding context to locate the earlier
+# citation's end. Never infer a party-name boundary from lowercase words:
+# French institutional names contain them, as do names inside parentheses.
+_NAME_CONTEXT_CITES = tuple(re.compile(rx) for _name, rx in _CONTEXT_SHAPES)
+_CITE_END_TOKEN_RE = re.compile(r"\d[\d\-‑‒–—]*[a-z]?[),.;\]]+$")
+_NAME_PINPOINT_RE = re.compile(
+    r"(?:(?:at|au|aux)\s+(?:(?:pp?|paras?|paragraphs?|paragraphes?)\.?\s*)?"
+    r"|(?:pp?|paras?|paragraphs?|paragraphes?)\.?\s*|¶+\s*)"
+    r"(?:¶+\s*)?\d+(?:\s*[-‑‒–—]\s*\d+)?"
+    r"(?:\s*(?:,|and|et|&)\s*\d+(?:\s*[-‑‒–—]\s*\d+)?)*",
+    re.IGNORECASE)
+# Only these citation-prose words may establish an extra boundary inside an
+# already citation-bounded suffix. Arbitrary lowercase words remain part of the
+# party: scolaire / régional / général / employés are not prose delimiters.
+_NAME_CONTEXT_PROSE = frozenset("""
+citing citant cited cites quoting quoted applying applied approving approved
+explained explains held stated states observed observes said wrote writes
+commented commenting emphasized emphasised summarized summarised articulated
+recently considered referred referring referenced referencing relies relied
+relying cite compared followed including is example court judge decision
+judgment case cases words following distinguished p pp para paras noted
+affirmed adopted endorsed dissenting paraphrase basis discussed still decided
+neither thus similarly infra supra nor voir aussi unreported discussing
+overturned overturning both addition sub nom c.f notes note reviewed recognized recognised
+""".split())
+
+_NAME_DISCOURSE_PREFIX_RE = re.compile(
+    r"^(?:(?:Finally|Further|Furthermore|However|Additionally|Similarly|Thus|"
+    r"Therefore|Accordingly|Consequently|Nevertheless|Nonetheless)\s*,\s*"
+    r"(?:(?:in\s+)|(?:(?:I|we)\s+(?:also\s+)?note\s+that\s+)|"
+    r"(?:decisions\s+like\s+)|(?:(?:the\s+majority|this\s+Court)\s+in\s+))?"
+    r"|As\s+(?:well\s*,\s*in|in)\s+|Cf\.\s+|See\s*,\s*too\s*,\s*"
+    r"|Quoting\s+with\s+approval\s+)")
+_NAME_COURT_ATTRIBUTION_RE = re.compile(
+    r"^(?:As\s+)?(?:The|the|This|this)\s+(?:Supreme\s+Court|Court|House\s+of\s+Lords)"
+    r"\s+(?:(?:notes|recognized|recognised)\s+)?in\s+")
+_NAME_JUDGE_ATTRIBUTION_RE = re.compile(
+    r"\b(?:J\.A\.|L\.C\.J\.|L\.J\.|C\.J\.(?:C\.)?|J\.)\s+"
+    r"(?:(?:in|of)\s+the\s+(?:[\w’'-]+\s+){0,5}Court\s+of\s+Appeal,?\s+in\s+"
+    r"|for\s+the\s+majority\s*,?\s*(?:and|in)\s+"
+    r"|at\s+\d+(?:[-–]\d+)?\s+and\s+|[Ii]n\s+)")
+_NAME_SHORT_FORM_RE = re.compile(r"\b(?:supra|infra|ibid|précité|précitée)\b[.)]*\s*[,;]?\s*")
+
+
+def _trim_closed_context_prefix(seg):
+    """Remove explicit commentary/short forms before an anchored later title.
+
+    A judge's title plus attribution, or a printed supra/ibid short form,
+    supplies the boundary. Commas or capitalization alone never supply it.
+    """
+    anchors = list(V_RE.finditer(seg))
+    if len(anchors) != 1:
+        return seg
+    left = seg[:anchors[0].start()]
+    short_forms = list(_NAME_SHORT_FORM_RE.finditer(left))
+    if short_forms:
+        seg = seg[short_forms[-1].end():]
+        # Some lists print another short form after supra. An explicit Crown
+        # title gives its own plaintiff boundary; do not split arbitrary
+        # comma-bearing company/institution names the same way.
+        crown = re.search(r"\bR\.\s+(?:v\.?|c\.)(?=\s)", seg)
+        if crown:
+            seg = seg[crown.start():]
+    while True:
+        before = seg
+        seg = seg.lstrip(" \t\r\n,.;:)]}&")
+        # An explicit comparison may supply the short name followed by an
+        # editor's bracketed full title (`As Harelkin [v. University ...`).
+        # Keep the inserted title text; consume only the comparison signal.
+        seg = re.sub(r"^As\s+(?=[A-Z][^\[\]]*\[\s*v\.)", "", seg)
+        # Footnotes can run together in a 120-character context. Require the
+        # complete pinpoint + new footnote + e.g. grammar, not a bare number.
+        seg = re.sub(
+            r"^\d{1,3}\s+At\s+p\.\s*\d+\.\s*\d{1,3}\s+e\.g\.\s+", "", seg)
+        # A short title can be expanded in brackets after an attribution:
+        # `Chang [Chang v. Feng ...]`. Only an exactly repeated left party
+        # permits this cut; an arbitrary bracket inside a party name does not.
+        editorial = re.match(r"^([^\[\]]+?)\s+\[\s*(.+)$", seg, re.DOTALL)
+        if editorial:
+            inserted = editorial.group(2)
+            inserted_anchor = list(V_RE.finditer(inserted))
+            if (len(inserted_anchor) == 1
+                    and editorial.group(1).strip() == inserted[:inserted_anchor[0].start()].strip()):
+                seg = inserted
+        pinpoint = _NAME_PINPOINT_RE.match(seg)
+        if pinpoint:
+            seg = seg[pinpoint.end():]
+        seg = _strip_name_leadin(seg)
+        for rx in (_NAME_DISCOURSE_PREFIX_RE, _NAME_COURT_ATTRIBUTION_RE):
+            match = rx.match(seg)
+            if match:
+                seg = seg[match.end():]
+        current = list(V_RE.finditer(seg))
+        if len(current) == 1:
+            attributions = list(_NAME_JUDGE_ATTRIBUTION_RE.finditer(seg[:current[0].start()]))
+            if attributions:
+                seg = seg[attributions[-1].end():]
+        if seg == before:
+            return seg
+
+
+def _context_signal(token):
+    word = token.strip("().,&;:'’“”[]")
+    history = _HISTORY_RE.fullmatch(word)
+    if history or word in _NAME_CONTEXT_PROSE | _CAP_STRIP:
+        return True
+    # Printed lists sometimes omit the space after supra/infra's comma.
+    parts = re.split(r"[,;]", word)
+    return len(parts) > 1 and all(part in _NAME_CONTEXT_PROSE | _CONNECTOR for part in parts)
+
+
+def _trim_context_prose(seg):
+    """Trim a known citation signal without treating French name words as prose."""
+    anchors = list(V_RE.finditer(seg))
+    if len(anchors) != 1:
+        return seg
+    for m in reversed(list(re.finditer(r"\S+", seg[:anchors[0].start()]))):
+        token = m.group(0).strip("().,&;:'’“”[]")
+        if _name_like(m.group(0)) or _is_boundary(m.group(0)):
+            continue
+        if not _context_signal(token):
+            return seg
+        tail = seg[m.end():].lstrip()
+        while True:
+            first = re.match(r"(\S+)\s+", tail)
+            if first and (first.group(1) == "&" or
+                          first.group(1).islower() and first.group(1).strip(",") in _CONNECTOR):
+                tail = tail[first.end():]
+                continue
+            break
+        return tail if tail[:1].isupper() or tail[:1].isdigit() else seg
+    return seg
+
+
+def _clean_name_context_gap(seg):
+    """Consume citation labels, pinpoints and closed signals before a new name."""
+    while True:
+        before = seg
+        seg = seg.lstrip(" \t\r\n,.;:)]}&")
+        # This year follows the printed prose `in`, rather than beginning a
+        # numbered party. A bare `1996 ...` company name is never trimmed here.
+        seg = re.sub(r"^(?:and\s+)?in\s+(?:1[6-9]|20)\d{2}\s+(?:in|by)\s+", "", seg)
+        alternate_title = re.fullmatch(r"\(sub\s+nom\.\s+(.+)\)\s*", seg, re.DOTALL | re.IGNORECASE)
+        if alternate_title:
+            title = alternate_title.group(1)
+            if len(list(V_RE.finditer(title))) == 1 and title.count("(") == title.count(")"):
+                seg = title
+                continue
+        # Court/database labels and aliases follow a completed citation. A
+        # parenthesized title containing a versus anchor is never consumed.
+        annotation = re.match(r"(?:\([^()]*\)|\[[^\[\]]*\])", seg)
+        if annotation and not V_RE.search(annotation.group(0)):
+            seg = seg[annotation.end():]
+            continue
+        pinpoint = _NAME_PINPOINT_RE.match(seg)
+        if pinpoint:
+            seg = seg[pinpoint.end():]
+            continue
+        history = _HISTORY_RE.match(seg)
+        if history:
+            seg = seg[history.end():]
+            continue
+        seg = _strip_name_leadin(seg)
+        seg = re.sub(r"^(?:starting|beginning)\s+with\s+", "", seg, flags=re.IGNORECASE)
+        if seg == before:
+            break
+    return _trim_context_prose(_trim_closed_context_prefix(seg))
+
+
+def _later_name_at_printed_boundary(cand, anchors, citation_end):
+    """Keep the original endpoint/signal route when its boundary is explicit.
+
+    A lowercase word alone is not evidence. Only a known citation-prose signal
+    or a printed numeric/sentence endpoint may cut the left party. A company
+    year inside parentheses is not such an endpoint unless a list connector
+    immediately follows it.
+    """
+    tokens = list(re.finditer(r"\S+", cand[:anchors[-1].start()]))
+    for match in reversed(tokens):
+        token = match.group(0)
+        numeric_end = _CITE_END_TOKEN_RE.search(token)
+        if not (numeric_end or _is_boundary(token) or not _name_like(token)):
+            continue
+        if numeric_end:
+            if citation_end is not None and match.end() < citation_end:
+                return None  # This endpoint precedes a later complete citation.
+            wrapped_number = re.fullmatch(
+                r"\(\d+(?:[-‑‒–—]\d+|st|nd|rd|th|d)?\)[,.;]?|\[(?:1[6-9]|20)\d{2}\][,.;]?", token)
+            numeric_gap = (citation_end is not None and re.fullmatch(
+                r"\s*[,;]?\s*\d+(?:[-‑‒–—]\d+)?\s*", cand[citation_end:match.start()]))
+            if (wrapped_number and (citation_end is None or match.end() > citation_end)
+                    and not numeric_gap
+                    and not re.match(r"\s+(?:and|or|et)\s+", cand[match.end():])):
+                return None
+            # A local number inside a French institution cannot erase that
+            # institution. Its complete prior citation is the stronger bound.
+            if citation_end is not None and match.start() > citation_end:
+                prior = _strip_name_leadin(cand[citation_end:match.start()].lstrip(" ,.;:)]}"))
+                prior_words = re.findall(r"\S+", prior)
+                unknown_lower = any(not _name_like(word) and not _is_boundary(word)
+                                    and not _context_signal(word)
+                                    for word in prior_words)
+                prose_signal = any(_context_signal(word)
+                                   for word in prior_words)
+                if prior[:1].isupper() and unknown_lower and not prose_signal:
+                    return None
+        elif not _is_boundary(token) and not _context_signal(token):
+            return None
+        # Preserve a pinpoint label for the shared gap parser; dropping p./
+        # para. first would turn its following bare number into a plaintiff.
+        start = match.start() if _NAME_PINPOINT_RE.match(cand[match.start():]) else match.end()
+        pinpoint_list = re.search(
+            r"(?:(?:at|au|aux)\s+)?(?:pp?|paras?)\.?\s*"
+            r"(?:\d+(?:[-‑‒–—]\d+)?\s*,\s*)*$", cand[:match.start()], re.IGNORECASE)
+        if numeric_end and pinpoint_list and _NAME_PINPOINT_RE.match(cand[pinpoint_list.start():]):
+            start = pinpoint_list.start()
+        seg = _clean_name_context_gap(cand[start:].lstrip())
+        while True:
+            first = re.match(r"(\S+)\s+", seg)
+            if first and (first.group(1) == "&" or
+                          first.group(1).islower() and first.group(1).strip(",") in _CONNECTOR):
+                seg = seg[first.end():]
+                continue
+            break
+        seg = _strip_name_leadin(seg)
+        if not numeric_end:
+            # A year inside citation prose (`in 1990 in X v. Y`) is not a
+            # numbered plaintiff. This only follows an explicit prose signal.
+            seg = re.sub(r"^(?:1[6-9]|20)\d{2}\s+(?:in|by)\s+", "", seg)
+        if re.match(r"\d+(?:[-‑‒–—]\d+)?\s+(?:and|or|et|&)\s+", seg):
+            return None  # A bare pinpoint plus list connector is not a company.
+        return seg if (seg and (seg[:1].isupper() or seg[:1].isdigit())
+                       and len(list(V_RE.finditer(seg))) == 1) else None
+    return None
+
+
+def _last_case_name_run(cand):
+    """A later title bounded on its left by a complete earlier citation.
+
+    The earlier report/neutral citation supplies the boundary, so a whole French
+    institution, a parenthetical party designation or a numbered company stays
+    intact. Single-anchor candidates retain their original route. Ambiguous
+    multi-anchor text returns None rather than borrowing the earlier name.
+    """
+    anchors = list(V_RE.finditer(cand))
+    if len(anchors) < 2:
+        return None
+    left = cand[:anchors[-1].start()]
+    ends = set()
+    for rx in _NAME_CONTEXT_CITES:
+        for m in rx.finditer(left, anchors[-2].end()):
+            end = m.end()
+            # The shared shapes capture a trailing court annotation in a
+            # lookahead. It belongs to the completed earlier citation, not to
+            # the new plaintiff. The closing parenthesis is outside the group.
+            if m.groupdict().get("court_designation"):
+                end = max(end, m.end("court_designation") + 1)
+            ends.add(end)
+    original_boundary = _later_name_at_printed_boundary(cand, anchors, max(ends) if ends else None)
+    if original_boundary is not None:
+        return original_boundary
+    # An earlier endpoint would include another complete citation in its
+    # supposed plaintiff. Never back off to that more polluted interpretation.
+    for end in [max(ends)] if ends else []:
+        seg = _clean_name_context_gap(cand[end:])
+        if (seg and (seg[:1].isupper() or seg[:1].isdigit())
+                and len(list(V_RE.finditer(seg))) == 1):
+            return seg
+    return None
 
 
 def _cite_segment(pre):
@@ -748,13 +1147,16 @@ def split_case_name(row):
     sep = max(pre.rfind(";", 0, last.start()),
               pre.rfind(":", 0, last.start()),
               pre.rfind("\n", 0, last.start()))
-    if sep == -1:
+    cand = pre[sep + 1:].strip().rstrip(",").strip()
+    later = _last_case_name_run(cand)
+    if sep == -1 and later is None:
         append_reason(row, "name_rejected_reason", "no_separator_before_v")
         row["candidate_case_name"] = ""
         return
 
-    cand = pre[sep + 1:].strip().rstrip(",").strip()
-    cleaned, reject = admit_candidate(cand)
+    if later is not None:
+        cand = later
+    cleaned, reject = admit_candidate(cand, bounded_name=later is not None)
     if reject:
         append_reason(row, "name_rejected_reason", reject)
         row["candidate_case_name"] = ""
@@ -822,11 +1224,14 @@ class Classifier(object):
         # v1.6：前缀型标识（案卷号 docket / 出版社判决编号 decision）
         self.id_prefixes = tables.get("id_prefixes") or []
         self.noncite = tables.get("non_citation_words") or {"whole": set(), "first_word": set(), "last_word": set()}
+        self.noncase = tables.get("non_case_sources") or {"exact": {}, "suffix": []}
         self._idpref_cache = {}
         # R3 Stage 3：汇编卷/年体系（表驱动，仅用于盖章给归并层）
         self.vol_system = tables.get("volume_system") or {}
         # R4（D1）：法院标注决策表（封闭集合，精确匹配）
         self.court_desig = tables.get("court_designations") or {}
+        self.court_desig_scope = tables.get("court_designation_reporter_scope") or {}
+        self.compound_locators = tables.get("reporter_compound_locators") or []
         self.stats = stats
 
     def _court_lookup(self, printed_token, has_vol):
@@ -941,6 +1346,22 @@ class Classifier(object):
             return True
         return False
 
+    def _non_case_material(self, row):
+        """PROBLEMS #138: a periodical, treaty series or statute in the reporter slot.
+        Registered reporters always win, as in _non_citation_word."""
+        if (row.get("citation_kind") or "") != "reporter":
+            return ""
+        abbr = (row.get("abbreviation") or "").strip()
+        if not abbr or abbr in self.rep_exact or nk(abbr) in self.rep_norm:
+            return ""
+        material = self.noncase["exact"].get(nk(abbr))
+        if material:
+            return material
+        for rx, material in self.noncase["suffix"]:
+            if rx.search(abbr):
+                return material
+        return ""
+
     def _idpref_row(self, token):
         if token not in self._idpref_cache:
             hit = None
@@ -1049,7 +1470,10 @@ class Classifier(object):
         raw = row.get("raw_string") or ""
         pre = row.get("preceding_text") or ""
         window = pre + " " + raw
-        if FED_STATUTE.search(window) and CHAPTER.search(window):
+        # PROBLEMS #133: a statute elsewhere in the window says nothing about
+        # this match; only a statute inside it or cut by it does.
+        if ((FED_STATUTE.search(" " + raw) and CHAPTER.search(window))
+                or FED_STATUTE_CUT.search(pre)):
             append_reason(row, "rejected_reason", "federal_statute")
         if PARTY_TAIL.search(pre) and PARTY_HEAD.match(raw):
             append_reason(row, "rejected_reason", "party_initials")
@@ -1063,6 +1487,10 @@ class Classifier(object):
         if self._non_citation_word(row):
             append_reason(row, "rejected_reason", "non_citation_word")
             self.stats["non_citation_word"] += 1
+        material = self._non_case_material(row)
+        if material:
+            append_reason(row, "rejected_reason", "non_case_" + material)
+            self.stats["non_case_" + material] += 1
         # v1.6：案名里的 v 被读成单字符罗马页（`620247 Ontario Ltd. v`、`16 Villani v`——无句点的
         # versus）。纯字段判据：页位是小写罗马 v、缩写未登记。真罗马页（`[1983] 2 S.C.R. v`）的缩写
         # 都是已登记汇编，不会触发；边缘法庭实测 24,532 行、主线 55 行。
@@ -1142,6 +1570,18 @@ class Classifier(object):
         self.step2(row)
         if not settled:
             self.step3(row)
+        row["compound_locator_rule_id"] = ""
+        if row.get("shape_name") == "shape_bracket_compound_locator":
+            matches = [policy for policy in self.compound_locators
+                       if re.fullmatch(policy["abbreviation_regex"], row.get("abbreviation") or "")
+                       and re.fullmatch(policy["locator_regex"], row.get("page") or "")
+                       and not row.get("vol") and not row.get("series")
+                       and _YEAR_SHAPE_RE.fullmatch(row.get("year_start") or "")]
+            if len(matches) == 1:
+                row["compound_locator_rule_id"] = matches[0]["rule_id"]
+            else:
+                append_reason(row, "rejected_reason", "unverified_compound_locator")
+                self.stats["unverified_compound_locator"] += 1
         split_case_name(row)
         row.pop("_prefix_jur", None)
         # R3 Stage 3：把该汇编的卷/年体系盖在行上（与法域同源：都来自已核实决策表）。
@@ -1153,7 +1593,9 @@ class Classifier(object):
         # 只写 observed_deciding_court；**绝不**写 jurisdiction / 来源地（D2）。
         raw_cd = (row.get("court_designation_raw") or "").strip()
         if raw_cd:
-            st, oc, ev = classify_court_designation(raw_cd, self.court_desig)
+            st, oc, ev = classify_court_designation(raw_cd, self.court_desig,
+                                                    self.court_desig_scope,
+                                                    row.get("abbreviation") or "")
             row["court_designation_status"] = st
             row["observed_deciding_court"] = oc
             row["court_designation_evidence_id"] = ev
@@ -1220,14 +1662,7 @@ def main():
     args = ap.parse_args()
 
     stats = Counter()
-    tables = {n: load_table(n + ".csv") for n in
-              ("neutral_court_codes", "reporter_jurisdiction",
-               "series_prefix", "case_origin")}
-    tables["identifier_systems"] = load_identifier_systems()
-    tables["id_prefixes"] = load_id_prefixes()
-    tables["non_citation_words"] = load_non_citation_words()
-    tables["volume_system"] = load_volume_systems()
-    tables["court_designations"] = load_court_designations()
+    tables = load_runtime_tables()
     clf = Classifier(tables, stats)
 
     os.makedirs(args.output, exist_ok=True)
@@ -1250,6 +1685,7 @@ def main():
     os.replace(tmp, out_path)
 
     manifest = {
+        "schema_version": 9,
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
         "court": args.court,
         "input": _relpath(args.input),

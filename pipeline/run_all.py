@@ -42,7 +42,7 @@ ACTIVE_RUNNER = None
 SCHEMA_VERSIONS = {
     "extract_legacy_kept_superseded": "v1.4 (frozen, diagnostic only)",
     "extract_candidates": "candidates-2.2 + explicit English/French fallback scope (row offsets unchanged)",
-    "classify": "8 + parse/arbitration evidence columns",
+    "classify": "9 + source-verified compound locator policy column",
     "merge": "9 + in-source arbitration, identity keys v2",
     "decide": "15 (country assessment independent of identity support)",
     "select": "12 (full-data default; optional frequency profiles)",
@@ -431,10 +431,15 @@ def run_downstream(r):
                                                             "folded_log.csv"),
                                "--decision-ids", os.path.join(args.out, "merge_out", court,
                                                               "decision_ids.csv"),
+                               "--history-pairs", os.path.join(args.out, "merge_out", court,
+                                                               "history_pairs.csv"),
                                "--output", os.path.join(args.out, "decide_out", court)]))
     r.run_step("decide_cross",
                decide_cmd(["--cross-court", "--inputs"] +
                           [os.path.join(args.out, "decide_out", c, "decided.csv")
+                           for c in courts] +
+                          ["--history-pairs"] +
+                          [os.path.join(args.out, "merge_out", c, "history_pairs.csv")
                            for c in courts] +
                           ["--output", os.path.join(args.out, "decide_out", "cross_court")]))
     # 天花板监测仪（规格 2.4，必做）：foreign 计数是「登记簿这条数据驱动路径

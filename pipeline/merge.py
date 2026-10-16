@@ -63,6 +63,115 @@ from normalize import nk                                      # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# PROBLEMS #142: an appeal-history connector between two adjacent citations in
+# one source (`(1991), 3 O.R. (3d) 193 (C.A.), aff'd [1992] 2 S.C.R. 168`)
+# prints two judgments of one proceeding. The runs of parallel citations on each
+# side are recorded; the adjudication layer may only use them to keep the sides
+# apart (never to join). Closed structural vocabulary, like classify._HISTORY_RE.
+HISTORY_CONNECTOR_RE = re.compile(
+    r"(?:\b(?:which\s+)?(?:aff(?:[’']?d|irmed|irming|[’']?g)|rev(?:[’']?d|ersed|ersing|[’']?g)"
+    r"|var(?:[’']?d|ied|ying))\.?(?:\s+(?:on\s+other\s+grounds|in\s+part))?"
+    r"|\b(?:applications?\s+for\s+)?leave\s+to\s+app(?:eal|\.)"
+    r"(?:\s+to\s+(?:the\s+)?(?:S\.C\.C\.|SCC|Supreme\s+Court(?:\s+of\s+Canada)?))?"
+    r"(?:\s+(?:refused|dismissed|denied|granted|quashed))?"
+    r"|\b(?:allowing|dismissing|quashing)(?:\s+in\s+part)?\s+(?:an\s+|the\s+)?appeal\s+from"
+    r"|\bappeal\s+(?:allowed|dismissed|quashed)(?:\s+in\s+part)?)"
+    r"(?:,?\s*sub\s+nom\.?[^;]{0,80}?)?[\s,;:(]*$", re.IGNORECASE)
+# A tightly bounded paragraph pinpoint. Older judgments commonly use the
+# paragraph mark, and pinpoints may list ranges joined with "and".
+_PINPOINT_RANGE = r"\d+(?:\s*[-–]\s*\d+)?"
+_PINPOINT_LIST = _PINPOINT_RANGE + r"(?:\s*(?:,\s*(?:and\s*)?|and\s*)" + _PINPOINT_RANGE + r")*"
+_PAGE_PINPOINT_RANGE = r"\d+(?:\s*[-–/]\s*\d+)?"
+_PAGE_PINPOINT_LIST = _PAGE_PINPOINT_RANGE + r"(?:\s*(?:,\s*(?:and\s*)?|and\s*)" + _PAGE_PINPOINT_RANGE + r")*"
+_PARA_LABEL = r"(?:para(?:s)?\.?|paragraphs?)"
+_HISTORY_PINPOINT = (
+    r"(?:at\s+)?(?:(?:" + _PARA_LABEL + r")\s*" + _PINPOINT_LIST
+    + r"|pp?\.?\s*" + _PAGE_PINPOINT_LIST
+    + r"|¶{1,2}\s*" + _PINPOINT_LIST + r")\s*[,;]*"
+)
+_PARALLEL_PINPOINT = (
+    r"(?:at\s+)?(?:(?:" + _PARA_LABEL + r")\s*" + _PINPOINT_LIST
+    + r"|pp?\.?\s*" + _PAGE_PINPOINT_LIST
+    + r"|¶{1,2}\s*" + _PINPOINT_LIST + r")\s*,?"
+)
+# Most designations are one-level parentheses. The Ontario form "C.J.
+# (Gen. Div.)" is the single bounded nested form observed in the reviewed
+# native windows; do not allow arbitrary nested prose here.
+_HISTORY_PAREN = (
+    r"(?:"
+    r"\(C\.J\.\s*\(Gen\.\s*Div\.\)\)"
+    r"|\(Ont\.\s*Ct\.\s*J\.\s*\(Gen\.\s*Div\.\)\)"
+    r"|\(Ct\.\s*J\.\s*\(Gen\.\s*Div\.\)\)"
+    r"|\(Ont\.\s*Prov\.\s*Ct\.\s*\(Fam\.\s*Div\.\)\)"
+    r"|\(Alta\.\s*S\.C\.\s*\(A\.D\.\)\)"
+    r"|\([^()]{0,40}\)"
+    r")"
+)
+_HISTORY_HEAD_RE = re.compile(
+    r"^[\s,;]*(?:" + _HISTORY_PAREN + r"[\s,;]*)*"
+    r"(?:" + _HISTORY_PINPOINT + r"[\s,;]*)?"
+    r"(?:" + _HISTORY_PAREN + r"[\s,;]*)*$")
+# What may separate two parallel citations of one judgment inside a run.
+_PARALLEL_GAP_RE = re.compile(
+    r"^[\s,]*(?:" + _HISTORY_PAREN + r"[\s,]*)*"
+    r"(?:" + _PARALLEL_PINPOINT + r"[\s,]*)?"
+    r"(?:" + _HISTORY_PAREN + r"[\s,]*)*$")
+HISTORY_FIELDS = ["source_decision_citation", "corpus_row_index", "instance", "side",
+                  "merge_key", "candidate_id", "connector"]
+
+
+def _gap_text(prev, row):
+    """Text between two mentions, read from the later mention's preceding_text."""
+    n = int(row["match_start_offset"]) - int(prev["match_end_offset"])
+    pre = row.get("preceding_text") or ""
+    if n < 0 or n > len(pre):
+        return None
+    return pre[len(pre) - n:] if n else ""
+
+
+def history_instances(counted, stats):
+    """Rows for each connector between adjacent counted mentions of one source.
+
+    `counted` is one source's counted mentions ordered by offset. Each side is
+    the run of mentions joined to the connector only by parallel-citation gaps.
+    """
+    out = []
+    for i in range(1, len(counted)):
+        gap = _gap_text(counted[i - 1], counted[i])
+        if not gap:
+            continue
+        m = HISTORY_CONNECTOR_RE.search(gap)
+        if not m or not _HISTORY_HEAD_RE.match(gap[:m.start()]):
+            continue
+        before, j = [counted[i - 1]], i - 1
+        while j > 0:
+            g = _gap_text(counted[j - 1], counted[j])
+            if g is None or not _PARALLEL_GAP_RE.match(g):
+                break
+            before.insert(0, counted[j - 1])
+            j -= 1
+        after, k = [counted[i]], i
+        while k + 1 < len(counted):
+            g = _gap_text(counted[k], counted[k + 1])
+            if g is None or not _PARALLEL_GAP_RE.match(g):
+                break
+            after.append(counted[k + 1])
+            k += 1
+        if {r["merge_key"] for r in before} & {r["merge_key"] for r in after}:
+            stats["history_instances_same_key_both_sides"] += 1
+            continue
+        inst = "%s:%s:%s" % (counted[i]["source_decision_citation"],
+                             counted[i].get("corpus_row_index") or "", counted[i]["candidate_id"])
+        connector = " ".join(m.group(0).split()).strip(" ,;:(")
+        for side, rows in (("before", before), ("after", after)):
+            for r in rows:
+                out.append({"source_decision_citation": r["source_decision_citation"],
+                            "corpus_row_index": r.get("corpus_row_index") or "",
+                            "instance": inst, "side": side, "merge_key": r["merge_key"],
+                            "candidate_id": r["candidate_id"], "connector": connector})
+        stats["history_instances"] += 1
+    return out
+
 
 def _relpath(p):
     """manifest 里记输入路径。跨盘符时（测试临时目录在 C:、仓库在 D:）relpath 会抛
@@ -333,9 +442,169 @@ def support_grade(row):
     return 2 if (row.get("lookup_mode") or "") == "exact" else 1
 
 
+def _verified_compound_locator_completion(short, long_):
+    """Allow the verified bracketed ILR paragraph locator to complete its
+    legacy page-prefix candidate, but only when both rows map to the exact
+    same printed bytes and page spans.
+
+    The classification layer is the only layer that reads the verified
+    reporter_compound_locators table. Its rule id is carried on the candidate
+    row so merge can apply this narrow completion without loading policy files
+    or inferring a jurisdiction.
+    """
+    if (short.get("shape_name") != "shape_bracket"
+            or long_.get("shape_name") != "shape_bracket_compound_locator"
+            or str(long_.get("compound_locator_rule_id") or "").strip()
+            != "ILR_NUMERIC_PARAGRAPH"):
+        return False
+    if short.get("citation_kind") != "reporter" or long_.get("citation_kind") != "reporter":
+        return False
+
+    short_page = str(short.get("page") or "").strip()
+    full_page = str(long_.get("page") or "").strip()
+    if short_page != "1" or not re.fullmatch(r"1-[0-9]{3,5}", full_page):
+        return False
+
+    year_short = str(short.get("year_start") or "").strip()
+    year_long = str(long_.get("year_start") or "").strip()
+    def is_ilr(row):
+        printed = [str(row.get(field) or "").strip()
+                   for field in ("abbr", "token", "abbreviation")]
+        printed = [nk(value) for value in printed if value]
+        return bool(printed) and all(value == "ilr" for value in printed)
+
+    if (not year_short or year_short != year_long
+            or not is_ilr(short) or not is_ilr(long_)):
+        return False
+    # The verified shape has no volume or series slot. Do not let this narrow
+    # override bridge another bracketed citation interpretation.
+    for row in (short, long_):
+        if any(str(row.get(field) or "").strip()
+               for field in ("vol", "series", "series_paren", "paren_note",
+                             "serial_marker", "page_prefix", "page_suffix", "page_roman")):
+            return False
+
+    try:
+        short_start = int(short.get("match_start_offset"))
+        short_end = int(short.get("match_end_offset"))
+        long_start = int(long_.get("match_start_offset"))
+        long_end = int(long_.get("match_end_offset"))
+    except (TypeError, ValueError):
+        return False
+    short_raw = short.get("raw_string") or ""
+    long_raw = long_.get("raw_string") or ""
+    if (short_start < 0 or long_start != short_start or short_end <= short_start
+            or long_end <= short_end or len(short_raw) != short_end - short_start
+            or len(long_raw) != long_end - long_start
+            or long_raw[:len(short_raw)] != short_raw):
+        return False
+
+    def absolute_span(value):
+        match = re.fullmatch(r"([0-9]+):([0-9]+)", str(value or ""))
+        if not match:
+            return None
+        start, end = map(int, match.groups())
+        return (start, end) if start < end else None
+
+    short_page_span = absolute_span(short.get("page_span"))
+    long_page_span = absolute_span(long_.get("page_span"))
+    short_year_span = absolute_span(short.get("year_span"))
+    long_year_span = absolute_span(long_.get("year_span"))
+    if (short_page_span is None or long_page_span is None
+            or short_year_span is None or long_year_span is None):
+        return False
+    if (short_page_span[0] != long_page_span[0]
+            or short_page_span[1] != short_page_span[0] + 1
+            or short_page_span[1] != short_end
+            or long_page_span[1] != long_end
+            or short_year_span != long_year_span
+            or short_year_span[0] < short_start
+            or short_year_span[1] > short_end
+            or long_year_span[0] < long_start
+            or long_year_span[1] > long_end
+            or long_page_span[1] - long_page_span[0] != len(full_page)
+            or long_page_span[0] < long_start
+            or long_page_span[1] > long_end
+            or short_page_span[0] < short_start
+            or short_page_span[1] > short_end):
+        return False
+    short_rel = (short_page_span[0] - short_start, short_page_span[1] - short_start)
+    long_rel = (long_page_span[0] - long_start, long_page_span[1] - long_start)
+    short_year_rel = (short_year_span[0] - short_start, short_year_span[1] - short_start)
+    long_year_rel = (long_year_span[0] - long_start, long_year_span[1] - long_start)
+    return (
+        short_raw[short_rel[0]:short_rel[1]] == "1"
+        and long_raw[long_rel[0]:long_rel[1]] == full_page
+        and short_raw[short_year_rel[0]:short_year_rel[1]] == year_short
+        and long_raw[long_year_rel[0]:long_year_rel[1]] == year_long
+    )
+
+
 def _fields_compatible(a, b):
     """两候选共享字段（双方都非空）nk 后是否相容。空对非空不算冲突——
     短候选少印一个槽是常态（「3 All E.R. 12」没有年份槽）。"""
+    if _verified_compound_locator_completion(a, b):
+        return True
+    # A narrow completion case for the observed printing variant 70 O.R. 2(d)
+    # 717. The old shape still emits the literal page=2 prefix; the dedicated
+    # transposed-series shape adds the missing (d) series and full page. Treat
+    # it as a containment only when offsets and raw text prove that exact
+    # suffix expansion, and the longer row has positive reporter support.
+    transposed_shapes = {
+        "shape_year_vol_page_transposed_series",
+        "shape_vol_abbr_page_transposed_series",
+    }
+    if b.get("shape_name") in transposed_shapes:
+        try:
+            a_start, a_end = int(a.get("match_start_offset")), int(a.get("match_end_offset"))
+            b_start, b_end = int(b.get("match_start_offset")), int(b.get("match_end_offset"))
+        except (TypeError, ValueError):
+            a_start = a_end = b_start = b_end = -1
+        a_raw = a.get("raw_string") or ""
+        b_raw = b.get("raw_string") or ""
+        series = (b.get("series") or "").strip().lower()
+        short_page = (a.get("page") or "").strip()
+        full_page = (b.get("page") or "").strip()
+        abbr_a = nk(a.get("abbr") or a.get("token") or "")
+        abbr_b = nk(b.get("abbr") or b.get("token") or "")
+        blank_short_series = all(not (a.get(field) or "").strip()
+                                 for field in ("series", "series_paren", "paren_note"))
+        try:
+            vol_start, vol_end = (int(x) for x in (b.get("vol_span") or "-1:-1").split(":"))
+        except (TypeError, ValueError):
+            vol_start = vol_end = -1
+        rel_start, rel_end = a_start - b_start, a_end - b_start
+        exact_span_completion = (
+            a.get("shape_name") in {"shape_year_vol_page", "shape_vol_abbr_page"}
+            and a_start >= 0 and b_start <= a_start < a_end < b_end
+            and len(a_raw) == a_end - a_start
+            and len(b_raw) == b_end - b_start
+            and (a_start == b_start or a_start == vol_start)
+            and 0 <= rel_start < rel_end <= len(b_raw)
+            and b_raw[rel_start:rel_end] == a_raw
+            and bool(re.fullmatch(r"\(d\)\s+" + re.escape(full_page),
+                                  b_raw[rel_end:], re.IGNORECASE))
+            and (a_start != vol_start or vol_end > vol_start)
+        )
+        shared_identity_fields = (
+            bool((a.get("vol") or "").strip())
+            and (a.get("vol") or "").strip() == (b.get("vol") or "").strip()
+            and (not (a.get("year_start") or "").strip()
+                 or not (b.get("year_start") or "").strip()
+                 or (a.get("year_start") or "").strip() == (b.get("year_start") or "").strip())
+            and bool(abbr_a) and abbr_a == abbr_b
+        )
+        known_reporter_support = (
+            a.get("citation_kind") == "reporter"
+            and b.get("citation_kind") == "reporter"
+            and (b.get("lookup_mode") or "") in ("exact", "normalized")
+            and support_grade(b) >= 1
+        )
+        if (blank_short_series and series in ("2d", "3d")
+                and short_page == series[0] and full_page
+                and shared_identity_fields and exact_span_completion
+                and known_reporter_support):
+            return True
     for f in ("vol", "page", "year_start"):
         fa, fb = (a.get(f) or "").strip(), (b.get(f) or "").strip()
         if fa and fb and fa != fb:
@@ -799,6 +1068,7 @@ def run_candidates(args, stats, pool_mode=None):
 
     # 台账（逐候选一行，约束五：不删候选）+ 跨行聚合（只数 counted）
     mentions = []
+    history = []
     key_mapping = Counter()            # (old_key, new_key) -> 候选数
     per_key_counted = defaultdict(list)
     per_key_members = defaultdict(list)
@@ -807,6 +1077,7 @@ def run_candidates(args, stats, pool_mode=None):
                                                  int(r["match_end_offset"]),
                                                  SHAPE_RANK.get(r["shape_name"], 99),
                                                  r["candidate_id"]))
+        doc_counted = []
         for row in rows:
             row = dict(row)
             status, note, sup = verdicts[row["candidate_id"]]
@@ -823,9 +1094,12 @@ def run_candidates(args, stats, pool_mode=None):
             per_key_members[new_key].append(row)
             if status == "counted":
                 per_key_counted[new_key].append(row)
+                doc_counted.append(row)
+        history.extend(history_instances(doc_counted, stats))
 
     _emit(args, stats, per_key_counted, per_key_members, mentions,
-          key_mapping, pool_mode=pool_mode or getattr(args, 'name_vote_pool', 'current'))
+          key_mapping, pool_mode=pool_mode or getattr(args, 'name_vote_pool', 'current'),
+          history=history)
 
 
 def name_vote_pool(members, pool_mode):
@@ -860,7 +1134,7 @@ def name_vote_pool(members, pool_mode):
 
 
 def _emit(args, stats, per_key_counted, per_key_members, mentions,
-          key_mapping=None, pool_mode="current"):
+          key_mapping=None, pool_mode="current", history=None):
     """聚合并写五张表。计数只看 counted；案名投票与自引归属用全键成员。"""
     merged, folded, decision_ids = [], [], []
     member_total = len(mentions)
@@ -1016,7 +1290,8 @@ def _emit(args, stats, per_key_counted, per_key_members, mentions,
     for name, fields, rows in (("merged.csv", MERGED_FIELDS, merged),
                                ("mentions_candidates.csv", MENTION_FIELDS, mentions),
                                ("folded_log.csv", FOLDED_FIELDS, folded),
-                               ("decision_ids.csv", DECISION_FIELDS, decision_ids)):
+                               ("decision_ids.csv", DECISION_FIELDS, decision_ids),
+                               ("history_pairs.csv", HISTORY_FIELDS, history)):
         if rows is None:
             continue
         path = os.path.join(args.output, name)

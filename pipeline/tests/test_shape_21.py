@@ -164,7 +164,9 @@ check("B10 两条 O.W.N. 字段", got == [((0, 17), "1951", "O.W.N.", "635", "")
 # ======================================================================
 # C-1 FALLBACK_SHAPE 名字与 shapes.SHAPES 末条一致，且恰在末位
 check("C1 兜底形状在 SHAPES 末位且名字一致",
-      shapes.SHAPES[-1][0] == FB and len(shapes.SHAPES) == 11,   # v1.6：8 + bracket_range + registered_id + neutral_glued
+      shapes.SHAPES[-1][0] == FB
+      and sum(name == FB for name, _ in shapes.SHAPES) == 1
+      and len({name for name, _ in shapes.SHAPES}) == len(shapes.SHAPES),
       "last=%r" % (shapes.SHAPES[-1][0],))
 
 # C-2 兜底形状不碰既有形状已命中的位置：裸中立引用 2011 ONCA 779 由

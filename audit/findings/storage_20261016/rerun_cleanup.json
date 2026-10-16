@@ -1,0 +1,104 @@
+{
+  "created_at": "2026-10-16T20:09:44.3123907+00:00",
+  "reason": "User explicitly requested deleting this session rerun data",
+  "project_bytes_before": 25672578606,
+  "disk_free_before": 39560777728,
+  "active_run_preserved": "run_20261016_country_complete",
+  "active_db_preserved": "data/foundation/research.db",
+  "removals": [
+    {
+      "path": "data/run_20261016_followup_full",
+      "bytes": 168059873,
+      "prior_status": "failed",
+      "input_fingerprint": "7399c11e4ac37382c982b42e8248cd3cecd957b97d0804861cd431cf7c16d254",
+      "removed": true
+    },
+    {
+      "path": "data/run_20261016_followup_full2",
+      "bytes": 3210770158,
+      "prior_status": "failed",
+      "input_fingerprint": "9349ca1b0949c33904507d59ccfdf94f6dd22e15f8f283b3b03b2254395ac7ed",
+      "removed": true
+    },
+    {
+      "path": "data/run_20261016_followup_smoke",
+      "bytes": 78639842,
+      "prior_status": "complete",
+      "input_fingerprint": "58f955c66740a9540b1c6ac34a12a866e46ac3c88cf6ff3a2a46857b8e0f291b",
+      "removed": true
+    }
+  ],
+  "status": "complete",
+  "disk_free_after": 43019091968,
+  "logical_bytes_removed": 3457469873,
+  "project_bytes_after": 22215109918,
+  "historical_cleanup": "Not performed: automatic approval rejected the broader historical-run/candidate-database deletion scope; retained pending explicit approval.",
+  "retained_cleanup_candidates": [
+    {
+      "path": "data/foundation/research_fixes_20261016.db",
+      "bytes": 2629771264,
+      "state": "retained_pending_explicit_approval"
+    },
+    {
+      "path": "data/run_20261016_fixA3_replay",
+      "bytes": 1435830593,
+      "state": "retained_pending_explicit_approval"
+    },
+    {
+      "path": "data/run_20261016_fixes_full",
+      "bytes": 881594848,
+      "state": "retained_pending_explicit_approval"
+    },
+    {
+      "path": "data/run_20261016_fixes_full2",
+      "bytes": 884049236,
+      "state": "retained_pending_explicit_approval"
+    },
+    {
+      "path": "data/run_20261016_country_assessment",
+      "bytes": 9208,
+      "state": "retained_pending_explicit_approval"
+    },
+    {
+      "path": "data/run_20261016_country_assessment_final",
+      "bytes": 878514361,
+      "state": "retained_pending_explicit_approval"
+    },
+    {
+      "path": "data/run_20261016_identity_split",
+      "bytes": 9077,
+      "state": "retained_pending_explicit_approval"
+    },
+    {
+      "path": "data/run_20261016_identity_split_bound",
+      "bytes": 868932431,
+      "state": "retained_pending_explicit_approval"
+    },
+    {
+      "path": "data/run_20261016_identity_split_final",
+      "bytes": 868932431,
+      "state": "retained_pending_explicit_approval"
+    },
+    {
+      "path": "data/run_20261016_identity_split_verified",
+      "bytes": 869065548,
+      "state": "retained_pending_explicit_approval"
+    },
+    {
+      "path": "data/run_20261016_johnson_nested_french",
+      "bytes": 868938493,
+      "state": "retained_pending_explicit_approval"
+    },
+    {
+      "path": "implementation/followup_fixes_20261016/classification_name_delta.csv",
+      "bytes": 7574046,
+      "state": "retained_pending_explicit_approval"
+    },
+    {
+      "path": "implementation/followup_fixes_20261016/classification_name_delta_final.csv",
+      "bytes": 7627611,
+      "state": "retained_pending_explicit_approval"
+    }
+  ],
+  "retained_cleanup_candidate_bytes": 10200849147
+}

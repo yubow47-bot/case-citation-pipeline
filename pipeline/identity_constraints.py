@@ -97,8 +97,10 @@ class ConstraintLedger:
                              'outcome': outcome, 'group_id': group_id, 'split_reason': reason,
                              'constraint_ids_json': canonical_json(sorted(set(constraint_ids)))})
 
-    def _proposal(self, phase, left, right, rule, strength='heuristic', detail=None):
-        return self._edge(phase, left, right, 'must_link', rule, strength, detail)
+    def _proposal(self, phase, left, right, rule, strength='heuristic', detail=None,
+                  additional_evidence_ids=()):
+        return self._edge(phase, left, right, 'must_link', rule, strength, detail,
+                          additional_evidence_ids=additional_evidence_ids)
 
     def _reject(self, phase, left, right, attempt, reason, detail=None, strength='explicit',
                 additional_evidence_ids=()):
@@ -140,8 +142,10 @@ class VariantConstraints:
     in_registry: bool = False
 
 
-def _proposal(trace, phase, left, right, rule, strength='heuristic', detail=None):
-    cid = trace._proposal(phase, left, right, rule, strength, detail) if trace else ''
+def _proposal(trace, phase, left, right, rule, strength='heuristic', detail=None,
+              additional_evidence_ids=()):
+    cid = (trace._proposal(phase, left, right, rule, strength, detail,
+                           additional_evidence_ids) if trace else '')
     return ConstraintEdge('must_link', rule, cid, tuple(sorted({row_key(m) for m in list(left) + list(right)})))
 
 
@@ -291,6 +295,8 @@ def document_union_constraint(members, aliases, registry, courts, context=None):
     context = context or {}
     docs = {aliases[m['merge_key']] for m in members if m['merge_key'] in aliases}
     reason = ''
+    detail = context.get('detail')
+    additional_evidence_ids = ()
     if len(docs) > 1:
         reason = 'different_document_claims'
     elif docs and any(next(iter(docs)) in set(filter(None, m.get('document_alias_holdout_doc_ids', '').split('|')))
@@ -303,27 +309,39 @@ def document_union_constraint(members, aliases, registry, courts, context=None):
         if len(tokens) > 1 or any(m.get('identity_court_conflict') == 'true' for m in members):
             reason = 'positive_court_conflict'
         else:
-            years = {row_year(m) for m in members if m.get('case_name_modal') and row_year(m) is not None}
-            if years and max(years) - min(years) > 1:
-                reason = 'year_span'
+            from reporter_identity_scope import scope_conflict_detail
+            scope_conflict = scope_conflict_detail(
+                context.get('left', members[:1]), context.get('right', members[1:]),
+                trace=context.get('trace'), court_evidence=courts)
+            if scope_conflict:
+                detail, additional_evidence_ids = scope_conflict
+                reason = 'incompatible_reporter_identity_scope'
             else:
-                neutrals = {m['merge_key'] for m in members if m.get('citation_kind') == 'neutral'}
-                if len(neutrals) > 1:
-                    first = min(neutrals)
-                    if any(not verified_bilingual_keys(first, key) for key in neutrals - {first}):
-                        reason = 'different_neutral_numbers'
-                if not reason:
-                    doc = next(iter(docs), '')
-                    for key in neutrals:
-                        protected = (registry or {}).get(key)
-                        if protected and doc and doc not in protected[0].split(';'):
-                            reason = 'registered_other_document'
-                            break
+                years = {row_year(m) for m in members if m.get('case_name_modal') and row_year(m) is not None}
+                if years and max(years) - min(years) > 1:
+                    reason = 'year_span'
+                else:
+                    neutral_source_keys = {m['merge_key'] for m in members
+                                           if m.get('citation_kind') == 'neutral'}
+                    neutral_roots = context.get('neutral_roots') or {}
+                    neutrals = {neutral_roots.get(key, key) for key in neutral_source_keys}
+                    if len(neutrals) > 1:
+                        first = min(neutrals)
+                        if any(not verified_bilingual_keys(first, key) for key in neutrals - {first}):
+                            reason = 'different_neutral_numbers'
+                    if not reason:
+                        doc = next(iter(docs), '')
+                        for key in neutral_source_keys:
+                            protected = (registry or {}).get(key)
+                            if protected and doc and doc not in protected[0].split(';'):
+                                reason = 'registered_other_document'
+                                break
     if not reason:
         return None
     return _block(context.get('trace'), context.get('phase', 'document_alias'),
                   context.get('left', members[:1]), context.get('right', members[1:]),
-                  context.get('proposal'), reason, context.get('detail'))
+                  context.get('proposal'), reason, detail,
+                  additional_evidence_ids=additional_evidence_ids)
 
 
 def court_partition_constraints(known, trace=None):

@@ -30,6 +30,10 @@ class PublicationTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
+        # Capacity checks must measure the tiny fixture, independent of retained production runs.
+        self.root_patch = patch.object(common, 'ROOT', self.root)
+        self.root_patch.start()
+        self.addCleanup(self.root_patch.stop)
         self.run = self.root/'run_fixture'
         self.run.mkdir()
         self.db_path = self.root/'research.db'
@@ -114,6 +118,15 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(list(common.rows(path)), [self.member])
         self.assertNotEqual(common.digest(actual), common.artifact_digest(path))
         self.assertFalse(path.exists())
+
+    def test_fixture_still_enforces_capacity_against_its_own_root(self):
+        report = common.database_preflight(self.db_path)
+        self.assertTrue(report['guarded'])
+        self.assertEqual(Path(report['root']), self.root)
+        self.assertEqual(report['max_project_bytes'], 12 * 1024 ** 3)
+        with common.storage_limits(max_project_bytes=1):
+            with self.assertRaisesRegex(ValueError, 'project peak exceeds'):
+                common.database_preflight(self.db_path)
 
     def test_import_never_publishes_before_indexes(self):
         report = build.build(self.run, self.db_path)

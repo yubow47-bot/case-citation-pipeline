@@ -184,9 +184,11 @@ def show_case(db, run, gid, rec=None, citing=5):
         WHERE e.run_id=? AND e.resolved_cited_case=? ORDER BY d.decision_date DESC LIMIT ?''', (run, gid, citing)).fetchall()
     rel = dict(db.execute("SELECT relation_type,COUNT(*) FROM edge_relations WHERE run_id=? AND resolved_cited_case=? GROUP BY 1",
                           (run, gid)).fetchall()) if _has_relations(db) else {}
-    if rel.get('same_case_history'):
-        print('    of the %d citing judgments, %d are the same litigation (procedural history), %d other judgments'
-              % (g['dd'], rel['same_case_history'], rel.get('other_judgment', 0)))
+    if rel.get('same_case_history') or rel.get('probable_same_litigation'):
+        print('    of the %d citing judgments, %d are the same litigation (procedural history), '
+              '%d probably the same litigation (same title, 0-6 years later), %d other judgments'
+              % (g['dd'], rel.get('same_case_history', 0), rel.get('probable_same_litigation', 0),
+                 rel.get('other_judgment', 0)))
     if rows:
         print('    cited by (latest %d of %d): ' % (len(rows), g['dd']) + '; '.join(
             '%s %s (%s)' % (r[0], (r[1] or '')[:40], (r[2] or '')[:10]) for r in rows))
@@ -360,7 +362,8 @@ def main():
     p.add_argument('--cited-name', help='edges: cited case name contains this text')
     p.add_argument('--court', help='edges: citing court, e.g. BCCA')
     p.add_argument('--year-from', type=int); p.add_argument('--year-to', type=int)
-    p.add_argument('--relation', choices=['same_case_history', 'other_judgment'], help='edges: relation type')
+    p.add_argument('--relation', choices=['same_case_history', 'probable_same_litigation', 'other_judgment'],
+                   help='edges: relation type')
     p.add_argument('--run')
     p.add_argument('--db', default=str(DEFAULT_DB))
     a = p.parse_args()

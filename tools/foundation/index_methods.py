@@ -26,11 +26,20 @@ CODE_LAYER = {'extract': 'extraction', 'shapes': 'extraction', 'normalize': 'ext
               'registry': 'adjudication', 'registry_report': 'adjudication', 'select_layer': 'selection',
               'edges': 'edges', 'run_all': 'orchestration', 'trace_source': 'orchestration',
               'coverage_report': 'orchestration'}
+CODE_LAYER.update({name: 'adjudication' for name in (
+    'identity_constraints', 'identity_courts', 'identity_evidence', 'identity_pairs',
+    'identity_solve', 'reporter_identity_scope')})
 TABLE_LAYER = {'reporter_jurisdiction': 'classification', 'court_designations': 'classification',
                'identifier_systems': 'classification', 'neutral_court_codes': 'classification',
                'series_prefix': 'classification', 'bilingual_neutral_codes': 'classification',
                'case_origin': 'adjudication', 'case_origin_manual': 'adjudication',
                'reporter_origin_scope': 'adjudication', 'court_or_reporter_scope': 'adjudication'}
+TABLE_LAYER.update({name: 'adjudication' for name in (
+    'bilingual_reporter_abbreviations', 'identity_court_facts', 'identity_court_scope',
+    'identity_separations', 'identity_pair_separations', 'reporter_identity_court_sets')})
+TABLE_LAYER.update({name: 'classification' for name in (
+    'non_case_sources', 'non_citation_words', 'reporter_compound_locators', 'court_designation_codes',
+    'court_designation_reporter_scope')})
 KEYWORDS = {
     'extraction': ['抽取', 'extract', 'regex', '正则', 'shape', '形状', 'span', '捕获'],
     'classification': ['分类', 'classif', '法域', 'jurisdiction', '缩写', 'abbreviation', 'reporter', '汇编', '同形'],

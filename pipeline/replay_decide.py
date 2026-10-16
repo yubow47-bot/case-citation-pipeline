@@ -32,13 +32,18 @@ ALLOW_CHANGED = frozenset({
     'pipeline/identity_solve.py', 'pipeline/identity_courts.py',
     'pipeline/decide.py', 'pipeline/registry.py', 'pipeline/registry_report.py',
     'pipeline/edges.py', 'pipeline/run_all.py', 'pipeline/replay_decide.py',
+    'pipeline/identity_pairs.py', 'pipeline/reporter_identity_scope.py',
     'tools/check_run.py',
     'tools/storage.py',  # Runtime capacity/deletion accounting, not upstream parsing.
     'pipeline/select_layer.py', 'select_config.yaml',  # Selection only; upstream rows unchanged.
     # Read only by CourtEvidence in registry/decide; never by extract/classify/merge.
     # All other decision tables still require a fresh upstream run.
     'decisions/identity_court_facts.csv',
+    'decisions/court_designation_codes.csv',  # Designation-to-court-code links for CourtEvidence only.
     'decisions/identity_separations.csv',  # Exact proof-bound exclusions in decide only.
+    'decisions/bilingual_reporter_abbreviations.csv',
+    'decisions/identity_pair_separations.csv',
+    'decisions/reporter_identity_court_sets.csv',
 })
 UPSTREAM_SCHEMAS = ('extract_legacy_kept_superseded', 'extract_candidates', 'classify', 'merge')
 MAX_MANIFEST_BYTES = 2 * 1024**2

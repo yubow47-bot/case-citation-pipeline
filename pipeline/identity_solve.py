@@ -8,11 +8,12 @@ from identity_constraints import (
     _combined_identifier_keys, variant_constraints, identifier_union_constraint,
     document_union_constraint, court_partition_constraints, document_holdout_constraints,
     atomic_link, name_year_link, cocitation_link, document_alias_link,
-    anchor_root_link, alias_root_link, jurisdiction_constraint)
+    anchor_root_link, alias_root_link, jurisdiction_constraint, _proposal, _block)
 import identity_evidence as evidence
 from identity_evidence import (row_year, row_key, _neutral_parts, _self_of,
     neutral_start, _before_start, load_bilingual, load_identifier_systems,
-    identifier_system_of, parse_name_classes, load_identity_separations)
+    identifier_system_of, parse_name_classes, load_identity_separations,
+    load_bilingual_reporters)
 
 BAR = 0.8
 
@@ -517,7 +518,8 @@ def cluster_same_case(rows, did_idx, stats, start=None, registry=None,
                 if proposal is None:
                     raise AssertionError('Name/year bucket lacks scoped evidence')
                 for court_rows, court_reason in partition(
-                        rows_, did_idx, court_evidence, row_key, stats, BAR, trace):
+                        rows_, did_idx, court_evidence, row_key, stats, BAR, trace,
+                        scope_courts=courts):
                     for sub, r1 in split_by_decision(court_rows, did_idx, stats, start,
                                                      registry, typo_over, gate,
                                                      holdout, trace, proposal):
@@ -680,6 +682,402 @@ def merge_document_alias_clusters(clusters, own_cites, registry, stats, trace=No
         result.append((members, ';'.join(reasons), ''))
     return result+detached
 
+SAME_KEY_HELD_REASONS = ('mixed_identity', 'holdout', 'document_claim_conflict',
+                         'document_unassigned')
+
+
+def complete_reporter_key(row):
+    """A reporter key names one printed report: abbreviation, page and a volume or year."""
+    if row.get('citation_kind') != 'reporter':
+        return False
+    parts = row['merge_key'].split('|')
+    return len(parts) == 5 and bool(parts[2] and parts[4] and (parts[0] or parts[1]))
+
+
+def report_key(row):
+    """The report a reporter key names; a verified French title maps to its English key (#139)."""
+    parts = row['merge_key'].split('|')
+    parts[2] = load_bilingual_reporters().get(parts[2], parts[2])
+    return '|'.join(parts)
+
+
+def merge_same_key_clusters(clusters, did_idx, stats, start=None, registry=None,
+                            gate='literal', own_cites=None, trace=None, history=None):
+    """Join clusters that hold the same complete printed reporter citation.
+
+    The merge layer already counts an identical reporter string as one citation
+    inside a court. Cross-court clustering only made identifiers and neutral
+    citations atomic, so the same report cited from two courts stayed in two
+    groups whenever the titles differed or were missing. The whole candidate
+    component must still pass the document-union cannot-links (document claims,
+    identifier numbers, positive courts, year span, neutral numbers) and keep a
+    single decision root. Keys whose citing rows disagree on jurisdiction, and
+    clusters already held out as mixed or document-conflicted, never bridge.
+    """
+    from identity_courts import CourtEvidence
+    courts = CourtEvidence()
+    aliases = getattr(own_cites, 'aliases', {})
+    history_by_key = defaultdict(set)
+    for iid, sides in (history or {}).items():
+        for side in ('before', 'after'):
+            for k in sides.get(side, ()):
+                history_by_key[k].add(iid)
+    parent = list(range(len(clusters)))
+    components = {i: list(members) for i, (members, _, _) in enumerate(clusters)}
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+    by_key = defaultdict(set)
+    for index, (members, reason, _) in enumerate(clusters):
+        if any(marker in (reason or '') for marker in SAME_KEY_HELD_REASONS):
+            continue
+        for m in members:
+            if complete_reporter_key(m):
+                by_key[report_key(m)].add(index)
+    for key in sorted(by_key):
+        indices = sorted(by_key[key])
+        if len(indices) < 2:
+            continue
+        stats['same_key_split_keys'] += 1
+        rows = [m for i in indices for m in clusters[i][0]
+                if complete_reporter_key(m) and report_key(m) == key]
+        known = {m.get('jurisdiction') for m in rows if not _unknown(m.get('jurisdiction') or '')}
+        if len(known) > 1:
+            stats['same_key_union_jurisdiction_disagree'] += 1
+            continue
+        for index in indices[1:]:
+            left, right = find(indices[0]), find(index)
+            if left == right:
+                continue
+            combined = components[left] + components[right]
+            same = lambda m: complete_reporter_key(m) and report_key(m) == key
+            same_left = [m for m in components[left] if same(m)]
+            same_right = [m for m in components[right] if same(m)]
+            alias_refs, alias_detail = reporter_mapping_provenance(same_left + same_right, trace)
+            root_map, _, _, _, root_kind = decisions_of(
+                combined, did_idx, start, registry, None, gate, None, trace)
+            neutral_keys = sorted({m['merge_key'] for m in combined
+                                   if m.get('citation_kind') == 'neutral'})
+            neutral_roots = {neutral_key: root_map.get(neutral_key, neutral_key)
+                             for neutral_key in neutral_keys}
+            proposal_detail = dict(alias_detail or {})
+            proposal_detail['neutral_root_normalizations'] = [
+                {'merge_key': neutral_key,
+                 'root_merge_key': neutral_roots[neutral_key],
+                 'root_kind': (root_kind.get(neutral_key, 'anchor')
+                               if neutral_roots[neutral_key] != neutral_key
+                               else 'root' if neutral_key in root_map
+                               else 'unanchored')}
+                for neutral_key in neutral_keys]
+            proposal = _proposal(trace, 'same_key_union', same_left, same_right,
+                                 'exact_full_reporter_key', 'explicit', proposal_detail, alias_refs)
+            blocker = document_union_constraint(combined, aliases, registry, courts,
+                {'trace': trace, 'phase': 'same_key_union', 'left': components[left],
+                 'right': components[right], 'proposal': proposal,
+                 'neutral_roots': neutral_roots})
+            if blocker is None and len(set(root_map.values())) > 1:
+                blocker = _block(trace, 'same_key_union', components[left], components[right],
+                                 proposal, 'distinct_decision_roots')
+            if blocker is None and trace:
+                pair_conflicts = pair_separation_conflicts(
+                    {m['merge_key'] for m in combined}, trace.snapshot.pair_cannot_links)
+                for separation in pair_conflicts:
+                    detail = pair_separation_detail(separation)
+                    blocker = _block(trace, 'same_key_union', components[left], components[right],
+                                     proposal, 'verified_pair_separation', detail,
+                                     additional_evidence_ids=[separation['evidence_id']])
+                if pair_conflicts:
+                    stats['same_key_union_blocked_verified_pair_separation'] += len(pair_conflicts)
+            if blocker is None and history:
+                conflict_instances = history_conflict_instances(combined, history_by_key, history)
+                if conflict_instances:
+                    detail = {'history_instances': [history_instance_binding(
+                                                    iid, history[iid], trace,
+                                                    {m['merge_key'] for m in components[left]},
+                                                    {m['merge_key'] for m in components[right]})
+                                                    for iid in conflict_instances]}
+                    refs = sorted({eid for item in detail['history_instances']
+                                   for eid in item['evidence_ids']})
+                    blocker = _block(trace, 'same_key_union', components[left], components[right],
+                                     proposal, 'appeal_history_connector', detail,
+                                     additional_evidence_ids=refs)
+            if blocker:
+                stats['same_key_union_blocked_' + blocker.rule] += 1
+                continue
+            if trace:
+                trace.event('same_key_union', combined, 'accepted', 'exact_full_reporter_key',
+                            [proposal.constraint_id])
+            parent[right] = left
+            components[left] = combined
+            del components[right]
+            stats['same_key_cluster_unions'] += 1
+    old_parts = defaultdict(list)
+    for index, cluster in enumerate(clusters):
+        old_parts[find(index)].append(cluster)
+    result = []
+    for index in sorted(components):
+        parts = old_parts[index]
+        if len(parts) == 1:
+            result.append(parts[0])
+        else:
+            reasons = sorted({reason for _, reason, _ in parts if reason})
+            result.append((components[index], ';'.join(reasons), ''))
+    return result
+
+def split_by_history(clusters, instances, did_idx, stats, trace=None, bar=BAR,
+                     pair_cannot_links=()):
+    """Keep the two sides of an appeal-history connector in different groups (#142).
+
+    Keys on one side of one instance are parallel citations of one judgment and
+    move together; the sides of an instance are a cannot-link. Components are then
+    rejoined greedily by co-citation (>= bar) when no cannot-link or positive court
+    conflict separates them. Members in no instance follow a unique co-citation
+    match, otherwise stay unassigned. A key on both sides is a contradiction: the
+    cluster is left as it was.
+    """
+    instances = instances or {}
+    pair_cannot_links = list(pair_cannot_links or ())
+    from identity_courts import CourtEvidence
+    from reporter_identity_scope import scope_conflict_detail
+    courts = CourtEvidence()
+    by_key = defaultdict(set)
+    for iid, sides in instances.items():
+        for side in ('before', 'after'):
+            for k in sides.get(side, ()):
+                by_key[k].add(iid)
+    out = []
+    for members, reason, seq in clusters:
+        keys = {m['merge_key'] for m in members}
+        live = sorted(iid for iid in {i for k in keys for i in by_key.get(k, ())}
+                      if instances[iid]['before'] & keys and instances[iid]['after'] & keys)
+        live_pair_links = [item for item in pair_cannot_links
+                           if item.get('left_merge_key') in keys and item.get('right_merge_key') in keys]
+        if not live and not live_pair_links and len(keys) < 2:
+            out.append((members, reason, seq))
+            continue
+        parent = {k: k for k in keys}
+
+        def find(k):
+            while parent[k] != k:
+                parent[k] = parent[parent[k]]
+                k = parent[k]
+            return k
+        for iid in live:
+            for side in ('before', 'after'):
+                run = sorted(instances[iid][side] & keys)
+                for k in run[1:]:
+                    a, b = find(run[0]), find(k)
+                    if a != b:
+                        parent[max(a, b)] = min(a, b)
+        cannot = set()
+        history_sources = defaultdict(set)
+        scope_sources = defaultdict(list)
+        for iid in live:
+            for a in instances[iid]['before'] & keys:
+                for b in instances[iid]['after'] & keys:
+                    pair = frozenset((find(a), find(b)))
+                    cannot.add(pair)
+                    history_sources[pair].add(iid)
+        pair_sources = defaultdict(list)
+        for separation in pair_cannot_links:
+            left_key = separation.get('left_merge_key')
+            right_key = separation.get('right_merge_key')
+            evidence_id = separation.get('evidence_id')
+            relation_type = separation.get('relation_type')
+            if not left_key or not right_key or left_key == right_key or not evidence_id or not relation_type:
+                raise ValueError('Malformed verified pair-separation fact')
+            if left_key not in keys or right_key not in keys:
+                continue
+            a, b = find(left_key), find(right_key)
+            if a == b:
+                raise ValueError('Verified pair separation conflicts with an earlier same-group union')
+            pair = frozenset((a, b))
+            cannot.add(pair)
+            pair_sources[pair].append(separation)
+        root_rows = defaultdict(list)
+        for member in members:
+            root_rows[find(member['merge_key'])].append(member)
+        scope_roots = sorted(root_rows)
+        for index, a in enumerate(scope_roots):
+            for b in scope_roots[index + 1:]:
+                found = scope_conflict_detail(root_rows[a], root_rows[b],
+                                              trace=trace, court_evidence=courts)
+                if found:
+                    detail, refs = found
+                    pair = frozenset((a, b))
+                    cannot.add(pair)
+                    scope_sources[pair].append((detail, refs))
+        if not cannot:
+            # A group with no applicable split fact must preserve its original
+            # reason and sequence metadata, even when it contains several keys.
+            out.append((members, reason, seq))
+            continue
+        if any(len(pair) == 1 for pair in cannot):
+            stats['history_split_contradictions'] += 1
+            if any(pair_sources.get(pair) for pair in cannot if len(pair) == 1):
+                raise ValueError('Verified pair separation is unsplittable after a same-key union')
+            out.append((members, reason, seq))
+            continue
+        involved = {r for pair in cannot for r in pair}
+        comps, rest = defaultdict(list), defaultdict(list)
+        for m in members:
+            root = find(m['merge_key'])
+            (comps[root] if root in involved else rest[m['merge_key']]).append(m)
+        ids = {c: set().union(*(did_idx.get(row_key(m), set()) for m in rows)) for c, rows in comps.items()}
+        tokens = {c: {t for m in rows for t in courts.evidence(m)} for c, rows in comps.items()}
+        blocked = {c: {d for pair in cannot if c in pair for d in pair if d != c} for c in comps}
+        # Greedy rejoin of components: highest overlap first, never across a cannot-link.
+        while True:
+            best = None
+            for a in sorted(comps):
+                for b in sorted(comps):
+                    if a >= b or b in blocked[a] or len(tokens[a] | tokens[b]) > 1:
+                        continue
+                    small = min(len(ids[a]), len(ids[b]))
+                    ov = len(ids[a] & ids[b])
+                    if small and ov >= bar * small and (best is None or ov > best[0]):
+                        best = (ov, a, b)
+            if best is None:
+                break
+            _, a, b = best
+            comps[a].extend(comps.pop(b))
+            ids[a] |= ids.pop(b)
+            tokens[a] |= tokens.pop(b)
+            blocked[a] = (blocked[a] | blocked.pop(b)) - {a}
+            for c in blocked:
+                if b in blocked[c]:
+                    blocked[c] = (blocked[c] - {b}) | {a}
+            stats['history_components_rejoined_by_cocitation'] += 1
+        unassigned = []
+        for key in sorted(rest):
+            rows = rest[key]
+            src = set().union(*(did_idx.get(row_key(m), set()) for m in rows))
+            supported = [c for c, t in ids.items()
+                         if src and t and len(src & t) >= bar * min(len(src), len(t))]
+            if len(supported) == 1:
+                comps[supported[0]].extend(rows)
+                stats['history_unknown_units_assigned'] += 1
+            else:
+                unassigned.extend(rows)
+                stats['history_unknown_units_unassigned'] += 1
+        parts = [comps[c] for c in sorted(comps, key=lambda c: min(row_key(m) for m in comps[c]))]
+        if trace:
+            for pair in sorted(cannot, key=sorted):
+                a, b = sorted(pair)
+                left = [m for m in members if find(m['merge_key']) == a]
+                right = [m for m in members if find(m['merge_key']) == b]
+                history_ids = sorted(history_sources.get(pair, ()))
+                if history_ids:
+                    left_keys = {m['merge_key'] for m in left}
+                    right_keys = {m['merge_key'] for m in right}
+                    bindings = [history_instance_binding(
+                        iid, instances[iid], trace, left_keys, right_keys)
+                                for iid in history_ids]
+                    refs = sorted({eid for item in bindings for eid in item['evidence_ids']})
+                    _block(trace, 'history_separation', left, right, None,
+                           'appeal_history_connector', {'history_instances': bindings},
+                           additional_evidence_ids=refs)
+                for separation in sorted(pair_sources.get(pair, ()),
+                                         key=lambda x: (x['left_merge_key'], x['right_merge_key'], x['relation_type'])):
+                    detail = {'relation_type': separation['relation_type'],
+                              'left_merge_key': separation['left_merge_key'],
+                              'right_merge_key': separation['right_merge_key'],
+                              'evidence_id': separation['evidence_id'],
+                              'source_detail': separation.get('source_detail', {})}
+                    _block(trace, 'identity_pair_separation', left, right, None,
+                           'verified_pair_separation', detail,
+                           additional_evidence_ids=[separation['evidence_id']])
+                for detail, refs in scope_sources.get(pair, ()):
+                    _block(trace, 'reporter_scope_partition', left, right, None,
+                           'incompatible_reporter_identity_scope', detail,
+                           additional_evidence_ids=refs)
+        if live:
+            stats['history_clusters_split'] += 1
+            stats['history_parts'] += len(parts)
+        if pair_sources:
+            stats['verified_pair_separation_clusters_split'] += 1
+        if scope_sources:
+            stats['identity_clusters_split_by_reporter_scope'] += 1
+        split_markers = []
+        if live:
+            split_markers.append('history_separation')
+        if pair_sources:
+            split_markers.append('verified_pair_separation')
+        if scope_sources:
+            split_markers.append('reporter_identity_scope')
+        tag = ';'.join(x for x in (reason, *split_markers) if x)
+        for i, part in enumerate(parts):
+            out.append((part, tag, ''))
+        if unassigned:
+            out.append((unassigned, tag + ';history_unassigned', ''))
+    return out
+
+
+def pair_separation_conflicts(keys, pair_cannot_links):
+    keys = set(keys)
+    return [item for item in pair_cannot_links
+            if item.get('left_merge_key') in keys and item.get('right_merge_key') in keys]
+
+
+def pair_separation_detail(item):
+    return {'relation_type': item['relation_type'],
+            'left_merge_key': item['left_merge_key'],
+            'right_merge_key': item['right_merge_key'],
+            'evidence_id': item['evidence_id'],
+            'table_evidence_id': item.get('table_evidence_id', ''),
+            'source_detail': item.get('source_detail', {})}
+
+
+def history_conflict_instances(members, instances_by_key, instances):
+    """Return the exact history instances contradicted by this component."""
+    keys = {m['merge_key'] for m in members}
+    return sorted(iid for iid in {i for k in keys for i in instances_by_key.get(k, ())}
+                  if instances[iid]['before'] & keys and instances[iid]['after'] & keys)
+
+
+def history_conflict(members, instances_by_key, instances):
+    return bool(history_conflict_instances(members, instances_by_key, instances))
+
+
+def history_instance_binding(instance, record, trace, left_component_keys=None,
+                             right_component_keys=None):
+    """Constraint detail binds the split to exact immutable history facts."""
+    if trace is None:
+        raise ValueError('History constraint provenance requires a trace snapshot')
+    evidence_ids = list(trace.snapshot.history_instance_facts(instance))
+    binding = {'instance': instance,
+               'before_merge_keys': sorted(record['before']),
+               'after_merge_keys': sorted(record['after']),
+               'evidence_ids': evidence_ids}
+    if left_component_keys is not None or right_component_keys is not None:
+        binding['left_component_keys'] = sorted(set(left_component_keys or ()))
+        binding['right_component_keys'] = sorted(set(right_component_keys or ()))
+    return binding
+
+
+def reporter_mapping_provenance(rows, trace):
+    if trace is None:
+        return [], None
+    normalizations = []
+    for row in rows:
+        parts = row['merge_key'].split('|')
+        if len(parts) < 3:
+            continue
+        alias = nk(parts[2])
+        target = report_key(row).split('|')[2]
+        if alias == target:
+            continue
+        evidence_id = trace.snapshot.bilingual_reporter_fact(alias, target)
+        normalizations.append({'row_key': row_key(row), 'from': alias, 'to': target,
+                               'policy_evidence_id': evidence_id})
+    normalizations.sort(key=lambda x: (x['row_key'], x['from'], x['to']))
+    return (sorted({item['policy_evidence_id'] for item in normalizations}),
+            {'reporter_normalizations': normalizations} if normalizations else None)
+
+
 def assign_identity_basis(members, did_idx, start, reason):
     """Recompute final root/basis using the historical no-registry accounting call. Multiple rows sharing a key count as same-citation only when that key alone defines the group."""
     root, anc, ajur, own, root_kind = decisions_of(members, did_idx, start)
@@ -712,7 +1110,8 @@ def assign_identity_basis(members, did_idx, start, reason):
         out[row_key(m)] = b
     return out
 
-def partition(members, did_idx, evidence, row_key, stats, bar=0.8, trace=None):
+def partition(members, did_idx, evidence, row_key, stats, bar=0.8, trace=None,
+              scope_courts=None):
     """Split only incompatible positive courts; unassigned members stay visible.
 
     A full merge key is atomic. Its own conflicting court evidence is flagged,
@@ -734,8 +1133,44 @@ def partition(members, did_idx, evidence, row_key, stats, bar=0.8, trace=None):
                     row["identity_court_conflict"] = "true"
             pending.append(rows)
     blockers = court_partition_constraints(known, trace)
+    from reporter_identity_scope import scope_conflict_detail
+    if scope_courts is None:
+        from identity_courts import CourtEvidence
+        scope_courts = CourtEvidence()
+
+    def split_scope_units(units):
+        conflicts = []
+        for index, left in enumerate(units):
+            for right in units[index + 1:]:
+                found = scope_conflict_detail(left, right, trace=trace,
+                                              court_evidence=scope_courts)
+                if found:
+                    detail, refs = found
+                    conflicts.append((left, right, detail, refs))
+        if not conflicts:
+            return None
+        for left, right, detail, refs in conflicts:
+            _block(trace, 'reporter_scope_partition', left, right, None,
+                   'incompatible_reporter_identity_scope', detail,
+                   additional_evidence_ids=refs)
+        grouped = []
+        for unit in units:
+            for group in grouped:
+                if all(not scope_conflict_detail(unit, other, trace=trace,
+                                                 court_evidence=scope_courts)
+                       for other in group):
+                    group.append(unit)
+                    break
+            else:
+                grouped.append([unit])
+        stats['identity_clusters_split_by_reporter_scope'] += 1
+        return [(sum((list(unit) for unit in group), []),
+                 'reporter_identity_scope') for group in grouped]
+
     if not blockers:
-        return [(members, "")]
+        units = [known[c] for c in sorted(known)] + pending
+        scoped_parts = split_scope_units(units)
+        return scoped_parts if scoped_parts is not None else [(members, "")]
     stats["identity_clusters_split_by_court"] += 1
     ids = {court: set().union(*(did_idx.get(row_key(r), set()) for r in rows))
            for court, rows in known.items()}
@@ -745,6 +1180,14 @@ def partition(members, did_idx, evidence, row_key, stats, bar=0.8, trace=None):
         supported = []
         if not any(r.get("identity_court_conflict") == "true" for r in rows):
             for court, target in ids.items():
+                scope_blocker = scope_conflict_detail(
+                    rows, known[court], trace=trace, court_evidence=scope_courts)
+                if scope_blocker:
+                    detail, refs = scope_blocker
+                    _block(trace, 'reporter_scope_partition', rows, known[court], None,
+                           'incompatible_reporter_identity_scope', detail,
+                           additional_evidence_ids=refs)
+                    continue
                 denominator = min(len(sources), len(target))
                 if denominator and len(sources & target) >= bar * denominator:
                     supported.append(court)
@@ -768,7 +1211,14 @@ def partition(members, did_idx, evidence, row_key, stats, bar=0.8, trace=None):
             stats["identity_unknown_court_unassigned_units"] += 1
     result = [(known[c], "court_evidence") for c in sorted(known)]
     if unassigned:
-        result.append((unassigned, "court_evidence;court_unassigned"))
+        unassigned_units = [units[key] for key in sorted(units)
+                            if any(row in unassigned for row in units[key])]
+        scoped_parts = split_scope_units(unassigned_units)
+        if scoped_parts is None:
+            result.append((unassigned, "court_evidence;court_unassigned"))
+        else:
+            result.extend((part, "court_evidence;court_unassigned;reporter_identity_scope")
+                          for part, _ in scoped_parts)
     if trace:
         for part, reason in result:
             trace.event('court_partition', part, 'partitioned', reason,
@@ -777,7 +1227,7 @@ def partition(members, did_idx, evidence, row_key, stats, bar=0.8, trace=None):
 
 def solve_identity(rows, did_idx, prefix, stats, registry=None, typo_over=None,
                    holdout=None, gate="literal", own_cites=None,
-                   identity_separations=None, trace=None):
+                   identity_separations=None, trace=None, history=None):
     for row in rows:
         for field in ('document_alias_decision_id','document_alias_evidence_ids','document_alias_source_rows'):
             row[field] = ''
@@ -871,6 +1321,11 @@ def solve_identity(rows, did_idx, prefix, stats, registry=None, typo_over=None,
                                  gate, holdout, trace)
     clusters += [(held[key],'unanchored;document_alias_inherited_holdout','') for key in sorted(held)]
     clusters = merge_document_alias_clusters(clusters, own_cites, registry, stats, trace)
+    pair_links = getattr(getattr(trace, 'snapshot', None), 'pair_cannot_links', ())
+    clusters = split_by_history(clusters, history, did_idx, stats, trace,
+                                pair_cannot_links=pair_links)
+    clusters = merge_same_key_clusters(clusters, did_idx, stats, start, registry, gate,
+                                       own_cites, trace, history)
 
     if holdout:
         mixed = {h[0] for h in holdout}

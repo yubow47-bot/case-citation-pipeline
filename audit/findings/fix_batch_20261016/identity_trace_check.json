@@ -1,0 +1,206 @@
+{
+  "protocol": "identity-trace-verification-v1",
+  "status": "passed",
+  "run": "D:\\cases data analisis\\data\\run_20261016_fixes_full3",
+  "output_seal": {
+    "status": "verified",
+    "files_verified": 305,
+    "fingerprint": "5cf5e021dc38512cd63014b8240e888a85a80591517c23fe5a15fbec01d638cf"
+  },
+  "scopes": [
+    {
+      "scope": "BCCA",
+      "status": "passed",
+      "rows": 74263,
+      "groups": 70070,
+      "counts": {
+        "evidence": 248774,
+        "constraints": 57354,
+        "conflicts": 2075,
+        "solution": 183183
+      },
+      "fact_kinds": {
+        "own_citation_proof": 63789,
+        "court_observation": 74268,
+        "row_observation": 74263,
+        "registry_claim": 36031,
+        "policy_record": 423
+      },
+      "relations": {
+        "must_link": 55285,
+        "cannot_link": 2069
+      },
+      "strengths": {
+        "heuristic": 55049,
+        "explicit": 2305
+      },
+      "standalone_conflicts": 1996,
+      "events": {
+        "anchor_root:admitted": 19640,
+        "court_partition:partitioned": 3262,
+        "name_year_window:admitted": 15735,
+        "single_anchor:unresolved": 1709,
+        "court_assignment:assigned": 124,
+        "single_anchor:accepted": 1102,
+        "single_anchor_components:joined": 738,
+        "multi_anchor:unresolved": 91,
+        "pending_components:joined": 2,
+        "court_assignment:unresolved": 132,
+        "variant:accepted": 19,
+        "multi_anchor:accepted": 70,
+        "document_cleanup:partitioned": 71,
+        "document_alias:accepted": 347,
+        "document_alias_detach:held_out": 1,
+        "final_identity_partition:partitioned": 70070,
+        "assigned_group_id:assigned": 70070
+      }
+    },
+    {
+      "scope": "cross_court",
+      "status": "passed",
+      "rows": 255977,
+      "groups": 214840,
+      "counts": {
+        "evidence": 612223,
+        "constraints": 149323,
+        "conflicts": 5567,
+        "solution": 554615
+      },
+      "fact_kinds": {
+        "row_observation": 255977,
+        "court_observation": 256003,
+        "own_citation_proof": 63789,
+        "registry_claim": 36031,
+        "policy_record": 423
+      },
+      "relations": {
+        "cannot_link": 5564,
+        "must_link": 143759
+      },
+      "strengths": {
+        "explicit": 26136,
+        "heuristic": 123187
+      },
+      "standalone_conflicts": 5430,
+      "events": {
+        "document_holdout:held_out": 2,
+        "atomic_unit:joined": 7058,
+        "anchor_root:admitted": 38315,
+        "court_partition:partitioned": 7618,
+        "name_year_window:admitted": 48367,
+        "single_anchor:accepted": 3855,
+        "single_anchor:unresolved": 3987,
+        "court_assignment:assigned": 428,
+        "multi_anchor:accepted": 193,
+        "court_assignment:unresolved": 517,
+        "single_anchor_components:joined": 586,
+        "multi_anchor:unresolved": 216,
+        "pending_components:joined": 5,
+        "variant:accepted": 83,
+        "document_cleanup:partitioned": 25,
+        "document_alias:accepted": 1782,
+        "document_alias_detach:held_out": 4,
+        "same_key_union:accepted": 11894,
+        "final_identity_partition:partitioned": 214840,
+        "assigned_group_id:assigned": 214840
+      }
+    },
+    {
+      "scope": "ONCA",
+      "status": "passed",
+      "rows": 65510,
+      "groups": 61216,
+      "counts": {
+        "evidence": 231270,
+        "constraints": 44136,
+        "conflicts": 2340,
+        "solution": 160108
+      },
+      "fact_kinds": {
+        "own_citation_proof": 63789,
+        "court_observation": 65517,
+        "row_observation": 65510,
+        "registry_claim": 36031,
+        "policy_record": 423
+      },
+      "relations": {
+        "must_link": 41796,
+        "cannot_link": 2340
+      },
+      "strengths": {
+        "explicit": 2679,
+        "heuristic": 41457
+      },
+      "standalone_conflicts": 2300,
+      "events": {
+        "atomic_unit:joined": 53,
+        "anchor_root:admitted": 12488,
+        "name_year_window:admitted": 17553,
+        "single_anchor:accepted": 1716,
+        "court_partition:partitioned": 3587,
+        "single_anchor:unresolved": 1310,
+        "court_assignment:assigned": 149,
+        "multi_anchor:accepted": 79,
+        "court_assignment:unresolved": 154,
+        "single_anchor_components:joined": 149,
+        "variant:accepted": 64,
+        "multi_anchor:unresolved": 40,
+        "pending_components:joined": 1,
+        "document_cleanup:partitioned": 65,
+        "document_alias:accepted": 263,
+        "document_alias_detach:held_out": 1,
+        "same_key_union:accepted": 4,
+        "final_identity_partition:partitioned": 61216,
+        "assigned_group_id:assigned": 61216
+      }
+    },
+    {
+      "scope": "SCC",
+      "status": "passed",
+      "rows": 116204,
+      "groups": 112392,
+      "counts": {
+        "evidence": 332651,
+        "constraints": 52424,
+        "conflicts": 1115,
+        "solution": 265906
+      },
+      "fact_kinds": {
+        "own_citation_proof": 63789,
+        "row_observation": 116204,
+        "registry_claim": 36031,
+        "court_observation": 116204,
+        "policy_record": 423
+      },
+      "relations": {
+        "must_link": 51310,
+        "cannot_link": 1114
+      },
+      "strengths": {
+        "explicit": 1241,
+        "heuristic": 51183
+      },
+      "standalone_conflicts": 1105,
+      "events": {
+        "atomic_unit:joined": 8,
+        "anchor_root:admitted": 13853,
+        "name_year_window:admitted": 22812,
+        "single_anchor:accepted": 2426,
+        "single_anchor:unresolved": 577,
+        "court_partition:partitioned": 1114,
+        "court_assignment:unresolved": 81,
+        "multi_anchor:accepted": 35,
+        "multi_anchor:unresolved": 23,
+        "pending_components:joined": 3,
+        "court_assignment:assigned": 21,
+        "variant:accepted": 8,
+        "single_anchor_components:joined": 14,
+        "document_cleanup:partitioned": 6,
+        "document_alias:accepted": 25,
+        "same_key_union:accepted": 116,
+        "final_identity_partition:partitioned": 112392,
+        "assigned_group_id:assigned": 112392
+      }
+    }
+  ]
+}

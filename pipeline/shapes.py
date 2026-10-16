@@ -54,6 +54,10 @@ _ORD = r"\d+(?:st|nd|rd|th|d)"
 #   47 D.L.R. (2d) 400 与 47 D.L.R. (3d) 400 得到同一个归并键。只加捕获组、不改匹配
 #   集合（加组不改变任何命中的起止与分支选择），但字段集合变了，属 schema 变更（candidates-2.0）。
 _SERP = rf"\(\s*(?P<series_paren>{_ORD})\s*\)"
+# A narrow printing variant puts only the ordinal suffix inside parentheses:
+# 70 O.R. 2(d) 717. Keep the existing shapes unchanged so their shorter page=2
+# candidates remain available in the immutable candidate ledger.
+_SERP_TRANSPOSED = r"(?P<series_transposed>[23]\(d\))"
 # v1.5 #11：非序数括注（(Mass.)/(N.S.)/(H.L.)/(U.S.)/(Q.B.) 等法院、法域、
 #   分辑标注）。**紧口径**：大写开头、不含数字、长度受限——与 §7.2（五）1
 #   否决的对象不是同一个东西：那条否的是把 shape_nominate 的 \([^)]+\)（任意
@@ -224,6 +228,7 @@ SHAPES = [
 # GD2-11（SST 证据页码）/Exhibit PR-…（证物号）不在表里，故结构上不会被抽到。
 import csv as _csv
 import os as _os
+import re as _re
 
 _DECISIONS = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
                            "decisions")
@@ -239,6 +244,46 @@ def load_id_prefix_rows():
 
 
 ID_PREFIX_ROWS = load_id_prefix_rows()
+
+
+def load_compound_locator_rows():
+    """Verified printed compound locators; no generic page-range policy."""
+    path = _os.path.join(_DECISIONS, "reporter_compound_locators.csv")
+    if not _os.path.exists(path):
+        return []
+    with open(path, encoding="utf-8", newline="") as stream:
+        rows = [row for row in _csv.DictReader(stream)
+                if row.get("verification_status") == "verified_official_printed_format"]
+    required = ("rule_id", "printed_abbreviation", "normalized_key", "abbreviation_regex",
+                "locator_regex", "source", "source_locator")
+    seen = set()
+    for row in rows:
+        if any(not (row.get(key) or "").strip() for key in required):
+            raise ValueError("compound locator policy lacks identity, pattern or source")
+        if row["rule_id"] in seen or row.get("locator_kind") != "compound_paragraph":
+            raise ValueError("invalid/duplicate compound locator policy")
+        seen.add(row["rule_id"])
+        for key in ("abbreviation_regex", "locator_regex"):
+            if _re.compile(row[key]).groups:
+                raise ValueError("compound locator policy patterns must not capture groups")
+    return rows
+
+
+COMPOUND_LOCATOR_ROWS = load_compound_locator_rows()
+_COMPOUND_MARKER = r"\s+(?:(?:¶|para\.?|Paragraph)\s+)?"
+_COMPOUND_END = r"(?![\w\-‐‑‒–—])"
+
+
+def _compound_locator_regex(rows):
+    # Pair guard prevents mixing one policy's abbreviation with another's
+    # locator when the table eventually contains more than one verified row.
+    pairs = "|".join("(?:" + row["abbreviation_regex"] + ")" + _COMPOUND_MARKER
+                     + "(?:" + row["locator_regex"] + ")" + _COMPOUND_END for row in rows)
+    abbreviations = "|".join("(?:" + row["abbreviation_regex"] + ")" for row in rows)
+    locators = "|".join("(?:" + row["locator_regex"] + ")" for row in rows)
+    return (rf"\[\s*(?P<year>{_YEAR})\s*\]\s*(?={pairs})"
+            rf"(?P<abbr>{abbreviations}){_COMPOUND_MARKER}"
+            rf"(?P<page>{locators}){_COMPOUND_END}{_CDES}")
 
 
 def _registered_id_regex(rows):
@@ -264,9 +309,13 @@ def _glued_neutral_regex():
 def resolve_registered_id(groupdict):
     """shape_registered_id 的捕获组归一：把 rtokN/rbodyN 解析为 token/page。
     其他形状原样返回。返回新字典，不改入参。"""
-    if "rid0" not in groupdict and not any(k.startswith("rid") for k in groupdict):
-        return groupdict
     g = dict(groupdict)
+    if g.get("series_transposed"):
+        # This value comes only from the new shape's explicit capture group;
+        # raw text, offsets and ordinary series captures are never rewritten.
+        g["series"] = g["series_transposed"][0] + "d"
+    if "rid0" not in g and not any(k.startswith("rid") for k in g):
+        return g
     for i, r in enumerate(ID_PREFIX_ROWS):
         tok = g.get("rtok%d" % i)
         if tok is None:
@@ -290,8 +339,19 @@ _BRACKET_RANGE_HEAD = rf"\[\s*(?P<year>{_YEAR})\s*[-‐-–]\s*(?:{_YEAR}|\d{{2}
 _bracket_rx = dict(SHAPES)["shape_bracket"]
 assert _bracket_rx.startswith(_BRACKET_HEAD)
 _EXTRA = [("shape_bracket_range", _BRACKET_RANGE_HEAD + _bracket_rx[len(_BRACKET_HEAD):])]
+_EXTRA.extend([
+    ("shape_year_vol_page_transposed_series",
+     rf"\(\s*(?P<year>{_YEAR})\s*\)"
+     rf"{_SEP_COMMA}(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"
+     rf"{_SEP_COMMA}{_SERP_TRANSPOSED}{_SEP_COMMA}{_PAGE}{_CDES}"),
+    ("shape_vol_abbr_page_transposed_series",
+     rf"(?P<vol>\d+){_SEP_TIGHT}(?P<abbr>{_ABBR})"
+     rf"{_SEP_COMMA}{_SERP_TRANSPOSED}{_SEP_COMMA}{_PAGE}{_CDES}"),
+])
 if ID_PREFIX_ROWS:
     _EXTRA.append(("shape_registered_id", _registered_id_regex(ID_PREFIX_ROWS)))
+if COMPOUND_LOCATOR_ROWS:
+    _EXTRA.append(("shape_bracket_compound_locator", _compound_locator_regex(COMPOUND_LOCATOR_ROWS)))
 _glued = _glued_neutral_regex()
 if _glued:
     _EXTRA.append(("shape_neutral_glued", _glued))
