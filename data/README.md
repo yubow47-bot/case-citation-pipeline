@@ -6,7 +6,7 @@ This directory holds generated data and is ignored by Git. Download the case-law
 
 `active_run.json` selects the run, research database and review frames used by the status and research tools. It is local configuration, not a portable release file.
 
-The accepted snapshot on 2026-10-15 is `run_20261015_identity_review`: SCC, ONCA and BCCA; English text with French fallback; 49,674 judgments with text, 230,449 resolved groups, 14,003 groups with DD at least 5, and 490,577 counted edges. Final CSV/SQL data contain 705,476 mentions. These are snapshot counts, not accuracy measurements.
+The accepted snapshot on 2026-10-16 is `run_20261016_country_complete`: SCC, ONCA and BCCA; English text with French fallback; 49,674 judgments with text, 230,449 resolved groups, 14,003 groups with DD at least 5, and 490,577 counted edges. Final CSV/SQL data contain 705,476 mentions. These are snapshot counts, not accuracy measurements.
 
 ```console
 python tools/status.py
@@ -32,4 +32,4 @@ The original outputs for `run_20261003_v16f`, `run_20261002_tables2` and `run_20
 
 See the [audit retention policy](../audit/findings/README.md), [current release receipt](../audit/findings/project_review_20261015/release_summary_final.json), and [public usage notes](../docs/USAGE.md).
 
-The fixed 270-record main sample now has explicit model reviews, with the local active pointer selecting their labels and evaluation. See the [model review results](../audit/findings/quality_model_review_20261015/README.md). The separate French supplement retains its own review frame.
+The historical fixed 270-record main sample has explicit model reviews for `run_20261015_identity_review`; those reviews remain attached to that historical run. See the [model review results](../audit/findings/quality_model_review_20261015/README.md). The separate French supplement retains its own review frame.
