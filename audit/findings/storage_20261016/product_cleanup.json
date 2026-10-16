@@ -1,0 +1,60 @@
+{
+  "schema": "product-cleanup-v1",
+  "date": "2026-10-16",
+  "status": "completed",
+  "source_commit": "898467c356beeb69832add15774558751a58e0bb",
+  "scope": "Approved engineering cleanup; no new product release or active-data switch.",
+  "byte_units": "All byte fields are integer bytes; GiB means 1073741824 bytes.",
+  "approved_cleanup": {
+    "deleted_candidate_paths": 276,
+    "deleted_candidate_files": 2772,
+    "deleted_logical_bytes": 8748542399,
+    "retired_runs": [
+      "data/run_20261015_identity_review",
+      "data/run_20261016_fixes_full3",
+      "data/run_20261014_reliable_final",
+      "data/run_20261015_tcc_identity_verify"
+    ],
+    "retired_databases": [
+      "data/foundation/research_before_country_20261016_6bd8eb4.db",
+      "data/foundation/research_fixes_20261016.db"
+    ],
+    "old_run_receipt_bytes": 853875,
+    "old_run_receipt_limit_bytes_each": 2097152,
+    "receipt_scope": "Manifests and selected small logs; not replayable run tables or database backups. Earlier retirement receipts remain."
+  },
+  "report_drafts": {
+    "status": "moved_outside_product_repository",
+    "files": 139,
+    "logical_bytes": 57326627,
+    "file_counts_bytes_and_sha256_verified_before_source_removal": true
+  },
+  "methods_sources": {
+    "files": 21,
+    "logical_bytes": 400816,
+    "status": "Original implementation paths restored because the existing active database still references them; small provenance copies retained."
+  },
+  "cancelled_delivery_attempt": {
+    "run": "data/run_20261016_delivery",
+    "status": "started_in_error_then_stopped_and_deleted_at_user_request",
+    "deleted_run_files": 34,
+    "deleted_run_logical_bytes": 318238092,
+    "deleted_temporary_log_directory": "data/run_receipts/product_delivery_20261016",
+    "deleted_temporary_log_files": 35,
+    "deleted_temporary_log_bytes": 20728,
+    "new_database_built": false,
+    "active_pointer_changed": false
+  },
+  "retained_active": {
+    "run": "data/run_20261016_country_complete",
+    "database": "data/foundation/research.db",
+    "active_pointer_changed": false,
+    "corpus_and_caches_preserved": true,
+    "git_tracked_files_preserved": true
+  },
+  "post_cleanup_inventory_before_documentation_commit": {
+    "project_logical_bytes": 5236371776,
+    "unique_file_bytes": 5236371776,
+    "disk_free_bytes": 56819150848
+  }
+}

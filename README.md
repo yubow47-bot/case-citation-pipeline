@@ -157,9 +157,9 @@ Save the run ID with every research result: group IDs and counts can change betw
 
 ### Recent repairs and their evidence
 
-The [saved repair comparison](audit/findings/fix_batch_20261016/validation.json) compares the documented dataset, `run_20261016_country_complete`, with the completed but inactive repair run, `run_20261016_fixes_full3`:
+The [saved repair comparison](audit/findings/fix_batch_20261016/validation.json) compares the documented dataset, `run_20261016_country_complete`, with the historical repair run, `run_20261016_fixes_full3`. That repair run's generated outputs are now retired; the saved comparison and source evidence remain:
 
-| Diagnostic | Documented dataset | Retained repair run |
+| Diagnostic | Documented dataset | Retired repair run |
 | --- | ---: | ---: |
 | Citation keys appearing in multiple groups | 11,644 | 65 |
 | Groups containing two different printed deciding courts | 42 | 0 |

@@ -10,7 +10,7 @@ The accepted snapshot on 2026-10-16 is `run_20261016_country_complete`: SCC, ONC
 
 ```console
 python tools/status.py
-python tools/check_run.py --run data/run_20261015_identity_review
+python tools/check_run.py --run data/run_20261016_country_complete
 ```
 
 Check `tools/check_run.py --help` before using a relocated run. The run manifest, input fingerprints and output seal determine its scope. A filename or date does not establish that a run is current.
@@ -27,6 +27,8 @@ Do not commit databases, corpus text, generated run tables or API caches. Use th
 ## Retired historical outputs
 
 The original outputs for `run_20261003_v16f`, `run_20261002_tables2` and `run_20261003_selfcite` have been retired. Only receipts and selected historical audit results remain. The receipts are not backups of the tables, so an old measurement cannot be replayed from them alone.
+
+The 2026-10-16 product cleanup also retired `run_20261015_identity_review`, `run_20261016_fixes_full3`, `run_20261014_reliable_final` and `run_20261015_tcc_identity_verify`, plus `foundation/research_before_country_20261016_6bd8eb4.db` and `foundation/research_fixes_20261016.db`. Their small receipts preserve selected provenance, not replayable run tables or database backups. The active `run_20261016_country_complete` and `foundation/research.db` remain in place. See the [cleanup summary](../audit/findings/storage_20261016/product_cleanup.json).
 
 [Published retirement receipts](../audit/findings/repository_cleanup_20261015/retired_runs.json) preserve the manifests, hashes and deletion records. Historical CanLII accuracy belongs to its named historical sample; it does not establish current-run precision.
 
