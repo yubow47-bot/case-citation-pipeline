@@ -233,7 +233,7 @@ python tools/foundation/query.py "new court" --collection methods --mode keyword
 
 Both indexes can be rebuilt with [`after_run.py`](tools/foundation/after_run.py). The default build is offline and skips vectors; optional embeddings require separate configuration. See the [search setup guide](tools/foundation/README.md).
 
-The [quality tool](tools/quality/README.md) supports sampling and review. The [citation-context experiment](tools/citation_context/README.md) explores short citations and possible treatment words separately. Short-citation recovery and treatment classification remain experimental and do not change production DD or establish judicial reliance.
+The [quality tool](tools/quality/README.md) supports sampling and review. Experimental short-citation and treatment tooling is retained locally and excluded from version control. It does not change production DD or establish judicial reliance.
 
 ## How well it works
 

@@ -156,3 +156,6 @@ audit/findings/storage_20261014/*
 !audit/findings/storage_20261014/retired_20261014_review_smoke.json
 !audit/findings/storage_20261014/failed_v3_cleanup.json
 !audit/findings/storage_20261014/identity_review_fixtures.json
+
+# Local citation-context experiment; excluded from source releases.
+/tools/citation_context/

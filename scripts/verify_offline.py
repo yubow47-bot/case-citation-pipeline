@@ -30,8 +30,7 @@ def discover_suites(root=ROOT):
                for name, directory in (
                    ('foundation', 'tools/foundation'), ('tools', 'tools/tests'),
                    ('quality', 'tools/quality/tests'), ('research', 'tools/research'),
-                   ('audit_readers', 'audit/canlii_crosscheck'),
-                   ('citation_context', 'tools/citation_context'))]
+                   ('audit_readers', 'audit/canlii_crosscheck'))]
     return suites
 
 
