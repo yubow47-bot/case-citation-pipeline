@@ -22,15 +22,15 @@ A citation means a judgment **mentions** a case. It does not by itself show appr
 
 The pipeline's output is a list of case groups, each with one key number: **DD**, or **distinct decisions**. DD counts the different source judgments that cite a group. If one judgment mentions the same case twenty times, it adds one to DD and twenty to the mention count.
 
-All groups stay in the tables. The select step applies a working cut-off of **DD ≥ 5**:
+All groups stay in the tables. The select step defaults to **DD ≥ 1**:
 
 | DD | Meaning | In the current snapshot |
 | --- | --- | ---: |
-| **5 or more** | Kept in the main view; cited by at least five different judgments. | 14,003 groups |
-| **Below 5** | Below the cut-off, but still available for inspection. | 216,446 groups |
+| **1 or more** | Kept in the main view; cited by at least one judgment. | 228,102 groups |
+| **Below 1** | No final counted link after exclusions; still available for inspection. | 2,347 groups |
 | **All groups** | Includes groups without a final counted link after exclusions. | 230,449 groups |
 
-A high DD means more different judgments cite the group. It does not prove that all the references were assigned to the right case, or that the citing courts relied on it. A low DD may describe a rarely cited case or an extraction or identity mistake. Five is a working cut-off that has not been formally calibrated. The historical audit found fewer non-case citations in higher-DD groups, but it did not establish identity accuracy.
+A high DD means more different judgments cite the group. It does not prove that all the references were assigned to the right case, or that the citing courts relied on it. A low DD may describe a rarely cited case or an extraction or identity mistake. The optional DD ≥ 5 filter has not been formally calibrated. The historical audit found fewer non-case citations in higher-DD groups, but it did not establish identity accuracy.
 
 ## Example: one paragraph through two steps
 
@@ -69,17 +69,17 @@ How to read this:
 
 The two steps above find and label pieces of text. The later steps decide which references belong to the same case and count how many different judgments cite it. This makes a concrete research question possible: **which foreign judgments appear in Canadian courts' reasons, and how does that pattern vary by court and decade?** The source passages then let a researcher investigate what those citations were doing.
 
-The table shows the five most-cited of **460 groups with an established foreign origin** in the 2026-10-15 snapshot. DD is counted across SCC, ONCA, and BCCA:
+The table shows the five most-cited of **27,723 groups with assessed foreign references** in the 2026-10-16 snapshot. DD is counted across SCC, ONCA, and BCCA:
 
 | Cited by (different judgments) | Case | Citation | Origin |
 | ---: | --- | --- | --- |
 | 173 | Anns v. Merton London Borough Council | [1978] A.C. 728 | GB (United Kingdom) |
 | 108 | Donoghue v. Stevenson | [1932] A.C. 562 | GB (United Kingdom) |
+| 58 | Quinn v. Leathem | [1901] A.C. 495 | GB (United Kingdom) |
 | 52 | Salomon v. Salomon & Co | [1897] A.C. 22 | GB (United Kingdom) |
-| 43 | Makin v. Attorney-General for New South Wales | [1894] A.C. 57 | AU (Australia) |
-| 41 | Ibrahim v. The King | [1914] A.C. 599 | HK (Hong Kong) |
+| 48 | Hedley Byrne & Co. v. Heller & Partners Ltd | [1964] A.C. 465 | GB (United Kingdom) |
 
-The [saved ranking and coverage evidence](audit/findings/readme_example_20261015/foreign_cases.json) records the run and query. With the documented run active locally, reproduce it with:
+The [saved ranking and coverage evidence](audit/findings/country_assessment_20261016/foreign_top5.json) records the run and query. With the documented run active locally, reproduce it with:
 
 ```powershell
 python tools/research/research.py ask --intent ranking --origin FOREIGN --top 5 --evidence-limit 0 --language en --output audit/findings/research/foreign_top5.json
@@ -87,7 +87,7 @@ python tools/research/research.py ask --intent ranking --origin FOREIGN --top 5 
 
 Origin is distinct from the country of the law report. Makin and Ibrahim were decided in London by the Privy Council, which heard appeals from across the British Empire, but the appeals originated in Australia and Hong Kong. An English report alone therefore cannot establish a British origin. The pipeline assigns origin only when citation evidence or a verified reference rule supports it.
 
-Coverage is still incomplete. Across all cases, origin is known for **58,688 of the 228,102 groups with counted links (25.7%)**. The identified foreign subset contains **460 groups and 1,082 links**. The [coverage report](audit/findings/research_20261015/active_foreign_scope.json) gives the full counts and definitions; groups without a final counted link are outside this comparison.
+Coverage is still incomplete. Across all cases, origin is known for **199,207 of the 228,102 groups with counted links (87.3%)**. The identified foreign subset contains **27,723 groups and 42,590 links**. The [coverage report](audit/findings/country_assessment_20261016/coverage.json) gives the full counts and definitions; groups without a final counted link are outside this comparison.
 
 These are results for the identified subset, not a complete ranking of foreign influence. Unknown origins are not treated as foreign and are not extrapolated. Court-and-decade comparisons must carry their own coverage denominators: a change in known foreign citations may reflect coverage as well as changes in judicial citation practice.
 

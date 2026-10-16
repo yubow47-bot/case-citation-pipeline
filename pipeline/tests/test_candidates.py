@@ -840,7 +840,7 @@ def _brow(rid, merge_key, basis, status="UNDETERMINED", country="", evid="",
 
 def test_same_citation_requires_single_key_group():
     """R2 闭环反例 4：锚 K1 + 弱键 K2×2（两法院、案名/共引加入）——
-    K2 不得标 same_citation；弱连接的外国证据不得把组判成 FOREIGN。"""
+    K2 不得标 same_citation；国别另按成员自己的观察聚合。"""
     import decide
     k1 = _brow("SCC|2009||ukhl||18", "2009||ukhl||18", "anchor")
     k2a = _brow("SCC|2009|3|aller||945", "2009|3|aller||945", "", court="SCC")
@@ -855,7 +855,7 @@ def test_same_citation_requires_single_key_group():
     check(basis["SCC|2009|3|aller||945"] != "same_citation"
           and basis["ONCA|2009|3|aller||945"] != "same_citation",
           "闭环：重复出现的弱键不因 keycount>1 升级 same_citation")
-    # K2 弱成员带外国证据 → 组仍不得 FOREIGN（无合格成员证据）
+    # K2 身份仍是弱连接，但其自身国别不因此被清空。
     for r, ctry in ((k2a, "GB"), (k2b, "GB")):
         r["member_origin_status"] = "DETERMINED"
         r["member_origin_country"] = ctry
@@ -866,8 +866,8 @@ def test_same_citation_requires_single_key_group():
     for r in members:
         r["identity_basis"] = basis[r["row_key"]]
     decide.aggregate_group_origin(members, Counter())
-    check(k1["group_foreign_status"] == "UNDETERMINED",
-          "闭环：仅弱连接成员带证据 → 组 UNDETERMINED（弱连接不得传播 FOREIGN）")
+    check(k1["group_foreign_status"] == "FOREIGN",
+          "国别与身份分开：弱连接成员自身的国别观察参与组判断")
     check("name_year:GB:scope:FAKE" in (k1["noncore_origin_evidence"] or ""),
           "闭环：弱成员证据进 noncore 审计列（basis:国别:证据id）")
 
@@ -897,7 +897,7 @@ def test_same_citation_single_key_group():
 
 def test_typo_variant_twice_stays_variant():
     """R2 闭环反例 6：出现两次的 typo 变体键标 anchor_variant_typo_*，
-    不得 same_citation、不得传播。"""
+    不得升级 same_citation；国别仍可独立判断。"""
     import decide
     k1 = _brow("SCC|2002||scc||33", "2002||scc||33", "anchor")
     t1 = _brow("SCC|2002||scc||3", "2002||scc||3", "", court="SCC",
@@ -918,8 +918,8 @@ def test_typo_variant_twice_stays_variant():
     for r in members:
         r["identity_basis"] = basis[r["row_key"]]
     decide.aggregate_group_origin(members, Counter())
-    check(k1["group_foreign_status"] == "UNDETERMINED",
-          "闭环：typo 变体的外国证据不得传播")
+    check(k1["group_foreign_status"] == "FOREIGN",
+          "国别与身份分开：变体保留自身国别，身份仍标 typo")
 
 
 def test_eligible_bases_shared_between_decide_and_edges():
@@ -1489,22 +1489,21 @@ def _grow(rid, merge_key, basis, status="UNDETERMINED", country="", evid="",
 
 
 def test_group_origin_aggregation():
-    """R2-1：组级来源地 = 合格成员聚合；启发式不传播；主行置换不变；
-    冲突全保留；成员本地冲突升组。"""
+    """国别观察独立于身份置信度聚合；主行置换不变；冲突全保留。"""
     import decide
-    # ① 锚成员定国 + 弱成员带异国证据 → 组取锚；弱证据入审计列
+    # ① 不同成员异国 → 组冲突，成员自己的国别保留。
     a = _grow("SCC|2009||ukhl||18", "2009||ukhl||18", "anchor",
               "DETERMINED", "GB", "scope:UKHL", "court_scope_rule")
     b = _grow("SCC|2009|3|aller||945", "2009|3|aller||945", "name_year",
               "DETERMINED", "CA", "case_origin:aller", "case_record")
     a["is_primary"], b["is_primary"] = "true", "false"
     decide.aggregate_group_origin([a, b], Counter())
-    check(a["group_origin_country"] == "GB" and a["group_foreign_status"] == "FOREIGN",
-          "R2-1：组取合格成员（锚）的国别")
-    check(b["group_origin_country"] == "GB" and b["foreign_status"] == "FOREIGN",
-          "R2-1：组级结果写到每一行")
+    check(a["group_origin_country"] == "" and a["group_foreign_status"] == "CONFLICT",
+          "国别与身份分开：不同成员国别冲突不能被身份门槛隐藏")
+    check(b["group_origin_country"] == "" and b["foreign_status"] == "CONFLICT",
+          "国别：冲突组的组级结果写到每一行")
     check("name_year:CA:case_origin:aller" in b["noncore_origin_evidence"],
-          "R2-1：弱成员的异国证据进 noncore 审计列（不丢也不升组）")
+          "国别：弱身份成员的观察仍保留在审计列")
     # ② 主行置换不变
     a2 = _grow("SCC|2009||ukhl||18", "2009||ukhl||18", "anchor",
                "DETERMINED", "GB", "scope:UKHL", "court_scope_rule")
@@ -1512,16 +1511,16 @@ def test_group_origin_aggregation():
                "DETERMINED", "CA", "case_origin:aller", "case_record")
     a2["is_primary"], b2["is_primary"] = "false", "true"
     decide.aggregate_group_origin([b2, a2], Counter())
-    check(a2["group_origin_country"] == "GB" and a2["foreign_status"] == "FOREIGN",
-          "R2-1：主行置换不改组结论")
-    # ③ 只有弱成员有证据 → 组 UNDETERMINED，证据进审计列
+    check(a2["group_origin_country"] == "" and a2["foreign_status"] == "CONFLICT",
+          "国别：主行置换不改冲突结论")
+    # ③ 只有弱身份成员有国别观察，也可判断国别。
     c = _grow("SCC|1991|1|scr||742", "1991|1|scr||742", "name_year",
               "DETERMINED", "CA", "case_origin:wd", "case_record")
     d = _grow("SCC|1991|63|ccc|2d|399", "1991|63|ccc|2d|399", "cocitation")
     decide.aggregate_group_origin([c, d], Counter())
-    check(c["group_origin_status"] == "UNDETERMINED"
+    check(c["group_origin_status"] == "DETERMINED"
           and "name_year:CA:case_origin:wd" in c["noncore_origin_evidence"],
-          "R2-1：仅弱路径有证据 → 组 UNDETERMINED（不传播），证据留审计列")
+          "国别：仅弱身份路径有国家观察时也可判国别，身份标签保留")
     # ④ 两个合格成员异国（含跨法院行）→ CONFLICT（证据全保留）
     e = _grow("SCC|2009||ukhl||18", "2009||ukhl||18", "anchor",
               "DETERMINED", "GB", "scope:UKHL", "court_scope_rule")
@@ -1533,14 +1532,14 @@ def test_group_origin_aggregation():
     check("scope:UKHL" in e["group_origin_evidence_ids"]
           and "scope:ONCA" in e["group_origin_evidence_ids"],
           "R2-1：冲突组保留全部证据 id")
-    # ⑤ 启发式变体（typo）不授权传播
+    # ⑤ typo 身份不升格，自己的国别观察仍可使用。
     g = _grow("SCC|2005||scc||79", "2005||scc||79", "anchor")
     h = _grow("SCC|2005||scc||75", "2005||scc||75", "anchor_variant_typo",
               "DETERMINED", "GB", "scope:X", "court_scope_rule")
     decide.aggregate_group_origin([g, h], Counter())
-    check(g["group_origin_status"] == "UNDETERMINED"
+    check(g["group_origin_status"] == "DETERMINED"
           and "anchor_variant_typo:GB:scope:X" in g["noncore_origin_evidence"],
-          "R2-1：typo 变体是启发式——证据留审计列，不升组")
+          "国别：typo 身份标签不清空成员自己的国别")
     # ⑥ 双语变体（已核实的标识映射）合格：证据可传播
     i1 = _grow("SCC|2014||scc||7", "2014||scc||7", "anchor")
     j1 = _grow("SCC|2014||csc||7", "2014||csc||7", "anchor_variant_bilingual",

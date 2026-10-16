@@ -8,13 +8,11 @@
     保留在 self_excluded_edges.csv 供审计；
   * 每组 counted 来源数 == 该组 dd（同一口径，写表前断言）。
 
-边级 foreign_status 反映**该边实际走的成员路径**（R2-1 订正）：
-  * 路径的最优 identity_basis 属于 ELIGIBLE_BASES（anchor/singleton/
-    same_citation/anchor_variant_bilingual）→ supported：组级结论适用，
-    foreign_status = 组的 group_foreign_status；
-  * 只有启发式路径（name_year / cocitation / unanchored / typo 变体）→
-    heuristic_only：**不得**继承组 FOREIGN/DOMESTIC——foreign_status=UNDETERMINED，
-    组结论保留在 group_origin_* 列作上下文，候选关系写进 tentative_edges.csv。
+国别与身份支持分别记录：
+  * 本来源所引成员自己的国别可用于 foreign_status，不要求其身份路径已确证；
+  * 缺成员国别时，仅 supported 身份路径可继承组国别；
+  * edge_support / identity_status 保留身份置信度，不因国别已知而升级；
+  * 国别冲突不投票消除，来源自己的国别也不被组冲突清空。
 
 用法
     python pipeline/edges.py --decided data/run_X/decide_out/cross_court/decided.csv \
@@ -61,6 +59,32 @@ def candidate_label(identity_status):
         identity_status, identity_status)
 
 
+def origin_for_edge(group, members, identity_supported):
+    """A source's own citation can identify its country without proving identity.
+
+    Prefer those member observations over a potentially conflicting group.
+    Group-only propagation still needs an identity-supported path.
+    """
+    known = [m for m in members if m.get("member_origin_status") == "DETERMINED"
+             and m.get("member_origin_country")]
+    conflict = [m for m in members if m.get("member_origin_status") == "CONFLICT"]
+    countries = {m["member_origin_country"] for m in known}
+    if known or conflict:
+        evidence = sorted({e for m in known + conflict
+                           for e in m.get("member_origin_evidence_ids", "").split("|") if e})
+        basis = "member:" + "+".join(sorted({m.get("member_origin_basis", "")
+                                            for m in known + conflict}))
+        if conflict or len(countries) != 1:
+            return "CONFLICT", "", basis, "|".join(evidence)
+        country = next(iter(countries))
+        return ("DOMESTIC_CA" if country == "CA" else "FOREIGN",
+                country, basis, "|".join(evidence))
+    if identity_supported:
+        return (group["group_foreign_status"], group["group_origin_country"],
+                group["group_origin_basis"], group["group_origin_evidence_ids"])
+    return "UNDETERMINED", "", "", ""
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--decided", required=True)
@@ -73,9 +97,13 @@ def main():
     # 组级属性（每行都带组结论，取任一行即可）
     group_attr = {}
     row2group = {}
+    member_origin = {}
     with open_csv(a.decided) as f:
         for r in csv.DictReader(f):
             row2group[(r.get("court") or "", r["merge_key"])] = r["merged_group_id"]
+            member_origin[(r.get("court") or "") + "|" + r["merge_key"]] = {
+                k: r.get(k, "") for k in ("member_origin_country", "member_origin_status",
+                                          "member_origin_basis", "member_origin_evidence_ids")}
             g = group_attr.setdefault(r["merged_group_id"], {
                 "group_foreign_status": r.get("group_foreign_status") or "UNDETERMINED",
                 "group_origin_country": r.get("group_origin_country") or "",
@@ -143,20 +171,23 @@ def main():
             per_group_counted[gid] += 1
             supported = basis_of(e["identity_status"])
             mkey = (e["source_decision"], gid)
+            observations = [member_origin[k] for k in set(mention_edges.get(mkey, []))
+                            if k in member_origin]
+            foreign_status, country, origin_basis, origin_ids = origin_for_edge(
+                g, observations, supported)
             row = {
                 "source_decision": e["source_decision"],
                 "resolved_cited_case": gid,
-                "foreign_status": g["group_foreign_status"] if supported
-                else "UNDETERMINED",
-                "origin_country": g["group_origin_country"] if supported else "",
+                "foreign_status": foreign_status,
+                "origin_country": country,
                 "group_origin_country": g["group_origin_country"],
                 "group_origin_status": g["group_origin_status"],
                 "group_foreign_status": g["group_foreign_status"],
                 "edge_support": "supported" if supported else "heuristic_only",
                 "identity_status": (e["identity_status"] if supported
                                     else candidate_label(e["identity_status"])),
-                "origin_basis": g["group_origin_basis"] if supported else "",
-                "origin_evidence_ids": g["group_origin_evidence_ids"] if supported else "",
+                "origin_basis": origin_basis,
+                "origin_evidence_ids": origin_ids,
                 "noncore_origin_evidence": g["noncore_origin_evidence"],
                 "mention_count": len(mention_edges.get(mkey, [])),
                 "distinct_decisions_count": g["dd"],
@@ -207,7 +238,7 @@ def main():
         "effective_input": a.effective,
         "stats": dict(sorted(stats.items())),
         "note": ("边成员资格只来自 decide 的 effective_sources（R2-9）；"
-                 "foreign_edges 只含 supported 路径的 FOREIGN 边（R2-1 订正）；"
+                 "国别使用本边成员的来源观察，与 identity support 分开；"
                  "select 的 dd 门槛不进本层（约束六）"),
     }
     with open(os.path.join(a.output, "manifest.json"), "w",

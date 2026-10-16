@@ -44,8 +44,9 @@ SCHEMA_VERSIONS = {
     "extract_candidates": "candidates-2.2 + explicit English/French fallback scope (row offsets unchanged)",
     "classify": "8 + parse/arbitration evidence columns",
     "merge": "9 + in-source arbitration, identity keys v2",
-    "decide": "14 (qualified document aliases; proof-bound exact identity separations)",
-    "select": "11 (threshold semantics unchanged)",
+    "decide": "15 (country assessment independent of identity support)",
+    "select": "12 (full-data default; optional frequency profiles)",
+    "edges": "2 (member country independent of identity support)",
     # #88/#89：run 级全局判决登记簿（merge 之后、decide 之前生成）
     "registry": "3 (native English/French metadata/header proof; canonical source identity)",
 }

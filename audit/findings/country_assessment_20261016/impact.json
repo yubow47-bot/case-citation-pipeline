@@ -1,0 +1,461 @@
+{
+  "schema": "country-assessment-impact-v1",
+  "before": {
+    "run": "run_20261016_johnson_nested_french",
+    "groups_total": 230449,
+    "counted_groups": 228102,
+    "country_known_groups": 58688,
+    "country_unknown_groups": 169414,
+    "group_unknown_pct": 74.27115939360462,
+    "counted_edges": 490577,
+    "country_unknown_edges": 276813,
+    "edge_unknown_pct": 56.426004480438344,
+    "foreign_groups": 460,
+    "foreign_edges": 1082,
+    "mentions": 705476,
+    "edge_country_status": {
+      "UNDETERMINED": 276813,
+      "DOMESTIC_CA": 212682,
+      "FOREIGN": 1082
+    },
+    "identity_support": {
+      "supported": 459696,
+      "heuristic_only": 30881
+    },
+    "member_country_bases": {
+      "unknown": 182176,
+      "court_scope_rule": 17152,
+      "exclusive_reporter_scope": 61321,
+      "case_record": 380
+    },
+    "selection_threshold": 5,
+    "selected_groups": 14003,
+    "dd_profile": [
+      {
+        "threshold_dd": 1,
+        "groups_kept": 228102,
+        "pct_of_groups": 98.982
+      },
+      {
+        "threshold_dd": 2,
+        "groups_kept": 56396,
+        "pct_of_groups": 24.472
+      },
+      {
+        "threshold_dd": 3,
+        "groups_kept": 29195,
+        "pct_of_groups": 12.669
+      },
+      {
+        "threshold_dd": 5,
+        "groups_kept": 14003,
+        "pct_of_groups": 6.076
+      },
+      {
+        "threshold_dd": 10,
+        "groups_kept": 5546,
+        "pct_of_groups": 2.407
+      },
+      {
+        "threshold_dd": 20,
+        "groups_kept": 2261,
+        "pct_of_groups": 0.981
+      },
+      {
+        "threshold_dd": 50,
+        "groups_kept": 624,
+        "pct_of_groups": 0.271
+      },
+      {
+        "threshold_dd": 100,
+        "groups_kept": 194,
+        "pct_of_groups": 0.084
+      }
+    ],
+    "remaining_unknown_families": [
+      {
+        "family": "bcsc",
+        "groups": 12155
+      },
+      {
+        "family": "bcca",
+        "groups": 9272
+      },
+      {
+        "family": "onsc",
+        "groups": 8282
+      },
+      {
+        "family": "ccc",
+        "groups": 7877
+      },
+      {
+        "family": "bclr",
+        "groups": 6097
+      },
+      {
+        "family": "oj",
+        "groups": 6024
+      },
+      {
+        "family": "bcj",
+        "groups": 4473
+      },
+      {
+        "family": "wwr",
+        "groups": 4406
+      },
+      {
+        "family": "oac",
+        "groups": 3313
+      },
+      {
+        "family": "bcac",
+        "groups": 2930
+      },
+      {
+        "family": "ac",
+        "groups": 2857
+      },
+      {
+        "family": "cr",
+        "groups": 2588
+      },
+      {
+        "family": "scca",
+        "groups": 2547
+      },
+      {
+        "family": "aller",
+        "groups": 2270
+      },
+      {
+        "family": "cbr",
+        "groups": 1541
+      },
+      {
+        "family": "abca",
+        "groups": 1502
+      },
+      {
+        "family": "cpc",
+        "groups": 1430
+      },
+      {
+        "family": "kb",
+        "groups": 1400
+      },
+      {
+        "family": "qb",
+        "groups": 1386
+      },
+      {
+        "family": "us",
+        "groups": 1373
+      },
+      {
+        "family": "f",
+        "groups": 1285
+      },
+      {
+        "family": "chd",
+        "groups": 1244
+      },
+      {
+        "family": "or",
+        "groups": 1236
+      },
+      {
+        "family": "crr",
+        "groups": 1203
+      },
+      {
+        "family": "ch",
+        "groups": 1199
+      },
+      {
+        "family": "er",
+        "groups": 1198
+      },
+      {
+        "family": "qcca",
+        "groups": 1108
+      },
+      {
+        "family": "dlr",
+        "groups": 998
+      },
+      {
+        "family": "carswellont",
+        "groups": 902
+      },
+      {
+        "family": "qbd",
+        "groups": 854
+      }
+    ]
+  },
+  "after": {
+    "run": "run_20261016_country_complete",
+    "groups_total": 230449,
+    "counted_groups": 228102,
+    "country_known_groups": 199207,
+    "country_unknown_groups": 28895,
+    "group_unknown_pct": 12.667578539425344,
+    "counted_edges": 490577,
+    "country_unknown_edges": 32693,
+    "edge_unknown_pct": 6.664193388601586,
+    "foreign_groups": 27723,
+    "foreign_edges": 42590,
+    "mentions": 705476,
+    "edge_country_status": {
+      "UNDETERMINED": 32671,
+      "FOREIGN": 42590,
+      "DOMESTIC_CA": 415294,
+      "CONFLICT": 22
+    },
+    "identity_support": {
+      "supported": 459696,
+      "heuristic_only": 30881
+    },
+    "member_country_bases": {
+      "unknown": 29619,
+      "classification_jurisdiction": 151932,
+      "court_scope_rule": 17152,
+      "exclusive_reporter_scope": 61321,
+      "case_record": 380,
+      "classification_reporter_consensus": 625
+    },
+    "selection_threshold": 1,
+    "selected_groups": 228102,
+    "dd_profile": [
+      {
+        "threshold_dd": 1,
+        "groups_kept": 228102,
+        "pct_of_groups": 98.982
+      },
+      {
+        "threshold_dd": 2,
+        "groups_kept": 56396,
+        "pct_of_groups": 24.472
+      },
+      {
+        "threshold_dd": 3,
+        "groups_kept": 29195,
+        "pct_of_groups": 12.669
+      },
+      {
+        "threshold_dd": 5,
+        "groups_kept": 14003,
+        "pct_of_groups": 6.076
+      },
+      {
+        "threshold_dd": 10,
+        "groups_kept": 5546,
+        "pct_of_groups": 2.407
+      },
+      {
+        "threshold_dd": 20,
+        "groups_kept": 2261,
+        "pct_of_groups": 0.981
+      },
+      {
+        "threshold_dd": 50,
+        "groups_kept": 624,
+        "pct_of_groups": 0.271
+      },
+      {
+        "threshold_dd": 100,
+        "groups_kept": 194,
+        "pct_of_groups": 0.084
+      }
+    ],
+    "remaining_unknown_families": [
+      {
+        "family": "qb",
+        "groups": 473
+      },
+      {
+        "family": "canbarrev",
+        "groups": 430
+      },
+      {
+        "family": "crimlq",
+        "groups": 232
+      },
+      {
+        "family": "mcgilllj",
+        "groups": 220
+      },
+      {
+        "family": "sclr",
+        "groups": 196
+      },
+      {
+        "family": "clr",
+        "groups": 168
+      },
+      {
+        "family": "altalrev",
+        "groups": 157
+      },
+      {
+        "family": "kb",
+        "groups": 152
+      },
+      {
+        "family": "queenslj",
+        "groups": 148
+      },
+      {
+        "family": "canbuslj",
+        "groups": 147
+      },
+      {
+        "family": "rcs",
+        "groups": 144
+      },
+      {
+        "family": "otc",
+        "groups": 131
+      },
+      {
+        "family": "rdub",
+        "groups": 126
+      },
+      {
+        "family": "sw",
+        "groups": 119
+      },
+      {
+        "family": "unts",
+        "groups": 119
+      },
+      {
+        "family": "utlj",
+        "groups": 116
+      },
+      {
+        "family": "nbj",
+        "groups": 113
+      },
+      {
+        "family": "osgoodehalllj",
+        "groups": 109
+      },
+      {
+        "family": "so",
+        "groups": 108
+      },
+      {
+        "family": "nys",
+        "groups": 106
+      },
+      {
+        "family": "wr",
+        "groups": 106
+      },
+      {
+        "family": "scc",
+        "groups": 104
+      },
+      {
+        "family": "lqr",
+        "groups": 103
+      },
+      {
+        "family": "bcca",
+        "groups": 101
+      },
+      {
+        "family": "alr",
+        "groups": 99
+      },
+      {
+        "family": "vol",
+        "groups": 98
+      },
+      {
+        "family": "harvlrev",
+        "groups": 95
+      },
+      {
+        "family": "ilr",
+        "groups": 95
+      },
+      {
+        "family": "wall",
+        "groups": 95
+      },
+      {
+        "family": "se",
+        "groups": 93
+      }
+    ]
+  },
+  "conservation_checks": {
+    "same_member_assignments": true,
+    "same_counted_edge_pairs": true,
+    "same_group_dd": true,
+    "same_counted_mentions": true
+  },
+  "changes": {
+    "groups": {
+      "unknown_before": 169414,
+      "unknown_after": 28895,
+      "unknown_reduced": 140519,
+      "relative_reduction_pct": 82.94414865359416,
+      "percentage_point_reduction": 61.60358085417928
+    },
+    "edges": {
+      "unknown_before": 276813,
+      "unknown_after": 32693,
+      "unknown_reduced": 244120,
+      "relative_reduction_pct": 88.18949977060326,
+      "percentage_point_reduction": 49.76181109183676
+    }
+  },
+  "interpretation": "Country coverage, not accuracy. Inferred country remains marked by classification_jurisdiction or classification_reporter_consensus. Identity confidence is unchanged.",
+  "decision_review": [
+    {
+      "layer": "extraction",
+      "action": "retained",
+      "reason": "Structural candidate matching; no country or DD prerequisite. Missing shapes require separate extraction changes."
+    },
+    {
+      "layer": "classification",
+      "action": "retained",
+      "reason": "Non-case/date/statute exclusions and same-grade conflicting readings prevent double counting; case-name rejection is separate from citation admission."
+    },
+    {
+      "layer": "member_country",
+      "action": "changed",
+      "reason": "Accepted jurisdiction classifications now supply country without a second exclusive-source requirement. Reporter candidates that differ only within one country also determine country. Explicit case/scope conclusions and country conflicts take precedence."
+    },
+    {
+      "layer": "group_country",
+      "action": "changed",
+      "reason": "All member country observations participate; identity basis does not erase country. Different countries remain conflicts."
+    },
+    {
+      "layer": "edge_country",
+      "action": "changed",
+      "reason": "A source citation uses its own member country independently of identity confidence. Group-only propagation still needs an identity-supported path."
+    },
+    {
+      "layer": "identity",
+      "action": "retained",
+      "reason": "Distinct neutral judgments, positive incompatible courts, self-citation exclusion, date windows and exact identity conflicts guard case identity, not country assessment."
+    },
+    {
+      "layer": "selection",
+      "action": "changed",
+      "reason": "Default DD >= 1 retains all counted groups; DD >= 5 is an optional frequent profile, not case validity."
+    },
+    {
+      "layer": "research",
+      "action": "changed",
+      "reason": "Country coverage no longer requires identity-supported edges. Unknown/conflict and identity support have separate denominators."
+    }
+  ]
+}

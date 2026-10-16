@@ -290,7 +290,7 @@ class ResearchSource:
         tests = {
             "duplicate_edges": "SELECT COUNT(*) n FROM (SELECT source_decision,resolved_cited_case FROM citation_edges WHERE run_id=? GROUP BY 1,2 HAVING COUNT(*)<>1)",
             "missing_groups": "SELECT COUNT(*) n FROM citation_edges e WHERE e.run_id=? AND NOT EXISTS(SELECT 1 FROM case_groups g WHERE g.run_id=e.run_id AND g.group_id=e.resolved_cited_case)",
-            "invalid_edge_contract": "SELECT COUNT(*) n FROM citation_edges WHERE run_id=? AND (edge_support NOT IN ('supported','heuristic_only') OR foreign_status NOT IN ('FOREIGN','DOMESTIC_CA','UNDETERMINED','CONFLICT') OR (edge_support='heuristic_only' AND (foreign_status<>'UNDETERMINED' OR origin_country<>'')) OR (foreign_status IN ('FOREIGN','DOMESTIC_CA') AND (edge_support<>'supported' OR origin_country='')))",
+            "invalid_edge_contract": "SELECT COUNT(*) n FROM citation_edges WHERE run_id=? AND (edge_support NOT IN ('supported','heuristic_only') OR foreign_status NOT IN ('FOREIGN','DOMESTIC_CA','UNDETERMINED','CONFLICT') OR (edge_support='heuristic_only' AND (foreign_status<>'UNDETERMINED' OR origin_country<>'') AND (origin_basis NOT LIKE 'member:%' OR origin_evidence_ids='')) OR (foreign_status IN ('FOREIGN','DOMESTIC_CA') AND origin_country='') OR (foreign_status='FOREIGN' AND origin_country='CA') OR (foreign_status='DOMESTIC_CA' AND origin_country<>'CA') OR (foreign_status IN ('UNDETERMINED','CONFLICT') AND origin_country<>''))",
             "invalid_mention_count": "SELECT COUNT(*) n FROM citation_edges WHERE run_id=? AND (mention_count='' OR mention_count GLOB '*[^0-9]*')",
         }
         self.validation = {name: self.db.execute(sql, (self.run_id,)).fetchone()[0] for name, sql in tests.items()}
@@ -367,7 +367,7 @@ def base_query(source, filters):
  SELECT e.*,g.name group_name,g.dd global_dd,g.kept,
  COALESCE(d.court,'UNKNOWN') source_court,d.year source_year,
  CASE WHEN d.year IS NOT NULL THEN CAST(d.year/10 AS INTEGER)*10 END decade,
- CASE WHEN e.edge_support='supported' AND e.foreign_status IN ('FOREIGN','DOMESTIC_CA')
+ CASE WHEN e.foreign_status IN ('FOREIGN','DOMESTIC_CA')
  AND e.origin_country<>'' THEN 1 ELSE 0 END origin_known,
  CASE WHEN e.group_origin_status='DETERMINED' AND e.group_origin_country<>'' THEN 1 ELSE 0 END group_origin_known,
  CASE WHEN d.source_id IS NULL THEN 1 ELSE 0 END missing_document_metadata
@@ -810,7 +810,7 @@ CAPABILITIES = {
     "unsupported": ["legal advice", "why a judgment followed/distinguished another", "holdings or legal reasoning synthesis",
                     "automatic case-name identity resolution", "unrestricted natural language / arbitrary SQL", "model-generated answers"],
     "counting_meaning": "An edge means a source judgment mentions a cited judgment identity group. It does not mean followed, relied on, agreed with, or binding authority.",
-    "coverage_meaning": "Origin coverage is an edge-level denominator. Heuristic-only edges remain unknown even when their group origin is determined. Determined-only country shares cannot be extrapolated to unknown origins.",
+    "coverage_meaning": "Origin coverage uses each edge's country assessment independently of identity confidence. Member country evidence can determine a heuristic identity edge's country; group-only inheritance requires identity support. Determined-only country shares cannot be extrapolated to unknown origins.",
     "date_meaning": "Source judgment date chosen under the recorded corpus text policy; printed citation years are not used as judgment dates.",
     "document_denominator_meaning": "Imported/supplied corpus metadata rows and distinct valid source IDs within court/date filters; empty-citation/empty/COURT_ IDs are excluded from source-ID denominators but retained in raw diagnostics. These are metadata-universe denominators, not counts of nonempty texts processed. Origin/DD/group filters affect the edge numerator only. Legacy absent text_policy is English-only; bilingual sources are never counted twice by a fallback.",
     "sampling_meaning": "Evidence is a deterministic bounded preview, not a random sample or the basis for reported totals.",
@@ -825,7 +825,7 @@ def offline_answer(source, intent, result, language="zh"):
     if language == "en":
         text = (f"Run {run}: {s['citation_edges']} citation edges, {s['citing_source_ids']} citing source IDs, "
                 f"{s['cited_groups']} cited judgment groups. Origin determined for {s['origin_determined_edges']}/{s['citation_edges']} edges; "
-                f"{s['origin_unknown_edges']} unknown, including {s['heuristic_only_edges']} heuristic-only edges.")
+                f"{s['origin_unknown_edges']} unknown. Independently, {s['heuristic_only_edges']} edges have heuristic-only identity support.")
         if intent == "ranking":
             text += " Ranked by distinct source judgment IDs in the selected scope: " + "; ".join(
                 f"{r['group_id']} ({r['group_name'] or 'unnamed'}): {r['filtered_dd']}" for r in result["rows"]) + "."
@@ -842,7 +842,7 @@ def offline_answer(source, intent, result, language="zh"):
         return text + " Counts show mentions, and do not establish whether a court followed a judgment."
     text = (f"运行 {run}：筛选范围内有 {s['citation_edges']} 条引证边、{s['citing_source_ids']} 个来源判决标识、"
             f"{s['cited_groups']} 个被引判决身份组。来源地已确定 {s['origin_determined_edges']}/{s['citation_edges']} 条；"
-            f"未知 {s['origin_unknown_edges']} 条，其中 heuristic_only 为 {s['heuristic_only_edges']} 条。")
+            f"未知 {s['origin_unknown_edges']} 条。另按身份支持统计，heuristic_only 为 {s['heuristic_only_edges']} 条。")
     if intent == "ranking":
         text += "按该范围内不同来源判决标识数排名：" + "；".join(
             f"{r['group_id']}（{r['group_name'] or '无案名'}）{r['filtered_dd']}" for r in result["rows"]) + "。"

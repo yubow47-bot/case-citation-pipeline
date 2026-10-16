@@ -1,0 +1,28 @@
+{
+  "pipeline_unittest": {
+    "run": 137,
+    "skipped": 1,
+    "passed": 136
+  },
+  "foundation_unittest": {
+    "run": 54,
+    "passed": 54
+  },
+  "research_unittest": {
+    "run": 43,
+    "passed": 43
+  },
+  "run_checker_unittest": {
+    "run": 17,
+    "passed": 17
+  },
+  "status_unittest": {
+    "run": 26,
+    "passed": 26
+  },
+  "candidate_regression_assertions": 378,
+  "layer_regression_assertions": 196,
+  "full_run_check": "run_check.json",
+  "impact_and_conservation": "impact.json",
+  "accuracy_claim": "No new manual accuracy estimate; these checks validate code contracts and measured country coverage."
+}

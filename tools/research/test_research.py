@@ -239,6 +239,20 @@ class ResearchTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "counting contracts"):
             ResearchSource.sqlite(self.fixture["db"])
 
+    def test_member_country_counts_without_upgrading_identity_support(self):
+        db = sqlite3.connect(self.fixture["db"])
+        db.execute("UPDATE citation_edges SET foreign_status='DOMESTIC_CA',origin_country='CA',"
+                   "origin_basis='member:classification_jurisdiction',origin_evidence_ids='classification:fixture:CA' "
+                   "WHERE edge_support='heuristic_only'")
+        db.commit()
+        db.close()
+        source = self.source()
+        self.addCleanup(source.close)
+        packet = make_packet(source, "count", Filters(), evidence_limit=0)
+        summary = packet['exact_results']['summary']
+        self.assertEqual(summary['origin_determined_edges'], 5)
+        self.assertEqual(summary['heuristic_only_edges'], 1)
+
     def test_output_budget_csv_identity_and_unsupported_cli(self):
         packet = self.packet()
         text = result_csv(packet)

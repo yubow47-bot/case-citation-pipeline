@@ -22,11 +22,9 @@
     双双被砍，而它真实引用次数是 4。本层的输入因此必须是裁定层**跨法院轮**的
     输出，不是归并层的输出。
 
-关于阈值（§11.2 的 v1.2 订正，本实现按其要求落地了定标仪器）
-    threshold_dd: 5 **当前无依据**——该值是按「外国地标案例查表」场景调的，
-    范围扩展为全部引证后失去依据。规格原话：「在首次全量跑按 dd 分布重定之前，
-    它只是占位值，**不得引用为经过校准的参数**」。故本层强制产出 dd_profile.csv，
-    并在 manifest 里显式标记阈值的校准状态。
+默认保留至少一份判决实际引用的全量组（DD >= 1）。
+    DD >= 5 只作为 frequent 可选筛选，不能把低频自动视为非判例。
+    dd_profile.csv 继续报告各门槛的覆盖范围；门槛不代表正确率。
 
 不设高频豁免通道（§11.2）
     旧管线有一条 occ>=20 且 dd>=10 且 admitted>=10 且 agreement>=0.25 的并行
@@ -55,9 +53,8 @@ def _relpath(p):
         return os.path.abspath(p).replace("\\", "/")
 
 
-# 阈值的校准状态。规格 §11.2 明说 5 是占位值；改为经校准的值时，同步改这里，
-# 不要让「未校准」这个事实在输出里消失（约束九）。
-THRESHOLD_CALIBRATION = "uncalibrated_placeholder_see_spec_11_2"
+# A full-data default is a selection policy, not a calibrated precision claim.
+THRESHOLD_CALIBRATION = "full_data_default_1_frequency_profiles_are_optional"
 
 
 def main():

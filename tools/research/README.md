@@ -72,9 +72,10 @@ it is explicitly marked caller-supplied and not independently corpus-verified.
   citations or usable text. They are not counts of processed nonempty judgments,
   especially for batch-limited runs. Origin/DD/group filters change the edge
   numerator, not the document universe.
-- Origin coverage uses edges. Only supported edges with determined origin count
-  as determined; heuristic-only edges stay unknown even when group origin is
-  known. Both FOREIGN/all and FOREIGN/determined are reported. Unknown origin
+- Origin coverage uses the country assessment of each edge independently of its
+  identity support. A heuristic identity link can have a known country from its
+  own cited member. Group-only inheritance still needs identity support.
+  Both FOREIGN/all and FOREIGN/determined are reported. Unknown origin
   cannot be assumed random. Origin-filtered packets retain
   `origin_coverage_context` for the same scope before that filter.
 - Contract checks reject inconsistent tables. Passing them does not measure

@@ -231,13 +231,16 @@ class RunCheck:
                     row["group_origin_country"], row["group_origin_status"]):
                 totals["edge_group_disagreement"] += 1
             if row["edge_support"] == "heuristic_only":
-                if row["foreign_status"] != "UNDETERMINED" or row["origin_country"] or row["origin_evidence_ids"]:
+                if ((row["foreign_status"] != "UNDETERMINED" or row["origin_country"] or row["origin_evidence_ids"])
+                        and not (row.get("origin_basis", "").startswith("member:")
+                                 and row["origin_evidence_ids"])):
                     totals["heuristic_origin_leak"] += 1
                 if row["group_origin_status"] == "DETERMINED":
                     tentative[pair] = row_digest(row, TENTATIVE_FIELDS)
             elif row["edge_support"] != "supported":
                 totals["invalid_edge_support"] += 1
-            elif attrs and (row["foreign_status"], row["origin_country"]) != (attrs[2], attrs[3]):
+            elif (attrs and not row.get("origin_basis", "").startswith("member:")
+                  and (row["foreign_status"], row["origin_country"]) != (attrs[2], attrs[3])):
                 totals["supported_origin_mismatch"] += 1
             if pair in effective and (row["edge_support"] == "supported") != (effective[pair] in self.eligible_bases):
                 totals["edge_identity_support_mismatch"] += 1
@@ -250,7 +253,9 @@ class RunCheck:
                 totals["invalid_foreign_status"] += 1
             if row["foreign_status"] == "FOREIGN":
                 foreign[pair] = edges[pair]
-                if row["edge_support"] != "supported" or row["origin_country"] in ("", "CA") or not row["origin_evidence_ids"]:
+                if ((row["edge_support"] != "supported"
+                     and not row.get("origin_basis", "").startswith("member:"))
+                        or row["origin_country"] in ("", "CA") or not row["origin_evidence_ids"]):
                     totals["foreign_without_support"] += 1
             if pair in excluded:
                 totals["self_citation_reintroduced"] += 1

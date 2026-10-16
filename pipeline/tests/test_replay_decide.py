@@ -1,5 +1,7 @@
 """Replay provenance, compatibility and failure contracts without large data."""
 import contextlib
+from collections import Counter
+import csv
 import errno
 import gzip
 import hashlib
@@ -11,6 +13,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -179,6 +182,49 @@ class ReplayTests(unittest.TestCase):
         shutil.rmtree(self.source)
         self.assertEqual(gzip.decompress(new.read_bytes()), b'raw_string\none\n')
         self.assertTrue((self.target / 'reused_upstream_manifest.json').is_file())
+
+    def test_explicit_copy_survives_unavailable_hardlinks(self):
+        proof = self.proof()
+        with patch.object(replay.os, 'link', side_effect=OSError('unavailable')), \
+             patch.object(replay, 'MAX_COPY_BYTES', 0), \
+             patch.object(run_all, 'preflight', return_value={'allowed': True}):
+            receipt = replay.reuse_upstream(proof, self.target, copy_upstream=True)
+        self.assertIn('copy_compressed_csv', {r['method'] for r in receipt['files']})
+        replay.verify_source_unchanged(proof, self.target)
+
+    def test_country_only_reassessment_preserves_identity_and_effective_sources(self):
+        import decide
+        record = dict(merged_group_id='g1', merge_key='1973|3|nfldpeir||418',
+            jurisdiction='UNSUPPORTED', citation_kind='reporter', court='SCC',
+            distinct_decisions_count='2', identity_basis='unanchored',
+            member_origin_status='UNDETERMINED', member_origin_country='',
+            member_origin_basis='', member_origin_evidence_ids='', member_origin_conflict_detail='',
+            member_origin_subdivision='', member_origin_ambiguous_basis='', member_origin_exclusivity='')
+        decide.aggregate_group_origin([record], Counter())
+        for label in ('ONCA', 'SCC', 'cross_court'):
+            stream = io.StringIO(newline='')
+            writer = csv.DictWriter(stream, fieldnames=list(record))
+            writer.writeheader(); writer.writerow(record)
+            self.write_artifact('decide_out/' + label + '/decided.csv.gz', gzip.compress(stream.getvalue().encode()))
+            self.write_artifact('decide_out/' + label + '/manifest.json', b'{"stats":{"groups_out":1}}')
+        relative = 'decide_out/cross_court/effective_sources.csv.gz'
+        self.write_artifact(relative, gzip.compress(b'source_decision,identity_status\nsource,unanchored\n'))
+        self.seal_source()
+        proof = self.proof()
+        calls = []
+        runner = SimpleNamespace(out=str(self.target), courts=('ONCA', 'SCC'),
+            manifest={'steps_done': []}, write_manifest=lambda status: None,
+            run_step=lambda name, cmd: calls.append(name))
+        copied = replay.reassess_countries(proof, runner)
+        with (self.target / 'decide_out/cross_court/decided.csv').open(encoding='utf-8', newline='') as f:
+            after = next(csv.DictReader(f))
+        self.assertEqual(after['member_origin_country'], 'CA')
+        self.assertEqual(after['group_origin_country'], 'CA')
+        self.assertEqual(after['identity_basis'], 'unanchored')
+        self.assertEqual(after['distinct_decisions_count'], '2')
+        self.assertEqual((self.target / relative).read_bytes(), (self.source / relative).read_bytes())
+        self.assertIn(relative, copied)
+        self.assertEqual(calls, ['select', 'edges'])
 
     def test_reused_target_bytes_and_source_manifest_changes_are_detected(self):
         proof = self.proof()

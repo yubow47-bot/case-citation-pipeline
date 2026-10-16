@@ -9,6 +9,8 @@ reuse, never as newly executed production steps. No CSV is unpacked on disk.
 from __future__ import annotations
 
 import argparse
+from collections import Counter, defaultdict
+import csv
 import hashlib
 import json
 import math
@@ -32,6 +34,7 @@ ALLOW_CHANGED = frozenset({
     'pipeline/edges.py', 'pipeline/run_all.py', 'pipeline/replay_decide.py',
     'tools/check_run.py',
     'tools/storage.py',  # Runtime capacity/deletion accounting, not upstream parsing.
+    'pipeline/select_layer.py', 'select_config.yaml',  # Selection only; upstream rows unchanged.
     # Read only by CourtEvidence in registry/decide; never by extract/classify/merge.
     # All other decision tables still require a fresh upstream run.
     'decisions/identity_court_facts.csv',
@@ -237,7 +240,68 @@ def estimated_peak_bytes(proof):
     return max(run_all.GiB, proof['upstream_bytes'] + generated + largest + 64 * 1024**2)
 
 
-def reuse_upstream(proof, target, storage_budget_gb=12):
+def reassess_countries(proof, runner):
+    """Reuse exact identities/DD, resolve country observations, rebuild data views.
+
+    Intended for adding country inference to an otherwise compatible run. Existing
+    direct/scope assessments and conflicts remain intact. Identity traces are
+    copied as historical identity evidence, never presented as freshly executed.
+    """
+    from artifacts import open_csv
+    import decide
+    source, target = proof['source'], Path(runner.out)
+    copied = {}
+    for relative, sha in proof['manifest']['output_identity']['files'].items():
+        parts = PurePosixPath(relative).parts
+        if parts[0] not in ('registry', 'decide_out'):
+            continue
+        if parts[0] == 'decide_out' and parts[-1] in ('manifest.json', 'decided.csv', 'decided.csv.gz'):
+            continue
+        destination = target / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source / relative, destination)
+        copied[relative] = sha
+    for label in (*runner.courts, 'cross_court'):
+        relative = 'decide_out/' + label
+        with open_csv(source / relative / 'decided.csv') as f:
+            reader = csv.DictReader(f)
+            fields, records = list(reader.fieldnames), list(reader)
+        observations = Counter()
+        groups = defaultdict(list)
+        for row in records:
+            if row.get('member_origin_status') == 'UNDETERMINED':
+                decide._classified_origin(row, observations)
+            groups[row['merged_group_id']].append(row)
+        country_stats = Counter()
+        for group in groups.values():
+            decide.aggregate_group_origin(group, country_stats)
+        output = target / relative
+        output.mkdir(parents=True, exist_ok=True)
+        with (output / 'decided.csv').open('w', encoding='utf-8', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows(records)
+        manifest = json.loads((source / relative / 'manifest.json').read_text(encoding='utf-8-sig'))
+        stats = manifest['stats']
+        for key in ('group_origin_determined', 'group_origin_undetermined', 'origin_conflict_groups'):
+            stats[key] = country_stats[key]
+        for key, value in observations.items():
+            stats[key] = stats.get(key, 0) + value
+        manifest['schema_version'] = 15
+        manifest['country_reassessment'] = {'source_run': str(source),
+            'new_country_observations': dict(observations), 'identity_execution': 'reused unchanged'}
+        (output / 'manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+        runner.manifest['steps_done'].append('country_' + label)
+        runner.write_manifest('running')
+    runner.run_step('select', ['pipeline/select_layer.py', '--input', str(target / 'decide_out/cross_court/decided.csv'),
+        '--config', str(ROOT / 'select_config.yaml'), '--profile', 'default', '--output', str(target / 'select_out')])
+    runner.run_step('edges', ['pipeline/edges.py', '--decided', str(target / 'decide_out/cross_court/decided.csv'),
+        '--effective', str(target / 'decide_out/cross_court/effective_sources.csv'),
+        '--merge-out', str(target / 'merge_out'), '--output', str(target / 'edges')])
+    return copied
+
+
+def reuse_upstream(proof, target, storage_budget_gb=12, copy_upstream=False):
     target = Path(target)
     records = []
     for relative, sha in sorted(proof['upstream'].items()):
@@ -250,10 +314,10 @@ def reuse_upstream(proof, target, storage_budget_gb=12):
                 os.link(source, destination)
                 method = 'hardlink_compressed_csv'
             except OSError as exc:
-                if source.stat().st_size > MAX_COPY_BYTES:
+                if source.stat().st_size > MAX_COPY_BYTES and not copy_upstream:
                     raise ValueError('Compressed upstream hardlink failed; refusing a large fallback copy: ' + relative) from exc
                 shutil.copyfile(source, destination)
-                method = 'copy_small_compressed_csv'
+                method = 'copy_compressed_csv' if copy_upstream else 'copy_small_compressed_csv'
         else:
             shutil.copyfile(source, destination)
             method = 'copy_small_json'
@@ -281,6 +345,10 @@ def main(argv=None):
     parser.add_argument('--mixed-key-holdout', action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument('--compact', action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument('--storage-budget-gb', type=float, default=12)
+    parser.add_argument('--copy-upstream', action='store_true',
+                        help='Allow verified compressed copies within the storage budget when hardlinks are unavailable')
+    parser.add_argument('--country-only', action='store_true',
+                        help='Reuse sealed identities/DD and reassess unresolved countries without executing identity matching')
     args = parser.parse_args(argv)
     if not math.isfinite(args.storage_budget_gb) or args.storage_budget_gb <= 0:
         parser.error('Storage budget must be finite and positive')
@@ -293,7 +361,11 @@ def main(argv=None):
     args.batch_size, args.year_from, args.limit_batches = (params[k] for k in ('batch_size', 'year_from', 'limit_batches'))
     args.text_policy = params.get('text_policy', run_all.POLICY_EN)
     courts, anchors = tuple(params['courts']), tuple(params['anchor_corpus'])
-    budget = run_all.preflight(ROOT, estimated_peak_bytes(proof), max_project_bytes=int(args.storage_budget_gb * run_all.GiB))
+    identity_copy_bytes = (sum((proof['source'] / k).stat().st_size
+        for k in proof['manifest']['output_identity']['files']
+        if PurePosixPath(k).parts[0] in ('registry', 'decide_out')) if args.country_only else 0)
+    budget = run_all.preflight(ROOT, estimated_peak_bytes(proof) + identity_copy_bytes,
+                              max_project_bytes=int(args.storage_budget_gb * run_all.GiB))
     reused = {'source_run': str(proof['source']), 'source_input_fingerprint': proof['source_input_fingerprint'],
               'source_output_fingerprint': proof['source_output_fingerprint'],
               'source_manifest_sha256': proof['manifest_sha256'], 'upstream_files': len(proof['upstream'])}
@@ -306,11 +378,22 @@ def main(argv=None):
     runner.manifest['replay'] = {'protocol': 'verified-upstream-replay-v1', 'source_input_fingerprint': proof['source_input_fingerprint'],
                                 'source_output_fingerprint': proof['source_output_fingerprint'],
                                 'allowed_downstream_changes': sorted(ALLOW_CHANGED), 'fresh_upstream_execution': False}
+    if args.country_only:
+        runner.manifest['replay']['country_only'] = True
+        runner.manifest['steps_reused'] += ['build_registry'] + ['identity_' + c for c in (*courts, 'cross_court')]
     runner.write_manifest('running')
     try:
-        reuse_upstream(proof, target, args.storage_budget_gb)
-        run_all.run_downstream(runner)
-        run_all.finalize(runner, before_seal=lambda: verify_source_unchanged(proof, target))
+        reuse_upstream(proof, target, args.storage_budget_gb, copy_upstream=args.copy_upstream)
+        copied = reassess_countries(proof, runner) if args.country_only else {}
+        if not args.country_only:
+            run_all.run_downstream(runner)
+        def verify_copies():
+            expected = verify_source_unchanged(proof, target)
+            for relative, sha in copied.items():
+                if run_all.sha256_file(target / relative) != sha:
+                    raise ValueError('Reused identity artifact changed: ' + relative)
+            return dict(expected, **copied)
+        run_all.finalize(runner, before_seal=verify_copies)
     except BaseException as exc:
         run_all.mark_active_failed(exc)
         raise

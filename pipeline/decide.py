@@ -131,6 +131,8 @@ import os
 import re
 import sys
 from collections import Counter, defaultdict
+from functools import lru_cache
+from urllib.parse import quote
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk                                      # noqa: E402
@@ -437,7 +439,8 @@ def decide_case_origin(row, member_strings, origin_idx, stats, scope_idx=None,
                        reporter_idx=None):
     """§10.2（R2-1 订正）：**成员级来源地观察**——只观察本行键自己，不继承组结论。
     结果写 member_origin_* 字段；组级结论由 aggregate_group_origin 从成员观察聚合。
-    未入表时 UNDETERMINED，**不得默认取 jurisdiction 的值**。
+    案件/范围表没有结论时，使用已接受引证的 jurisdiction 作国别推断。
+    classification_jurisdiction 与案件级、范围级来源分别标记。
 
     证据优先级（P2）：**案件级直接证据 > 法院/中立码排他范围 > 排他汇编范围
     （statute 档 > publisher 档）**。前三者由 citation_kind 结构性分开：本行要么是
@@ -456,8 +459,8 @@ def decide_case_origin(row, member_strings, origin_idx, stats, scope_idx=None,
       3. R3：排他汇编范围（reporter_origin_scope.csv）——仅当本行是
          citation_kind=reporter 时适用；**自查表、不读 classify 的 jurisdiction**
          （P1）。窗口匹配即消歧；异国重叠 → UNDETERMINED 且记审计列。
-    约束七：FOREIGN 只来自正面排他规则，绝不来自「不在加拿大例外表」。
-    UKPC/JCPC 等跨法域法院不在规则表 → UNDETERMINED（§9.3）。"""
+    FOREIGN 来自明确的国别观察或分类；不来自「不在加拿大例外表」。
+    跨来源国法院 UKPC/JCPC 仍需案件或来源范围信息。"""
     row["member_origin_ambiguous_basis"] = ""
     row["member_origin_exclusivity"] = ""
     hits = []
@@ -506,8 +509,69 @@ def decide_case_origin(row, member_strings, origin_idx, stats, scope_idx=None,
         if row["member_origin_status"] == "UNDETERMINED" and reporter_idx:
             _reporter_origin(row, reporter_idx, stats)
         if row["member_origin_status"] == "UNDETERMINED":
+            _classified_origin(row, stats)
+        if row["member_origin_status"] == "UNDETERMINED":
             stats["case_origin_undetermined"] += 1
     row["origin_subdivision"] = row.get("member_origin_subdivision", "")
+
+
+CANADIAN_JURISDICTIONS = frozenset((
+    "CA", "ON", "BC", "QC", "AB", "SK", "MB", "NS", "NB", "NL", "PE",
+    "PEI", "NT", "NWT", "NU", "YT", "YK"))
+COUNTRY_JURISDICTIONS = frozenset((
+    "GB", "US", "AU", "NZ", "IE", "FR", "DE", "ZA", "IN", "HK", "SG",
+    "IL", "JM"))
+
+
+def _jurisdiction_country(jurisdiction):
+    return ("CA" if jurisdiction in CANADIAN_JURISDICTIONS else
+            jurisdiction if jurisdiction in COUNTRY_JURISDICTIONS else "")
+
+
+@lru_cache(maxsize=1)
+def _reporter_country_consensus():
+    """An ambiguous province need not mean an ambiguous country."""
+    candidates = defaultdict(set)
+    with open(os.path.join(DECISIONS, "reporter_jurisdiction.csv"), encoding="utf-8-sig", newline="") as f:
+        for rule in csv.DictReader(f):
+            key = nk(rule.get("normalized_key") or rule.get("abbreviation") or "")
+            if key:
+                candidates[key].add(_jurisdiction_country((rule.get("jurisdiction") or "").strip()))
+    return {key: next(iter(values)) for key, values in candidates.items()
+            if len(values) == 1 and "" not in values}
+
+
+def _classified_origin(row, stats):
+    """Use an accepted citation's existing jurisdiction as a country assessment.
+
+    This does not certify case identity or infer a country from the citing court,
+    frequency, absence from a table, or an arbitrary two-letter token. Explicit
+    case/scope observations above take precedence. Ambiguous scope is retained.
+    """
+    if (row.get("citation_kind") not in ("reporter", "neutral", "identifier")
+            or row.get("rejected_reason") or row.get("member_origin_ambiguous_basis")):
+        return
+    parts = row.get("merge_key", "").split("|")
+    if row.get("citation_kind") == "neutral" and len(parts) >= 3 and parts[2] in ("ukpc", "jcpc"):
+        return  # A transnational appeal court's location does not identify the appeal's origin.
+    jurisdiction = (row.get("jurisdiction") or "").strip()
+    country = _jurisdiction_country(jurisdiction)
+    basis = "classification_jurisdiction"
+    if (not country and jurisdiction == "UNSUPPORTED"
+            and row.get("citation_kind") == "reporter" and len(parts) >= 3):
+        country = _reporter_country_consensus().get(nk(parts[2]), "")
+        basis = "classification_reporter_consensus"
+    if not country:
+        return
+    row["member_origin_country"] = country
+    row["member_origin_status"] = "DETERMINED"
+    row["member_origin_basis"] = basis
+    row["member_origin_evidence_ids"] = "classification:" + quote(row["merge_key"], safe="") + ":" + country
+    row["member_origin_conflict_detail"] = ""
+    row["member_origin_subdivision"] = ""
+    stats["case_origin_by_classification"] += 1
+    if basis == "classification_reporter_consensus":
+        stats["case_origin_by_reporter_consensus"] += 1
 
 
 def _scope_origin(row, scope_idx, stats):
@@ -552,8 +616,8 @@ BASIS_RANK = {"anchor": 6, "singleton": 6, "document_alias": 6, "same_citation":
 #   anchor/singleton = 键本身就是该身份（或唯一成员用直接证据）；
 #   same_citation = 同一印刷标识（跨院同键）；
 #   anchor_variant_bilingual = 已核实的双语标识映射。
-# name_year / anchor_variant_typo / cocitation / unanchored 是启发式——保持可见、
-# 保持暂定，不得把成员证据升成组结论。
+# These are identity/court propagation rules. Country assessment uses all member
+# observations independently; it does not upgrade an identity link to proved.
 ELIGIBLE_BASES = frozenset(("anchor", "singleton", "same_citation",
                             "anchor_variant_bilingual", "document_alias"))
 
@@ -561,12 +625,13 @@ ELIGIBLE_BASES = frozenset(("anchor", "singleton", "same_citation",
 
 
 def aggregate_group_origin(group_rows, stats):
-    """R2-1：组级来源地 = 合格成员（ELIGIBLE_BASES）的成员级观察聚合。
-    无正证据 → UNDETERMINED；恰一国 → 该国（带全部证据 id）；
-    多国或合格成员本地未决冲突 → 整组 CONFLICT（证据全保留）。
-    启发式成员（name_year/cocitation/typo）的证据**不**升组，记入
-    noncore_origin_evidence 审计列。组级结果写到**每一行**（两轮都做）。"""
-    core = [r for r in group_rows if r.get("identity_basis") in ELIGIBLE_BASES]
+    """Aggregate country observations independently of identity-link confidence.
+
+    Every member keeps its own country assessment. Agreement supplies a group
+    country; disagreements remain conflicts rather than being voted away.
+    ELIGIBLE_BASES still governs identity/court propagation, not country evidence.
+    """
+    core = group_rows
     pos = [r for r in core if r.get("member_origin_status") == "DETERMINED"
            and (r.get("member_origin_country") or "").strip()]
     conf = [r for r in core if r.get("member_origin_status") == "CONFLICT"]

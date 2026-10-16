@@ -273,7 +273,8 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(report['records'], len(expected))
 
     def test_pipeline_subprocess_failure_stops_after_run(self):
-        with patch('sys.argv', ['after_run.py', '--pipeline-out', str(self.root/'failed_run')]), \
+        with patch('sys.argv', ['after_run.py', '--pipeline-out', str(self.root/'failed_run'),
+                                '--db', str(self.db_path)]), \
              patch.object(after_run.subprocess, 'run', side_effect=subprocess.CalledProcessError(2, ['pipeline'])) as child, \
              patch.object(after_run, 'run_all') as downstream:
             with self.assertRaises(subprocess.CalledProcessError):
