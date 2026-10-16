@@ -798,4 +798,3 @@ class EvidenceSnapshot:
             ids.update(self.by_key.get(member['merge_key'], ()))
             ids.update(self.applicable_policies(member, rule))
         return sorted(ids)
-

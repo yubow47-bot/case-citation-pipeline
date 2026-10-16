@@ -203,19 +203,19 @@ def same_decision_kind(ka, ja, dda, kb, jb, ddb):
     ya, ca, sa, na = _neutral_parts(ka)
     yb, cb, sb, nb = _neutral_parts(kb)
     if ya == yb and na == nb and sa == sb and ja and ja == jb:
-        
+
         if frozenset((ca, cb)) in load_bilingual():
-            return "bilingual"           
+            return "bilingual"
         return None
     if (ca, sa) != (cb, sb) or 2 * dda > ddb:
-        return None                      
+        return None
 
     if ca in load_identifier_systems() or cb in load_identifier_systems():
         return None
     if ya == yb and _one_edit(na, nb):
-        return "typo_number"             
+        return "typo_number"
     if na == nb and ya.isdigit() and yb.isdigit() and abs(int(ya) - int(yb)) == 1:
-        return "typo_year"               
+        return "typo_year"
     return None
 
 

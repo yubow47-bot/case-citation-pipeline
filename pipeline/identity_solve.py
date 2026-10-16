@@ -38,9 +38,9 @@ def decisions_of(members, did_idx, start=None, registry=None,
                  typo_over=None, gate="literal", holdout=None, trace=None):
     """Resolve roots in descending source-count/key order. Preserve gate priority, mixed-name holdouts, verified bilingual equivalence, rarity checks and qualified document alias annotations. Registry claims do not enter local own/self sets. Optional tracing records local proposals, never global equivalence closure."""
     own, neu = defaultdict(set), defaultdict(bool)
-    same_name = defaultdict(bool)      
-    classes = defaultdict(dict)        
-    kname = defaultdict(str)           
+    same_name = defaultdict(bool)
+    classes = defaultdict(dict)
+    kname = defaultdict(str)
     for m in members:
         k = m["merge_key"]
         own[k] |= _self_of(m)
@@ -52,7 +52,7 @@ def decisions_of(members, did_idx, start=None, registry=None,
         kname[k] = kname[k] or nk(m.get("case_name_modal") or "")
     for k in neu:
         if neu[k] and not own[k] and _before_start(k, start):
-            neu[k] = False        
+            neu[k] = False
     anc, ajur = defaultdict(set), {}
     for m in members:
         k = m["merge_key"]
@@ -65,7 +65,7 @@ def decisions_of(members, did_idx, start=None, registry=None,
         root[k] = k
         for big in order[:i]:
             if root[big] != big or not (neu[k] and neu[big]):
-                continue          
+                continue
 
             relation = variant_constraints(k, big, anc, ajur, own, same_name, classes,
                 kname, registry, gate, holdout is not None, members, trace)
@@ -274,7 +274,7 @@ def split_by_decision(members, did_idx, stats, start=None, registry=None,
                         proposal, trace, 'single_anchor_components')
                     if blocker:
                         stats["identifier_component_conflicts_blocked"] += 1
-                        continue      
+                        continue
                     if proposal:
                         parent[ri] = rj
                         component_keys[rj] = keys
@@ -302,9 +302,9 @@ def split_by_decision(members, did_idx, stats, start=None, registry=None,
     for k, r in root.items():
         dec_ids[r] |= anc[k]
     for r in decisions:
-        dec_ids[r] |= own[r]           
+        dec_ids[r] |= own[r]
     buckets = {d: [] for d in decisions}
-    units = defaultdict(list)          
+    units = defaultdict(list)
     for m in members:
         if m["merge_key"] in root:
             buckets[root[m["merge_key"]]].append(m)
@@ -479,7 +479,7 @@ def cluster_same_case(rows, did_idx, stats, start=None, registry=None,
                 r["identity_court_conflict"] = "true"
             stats["identity_exact_unit_court_conflicts"] += 1
         names = {nk(r.get("case_name_modal") or "") for r in members} - {""}
-        
+
         years = {row_year(r) for r in members if row_year(r) is not None}
         if len(names) == 1 and len(years) == 1 and len(court_tokens) <= 1:
             name, y = next(iter(names)), next(iter(years))
@@ -498,7 +498,7 @@ def cluster_same_case(rows, did_idx, stats, start=None, registry=None,
     for name in sorted(buckets):
         items = sorted(buckets[name], key=lambda t: (t[0], row_key(t[1])))
         chains, cur = [], [items[0]]
-        for it in items[1:]:                 
+        for it in items[1:]:
             if it[0] - cur[-1][0] <= 1:
                 cur.append(it)
             else:
