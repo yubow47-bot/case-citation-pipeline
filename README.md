@@ -9,12 +9,16 @@ Courts constantly cite earlier cases. This project reads the available judgments
 
 It has been run on three Canadian courts — the Supreme Court of Canada (SCC), the Court of Appeal for Ontario (ONCA), and the Court of Appeal for British Columbia (BCCA) — using the public [a2aj Canadian case law dataset](https://huggingface.co/datasets/a2aj/canadian-case-law). Historical results have been compared with [CanLII](https://www.canlii.org). Adding another court means checking its citation styles and source coverage as well as changing a setting.
 
+**Research status (2026-10-16):** the five-step pipeline, source tracing, exact counts and offline research queries are implemented for a defined three-court corpus. The current research goal is a reproducible dataset for a paper on Canadian judicial citation patterns. Paper-specific quality assessment and a fixed, citable export remain to be completed.
+
+The main dataset tables and foreign-citation example describe **`run_20261016_country_complete`**. Repair comparisons and historical quality studies name their own runs. The source code now includes later repairs, committed in `d23e074`; those repairs have not replaced the active dataset. The [retained repair comparison](#recent-repairs-and-their-evidence) describes an intermediate completed run. The subsequent full rerun was cancelled and its outputs deleted, so it supplies no new dataset results.
+
 | | |
 | --- | --- |
 | **The problem** | The same case is written in many different ways: the court's own citation (`2002 SCC 33`), law-report references (`[2002] 2 S.C.R. 235`), database IDs, and old footnote styles. Finding an abbreviation is only the beginning; these references need to be linked before counting. |
 | **The approach** | Five steps: find anything shaped like a citation, label it, combine duplicates, decide which citations are the same case, and count. Rejected readings and groups below the cut-off remain available for inspection, and reference rules record their evidence. |
 | **What you get** | Citation and case-group tables, counts, and source passages that support research into which cases courts cite and how citation patterns change. Search tools help researchers explore the results and maintainers understand the method. |
-| **How accurate** | An audit of an earlier run found that 87.0% of links were real case citations, rising to 98.9–100% for groups cited by at least five judgments. A new model review checks case identity as well as citation detection. Both reviews, their dates, and their limits are explained [below](#how-well-it-works). |
+| **Quality evidence** | Historical source-text reviews and retained repair comparisons document known strengths and failures. Their run IDs, samples and unresolved judgments are explained [below](#how-well-it-works). A current-run, paper-specific accuracy estimate remains open. |
 
 A citation means a judgment **mentions** a case. It does not by itself show approval, following, or reliance. Read [the counting and usage guide](docs/USAGE.md) before quoting any number; this is research data, not legal advice.
 
@@ -87,7 +91,7 @@ python tools/research/research.py ask --intent ranking --origin FOREIGN --top 5 
 
 Origin is distinct from the country of the law report. Makin and Ibrahim were decided in London by the Privy Council, which heard appeals from across the British Empire, but the appeals originated in Australia and Hong Kong. An English report alone therefore cannot establish a British origin. The pipeline assigns origin only when citation evidence or a verified reference rule supports it.
 
-Coverage is still incomplete. Across all cases, origin is known for **199,207 of the 228,102 groups with counted links (87.3%)**. The identified foreign subset contains **27,723 groups and 42,590 links**. The [coverage report](audit/findings/country_assessment_20261016/coverage.json) gives the full counts and definitions; groups without a final counted link are outside this comparison.
+Coverage is still incomplete. Origin is known for **199,207 of 228,102 groups with counted links (87.3%)**, and for **457,884 of 490,577 citation links (93.3%)**; **32,693 links** have undetermined origin. The identified foreign subset contains **27,723 groups and 42,590 links**. These rates measure available origin assessments. Citation detection and correct judgment identity require their own quality measures. The [coverage report](audit/findings/country_assessment_20261016/coverage.json) gives the counts and definitions; groups without a final counted link are outside this comparison.
 
 These are results for the identified subset, not a complete ranking of foreign influence. Unknown origins are not treated as foreign and are not extrapolated. Court-and-decade comparisons must carry their own coverage denominators: a change in known foreign citations may reflect coverage as well as changes in judicial citation practice.
 
@@ -125,13 +129,16 @@ The steps keep their own outputs and decision evidence, so an unexpected count c
 
 The judgments come from the [`a2aj/canadian-case-law`](https://huggingface.co/datasets/a2aj/canadian-case-law) dataset on Hugging Face. This project does not collect them itself. The documented production snapshot is **run_20261016_country_complete**, completed on **2026-10-16**, using English text when available and French text otherwise.
 
-| Court | Source records | Years |
-| --- | ---: | --- |
-| Supreme Court of Canada (SCC) | 10,891 | 1877–2026 |
-| Court of Appeal for Ontario (ONCA) | 24,089 | 1998–2026 |
-| Court of Appeal for British Columbia (BCCA) | 14,703 | 1999–2026 |
+| Court | Source records | English text selected | French fallback | No usable text | Observed years |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Supreme Court of Canada (SCC) | 10,891 | 10,829 | 62 | 0 | 1877–2026 |
+| Court of Appeal for Ontario (ONCA) | 24,089 | 23,953 | 136 | 0 | 1998–2026 |
+| Court of Appeal for British Columbia (BCCA) | 14,703 | 14,694 | 0 | 9 | 1999–2026 |
+| **Total** | **49,683** | **49,476** | **198** | **9** | |
 
-These total 49,683 source records; **49,674 contain usable text**. The three-court production snapshot does not include trial courts, other appeal courts, federal courts, or tribunals. Separate court experiments do not expand this snapshot's scope. Courts are selected with `PIPELINE_COURTS`, but unfamiliar reports and non-case references still need review before results from a new court can be interpreted.
+The text policy selects one field per source record: English when available, otherwise French. **49,674 records contain usable text.** The language columns describe selected source fields, rather than independently detected language. The retained extraction manifest records these counts. Observed year ranges do not establish complete coverage of every judgment in those years.
+
+The three-court snapshot excludes trial courts, other appeal courts, federal courts and tribunals. Separate court experiments do not expand this scope. A cited group can refer to a judgment whose full text is outside the source corpus. Court-and-year comparisons should report both the available source records and the usable-text denominator. Courts are selected with `PIPELINE_COURTS`; new courts require review of their source coverage and citation styles.
 
 The first number below is much larger than the others because it includes repeated mentions and duplicate readings of the same text:
 
@@ -147,6 +154,22 @@ The first number below is much larger than the others because it includes repeat
 The retained [release summary](audit/findings/project_review_20261015/release_summary_final.json) records these counts; the [current snapshot comparison](audit/findings/country_assessment_20261016/impact.json) confirms that grouping, DD, links and counted mentions are unchanged. The [mention reconciliation](audit/findings/project_review_20261015/edge_counters.json) explains why an earlier step log has 716,593 mentions: it includes 11,117 later excluded as self-citations. Source records, groups, links, and mentions are different units.
 
 Save the run ID with every research result: group IDs and counts can change between runs. On a configured local installation, `data/active_run.json` selects the active run and database, and `python tools/status.py` reports availability. Large corpus files and generated databases are local inputs and outputs; a source checkout alone does not contain the full results.
+
+### Recent repairs and their evidence
+
+The [saved repair comparison](audit/findings/fix_batch_20261016/validation.json) compares the documented dataset, `run_20261016_country_complete`, with the completed but inactive repair run, `run_20261016_fixes_full3`:
+
+| Diagnostic | Documented dataset | Retained repair run |
+| --- | ---: | ---: |
+| Citation keys appearing in multiple groups | 11,644 | 65 |
+| Groups containing two different printed deciding courts | 42 | 0 |
+| Adjacent appeal-history pairs still in one group, among 9,647 fixed probes | 1,703 | 38 |
+| Unnamed display groups that have a named member | 522 | 0 |
+| Display names beginning with the measured prose lead-ins | 4,203 | 54 |
+
+These are anomaly counts and fixed diagnostic probes. They demonstrate changes in known failure patterns; they do not estimate population precision or recall. The repair run also changes group counts and coverage denominators, so its figures must remain attached to its own run ID.
+
+Later source changes add source-bound separation evidence, conservative reporter court constraints, corrected French/name boundaries and complete nonstandard report locators. They retain the evidence for decisions and preserve ambiguous cases for review. Their full-corpus effect has not been measured in a completed follow-up run. The [problem ledger](PROBLEMS.md) and [source evidence](audit/findings/followup_fixes_20261016/) record the scope of these changes.
 
 ## Two search systems on top of the pipeline
 
@@ -165,7 +188,7 @@ flowchart TB
         MR["Combined results<br/>with scope and status shown"]
         MA["AI-assisted extension<br/>and repair"]
 
-        MS -->|Summarised and checked by hand| MC
+        MS -->|Curated summaries and checks| MC
         MC --> MI
         MQ --> MV & MK
         MI -.-> MV & MK
@@ -204,7 +227,7 @@ flowchart TB
     class DA planned;
 ```
 
-The diagram shows the intended workflow as well as implemented tools. **Keyword search and exact table queries are ready for the documented run. Vector search is unavailable for that run, and AI-written research answers remain planned.** Optional vector code does not mean a usable index has been built. The method guides and audit records also contain model-assisted work; the diagram's hand-checking label should not be read as independent human validation of all material.
+The diagram includes planned features. **Keyword data search and exact table queries are available for the documented run. Vector search is unavailable for that run, and AI-written research answers remain planned.** Method search reflects its indexed source snapshot; later code or documentation edits require an explicit index refresh to appear in search. Method guides and audit records include model-assisted work and are not all independently human-reviewed.
 
 ### Data search
 
@@ -212,8 +235,8 @@ After a run, the tables can be loaded into a local database. Case profiles bring
 
 ```powershell
 python tools/status.py
-python tools/foundation/query.py "Donoghue" --run run_20261015_identity_review --mode keyword -k 5
-python pipeline/trace_source.py --run-dir data/run_20261015_identity_review --search "Donoghue v. Stevenson"
+python tools/foundation/query.py "Donoghue" --run run_20261016_country_complete --mode keyword -k 5
+python pipeline/trace_source.py --run-dir data/run_20261016_country_complete --search "Donoghue v. Stevenson"
 python tools/research/research.py find "Housen" --top 5 --language en --output audit/findings/research/housen.json
 python tools/research/research.py ask --intent court_decade --language en --output audit/findings/research/trend.json
 python tools/research/research.py ask --intent ranking --top 10 --with-text --language en --output audit/findings/research/top10.json
@@ -237,7 +260,7 @@ The [quality tool](tools/quality/README.md) supports sampling and review. Experi
 
 ## How well it works
 
-### Current source-text model review
+### Source-text model review of the October 15 run
 
 On 2026-10-15, a model assessed all **270 links** in a fixed sample from `run_20261015_identity_review`. It read source evidence and checked both whether a case was mentioned and whether the link pointed to the right judgment.
 
@@ -250,7 +273,7 @@ Weights account for different chances of selection. Unknowns count as neither co
 
 ### Historical CanLII comparison
 
-These are **historical results for run_20261002_tables2**, the run dated **2026-10-02**. The current model review uses a different method and evidence; the two sets of scores are not directly comparable.
+These are **historical results for run_20261002_tables2**, the run dated **2026-10-02**. The October 15 model review uses a different method and evidence; the two sets of scores are not directly comparable.
 
 The [T6 audit](audit/findings/canlii_crosscheck/run_20261002_tables2/t6_calibration.md) checked **215 links** by reading source text. The links were sampled within a comparison set of **360 judgments** across three courts and three time periods per court. Results were weighted by the number of links in each sampling category; they are not simple percentages of the sample.
 
@@ -272,16 +295,36 @@ The original outputs for `run_20261002_tables2`, `run_20261003_selfcite`, and `r
 
 Automated checks cover extraction, grouping, run integrity, and the research tools; the [verification record](audit/findings/repository_cleanup_20261015/validation.json) records the results. These checks catch software and table errors; source-text reviews address whether a citation was understood correctly. Open problems and remaining work are tracked in [PROBLEMS.md](PROBLEMS.md) and [DEBT_LEDGER.md](DEBT_LEDGER.md).
 
+## Repository layout
+
+| Location | Purpose |
+| --- | --- |
+| `pipeline/` | The five processing steps and their focused regressions |
+| `decisions/` | Sourced citation, court and identity policies |
+| `tools/research/`, `tools/foundation/` | Research exports, local database and search |
+| `audit/`, `docs/` | Small evidence records, method documentation and research limitations |
+| `PROBLEMS.md`, `DEBT_LEDGER.md` | Recorded defects, dispositions and remaining work |
+| `corpus/`, `data/` | Local source corpora and generated outputs, excluded from Git |
+| `implementation/` | Working notes and temporary analysis; mostly excluded from Git |
+
+Keep source changes and necessary small evidence records in Git. Manage large generated datasets separately, retaining the active dataset and the baselines needed for stated comparisons. A code edit does not itself initiate a new dataset build or database switch.
+
 ## Quick start
 
 Use Python 3.11 or later. The download script also needs `bash` (Git Bash or WSL on Windows). Allow several gigabytes for the corpus and generated files; storage needs depend on the courts and runs you keep.
 
+Start with the small built-in example; it needs no corpus download:
+
 ```bash
 pip install pyarrow pyyaml
+python scripts/demo.py
+```
+
+For an existing local dataset, use the research queries above. To deliberately build a new dataset for a defined study, download the required corpus and choose a new output directory:
+
+```bash
 bash scripts/download_corpus.sh list
 bash scripts/download_corpus.sh download
-python scripts/demo.py
-python pipeline/run_all.py --out data/run_smoke --limit-batches 1
 python pipeline/run_all.py --out data/run_YYYYMMDD_name
 ```
 
@@ -298,30 +341,23 @@ This reads CSV or compressed CSV files and checks links, group membership, DD, a
 To build the local keyword-search database, first install the dependencies in the [search setup guide](tools/foundation/README.md), then run:
 
 ```bash
-python tools/foundation/after_run.py --run data/run_YYYYMMDD_name
+python tools/foundation/after_run.py --run data/run_YYYYMMDD_name --db data/foundation/research_candidate.db
 ```
 
 The default build is offline and skips vectors. New pipeline runs use compressed output and storage limits by default. [Storage tools](tools/storage.py) can inventory files, compress retained runs, and retire selected runs with receipts.
 
-After changing pipeline code, run the relevant checks:
+Developer checks and the optional full release workflow are documented in the [verification guide](docs/method_cards/07_verification_gates.md). Dataset generation, external comparison and publication are separate operations scoped to the requested work.
 
-```bash
-python pipeline/tests/run_regression.py --selftest
-python pipeline/tests/test_layers.py
-python pipeline/tests/test_layers.py --golden
-```
+## Roadmap: data for a reproducible paper
 
-The last command needs a completed pipeline run for comparison. The full step order is in the [technical specification](docs/technical_specification.md).
+The next milestone is a defined research dataset and its quality evidence. Prioritize changes that affect the paper's selected courts, periods, measures and conclusions.
 
-## Roadmap
+1. **Define the study.** Specify the research question, courts, dates, unit of analysis and counting rules. For citation trends, retain court-and-period source denominators and origin-unknown categories alongside the counts.
+2. **Prepare one candidate dataset.** Select the retained dataset appropriate to the study, or make one explicitly scoped build when the study requires newer rules. Record the code revision, corpus hashes, policy versions and run ID before external assessment. Keep that candidate stable while it is reviewed.
+3. **Assess and freeze the paper's dataset.** Compare that candidate with CanLII within the same court/date scope, using the available crosscheck tools. Stratify source-text review by the dimensions relevant to the paper, including old judgments, French fallback, citation frequency and foreign-origin claims. Review mismatches and unresolved records; report citation detection, judgment identity and origin assessment separately, with sample denominators and uncertainty. CanLII agreement contributes evidence but does not by itself settle source-text correctness. Retain the quality evidence with the chosen release; subsequent code fixes should not silently change its analysis tables.
+4. **Export and cite the results.** Existing research commands can export CSV tables with companion JSON containing filters, queries, provenance and hashes. Prepare a release with the exact tables used in the paper, a data dictionary, exclusions and quality limitations, and a persistent dataset identifier. Cite that dataset version separately from the software and the source corpus, so readers can identify the exact exported results.
 
-- Independently review source-text case mentions and case identities on the current run, including unresolved and French-text records.
-- Calibrate the DD cut-off and repeat the CanLII comparison on the current run.
-- Improve origin coverage before drawing broader conclusions about foreign citation patterns.
-- Resolve citation and identity problems recorded in [PROBLEMS.md](PROBLEMS.md) and [DEBT_LEDGER.md](DEBT_LEDGER.md), while keeping procedural relationships separate from judgment identity.
-- Evaluate short-citation recovery and treatment classification without silently changing production counts.
-- Evaluate optional vector search and research answers with source references.
-- Extend court coverage using the [new-court guide](docs/method_cards/00_new_court_playbook.md).
+Independent review and a paper-specific export release remain open. Short-citation experiments are deferred locally. Additional courts or optional search features can follow demonstrated research needs.
 
 ## License
 
