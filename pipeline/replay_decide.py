@@ -26,6 +26,8 @@ except ImportError:
 ROOT = Path(run_all.ROOT)
 STAGES = ('extract_out', 'classify_out', 'merge_out')
 ALLOW_CHANGED = frozenset({
+    'pipeline/identity_evidence.py', 'pipeline/identity_constraints.py',
+    'pipeline/identity_solve.py', 'pipeline/identity_courts.py',
     'pipeline/decide.py', 'pipeline/registry.py', 'pipeline/registry_report.py',
     'pipeline/edges.py', 'pipeline/run_all.py', 'pipeline/replay_decide.py',
     'tools/check_run.py',

@@ -42,6 +42,7 @@ def main(argv=None):
         'pipeline/tests/test_registry_languages.py')]
     suites.append(('lising_identity_review', ['pipeline/tests/test_lising_identity_review.py']))
     suites.append(('identity_separations', ['pipeline/tests/test_identity_separations.py']))
+    suites.append(('identity_contracts', ['pipeline/tests/test_identity_contracts.py']))
     suites += [(name, ['-m', 'unittest', 'discover', '-s', directory, '-p', 'test_*.py'])
                for name, directory in (
                    ('foundation', 'tools/foundation'), ('tools', 'tools/tests'),

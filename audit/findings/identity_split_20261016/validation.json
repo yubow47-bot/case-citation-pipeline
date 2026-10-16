@@ -1,0 +1,222 @@
+{
+  "protocol": "identity-split-validation-v1",
+  "status": "passed",
+  "scope": "Item 1: scoped evidence, rule-specific constraints, and the sole identity solver; decide compatibility facade retained.",
+  "identity_trace_protocol": "scoped-identity-constraints-v1",
+  "baseline": {
+    "run": "data/run_20261015_identity_review",
+    "starting_git_head": "21ae228",
+    "manifest_sha256": "312830e39e4e49c132c19e19a81b3aed51b9734cd4c159a277cae7d8e75fc431",
+    "input_fingerprint": "ff456927acfe8d2b5d1b744c6b941ad1bbaf238657a165a96348a294ee2d09ac",
+    "output_fingerprint": "d6deb5d3cf3007c76841152e59a4fb97adedc855e0a6958492d4402c804a6cef",
+    "protected_physical_files": 282,
+    "all_file_hashes_unchanged": true
+  },
+  "final": {
+    "run": "data/run_20261016_identity_split_final",
+    "manifest_sha256": "bf4c50561d8f8397e9578e6b43d23a7bb9937b1efe256a753c3669a414500d1c",
+    "input_fingerprint": "935b488f84830d41c3a259ce60f0dd589ca2088ab5778b157647b4486cff919f",
+    "output_fingerprint": "a87821907e9ed924cb1e4d21f3eec11a8faf9b15b8ba682993bf28177dcc76b7",
+    "sealed_artifacts": 297,
+    "sum_file_lengths_bytes_including_hardlinks": 868932431,
+    "producer_sha256": {
+      "pipeline/decide.py": "9865fde1c33f998e24b590eaaebeec6a5e015ff0c19c31b60b715f0cb7337398",
+      "pipeline/identity_courts.py": "38506277f5f0c1776992db45d20652e3ff56f9d1492d3ba1e55ce21c8817a96a",
+      "pipeline/identity_evidence.py": "0e4852928525a79b715c05e24721e0c1c6eec1d76e2ea764c88e86a169b3cca7",
+      "pipeline/identity_constraints.py": "18b60a95c208d663eb6d7938f7a6d466531804763a8339f0b76d4dfc82e9d6f1",
+      "pipeline/identity_solve.py": "7b05f8faabcdaba992f27a64d6e901c7b89fb1af2221bddd4479e501eb71cb9c",
+      "pipeline/replay_decide.py": "39f2fc7083fce7ff4cf77a612e5fead19f8eaf7aeb5a9470fb03466e5bb7d53c"
+    },
+    "producer_files_match_sealed_input": true
+  },
+  "active_pointer": {
+    "path": "data/active_run.json",
+    "sha256": "550f7f12d753bd892fe8138d16e3907dec44f5e8f685b2bb1b9634d654031310",
+    "unchanged": true
+  },
+  "exact_legacy_equality": {
+    "csv_files": 252,
+    "stable_stage_json_files": 18,
+    "differences": 0,
+    "includes": [
+      "all existing group IDs and ordered member rows",
+      "per-group DD and kept values",
+      "counted and excluded effective source sets",
+      "origin and provenance fields",
+      "all existing edge tables and numeric CSV outputs"
+    ],
+    "normalization_limits": [
+      "Cross-run log bytes, root runtime/storage/replay/code fingerprints are not compared; each physical seal is independently verified.",
+      "Stage generated_at fields and run directory strings normalized; additive decide identity_trace is recorded, not equated to an absent baseline trace.",
+      "New trace content correctness is covered by separate product checks, not historical equality."
+    ],
+    "baseline_and_target_physical_seals_verified": true
+  },
+  "final_metrics": {
+    "courts": [
+      "SCC",
+      "ONCA",
+      "BCCA"
+    ],
+    "limit_batches": null,
+    "year_from": null,
+    "rows_total": 261029,
+    "groups_total": 230449,
+    "groups_kept": 14003,
+    "threshold_dd": 5,
+    "group_foreign_status": {
+      "UNDETERMINED": 169415,
+      "DOMESTIC_CA": 60574,
+      "FOREIGN": 460
+    },
+    "group_origin_status": {
+      "UNDETERMINED": 169415,
+      "DETERMINED": 61034
+    },
+    "edges_total": 490577,
+    "edges_foreign": 1082,
+    "edges_domestic_ca": 212682,
+    "edges_undetermined": 276813,
+    "edges_conflict": 0,
+    "edges_supported": 459696,
+    "edges_heuristic_only": 30881,
+    "self_excluded_sources": 5077,
+    "tentative_edges": 380
+  },
+  "mentions_total": 705476,
+  "trace_checks": {
+    "status": "passed",
+    "checks": [
+      "Content-derived evidence and constraint IDs; all references resolve.",
+      "Only must_link and cannot_link relations; no fabricated negatives for insufficient support.",
+      "Every blocker appears in conflicts, including standalone exclusions.",
+      "Contiguous ordered solution events and exact assigned/final partitions.",
+      "Original scoped row/source observations preserved.",
+      "Single-anchor endpoints bind the exact legacy target source set.",
+      "Native holdout proof references bind the complete exact target proof set.",
+      "All actual document alias component proposals have qualified proof witnesses."
+    ],
+    "scopes": [
+      {
+        "scope": "BCCA",
+        "rows": 74777,
+        "groups": 70278,
+        "counts": {
+          "evidence": 249791,
+          "constraints": 57424,
+          "conflicts": 1548,
+          "solution": 182749
+        }
+      },
+      {
+        "scope": "cross_court",
+        "rows": 261029,
+        "groups": 230449,
+        "counts": {
+          "evidence": 622315,
+          "constraints": 136835,
+          "conflicts": 3140,
+          "solution": 571451
+        }
+      },
+      {
+        "scope": "ONCA",
+        "rows": 66313,
+        "groups": 60947,
+        "counts": {
+          "evidence": 232865,
+          "constraints": 43766,
+          "conflicts": 1003,
+          "solution": 157333
+        }
+      },
+      {
+        "scope": "SCC",
+        "rows": 119939,
+        "groups": 115555,
+        "counts": {
+          "evidence": 340110,
+          "constraints": 51865,
+          "conflicts": 447,
+          "solution": 271959
+        }
+      }
+    ],
+    "endpoint_actionable_issues": 0
+  },
+  "tests": {
+    "full_offline_before_diagnostic_only_fixes": {
+      "status": "passed",
+      "suites": 23,
+      "assertion_checks": 885,
+      "unittest_cases": 512
+    },
+    "final_focused_after_all_diagnostic_only_fixes": {
+      "status": "passed",
+      "contract_cases": 17,
+      "identity_separation_cases": 8,
+      "document_alias_cases": 22,
+      "identifier_cases": 11,
+      "court_cases": 15
+    },
+    "full_run_check": "passed",
+    "native_case_and_all_group_proof_review": {
+      "status": "passed",
+      "groups_scanned": 230449,
+      "checks": {
+        "lising_formal_pair_same_group": true,
+        "lising_exact_85_source_set": true,
+        "lising_lower_reporter_separate": true,
+        "lising_raw_lower_supports_preserved": true,
+        "lising_bcca33_and_bail91_separate": true,
+        "motor_native_scr_rcs_core_same_group": true,
+        "motor_exact_213_source_set_old_minus_chartrand": true,
+        "johnson_prohibited_target_separate": true,
+        "chartrand_to_johnson_still_counted": true,
+        "all_holdout_proofs_current_complete": true,
+        "all_group_document_vendor_and_negative_constraints": true,
+        "current_negative_fact_present": true,
+        "selected_groups_contiguous_and_complete": true,
+        "all_child_manifests_bind_negative_fact": true
+      }
+    },
+    "chronology": "The full offline sweep preceded diagnostic-only endpoint, native-proof-reference, and driving-recompute-ledger fixes. Final focused tests, final sealed replay, exhaustive equality, and actual trace audits cover those fixes; no duplicate full offline sweep was required by architecture review."
+  },
+  "retained_attempts": [
+    {
+      "run": "data/run_20261016_identity_split",
+      "status": "failed",
+      "reason": "Sandbox hardlink permission failure before downstream execution; retained."
+    },
+    {
+      "run": "data/run_20261016_identity_split_verified",
+      "status": "complete_sealed",
+      "limitation": "Historical incomplete anchor endpoint and native holdout proof references; legacy products unchanged."
+    },
+    {
+      "run": "data/run_20261016_identity_split_bound",
+      "status": "complete_sealed",
+      "limitation": "Exact legacy and actual trace audits passed; producer preceded supported mixed-holdout recompute ledger forwarding. This corpus has zero mixed holdouts."
+    },
+    {
+      "run": "data/run_20261016_identity_split_final",
+      "status": "complete_sealed_verified"
+    }
+  ],
+  "storage": {
+    "upstream_reuse": "Local hardlinks to sealed compressed upstream artifacts; no corpus copy or uncompressed upstream copy.",
+    "trace_writes": "Direct gzip.",
+    "fresh_output_compaction": "Existing transactional verified lossless compaction.",
+    "prior_runs_preserved": true,
+    "next_item": "Re-evaluate actual project sizes and a fresh full-extraction peak; the replay estimate is not a full-extraction allowance."
+  },
+  "detailed_local_receipts_sha256": {
+    "implementation/identity_split_validation_20261016/comparison_final.json": "49678117021c3492ad49c60e8e13d2b66d15dbb137a3a25f83d3f3d923bb84ac",
+    "implementation/identity_split_validation_20261016/endpoint_audit_run_20261016_identity_split_final.json": "1e3384239dfdfc55fb3ae4d8f14f0875799fe862eeaa342cd79ee10ffab924cb",
+    "implementation/identity_split_final_trace_check_20261016.json": "3fd253c8a62e9acb38cbe4fd1cafbccdfc2c54d9c03c1166633c64a293a3131a",
+    "implementation/identity_split_final_run_check_20261016.json": "3d9d251c924033c9f35b0e6ecc04f659864a42a05bfc210fcc50c95ae59f6f6e",
+    "implementation/identity_split_final_native_review_20261016.json": "b57e19e65eb286277538e94390a3586cd94dfc31c01550feb852a993723f407d",
+    "implementation/identity_split_final_offline_20261016/summary.json": "a33cf9e0fc1cf21a42cdf9afe064c3ab2edb3cd4feefa40528eca8684fd4f550",
+    "implementation/identity_split_post_audit_focused_20261016.json": "20de441543ccfed50be10eff06d1ffbede984cf8088a3371ed01341a4993620e"
+  }
+}
