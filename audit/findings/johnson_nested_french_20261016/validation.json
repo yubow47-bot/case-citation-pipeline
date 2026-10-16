@@ -1,0 +1,362 @@
+{
+  "schema": "johnson_nested_french_validation_v1",
+  "status": "passed",
+  "baseline": "data/run_20261016_identity_split_final",
+  "fresh_run": "data/run_20261016_johnson_nested_french",
+  "input_fingerprint": "a27586c209311ac3821fd588f1c47b95393a8c6b1bf5fd7d8fbd7c4843dd8d09",
+  "output_fingerprint": "ebfe1194a604c0f2493decc55f69f372cccd3f2b9c4c3ca8d9398511d58746f1",
+  "run_manifest_sha256": "970a648644f98837c0e1a36bfe52f1b9515a3c3d64a19169b10913ce98dc2880",
+  "sealed_output_artifacts": 302,
+  "fresh_execution": {
+    "all_15_stages_executed": true,
+    "reused_upstream": false,
+    "text_policy": "en_then_fr",
+    "courts": [
+      "SCC",
+      "ONCA",
+      "BCCA"
+    ],
+    "batch_size": 500,
+    "input_identity_verified_unchanged": true
+  },
+  "correction": {
+    "source_decision": "ONCA_2024onca355",
+    "corpus_row": 14881,
+    "text_field": "unofficial_text_fr",
+    "text_sha256": "d1f9387e3bb06b86df3a6030a522874392f997a3b903463ccc964b88f4b96361",
+    "candidate_id": "ONCA:14881:5926:5945:shape_bracket",
+    "old_name": "R. v. Johnson",
+    "new_name": "Renvoi sur la Motor Vehicle Act (C.-B.)",
+    "rule": "Comma-delimited French citant followed by a capitalized Renvoi sur reference title within the current citation segment. Existing title admission applies; later v. anchors and rejected suffixes retain the prior route.",
+    "producer_sha256": {
+      "pipeline/classify.py": "95e43a3546ff7e88701c3d01cbd1561a337c392debf5923d78e7b6398c9b8a42",
+      "decisions/identity_separations.csv": "c2099cd83d706f423b921944844a010f24e889ab76d8e34a415b542154f0ea5c"
+    },
+    "retired_fact": {
+      "merge_key": "|65|nsr|2d|54",
+      "target_decision_id": "SCC_19852scr486",
+      "production_table_rows": 0,
+      "header_preserved": true,
+      "historical_fixture_and_mechanism_tests_retained": true
+    }
+  },
+  "complete_candidate_and_classified_audit": {
+    "candidate_rows": 1472144,
+    "candidate_columns": 35,
+    "all_candidate_cells_and_order_exact": true,
+    "classified_rows": 1472144,
+    "classified_columns": 55,
+    "added_rows": 0,
+    "removed_rows": 0,
+    "changed_cells": 1,
+    "changed_field": "candidate_case_name",
+    "all_other_cells_exact": true,
+    "changed_source_full_text_proof_verified": true
+  },
+  "all_csv_audit": {
+    "artifacts": 268,
+    "logically_exact": 249,
+    "unequal": 19,
+    "all_edge_and_effective_source_csvs_logically_exact": true,
+    "non_trace_complete_deltas": [
+      {
+        "logical_artifact": "classify_out/ONCA/classified.csv",
+        "changed_rows_at_same_ordinal": 1,
+        "changed_fields": {
+          "candidate_case_name": 1
+        },
+        "added_trailing_rows": 0,
+        "removed_trailing_rows": 0
+      },
+      {
+        "logical_artifact": "decide_out/ONCA/decided.csv",
+        "changed_rows_at_same_ordinal": 1,
+        "changed_fields": {
+          "case_name_modal": 1
+        },
+        "added_trailing_rows": 0,
+        "removed_trailing_rows": 0
+      },
+      {
+        "logical_artifact": "decide_out/SCC/decided.csv",
+        "changed_rows_at_same_ordinal": 1,
+        "changed_fields": {
+          "document_alias_holdout_doc_ids": 1,
+          "document_alias_holdout_evidence_ids": 1,
+          "identity_separation_evidence_ids": 1,
+          "identity_court_conflict": 1,
+          "split_flag": 1,
+          "split_reason": 1
+        },
+        "added_trailing_rows": 0,
+        "removed_trailing_rows": 0
+      },
+      {
+        "logical_artifact": "decide_out/cross_court/decided.csv",
+        "changed_rows_at_same_ordinal": 2,
+        "changed_fields": {
+          "case_name_modal": 1,
+          "document_alias_holdout_doc_ids": 1,
+          "document_alias_holdout_evidence_ids": 1,
+          "identity_separation_evidence_ids": 1,
+          "identity_court_conflict": 1,
+          "split_flag": 1,
+          "split_reason": 1
+        },
+        "added_trailing_rows": 0,
+        "removed_trailing_rows": 0
+      },
+      {
+        "logical_artifact": "merge_out/ONCA/mentions_candidates.csv",
+        "changed_rows_at_same_ordinal": 1,
+        "changed_fields": {
+          "candidate_case_name": 1
+        },
+        "added_trailing_rows": 0,
+        "removed_trailing_rows": 0
+      },
+      {
+        "logical_artifact": "merge_out/ONCA/merged.csv",
+        "changed_rows_at_same_ordinal": 1,
+        "changed_fields": {
+          "case_name_modal": 1,
+          "name_classes": 1
+        },
+        "added_trailing_rows": 0,
+        "removed_trailing_rows": 0
+      },
+      {
+        "logical_artifact": "select_out/selected.csv",
+        "changed_rows_at_same_ordinal": 2,
+        "changed_fields": {
+          "case_name_modal": 1,
+          "document_alias_holdout_doc_ids": 1,
+          "document_alias_holdout_evidence_ids": 1,
+          "identity_separation_evidence_ids": 1,
+          "identity_court_conflict": 1,
+          "split_flag": 1,
+          "split_reason": 1
+        },
+        "added_trailing_rows": 0,
+        "removed_trailing_rows": 0
+      }
+    ],
+    "trace_content_deltas": [
+      {
+        "logical_artifact": "decide_out/BCCA/identity_evidence.csv",
+        "removed_content_rows": 2,
+        "added_content_rows": 0
+      },
+      {
+        "logical_artifact": "decide_out/ONCA/identity_constraints.csv",
+        "removed_content_rows": 2,
+        "added_content_rows": 2
+      },
+      {
+        "logical_artifact": "decide_out/ONCA/identity_evidence.csv",
+        "removed_content_rows": 3,
+        "added_content_rows": 1
+      },
+      {
+        "logical_artifact": "decide_out/ONCA/identity_solution.csv",
+        "removed_content_rows": 6443,
+        "added_content_rows": 6443
+      },
+      {
+        "logical_artifact": "decide_out/SCC/identity_conflicts.csv",
+        "removed_content_rows": 1,
+        "added_content_rows": 0
+      },
+      {
+        "logical_artifact": "decide_out/SCC/identity_constraints.csv",
+        "removed_content_rows": 1,
+        "added_content_rows": 1
+      },
+      {
+        "logical_artifact": "decide_out/SCC/identity_evidence.csv",
+        "removed_content_rows": 3,
+        "added_content_rows": 1
+      },
+      {
+        "logical_artifact": "decide_out/SCC/identity_solution.csv",
+        "removed_content_rows": 29247,
+        "added_content_rows": 29247
+      },
+      {
+        "logical_artifact": "decide_out/cross_court/identity_conflicts.csv",
+        "removed_content_rows": 1,
+        "added_content_rows": 0
+      },
+      {
+        "logical_artifact": "decide_out/cross_court/identity_constraints.csv",
+        "removed_content_rows": 3,
+        "added_content_rows": 3
+      },
+      {
+        "logical_artifact": "decide_out/cross_court/identity_evidence.csv",
+        "removed_content_rows": 5,
+        "added_content_rows": 3
+      },
+      {
+        "logical_artifact": "decide_out/cross_court/identity_solution.csv",
+        "removed_content_rows": 63671,
+        "added_content_rows": 63671
+      }
+    ]
+  },
+  "causal_summary": {
+    "name_propagation": "The corrected name propagates through ONCA mentions/merged/decided and the ONCA member in cross-court decided/selected. Its normalized name class changes from rvjohnson:1 to renvoisurlamotorvehicleactcb:1.",
+    "johnson_metadata_fields": {
+      "document_alias_holdout_doc_ids": {
+        "old": "SCC_19852scr486",
+        "new": "",
+        "old_present": true,
+        "new_present": true
+      },
+      "document_alias_holdout_evidence_ids": {
+        "old": "own:171e21a41d07601c2669e9fe12814827943f811d16571e851e9916cacc2fb3d0|own:84d40de37a5ffd5277ec656c62ddc73afda2e5edcbb9d8b0a0dda4a98ef19247|own:9cb4eb061c7e3d087286ae26269f06f6d772ee2fc0670af6fcc905bfdc8b28c5|own:fb08bf2a7b3387f2c1eb088c8967b3a908bb9e38a0de017309c3859b0a23151f",
+        "new": "",
+        "old_present": true,
+        "new_present": true
+      },
+      "identity_separation_evidence_ids": {
+        "old": "sep:c35bcd2daaf53ca14666855d7b8187f4cc071c207b4f2e70c0c732aba19de9dd",
+        "new": "",
+        "old_present": true,
+        "new_present": true
+      },
+      "identity_court_conflict": {
+        "old": "",
+        "new": "false",
+        "old_present": true,
+        "new_present": true
+      },
+      "split_flag": {
+        "old": "true",
+        "new": "false",
+        "old_present": true,
+        "new_present": true
+      },
+      "split_reason": {
+        "old": "unanchored;document_alias_inherited_holdout",
+        "new": "",
+        "old_present": true,
+        "new_present": true
+      }
+    },
+    "johnson_metadata_reason": "With the sourced holdout retired, Johnson is evaluated as an ordinary singleton. Its final membership, DD, sources and mentions are unchanged.",
+    "trace_reason": "Retirement removes two fact records in each scope and one SCC/cross holdout conflict. Changed row evidence updates the corresponding constraint references. Solution residuals are the corrected title projection, Johnson singleton admission replacing its holdout, and cleared Johnson partition/assignment split reasons.",
+    "solution_reduction": [
+      {
+        "scope": "ONCA",
+        "original_unmatched_old_rows": 6443,
+        "original_unmatched_new_rows": 6443,
+        "sequence_only_matches": 6441,
+        "additional_exact_constraint_mapping_matches": 1,
+        "residual_old_rows": 1,
+        "residual_new_rows": 1
+      },
+      {
+        "scope": "SCC",
+        "original_unmatched_old_rows": 29247,
+        "original_unmatched_new_rows": 29247,
+        "sequence_only_matches": 29244,
+        "additional_exact_constraint_mapping_matches": 0,
+        "residual_old_rows": 3,
+        "residual_new_rows": 3
+      },
+      {
+        "scope": "cross_court",
+        "original_unmatched_old_rows": 63671,
+        "original_unmatched_new_rows": 63671,
+        "sequence_only_matches": 63666,
+        "additional_exact_constraint_mapping_matches": 1,
+        "residual_old_rows": 4,
+        "residual_new_rows": 4
+      }
+    ],
+    "solution_reduction_limits": "Only sequence was removed and the two reviewed same-context document-alias constraint IDs substituted inside constraint_ids_json. All full original and residual events remain locally retained and hash-bound; no row-ID stability was assumed.",
+    "architecture_review": "All 19 table deltas and every residual event were reviewed and accepted as within scope."
+  },
+  "downstream_acceptance": {
+    "groups": 230449,
+    "court_key_members": 261029,
+    "final_group_membership_DD_kept_origin_primary_names_exact": true,
+    "check_run": "passed",
+    "trace_scopes_passed": 4,
+    "native_and_full_group_proof_checks_passed": 19,
+    "motor_vehicle": {
+      "DD": 213,
+      "source_set_exactly_equals_baseline_edges_and_effective": true
+    },
+    "johnson": {
+      "separate_from_motor_vehicle": true,
+      "source_set_exactly_equals_baseline_edges_and_effective": [
+        "SCC_19942scr864"
+      ],
+      "chartrand_edge_mention_count_before": 2,
+      "chartrand_edge_mention_count_after": 2,
+      "both_counted_original_candidate_IDs_raw_strings_offsets_exact": true
+    },
+    "lising": {
+      "DD": 85,
+      "source_set_exact": true,
+      "identity_court_facts_sha256": "3ee854278bc0de607245382616fe48e62a67ca60833d7f38c46b68ddd0154e4f"
+    }
+  },
+  "tests": {
+    "offline_suites": 23,
+    "offline_assertions": 907,
+    "offline_unittest_cases": 516,
+    "final_classifier_assertions": 196,
+    "final_native_extractor_classifier_rows": 6,
+    "timing": "The full sweep classifier suite preceded the final later-v guard. The final 196-assertion suite, corrected native six-row probe and full fresh sealed run cover the final bytes; architecture review approved no duplicate full sweep."
+  },
+  "json_audit": {
+    "all_union_json_artifacts": 22,
+    "equal_after_explicit_runtime_normalization": 13,
+    "time_fields_normalized": [
+      "generated_at"
+    ],
+    "run_roots_normalized": [
+      "data/run_20261016_identity_split_final",
+      "data/run_20261016_johnson_nested_french",
+      "data/run_20261015_identity_review",
+      "data/run_20261014_reliable_final"
+    ],
+    "arrays_hashes_git_head_wall_s_preserved": true,
+    "complete_before_after_leaf_differences_retained": true,
+    "statistics_differences": "Only retired-fact holdout/applied-fact counters and trace evidence/conflict counts change. Extraction git_head/wall_s and fresh-versus-replay/compaction provenance are retained separately."
+  },
+  "storage_and_preservation": {
+    "explicit_project_cap_bytes": 17179869184,
+    "conservative_additional_allowance_bytes": 6381581942,
+    "planned_project_peak_bytes": 15055684908,
+    "minimum_free_reserve_bytes": 2147483648,
+    "postrun_snapshot_utc": "2026-10-16T06:26:53.546770+00:00",
+    "postrun_new_run_file_length_bytes": 868938493,
+    "postrun_project_file_length_bytes": 9563707951,
+    "postrun_free_bytes": 54540677120,
+    "protected_baseline_seal_and_pointer_unchanged": true,
+    "court_fact_table_unchanged": true,
+    "seven_previously_inventoried_run_lengths_exact": true,
+    "producer_hashes_match_sealed_run": true,
+    "scope": "All prior runs, corpora, databases and caches retained; active pointer unchanged. File lengths count hardlinked paths separately. This postrun snapshot is not a measured peak."
+  },
+  "retained_scope_limitation": "The pre-existing citation-tail fallback can still select an earlier name in synthetic nested sequences containing a later v. anchor. Its prior output is preserved by regression to bound this patch, without asserting semantic correctness. See PROBLEMS 132.",
+  "local_detailed_receipts_sha256": {
+    "implementation/johnson_candidate_audit_20261016/audit_summary.json": "811b40524fccb414b7a5e549f86a2560a4571f275dc88313a5f0b7935b342fa5",
+    "implementation/johnson_candidate_audit_20261016/all_csv_inventory.json": "aa1b2a84a9557937f2aeb8108010cd29c7ff2605b0246b76208ce23e153b9739",
+    "implementation/johnson_citant_20261016/csv_deltas/summary.json": "981a185f1c3daa346c532e759e0504934835b1cc301f1042660ef51799f8c1c6",
+    "implementation/johnson_citant_20261016/solution_reduction/summary.json": "8453a1b765c6d5df32ba9e9b00b46a793b0fe93f8e843b67fdb109cbeb2c91a9",
+    "implementation/johnson_citant_20261016/complete_json_diff.json": "d689bf65a1a6d108b568bd2df86fc3eabc98c609b905a07e77ed8f8c2f3289a3",
+    "implementation/johnson_citant_20261016/check_run.json": "9e9b363225cf5d2d3974aef56500a576f8801fa6248f901cf98fda788f6949fb",
+    "implementation/johnson_citant_20261016/trace_check.json": "1a06dfcdac960b2083079f5fce270e60a1ecd91c97562153cd80b3d6a702cb60",
+    "implementation/johnson_citant_20261016/compare_runs.json": "f52baa7156b5a0377cb30146dcde12ef25bdf80d1f6f24b4009261e146eec9a2",
+    "implementation/johnson_citant_20261016/named_release.json": "e202652570e6f63f48efd3a0c1cdbee365326a160b85317b96dd1f65d82a053b",
+    "implementation/johnson_citant_20261016/native_upstream_reproducer.json": "7fc2ed5713200477725b119e6fd42432f58d5d16ca5623fa82d6cc4c8509c82f",
+    "implementation/johnson_citant_20261016/offline/summary.json": "2d171e46a563333eaf45d03ee4bfd14800d11e5a88fb70255dd3b7101f9098f0",
+    "implementation/johnson_citant_20261016/fresh_preflight.json": "066bd70a8dd23dc3148efadce779525b2c87dc5a69a7cb63110a05a05d956c1c",
+    "implementation/johnson_citant_20261016/postrun_storage_preservation.json": "f8a8f379934a2ed6e8e0568de198592528512461bb37f2538521c3407595658f"
+  }
+}

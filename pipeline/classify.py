@@ -673,6 +673,23 @@ def _cite_segment(pre):
     return s[i:]
 
 
+_NESTED_FRENCH_REFERENCE_RE = re.compile(
+    r",\s*(?i:citant)\s+(Renvoi\s+sur\s+(?:(?:le|la|les)\s+|l['’])?)")
+
+
+def _nested_french_reference_name(segment):
+    """Admit a reference title introduced by a nested French citation boundary."""
+    for match in reversed(list(_NESTED_FRENCH_REFERENCE_RE.finditer(segment))):
+        title = segment[match.end():]
+        if not title or not title[0].isupper() or V_RE.search(title):
+            continue
+        title = _walk_right(title)
+        cleaned, reject = admit_candidate(match.group(1) + title)
+        if not reject:
+            return cleaned
+    return None
+
+
 def split_case_name(row):
     """§8.7：取**最后一个** v.；候选取到 preceding_text 末尾（不截到 v.）；
     找不到分隔符即放弃（不退化为从位置 0 取）。
@@ -684,6 +701,10 @@ def split_case_name(row):
     pre = row.get("preceding_text") or ""
 
     seg = _cite_segment(pre)
+    nested_name = _nested_french_reference_name(seg)
+    if nested_name is not None:
+        row["candidate_case_name"] = nested_name
+        return
     if not V_RE.search(seg):
         marker = _marker_of(seg)
         if marker:

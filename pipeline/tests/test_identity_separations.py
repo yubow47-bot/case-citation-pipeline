@@ -136,9 +136,9 @@ class IdentitySeparationTests(unittest.TestCase):
         self.assertNotEqual(self.group(out,KEY),self.group(out,SCR))
         self.assertEqual(self.sources(effective,self.group(out,KEY)),{CHARTRAND,'OTHER_SUPPORT'})
 
-    def test_native_quote_hash_and_current_table_are_exact(self):
+    def test_native_quote_hash_and_retired_production_fact(self):
         fact=self.facts()[0]
-        self.assertEqual(decide.load_identity_separations(),[fact])
+        self.assertEqual(decide.load_identity_separations(),[])
         quote=self.fixture['native_distinct_judgment']['text']
         self.assertEqual(hashlib.sha256(quote.encode()).hexdigest(),fact['span_sha256'])
         self.assertIn('R. v. Johnson (1984)',quote)

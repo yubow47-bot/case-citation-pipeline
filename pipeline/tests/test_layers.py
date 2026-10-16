@@ -311,6 +311,57 @@ def test_disambiguation():
           "#57 沿革词表只认完整的沿革词，不吞 Revenue、Varity、Re 起头的案名")
 
 
+def test_nested_french_reference_name():
+    """A nested reference owns its name without changing unrelated name routes."""
+    def split(pre):
+        row = {"preceding_text": pre, "candidate_case_name": "",
+               "name_rejected_reason": ""}
+        classify.split_case_name(row)
+        return row
+
+    native = (" : R. v. Johnson, 2012 ONCA 339, 285 C.C.C. (3d) 120, "
+              "aux paras. 15-16, citant Renvoi sur la Motor Vehicle Act (C.-B.), ")
+    check(split(native)["candidate_case_name"] == "Renvoi sur la Motor Vehicle Act (C.-B.)",
+          "Nested French reference does not borrow Johnson's name")
+    alternate = (". Johnson, 2012 ONCA 339, 285 C.C.C. (3d) 120, "
+                 "aux paras. 15-16, citant Renvoi sur la Motor Vehicle Act (C.-B.), [1985] ")
+    row = split(alternate)
+    check((row["candidate_case_name"], row["name_rejected_reason"]) == ("", "no_v_structure"),
+          "The competing partial-year parse keeps its original rejection")
+    for article in ("", "le ", "la ", "les ", "l'", "l’"):
+        pre = "; Alpha v. Beta, 2001 TEST 99, citant Renvoi sur " + article + "Énergie Act, "
+        check(split(pre)["candidate_case_name"] == "Renvoi sur " + article + "Énergie Act",
+              "Generic reference heading admits article %r without a title whitelist" % article)
+    check(split("; Alpha v. Beta, 2001 TEST 99, CITANT Renvoi sur la Fisheries Act, ")
+          ["candidate_case_name"] == "Renvoi sur la Fisheries Act",
+          "The citation introducer is case insensitive")
+    for suffix in ("Renvoi sur la question soumise, ", "Renvoi sur la ",
+                   "renvoi sur la Fisheries Act, ", "Renvoi concernant Fisheries Act, ",
+                   "Renvoi sur la Fisheries Act, [2002] "):
+        pre = "; Alpha v. Beta, 2001 TEST 99, citant " + suffix
+        check(split(pre)["candidate_case_name"] == "Alpha v. Beta",
+              "Rejected or unsupported nested title preserves the original route: %r" % suffix)
+    for pre in ("; Alpha v. Beta, 2001 TEST 99, citant Renvoi sur la Fisheries Act; ",
+                "; Alpha v. Beta, 2001 TEST 99, citant Renvoi sur la Fisheries Act:\n "):
+        check(classify._nested_french_reference_name(classify._cite_segment(pre)) is None,
+              "Nested recognition cannot cross the current citation segment")
+    for tail in (", 2002 TEST 100, ", "; ", "; aff'd ", "; leave to appeal "):
+        check(split("; Alpha v. Beta, 2001 TEST 99" + tail)["candidate_case_name"] == "Alpha v. Beta",
+              "Parallel citations and appeal history retain the original name")
+    check(split("; Housen v. Nikolaisen, citing Rizzo & Rizzo Shoes Ltd. (Re), ")
+          ["candidate_case_name"] == "Housen v. Nikolaisen, citing Rizzo & Rizzo Shoes Ltd. (Re)",
+          "The existing English citing marker gate is unchanged")
+    later = ("; Alpha v. Beta, 2001 TEST 99, citant Renvoi sur la Fisheries Act, "
+             "[2002] 1 SCR 20, Later v. Party, ")
+    check(classify._nested_french_reference_name(classify._cite_segment(later)) is None,
+          "A later v. anchor defers to the original last-anchor route")
+    row = split(later)
+    check((row["candidate_case_name"], row["name_rejected_reason"]) == ("Alpha v. Beta", ""),
+          "The original route's exact result is preserved after a later v. anchor")
+    check(split("; R. v. Johnson ")["candidate_case_name"] == "R. v. Johnson",
+          "The legitimate Chartrand 1984 Johnson reference keeps its name")
+
+
 def test_case_name_markers():
     """PROBLEMS #58：没有 v. 的案名。标记只在**引证所在那一段**的段首/段尾认，
     且只在段内没有 v. 时启用；标记后面接着散文要切断或拒收。"""
@@ -945,7 +996,8 @@ def main():
     if a.golden or a.golden_write:
         sys.exit(golden(a.golden_write))
     for t in (test_no_stdlib_shadowing, test_admit_candidate,test_classifier, test_disambiguation,
-              test_case_name_markers, test_own_citations_loader, test_own_citation_rule, test_decide_units, test_registry_gate,
+              test_case_name_markers, test_nested_french_reference_name,
+              test_own_citations_loader, test_own_citation_rule, test_decide_units, test_registry_gate,
               test_registry_audit, test_mini_chain):
         t()
     print("全部通过：%d 条断言" % len(PASSED))
