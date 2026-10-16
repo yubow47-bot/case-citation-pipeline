@@ -157,6 +157,8 @@ def main(argv=None):
     g.add_argument('--pipeline-out', help='run pipeline/run_all.py into this new directory first')
     p.add_argument('--db', default=str(DEFAULT_DB))
     p.add_argument('--corpus', help='corpus directory; imported paths and hashes bind all later evidence')
+    p.add_argument('--court', action='append', default=None,
+                   help='court to extract with --pipeline-out (repeatable); default uses pipeline environment/default courts')
     p.add_argument('--vectors', choices=['skip', 'cached'], default='skip')
     p.add_argument('--skip-acceptance', action='store_true', help='leave this run unpublished (building)')
     p.add_argument('--storage-budget-gb', type=float, default=12, help='Project logical-file budget, GiB; explicit override')
@@ -169,11 +171,19 @@ def main(argv=None):
             if value < 0 or not math.isfinite(value):
                 raise ValueError(name + ' must be finite and nonnegative')
         run_dir = Path(a.run or a.pipeline_out).resolve()
+        corpus_dir = str(Path(a.corpus).resolve()) if a.corpus else None
         if a.pipeline_out:
             with storage_limits(int(a.storage_budget_gb * 1024 ** 3), int(a.min_free_gb * 1024 ** 3)):
                 database_preflight(a.db, int(a.estimated_peak_gb * 1024 ** 3))
-            subprocess.run([sys.executable, str(ROOT/'pipeline'/'run_all.py'), '--out', str(run_dir)], check=True, cwd=ROOT)
-        report = run_all(run_dir, a.db, a.corpus, a.vectors, a.skip_acceptance,
+            pipeline_cmd = [sys.executable, str(ROOT/'pipeline'/'run_all.py'), '--out', str(run_dir),
+                            '--storage-budget-gb', str(a.storage_budget_gb),
+                            '--min-free-gb', str(a.min_free_gb)]
+            if corpus_dir:
+                pipeline_cmd += ['--corpus-dir', corpus_dir]
+            for court in a.court or ():
+                pipeline_cmd += ['--court', court]
+            subprocess.run(pipeline_cmd, check=True, cwd=ROOT)
+        report = run_all(run_dir, a.db, corpus_dir, a.vectors, a.skip_acceptance,
                          int(a.storage_budget_gb * 1024 ** 3), int(a.min_free_gb * 1024 ** 3),
                          int(a.estimated_peak_gb * 1024 ** 3))
         print(json.dumps(report, ensure_ascii=False, indent=2, default=str))

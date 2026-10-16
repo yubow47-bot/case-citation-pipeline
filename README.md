@@ -138,7 +138,7 @@ The judgments come from the [`a2aj/canadian-case-law`](https://huggingface.co/da
 
 The text policy selects one field per source record: English when available, otherwise French. **49,674 records contain usable text.** The language columns describe selected source fields, rather than independently detected language. The retained extraction manifest records these counts. Observed year ranges do not establish complete coverage of every judgment in those years.
 
-The three-court snapshot excludes trial courts, other appeal courts, federal courts and tribunals. Separate court experiments do not expand this scope. A cited group can refer to a judgment whose full text is outside the source corpus. Court-and-year comparisons should report both the available source records and the usable-text denominator. Courts are selected with `PIPELINE_COURTS`; new courts require review of their source coverage and citation styles.
+The three-court snapshot excludes trial courts, other appeal courts, federal courts and tribunals. Separate court experiments do not expand this scope. A cited group can refer to a judgment whose full text is outside the source corpus. Court-and-year comparisons should report both the available source records and the usable-text denominator. Select pipeline courts with repeated `--court` arguments; `PIPELINE_COURTS` remains supported. New courts require review of their source coverage and citation styles.
 
 The first number below is much larger than the others because it includes repeated mentions and duplicate readings of the same text:
 
@@ -328,7 +328,7 @@ bash scripts/download_corpus.sh download
 python pipeline/run_all.py --out data/run_YYYYMMDD_name
 ```
 
-The default courts are SCC, ONCA, and BCCA. To select others, set `PIPELINE_COURTS` for both the download and pipeline commands. Support for a new court still needs review of its citation styles and source data.
+The default courts are SCC, ONCA, and BCCA. Prefer explicit pipeline arguments such as `--court SCC --court ONCA --court BCCA`. `PIPELINE_COURTS` remains supported and controls the download script's court selection. Support for a new court still needs review of its citation styles and source data.
 
 Check a completed run before using its counts:
 
@@ -338,10 +338,18 @@ python tools/check_run.py --run data/run_YYYYMMDD_name --output audit/findings/r
 
 This reads CSV or compressed CSV files and checks links, group membership, DD, and exclusions. A passing check means the output tables agree with each other; separate audits are needed to measure extraction and identity accuracy.
 
+New runs also generate a coverage summary and three family reports before output sealing. The [coverage definitions](docs/USAGE.md#coverage-diagnostics-produced-before-sealing) distinguish candidate diagnostics, counted positions, and final relations, including affected sources and separate identity/country categories.
+
 To build the local keyword-search database, first install the dependencies in the [search setup guide](tools/foundation/README.md), then run:
 
 ```bash
-python tools/foundation/after_run.py --run data/run_YYYYMMDD_name --db data/foundation/research_candidate.db
+python tools/foundation/after_run.py --run data/run_YYYYMMDD_name --corpus corpus --db data/foundation/research_candidate.db --vectors skip --storage-budget-gb 12 --min-free-gb 2 --estimated-peak-gb 3
+```
+
+To deliberately create a new pipeline run and then build its candidate database, choose the courts and paths explicitly:
+
+```bash
+python tools/foundation/after_run.py --pipeline-out data/run_YYYYMMDD_name --court SCC --court ONCA --court BCCA --corpus corpus --db data/foundation/research_candidate.db --vectors skip --storage-budget-gb 12 --min-free-gb 2 --estimated-peak-gb 3
 ```
 
 The default build is offline and skips vectors. New pipeline runs use compressed output and storage limits by default. [Storage tools](tools/storage.py) can inventory files, compress retained runs, and retire selected runs with receipts.

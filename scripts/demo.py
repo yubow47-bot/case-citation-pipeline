@@ -23,13 +23,7 @@ TEXT = ("[12] The standard of review was settled in Housen v. Nikolaisen, 2002 S
 
 def main():
     cands, _ = extract.extract_candidates(TEXT, "ONCA_2020onca1", "2020", 0, "ONCA")
-    tables = {n: classify.load_table(n + ".csv") for n in
-              ("neutral_court_codes", "reporter_jurisdiction", "series_prefix", "case_origin")}
-    tables["identifier_systems"] = classify.load_identifier_systems()
-    tables["id_prefixes"] = classify.load_id_prefixes()
-    tables["non_citation_words"] = classify.load_non_citation_words()
-    tables["volume_system"] = classify.load_volume_systems()
-    tables["court_designations"] = classify.load_court_designations()
+    tables = classify.load_runtime_tables()
     clf = classify.Classifier(tables, Counter())
 
     cols = ("raw_string", "shape_name", "match_start_offset", "citation_kind",

@@ -90,6 +90,7 @@ class ReplayTests(unittest.TestCase):
     def test_explicit_downstream_changes_are_allowed_but_new_helper_is_not(self):
         (self.root / 'pipeline/decide.py').write_text('# new downstream', encoding='utf-8')
         (self.root / 'pipeline/edges.py').write_text('# new downstream reader', encoding='utf-8')
+        (self.root / 'pipeline/coverage_report.py').write_text('# new downstream diagnostic', encoding='utf-8')
         (self.root / 'pipeline/replay_decide.py').write_text('# new downstream', encoding='utf-8')
         self.proof()
         (self.root / 'pipeline/new_parser.py').write_text('# unexpected dependency', encoding='utf-8')
@@ -224,7 +225,7 @@ class ReplayTests(unittest.TestCase):
         self.assertEqual(after['distinct_decisions_count'], '2')
         self.assertEqual((self.target / relative).read_bytes(), (self.source / relative).read_bytes())
         self.assertIn(relative, copied)
-        self.assertEqual(calls, ['select', 'edges'])
+        self.assertEqual(calls, ['select', 'edges', 'coverage_report'])
 
     def test_reused_target_bytes_and_source_manifest_changes_are_detected(self):
         proof = self.proof()
@@ -329,7 +330,7 @@ class ReplayTests(unittest.TestCase):
         calls = []
         runner.run_step = lambda name, cmd: calls.append((name, cmd))
         run_all.run_downstream(runner)
-        self.assertEqual([name for name, _ in calls], ['build_registry', 'decide_SCC', 'decide_cross', 'registry_report', 'select', 'edges'])
+        self.assertEqual([name for name, _ in calls], ['build_registry', 'decide_SCC', 'decide_cross', 'registry_report', 'select', 'edges', 'coverage_report'])
         self.assertTrue(all(not name.startswith(('extract', 'classify', 'merge')) for name, _ in calls))
 
 

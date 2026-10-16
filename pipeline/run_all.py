@@ -21,6 +21,7 @@ import argparse
 import datetime
 import hashlib
 import json
+import math
 import os
 import re
 import subprocess
@@ -193,6 +194,7 @@ class Runner(object):
                        "registry_gate": getattr(args, "registry_gate", "literal"),
                        "compact": getattr(args, "compact", True),
                        "storage_budget_gb": getattr(args, "storage_budget_gb", 12),
+                       "min_free_gb": getattr(args, "min_free_gb", 2),
                        "mixed_key_holdout": bool(getattr(args, "mixed_key_holdout", False)),
                        "select_config": "select_config.yaml (verbatim in select manifest)",
                        "threshold_dd_semantics": "unchanged (constraint 6)"}
@@ -245,7 +247,8 @@ class Runner(object):
                     phase = 'storage_monitor'
                     # Stop with headroom before the user-visible project cap.
                     maximum = int(getattr(self.args, "storage_budget_gb", 12) * GiB)
-                    preflight(ROOT, 0, max_project_bytes=maximum - min(256 * 1024**2, maximum // 20))
+                    preflight(ROOT, 0, max_project_bytes=maximum - min(256 * 1024**2, maximum // 20),
+                              min_free_bytes=int(getattr(self.args, "min_free_gb", 2) * GiB))
         except BaseException as exc:
             failure = exc
             if proc is not None:
@@ -277,7 +280,8 @@ class Runner(object):
         self.manifest["steps_done"].append(name)
         self.write_manifest("running")
         try:
-            preflight(ROOT, 0, max_project_bytes=int(getattr(self.args, "storage_budget_gb", 12) * GiB))
+            preflight(ROOT, 0, max_project_bytes=int(getattr(self.args, "storage_budget_gb", 12) * GiB),
+                      min_free_bytes=int(getattr(self.args, "min_free_gb", 2) * GiB))
         except BaseException as exc:
             detail = {'step': name, 'phase': 'after_step_storage_monitor', 'exception': type(exc).__name__,
                       'message': str(exc), 'child_reaped': proc.returncode is not None, 'cleanup_errors': []}
@@ -331,6 +335,8 @@ def main():
                     help='Prefer English; fall back to French only when English is absent')
     ap.add_argument("--storage-budget-gb", type=float, default=12,
                     help="Project peak budget in GiB; checked before and between steps")
+    ap.add_argument("--min-free-gb", type=float, default=2,
+                    help="Disk free-space reserve in GiB; checked before and between steps")
     args = ap.parse_args()
 
     courts = tuple(args.court) if args.court else \
@@ -345,10 +351,13 @@ def main():
         ap.error("Run directory name must start with run_")
     if args.storage_budget_gb <= 0 or args.batch_size <= 0 or (args.limit_batches is not None and args.limit_batches <= 0):
         ap.error("Storage budget, batch size and limit must be positive")
+    if not math.isfinite(args.min_free_gb) or args.min_free_gb < 0:
+        ap.error("Disk free-space reserve must be finite and nonnegative")
     corpus_bytes = sum(os.path.getsize(os.path.join(corpus_dir, c + ".parquet")) for c in courts)
     estimated = 64 * 1024**2 if args.limit_batches == 1 and args.batch_size <= 20 else max(4 * GiB, 5 * corpus_bytes)
     try:
-        budget = preflight(ROOT, estimated, max_project_bytes=int(args.storage_budget_gb * GiB))
+        budget = preflight(ROOT, estimated, max_project_bytes=int(args.storage_budget_gb * GiB),
+                           min_free_bytes=int(args.min_free_gb * GiB))
     except StorageLimitError as exc:
         raise SystemExit("Storage preflight refused the run: " + str(exc))
 
@@ -462,6 +471,8 @@ def run_downstream(r):
                                             "effective_sources.csv"),
                 "--merge-out", os.path.join(args.out, "merge_out"),
                 "--output", os.path.join(args.out, "edges")])
+    r.run_step("coverage_report",
+               [os.path.join("pipeline", "coverage_report.py"), "--run-dir", args.out])
 
 
 

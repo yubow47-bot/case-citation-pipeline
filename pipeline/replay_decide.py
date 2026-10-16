@@ -31,7 +31,7 @@ ALLOW_CHANGED = frozenset({
     'pipeline/identity_evidence.py', 'pipeline/identity_constraints.py',
     'pipeline/identity_solve.py', 'pipeline/identity_courts.py',
     'pipeline/decide.py', 'pipeline/registry.py', 'pipeline/registry_report.py',
-    'pipeline/edges.py', 'pipeline/run_all.py', 'pipeline/replay_decide.py',
+    'pipeline/edges.py', 'pipeline/coverage_report.py', 'pipeline/run_all.py', 'pipeline/replay_decide.py',
     'pipeline/identity_pairs.py', 'pipeline/reporter_identity_scope.py',
     'tools/check_run.py',
     'tools/storage.py',  # Runtime capacity/deletion accounting, not upstream parsing.
@@ -303,6 +303,7 @@ def reassess_countries(proof, runner):
     runner.run_step('edges', ['pipeline/edges.py', '--decided', str(target / 'decide_out/cross_court/decided.csv'),
         '--effective', str(target / 'decide_out/cross_court/effective_sources.csv'),
         '--merge-out', str(target / 'merge_out'), '--output', str(target / 'edges')])
+    runner.run_step('coverage_report', ['pipeline/coverage_report.py', '--run-dir', str(target)])
     return copied
 
 
