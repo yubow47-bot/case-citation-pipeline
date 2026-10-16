@@ -123,7 +123,7 @@ The steps keep their own outputs and decision evidence, so an unexpected count c
 
 ### Data
 
-The judgments come from the [`a2aj/canadian-case-law`](https://huggingface.co/datasets/a2aj/canadian-case-law) dataset on Hugging Face. This project does not collect them itself. The documented production snapshot is **run_20261015_identity_review**, completed on **2026-10-15**, using English text when available and French text otherwise.
+The judgments come from the [`a2aj/canadian-case-law`](https://huggingface.co/datasets/a2aj/canadian-case-law) dataset on Hugging Face. This project does not collect them itself. The documented production snapshot is **run_20261016_country_complete**, completed on **2026-10-16**, using English text when available and French text otherwise.
 
 | Court | Source records | Years |
 | --- | ---: | --- |
@@ -144,7 +144,7 @@ The first number below is much larger than the others because it includes repeat
 | Counted mentions in those links | 705,476 |
 | Groups cited by at least five different judgments | 14,003 |
 
-Counts come from the retained [release summary](audit/findings/project_review_20261015/release_summary_final.json). The [mention reconciliation](audit/findings/project_review_20261015/edge_counters.json) explains why an earlier step log has 716,593 mentions: it includes 11,117 later excluded as self-citations. Source records, groups, links, and mentions are different units.
+The retained [release summary](audit/findings/project_review_20261015/release_summary_final.json) records these counts; the [current snapshot comparison](audit/findings/country_assessment_20261016/impact.json) confirms that grouping, DD, links and counted mentions are unchanged. The [mention reconciliation](audit/findings/project_review_20261015/edge_counters.json) explains why an earlier step log has 716,593 mentions: it includes 11,117 later excluded as self-citations. Source records, groups, links, and mentions are different units.
 
 Save the run ID with every research result: group IDs and counts can change between runs. On a configured local installation, `data/active_run.json` selects the active run and database, and `python tools/status.py` reports availability. Large corpus files and generated databases are local inputs and outputs; a source checkout alone does not contain the full results.
 
