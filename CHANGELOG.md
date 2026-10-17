@@ -1,5 +1,16 @@
 # Changes
 
+## v1.1.2 — 2026-10-16
+
+- Refactored identity evidence, constraints, and solving; strengthened proof-bound separation, reporter court envelopes, and appeal-history and same-key guards.
+- Separated case-origin assessment from identity confidence gates.
+- Fixed French nested and later-name boundaries, compound ILR locators, and complete spans for transposed report series.
+- Corrected entrypoint arguments and coverage before sealing; added replay checks, automatic offline test discovery, a six-document CLI fixture, and reversible adoption and golden checks.
+- Synchronized maintenance validation and the issue ledger, updated snapshot and paper-dataset guides, retained cleanup receipts, and kept exploratory citation-context tools local.
+- Counted assignment contributions only after an assignment is accepted.
+
+This is a software source release. The active run remains `run_20261016_country_complete`; later source fixes are not yet represented in a newly completed full-corpus run.
+
 ## v1.1.1 — 2026-10-15
 
 - Restored the README's methodology, worked citation example, and foreign-case research example. Updated the example using the current run and published the query evidence.
