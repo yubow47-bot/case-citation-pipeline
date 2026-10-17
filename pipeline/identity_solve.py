@@ -360,11 +360,12 @@ def split_by_decision(members, did_idx, stats, start=None, registry=None,
                                 'cocitation_assignment', [proposal.constraint_id])
                 buckets[target].extend(us)
                 stats["units_assigned_by_cocitation"] += 1
-            stats["dd_added_by_assignment"] += len(ids - dec_ids[target])
-            if len(ids) > len(dec_ids[target]):
-                stats["units_assigned_larger_than_target"] += 1
-                if not uj:
-                    stats["units_assigned_larger_than_target_unknown_jur"] += 1
+                # These contributions describe accepted assignments only.
+                stats["dd_added_by_assignment"] += len(ids - dec_ids[target])
+                if len(ids) > len(dec_ids[target]):
+                    stats["units_assigned_larger_than_target"] += 1
+                    if not uj:
+                        stats["units_assigned_larger_than_target_unknown_jur"] += 1
         else:
             if trace:
                 trace.event('multi_anchor', us, 'unresolved',

@@ -105,6 +105,33 @@ class IdentifierIdentityTests(unittest.TestCase):
                 expected = actual
             self.assertEqual(actual, expected)
 
+    def test_multianchor_assignment_contributions_require_acceptance(self):
+        for later_key, accepted in ((CAN_B, False), (CAR, True)):
+            with self.subTest(later_key=later_key):
+                members = [row(ANCHOR_A, kind="neutral"),
+                           row(ANCHOR_B, kind="neutral"), row(CAN_A), row(later_key)]
+                members[-1]["jurisdiction"] = ""
+                did = {members[0]["row_key"]: {"A"},
+                       members[1]["row_key"]: {"B"},
+                       members[2]["row_key"]: {"A"},
+                       members[3]["row_key"]: {"A", "new"}}
+                stats = Counter()
+                parts = decide.split_by_decision(members, did, stats)
+                assigned = {members[0]["row_key"], members[2]["row_key"]}
+                expected = {frozenset({members[1]["row_key"]})}
+                if accepted:
+                    assigned.add(members[3]["row_key"])
+                else:
+                    expected.add(frozenset({members[3]["row_key"]}))
+                expected.add(frozenset(assigned))
+                self.assertEqual(groups(parts), expected)
+                self.assertEqual(stats["units_assigned_by_cocitation"], 1 + accepted)
+                self.assertEqual(stats["units_identifier_same_system_blocked"], 1 - accepted)
+                for name in ("dd_added_by_assignment",
+                             "units_assigned_larger_than_target",
+                             "units_assigned_larger_than_target_unknown_jur"):
+                    self.assertEqual(stats[name], int(accepted), name)
+
     def test_adjudication_unions_sources_and_occurrences(self):
         members = [row(CAN_A), row(CAN_A, court="ONCA")]
         did = {members[0]["row_key"]: {"S1", "S2"},
