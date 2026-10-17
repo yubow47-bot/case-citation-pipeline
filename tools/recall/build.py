@@ -5,7 +5,9 @@
     python tools/recall/build.py --source problems,git
     python tools/recall/build.py --no-embed       # chunk + redact + count only; touches no model, no db
 
-This is the ONLY file allowed to read PROBLEMS.md (see PROBLEMS #101 and check_isolation.py).
+This is the recall reader exception for PROBLEMS.md (see #101 and check_isolation.py).
+Scoped ledger maintenance tools and synthetic-fixture tests have their own exception;
+none of these prose records may become pipeline configuration or semantic evidence.
 Everything is redacted before it is hashed, embedded or stored.
 """
 import argparse
@@ -90,14 +92,81 @@ def load_model():
     return m, device
 
 
+LEDGER_MARKERS = (
+    "<!-- ledger-current:start -->", "<!-- ledger-current:end -->",
+    "<!-- ledger-history:start -->", "<!-- ledger-history:end -->",
+)
+CURRENT_SUMMARY_CHARS = 500
+
+
+def problem_records(text):
+    """Group current and historical table rows by ID; also accept an unmarked ledger.
+
+    Only the numeric row prefix is structural here. Printed code can contain pipes,
+    and old records can lack the final table pipe; neither changes the record ID.
+    """
+    lines = text.splitlines()
+    positions = [[i for i, line in enumerate(lines) if line.strip() == marker]
+                 for marker in LEDGER_MARKERS]
+    marked = any(positions)
+    if marked:
+        if any(len(found) != 1 for found in positions):
+            raise ValueError("Ledger requires each current/history marker exactly once")
+        boundaries = [found[0] for found in positions]
+        if boundaries != sorted(boundaries):
+            raise ValueError("Ledger current/history markers are out of order")
+        current_start, current_end, history_start, history_end = boundaries
+        sections = (("current", lines[current_start + 1:current_end]),
+                    ("history", lines[history_start + 1:history_end]))
+    else:
+        sections = (("history", lines),)
+    records = {}
+    for section, section_lines in sections:
+        for line in section_lines:
+            match = re.match(r"\|\s*(\d+)\s*\|", line)
+            if match:
+                number = int(match.group(1))
+                record = records.setdefault(number, {"current": [], "history": []})
+                if line not in record[section]:
+                    record[section].append(line)
+    for number in sorted(records):
+        yield number, records[number], marked
+
+
+def chunks_from_problem_text(text):
+    """One logical entry per ID, with current context repeated on bounded pieces."""
+    for number, record, marked in problem_records(text):
+        current = "\n".join(record["current"])
+        history = "\n".join(record["history"])
+        summary = current or (
+            "No current index row recorded; do not read historical status as current."
+            if marked else "Legacy ledger format; no separate current disposition recorded."
+        )
+        long_current = len(summary) > CURRENT_SUMMARY_CHARS
+        if long_current:
+            summary = summary[:CURRENT_SUMMARY_CHARS] + " [continued in current-index detail]"
+        context = ("Current index (authoritative when supplied):\n" + summary +
+                   "\n\nHISTORICAL RECORD: earlier wording is not current status.")
+        sections = []
+        if long_current:
+            sections.append(("CURRENT INDEX DETAIL", current))
+        sections.append(("HISTORICAL RECORD" if marked else "LEGACY HISTORICAL RECORD",
+                         history or "No historical row is recorded for this ID."))
+        locator = "PROBLEMS.md#%d" % number
+        index = 0
+        for label, body in sections:
+            for chunk in sources._emit_prefixed("problems", locator, "PROBLEMS #%d" % number,
+                                                body, context + "\nRecord section: " + label):
+                chunk["locator"] = locator if index == 0 else "%s~%d" % (locator, index + 1)
+                index += 1
+                yield chunk
+
+
 def chunk_problems():
-    """One chunk per ledger table row. Lives here, not in sources.py, on purpose (limit 1 of #101)."""
+    """Read only for human recall; current conclusions precede marked historical text."""
     path = os.path.join(ROOT, "PROBLEMS.md")
     with open(path, encoding="utf-8", errors="replace") as f:
-        for line in f.read().splitlines():
-            m = re.match(r"\|\s*(\d+)\s*\|", line)
-            if m:
-                yield from sources._emit("problems", "PROBLEMS.md#" + m.group(1), "PROBLEMS #" + m.group(1), line)
+        yield from chunks_from_problem_text(f.read())
 
 
 def main():

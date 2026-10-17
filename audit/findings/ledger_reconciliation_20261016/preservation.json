@@ -1,0 +1,19 @@
+{
+  "schema": "ledger-preservation-v1",
+  "as_of": "2026-10-16",
+  "source_commit": "fe9e1c0",
+  "original_ids": 159,
+  "current_and_history_ids": 161,
+  "original_issue_texts_preserved": true,
+  "original_handling_retained_after_dated_prefix": true,
+  "only_rendering_repairs": [
+    58,
+    85,
+    113
+  ],
+  "current_evidence_links": 97,
+  "distinct_current_evidence_files": 58,
+  "no_ignored_current_evidence": true,
+  "ledger_sha256": "84d7ffdb5e8dfc00bf0cc20978305751a9778d2e7d5d8c3d22c9a439bbab5e2a",
+  "scope": "Text preservation and local link portability only; no semantic or pipeline rerun claim."
+}

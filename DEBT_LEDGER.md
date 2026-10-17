@@ -1,6 +1,10 @@
-# Technical debt ledger (DEBT_LEDGER)
+# Historical debt triage (archived)
 
-**Purpose**: to close the books on the 83 entries of `PROBLEMS.md` and keep only what really needs watching. From now on this is the only page you need to look at.
+> **历史归档，2026-10-16订正。** 本文件保留2026-09-15起的债务分诊及后续局部更新，不再作为当前待办或优先级清单。当前状态只维护在 [PROBLEMS.md 当前索引](PROBLEMS.md#当前状态索引)。以下83条、15债、32/51分类及旧“本轮实测”均是当时口径，不能视作当前统计。
+>
+> 已确认的旧误导包括：#22后来已恢复登记；#11仅尾括号修复；#31/#70已有标识符处理；#40现为202行且核验等级已变化；#64/#67/#68/#77已由国家评估及后续身份工作部分覆盖；#72案名会参与身份聚类。详见当前索引及 [对账盘点](audit/findings/ledger_reconciliation_20261016/inventory.json)。本文件不再要求新增问题二次分诊或“债务关闭后搬表”。
+
+**Historical purpose**: to close the books on the 83 entries of `PROBLEMS.md` and keep only what really needs watching. This was a historical reading shortcut and is superseded by the current index.
 
 **Criterion**: **a real impact + no final state (not fixed, not fully measured, and not explicitly accepted as a limitation) = debt.**
 By this criterion, **15** of the 83 entries are real debts (§1, covering **32** PROBLEMS numbers in total); the other **51** entries are not debts (classified in §3).
@@ -241,7 +245,7 @@ surfaced only after merging the two ledgers this time and had never been schedul
 ## 3. The 51 entries that are not debts
 
 **Exact partition**: 83 = the **32** entries covered by debts (§1; some debts cover several numbers) + **51** non-debt entries (this section).
-(PROBLEMS.md numbers run `#1`–`#84`, of which **`#22` never existed**, so the total is 83.)
+(Historical count, now superseded: the original triage omitted #22 and counted 83. #22 was restored; do not reuse this as the current count.)
 
 ### 3.1 Fixed / implemented, cleared (24 entries)
 
@@ -326,19 +330,9 @@ with an Exa API key configured, `web_search` works again and fed `reporter_origi
 
 ---
 
-## 5. How to use this file
+## 5. Current maintenance rule
 
-1. **`PROBLEMS.md` is the only problem ledger** (it must not itself be read by scripts); this file is its triage.
-   Every new problem is first recorded in `PROBLEMS.md` (with `audit/append_problems_entry.py`, which splits and rejoins on
-   `\r\n` so CRLF is not broken), then triaged here.
-2. When a debt is closed, **move it to §3** and state how it was closed (fixed / fully measured / explicitly shelved).
-3. **Suggest doing debt 4 first (verifying the 196-row jurisdiction table)**: the proposal is in place and only needs a human spot check and approval to go into the table.
-4. Debts 10/11/14/15 are directions that surfaced after this merge and **none is scheduled yet**; debt 14 may be
-   the best value for effort (it would benefit debt 2 and debt 16 at the same time).
-5. The pipeline is **recommended for freezing** (`v1.0-frozen`, no more rule changes except bugs) — but this recommendation now needs reassessment:
-   before the merge the basis was "of 9 real debts, 8 are not engineering work"; after the merge the real debts rose to 15, of which 3
-   (debts 11/14/15) are entirely new, unscheduled directions, so the user needs to reconfirm whether "freeze" means
-   "the five-layer architecture no longer changes" or "no known direction is pursued any further".
+Read this archive only to trace the reasoning and measurements of the old triage. Do not update debt counts or move entries between these historical sections. Record all new issues and state changes in the current index and history of [PROBLEMS.md](PROBLEMS.md), using its synchronized maintenance helper and offline checker. Source implementation, historical execution, active adoption and semantic quality require separate evidence.
 
 ---
 

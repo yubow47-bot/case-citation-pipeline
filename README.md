@@ -293,7 +293,7 @@ The overall approximate interval was **75.0%–92.3%**. The remaining weighted s
 
 The original outputs for `run_20261002_tables2`, `run_20261003_selfcite`, and `run_20261003_v16f` have been retired. Small receipts, manifests, logs, and audit reports remain: [retirement receipt and retained record paths](audit/findings/repository_cleanup_20261015/retired_runs.json). These records describe past runs; they cannot replace the original full outputs.
 
-Automated checks cover extraction, grouping, run integrity, and the research tools; the [verification record](audit/findings/repository_cleanup_20261015/validation.json) records the results. These checks catch software and table errors; source-text reviews address whether a citation was understood correctly. Open problems and remaining work are tracked in [PROBLEMS.md](PROBLEMS.md) and [DEBT_LEDGER.md](DEBT_LEDGER.md).
+Automated checks cover extraction, grouping, run integrity, and the research tools; the [verification record](audit/findings/repository_cleanup_20261015/validation.json) records the results. These checks catch software and table errors; source-text reviews address whether a citation was understood correctly. Current dispositions and remaining work are maintained only in the [problem ledger index](PROBLEMS.md#当前状态索引). [DEBT_LEDGER.md](DEBT_LEDGER.md) preserves an archived debt triage; it does not set current status or priorities.
 
 ## Repository layout
 
@@ -303,7 +303,8 @@ Automated checks cover extraction, grouping, run integrity, and the research too
 | `decisions/` | Sourced citation, court and identity policies |
 | `tools/research/`, `tools/foundation/` | Research exports, local database and search |
 | `audit/`, `docs/` | Small evidence records, method documentation and research limitations |
-| `PROBLEMS.md`, `DEBT_LEDGER.md` | Recorded defects, dispositions and remaining work |
+| `PROBLEMS.md` | Current issue index, evidence, next actions and preserved history |
+| `DEBT_LEDGER.md` | Archived debt triage, superseded as a status source |
 | `corpus/`, `data/` | Local source corpora and generated outputs, excluded from Git |
 | `implementation/` | Working notes and temporary analysis; mostly excluded from Git |
 

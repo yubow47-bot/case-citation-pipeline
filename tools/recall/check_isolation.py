@@ -8,7 +8,9 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-ALLOWED_READERS = {"audit/append_problems_entry.py", "tools/recall/build.py"}
+# #101 permits human recall; #160 separately permits offline document maintenance.
+ALLOWED_READERS = {"audit/append_problems_entry.py", "audit/check_problem_ledger.py",
+                   "tools/recall/build.py"}
 GUARDED = ["pipeline", "decisions", "audit", "implementation"]
 SKIP_DIRS = {".git", "__pycache__", "data", "corpus", ".claude", ".zcode", "node_modules"}
 
@@ -39,7 +41,7 @@ def main():
             for n, line in enumerate(read(p).splitlines(), 1):
                 if re.search(r"recall\.db|tools[/\\.]recall|import\s+recall|from\s+recall", line):
                     bad.append("%s:%d references the experience library: %s" % (rel(p), n, line.strip()[:100]))
-    # limit 2b: only two files may mention PROBLEMS.md
+    # limit 2b: only the explicit recall/maintenance readers may read the ledger
     for p in py_files(ROOT):
         r = rel(p)
         if r in ALLOWED_READERS or r == "tools/recall/check_isolation.py":

@@ -1,0 +1,35 @@
+{
+  "ledger": "D:\\cases data analisis\\PROBLEMS.md",
+  "status": "passed",
+  "errors": [],
+  "warnings": [
+    "line 308: historical #85 path unavailable: data/run_85date",
+    "line 311: historical #88 path unavailable: data/criteria_88_89/criteria_results.json",
+    "line 324: historical #101 path unavailable: data/recall/recall.db",
+    "line 326: historical #103 path unavailable: data/run_20261002_bilingual",
+    "line 326: historical #103 path unavailable: data/run_20260918_scc_onca_bcca",
+    "line 330: historical #107 path unavailable: data/run_20261003_v16c",
+    "line 332: historical #109 path unavailable: data/run_20261003_edge4",
+    "line 337: historical #114 path unavailable: pipeline/select.py",
+    "line 337: historical #114 path unavailable: pipeline/traceback.py",
+    "line 342: historical #119 path unavailable: docs/RELIABLE_RELEASE_20261014.zh.md",
+    "line 354: historical #131 path unavailable: data/run_20261016_identity_split_verified"
+  ],
+  "counts": {
+    "current": 161,
+    "history": 161,
+    "statuses": {
+      "PARTIAL": 43,
+      "LIMITATION": 8,
+      "RECHECK": 10,
+      "HISTORICAL": 37,
+      "OPEN": 17,
+      "PROCESS": 7,
+      "IMPLEMENTED": 18,
+      "SOURCE_ONLY": 21
+    }
+  },
+  "scope": "structure and local link existence only",
+  "ledger_sha256": "84d7ffdb5e8dfc00bf0cc20978305751a9778d2e7d5d8c3d22c9a439bbab5e2a",
+  "as_of": "2026-10-16"
+}

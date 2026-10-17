@@ -71,7 +71,7 @@ The extraction layer supplies all overlapping candidates. Within one judgment (s
 | 47 | In the cross-court round occurrence was inflated 1.59× | Fixed (recomputed with `key_occurrence_count`) |
 | 53 | The merge key did not include the series prefix | Fixed |
 | 60 | "One vote decides the name": rows with no extractable name do not vote | `case_name_support` added; **a gate on it measured net negative and is not enabled** |
-| 72 (B9) | Case-name voting included non-counted candidates (43.7%) | Status [unverified]; go by the PROBLEMS text |
+| 72 (B9) | Case-name voting included non-counted candidates (43.7%) | Voting pool/effect requires recheck; modal names participate in identity clustering. See the current PROBLEMS #72 index |
 | 76 (B13) | Year read as volume | Measured: 0 counted |
 | 90 | Zero-padded numbers form their own key | **Unfixed** |
 

@@ -30,7 +30,9 @@ def discover_suites(root=ROOT):
                for name, directory in (
                    ('foundation', 'tools/foundation'), ('tools', 'tools/tests'),
                    ('quality', 'tools/quality/tests'), ('research', 'tools/research'),
-                   ('audit_readers', 'audit/canlii_crosscheck'))]
+                   ('audit_readers', 'audit/canlii_crosscheck'),
+                   ('ledger_maintenance', 'audit/tests'), ('recall_ledger', 'tools/recall'))]
+    suites.append(('problem_ledger', ['audit/check_problem_ledger.py']))
     return suites
 
 

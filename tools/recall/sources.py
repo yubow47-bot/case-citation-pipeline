@@ -67,6 +67,25 @@ def _emit(source, locator, title, text, date=""):
         yield {"source": source, "locator": loc, "date": date, "title": title, "text": piece}
 
 
+def _emit_prefixed(source, locator, title, text, prefix, date=""):
+    """Repeat provenance on every bounded piece without dropping a short tail."""
+    prefix = prefix.strip()
+    budget = MAX_CHARS - len(prefix) - 2
+    if budget <= 0:
+        raise ValueError("Chunk provenance leaves no payload budget")
+    overlap = min(OVERLAP, budget // 4)
+    text = text.strip()
+    start, index = 0, 0
+    while start < len(text):
+        end = min(start + budget, len(text))
+        loc = locator if index == 0 else "%s~%d" % (locator, index + 1)
+        yield {"source": source, "locator": loc, "date": date, "title": title,
+               "text": prefix + "\n\n" + text[start:end]}
+        if end == len(text):
+            break
+        start, index = end - overlap, index + 1
+
+
 def chunk_markdown(path, source):
     """Split on #/##/### headings. Locator = file:first-line-of-section."""
     lines = _read_lines(path)
@@ -81,6 +100,12 @@ def chunk_markdown(path, source):
         yield from _emit(source, "%s:%d" % (rel, a + 1), title, body)
 
 
+DEBT_HISTORY_NOTICE = (
+    "HISTORICAL DEBT SNAPSHOT (2026-09-15/older updates); current dispositions: "
+    "PROBLEMS current index; this text is not current status."
+)
+
+
 def chunk_debt():
     path = os.path.join(ROOT, "DEBT_LEDGER.md")
     lines = _read_lines(path)
@@ -88,14 +113,16 @@ def chunk_debt():
 
     def flush():
         if buf:
-            yield from _emit("debt", "DEBT_LEDGER.md:%d" % buf_start, cur_head, "\n".join(buf))
+            yield from _emit_prefixed("debt", "DEBT_LEDGER.md:%d" % buf_start,
+                                      cur_head, "\n".join(buf), DEBT_HISTORY_NOTICE)
 
     for i, l in enumerate(lines, 1):
         if re.match(r"#{1,3}\s", l):
             yield from flush()
             cur_head, buf, buf_start = l.lstrip("# ").strip()[:120], [l], i
         elif l.startswith("|") and not re.match(r"\|[\s\-:|]+\|$", l):
-            yield from _emit("debt", "DEBT_LEDGER.md:%d" % i, cur_head, cur_head + "\n" + l)
+            yield from _emit_prefixed("debt", "DEBT_LEDGER.md:%d" % i,
+                                      cur_head, cur_head + "\n" + l, DEBT_HISTORY_NOTICE)
         else:
             buf.append(l)
     yield from flush()
@@ -207,7 +234,7 @@ def all_sources(stats=None):
     stats = stats if stats is not None else {}
     def md(patterns, name):
         return lambda: (c for f in _globs(patterns) for c in chunk_markdown(f, name))
-    # the ledger itself is chunked in build.py -- the only file allowed to read it (PROBLEMS #101)
+    # The recall ledger reader stays in build.py; maintenance exceptions are governed separately (#101).
     return {
         "debt": chunk_debt,
         "findings": md(["audit/findings/**/*.md"], "findings"),

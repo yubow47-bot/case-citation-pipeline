@@ -1,123 +1,152 @@
 # -*- coding: utf-8 -*-
-"""append_problems_entry.py — 安全地向 PROBLEMS.md 追加登记项（PROBLEMS 只进 git、纯人工账本）
+"""Safely maintain the human problem ledger and its current index together.
 
-为什么需要一个脚本：`PROBLEMS.md` 是 CRLF 文件（`git ls-files --eol` 显示 `i/lf w/crlf`），
-而任何普通文本编辑器都可能把它整份改写成 LF，diff 会变成全文重写、真实改动被淹没。
-本脚本**只按 `"\\r\\n"` 切分与拼回**，写前断言全文没有裸 LF，写后断言行数恰好增加 N。
+Usage (UTF-8 fragments, one complete Markdown row per line):
+  python audit/append_problems_entry.py --fragment history.txt --current-fragment current.txt
+  python audit/append_problems_entry.py --fragment history.txt --current-fragment current.txt --dry-run
+  python audit/append_problems_entry.py --fragment history.txt --current-fragment current.txt --replace-row 58
+  python audit/append_problems_entry.py --fragment disposition.txt --current-fragment current.txt --set-disposition 58
 
-用法
-    python audit/append_problems_entry.py --fragment <片段文件>            # 追加
-    python audit/append_problems_entry.py --fragment <片段文件> --dry-run   # 只看会写什么
-    python audit/append_problems_entry.py --fragment <片段文件> --replace-row 58   # 改写第 58 条
-
-片段文件是一份 UTF-8 文本，每行是**一条完整的表格行**（`| 编号 | 现象 | 处置 |`），
-不带换行符分隔之外的东西；脚本会把它的各行依次追加到表尾。
-脚本不生成内容、不做判断——编号与文字由人（或调用它的 agent）写死在片段里。
-`--replace-row` 用于既有条目状态变化（例如「未修」改成「已修」）：同样按 `"\r\n"` 切分整份
-文件，只换掉编号匹配的那一行，其余行逐字节不动。
+The last mode takes one disposition cell, without surrounding table delimiters.
+Every edit requires an explicitly reviewed current row for the same ID(s).
+Append inserts before ledger-history:end and ledger-current:end. All IDs, table
+structure and current evidence links are validated before an atomic CRLF write.
+This maintenance tool supplies no rules or configuration to the pipeline.
 """
-import argparse
-import io
-import os
-import sys
+from __future__ import annotations
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LEDGER = os.path.join(ROOT, "PROBLEMS.md")
+import argparse
+import os
+from pathlib import Path
+import sys
+import tempfile
+
+try:
+    from .check_problem_ledger import (ID_ROW, LEDGER, ROOT, LedgerError,
+                                       check_lines, ledger_rows, sections, table_boundaries, table_cells)
+except ImportError:  # Direct script invocation.
+    from check_problem_ledger import (ID_ROW, LEDGER, ROOT, LedgerError,
+                                      check_lines, ledger_rows, sections, table_boundaries, table_cells)
 
 
 def load_crlf(path):
-    raw = io.open(path, "rb").read()
-    if b"\n" in raw.replace(b"\r\n", b""):
-        sys.exit("%s 里有裸 LF——账本必须是纯 CRLF，拒绝在它上面动手" % path)
+    raw = Path(path).read_bytes()
+    remainder = raw.replace(b"\r\n", b"")
+    if b"\n" in remainder or b"\r" in remainder:
+        raise LedgerError("ledger must use pure CRLF; refusing to rewrite it")
     return raw.decode("utf-8").split("\r\n")
 
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--fragment", required=True)
-    ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--replace-row", type=int,
-                    help="改写编号等于该值的既有条目行（片段只给这一行）")
-    ap.add_argument("--set-disposition", type=int,
-                    help="只改写该编号条目的「处置」一格（片段给处置正文，不带竖线）")
-    a = ap.parse_args()
+def fragment_lines(path):
+    text = Path(path).read_bytes().decode("utf-8")
+    lines = [line for line in text.splitlines() if line.strip()]
+    if not lines:
+        raise LedgerError("fragment is empty")
+    return lines
 
-    lines = load_crlf(LEDGER)
-    frag = io.open(a.fragment, "rb").read().decode("utf-8")
-    new_lines = [l for l in frag.replace("\r\n", "\n").split("\n") if l.strip()]
-    if not new_lines:
-        sys.exit("片段是空的")
 
-    if a.replace_row is not None:
-        if len(new_lines) != 1:
-            sys.exit("--replace-row 只接受片段里恰好一行")
-        marker = "| %d |" % a.replace_row
-        idx = [i for i, l in enumerate(lines) if l.startswith(marker)]
-        if len(idx) != 1:
-            sys.exit("编号 %d 在账本里出现 %d 次，拒绝改" % (a.replace_row, len(idx)))
-        i = idx[0]
-        print("改第 %d 行（原 %d 字符 -> 新 %d 字符）：" % (i + 1, len(lines[i]), len(new_lines[0])))
-        print("  旧：" + lines[i][:200] + "…")
-        print("  新：" + new_lines[0][:200] + "…")
-        if a.dry_run:
-            print("--dry-run：未写。")
-            return
-        lines[i] = new_lines[0]
-        data = ("\r\n".join(lines)).encode("utf-8")
-        io.open(LEDGER + ".tmp", "wb").write(data)
-        os.replace(LEDGER + ".tmp", LEDGER)
-        assert len(load_crlf(LEDGER)) == len(lines), "行数变了，别提交"
-        print("已改写第 %d 条（纯 CRLF，行数不变）" % a.replace_row)
-        return
+def fragment_rows(lines, columns):
+    numbers = []
+    for line in lines:
+        match = ID_ROW.match(line)
+        if not match or len(table_cells(line)) != columns:
+            raise LedgerError("fragment requires complete %d-cell numbered table rows" % columns)
+        if any(not cell for cell in table_cells(line)):
+            raise LedgerError("fragment has an empty required cell")
+        numbers.append(int(match.group(1)))
+    if len(set(numbers)) != len(numbers):
+        raise LedgerError("fragment contains duplicate IDs")
+    return numbers
 
-    if a.set_disposition is not None:
-        text = io.open(a.fragment, "rb").read().decode("utf-8")
-        text = " ".join(text.replace("\r\n", "\n").split("\n")).strip()
-        if not text:
-            sys.exit("片段是空的")
-        marker = "| %d |" % a.set_disposition
-        idx = [i for i, l in enumerate(lines) if l.startswith(marker)]
-        if len(idx) != 1:
-            sys.exit("编号 %d 在账本里出现 %d 次，拒绝改" % (a.set_disposition, len(idx)))
-        i = idx[0]
-        parts = lines[i].split(" | ")
-        if len(parts) != 3 or not parts[2].rstrip().endswith("|"):
-            sys.exit("第 %d 条不是 `| 号 | 现象 | 处置 |` 三段式（实际 %d 段），拒绝改——"
-                     "不要按 | 硬切，先在片段里手写整行再用 --replace-row" % (a.set_disposition, len(parts)))
-        old_disp = parts[2]
-        lines[i] = " | ".join([parts[0], parts[1], text + " |"])
-        print("第 %d 条处置：%d 字符 -> %d 字符" % (a.set_disposition, len(old_disp), len(text) + 2))
-        print("  旧：" + old_disp[:200] + "…")
-        print("  新：" + text[:200] + "…")
-        if a.dry_run:
-            print("--dry-run：未写。")
-            return
-        data = ("\r\n".join(lines)).encode("utf-8")
-        io.open(LEDGER + ".tmp", "wb").write(data)
-        os.replace(LEDGER + ".tmp", LEDGER)
-        assert len(load_crlf(LEDGER)) == len(lines), "行数变了，别提交"
-        print("已改写第 %d 条的处置（纯 CRLF，行数不变）" % a.set_disposition)
-        return
 
-    # 追加前先把表尾现状打出来：编号是否接得上，看这一行
-    tail = [l for l in lines if l.startswith("| ") and l.strip().endswith("|")]
-    print("现有登记项 %d 条，最后一条：" % (len(tail) - 1))
-    print("  " + (tail[-1][:160] if tail else "(无)"))
-    print("将追加 %d 行：" % len(new_lines))
-    for l in new_lines:
-        print("  " + l[:200] + ("…" if len(l) > 200 else ""))
-    if a.dry_run:
-        print("--dry-run：未写。")
-        return
+def apply_change(ledger, fragment, current_fragment, *, replace_row=None,
+                 set_disposition=None, dry_run=False, root=ROOT):
+    """Validate the whole proposal first; malformed input leaves bytes unchanged."""
+    ledger = Path(ledger)
+    if replace_row is not None and set_disposition is not None:
+        raise LedgerError("--replace-row and --set-disposition are mutually exclusive")
+    if not current_fragment:
+        raise LedgerError("--current-fragment is required for every edit")
+    original = ledger.read_bytes()
+    lines = load_crlf(ledger)
+    spans = sections(lines)
+    rows, errors = ledger_rows(lines, spans)
+    if errors:
+        raise LedgerError("existing ledger structure is invalid: " + "; ".join(errors))
+    history_lines = fragment_lines(fragment)
+    current_lines = fragment_lines(current_fragment)
+    current_ids = fragment_rows(current_lines, 4)
+    target = replace_row if replace_row is not None else set_disposition
+    if target is not None:
+        if current_ids != [target] or len(history_lines) != 1:
+            raise LedgerError("replacement requires exactly one history/current row with the target ID")
+        matches = {name: [row for row in entries if row["id"] == target]
+                   for name, entries in rows.items()}
+        if any(len(found) != 1 for found in matches.values()):
+            raise LedgerError("target ID must occur exactly once in both tables")
+        old_history = matches["history"][0]
+        if set_disposition is not None:
+            if len(table_cells("| " + history_lines[0] + " |")) != 1:
+                raise LedgerError("disposition contains an unescaped table delimiter")
+            text, cuts = table_boundaries(old_history["text"])
+            history_lines = [text[:cuts[-2] + 1] + " " + history_lines[0] + " |"]
+        elif fragment_rows(history_lines, 3) != [target]:
+            raise LedgerError("replacement history row must retain the target ID")
+        lines[old_history["line"] - 1] = history_lines[0]
+        lines[matches["current"][0]["line"] - 1] = current_lines[0]
+    else:
+        history_ids = fragment_rows(history_lines, 3)
+        last = rows["history"][-1]["id"]
+        expected = list(range(last + 1, last + 1 + len(history_ids)))
+        if history_ids != expected or current_ids != expected:
+            raise LedgerError("append IDs must be consecutive from #%d in both fragments" % (last + 1))
+        # Insert later section first so earlier offsets remain valid.
+        lines[spans["history"][1]:spans["history"][1]] = history_lines
+        lines[spans["current"][1]:spans["current"][1]] = current_lines
+    result = check_lines(lines, ledger, root)
+    if result["errors"]:
+        raise LedgerError("proposed ledger is invalid: " + "; ".join(result["errors"]))
+    data = "\r\n".join(lines).encode("utf-8")
+    if dry_run:
+        print("dry-run: valid proposal; ledger unchanged")
+        return result
+    temporary = None
+    try:
+        # Unique sibling, closed before replacement for Windows compatibility.
+        with tempfile.NamedTemporaryFile(prefix=ledger.name + ".", suffix=".tmp",
+                                         dir=ledger.parent, delete=False) as out:
+            temporary = Path(out.name)
+            out.write(data)
+            out.flush()
+            os.fsync(out.fileno())
+        if ledger.read_bytes() != original:
+            raise LedgerError("ledger changed during maintenance; refusing to overwrite another edit")
+        os.replace(temporary, ledger)
+    finally:
+        if temporary is not None and temporary.exists():
+            temporary.unlink()
+    print("updated %s: %d current/history entries; pure CRLF" %
+          (ledger, result["counts"]["history"]))
+    return result
 
-    out = lines + new_lines
-    data = ("\r\n".join(out)).encode("utf-8")
-    io.open(LEDGER + ".tmp", "wb").write(data)
-    os.replace(LEDGER + ".tmp", LEDGER)
 
-    after = load_crlf(LEDGER)
-    assert len(after) == len(lines) + len(new_lines), "行数没对上，别提交"
-    print("已写入 %s（%d 行 -> %d 行，纯 CRLF）" % (LEDGER, len(lines), len(after)))
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--fragment", type=Path, required=True)
+    parser.add_argument("--current-fragment", type=Path, required=True,
+                        help="reviewed current-index row(s) for the same ID(s)")
+    parser.add_argument("--dry-run", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--replace-row", type=int)
+    mode.add_argument("--set-disposition", type=int)
+    args = parser.parse_args(argv)
+    try:
+        apply_change(LEDGER, args.fragment, args.current_fragment,
+                     replace_row=args.replace_row, set_disposition=args.set_disposition,
+                     dry_run=args.dry_run)
+    except (LedgerError, OSError, UnicodeError) as exc:
+        parser.exit(1, "ERROR: %s\n" % exc)
+    return 0
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 # Method cards: per layer, "how it works, what to change for a new court, where people have tripped"
 
 Who they are for: people or models adding a new court, a new citation form (a new regex family) or a new jurisdiction to this pipeline.
-Purpose: instead of rereading the 150 KB specification and the 157 KB PROBLEMS, read the card for the relevant layer first, then follow the card's pointers to the originals.
+Purpose: before rereading the full specification and problem history, read the card for the relevant layer first, then follow the card's pointers to the originals.
 
 ## How to read them
 
@@ -30,7 +30,7 @@ Purpose: instead of rereading the 150 KB specification and the 157 KB PROBLEMS, 
 - Items marked **[verified]** I checked against the code or the actual files (date at the end of each card).
 - Items marked **[per spec]** come from the technical specification v1.7 or the PROBLEMS text; entries the specification itself marks "pending review" were not re-verified.
 - Items marked **[unverified]** were not checked against the code and must not be used as a basis for implementation (constraint nine).
-- The status after a PROBLEMS number is the ledger status on 2026-10-03. Statuses change; before acting, go by the text of `PROBLEMS.md`.
+- Pitfall summaries can retain the date of their original check. Current dispositions live only in [the main ledger index](../../PROBLEMS.md#当前状态索引); `08_pitfalls_by_layer.md` is topic navigation and carries no independent status.
 
 ## The nine inviolable constraints (if any plan conflicts with them, change the plan, not the constraint)
 

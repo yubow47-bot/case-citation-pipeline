@@ -40,13 +40,13 @@ The ledger carries the rule "no script may read `PROBLEMS.md`", because earlier
 pipeline patch lists began as notes and became load-bearing configuration. This tool
 is the first ruled exception, under three conditions:
 
-1. Only `build.py` reads `PROBLEMS.md`, and it lives outside the pipeline.
+1. Only `build.py` reads `PROBLEMS.md` for semantic recall, and it lives outside the pipeline. Separately, the #160 offline append/check maintenance tools may read it for documentation only.
 2. `check_isolation.py` fails if `pipeline/`, `decisions/`, `audit/` or `implementation/`
-   reference the library, or if any other code reads `PROBLEMS.md`.
+   reference the library, or if an unapproved reader accesses `PROBLEMS.md`. The maintenance checker may emit structural JSON, which is not recall-query output or production evidence.
 3. `query.py` prints text for people only. It has no `--json`, `--csv` or output-file
    option **on purpose**: results must never become input to a program.
 
-Breaking any of the three ends the exception.
+Breaking any of the three ends the semantic-recall exception. The current/history adapter repeats the current disposition and an explicit historical label on every bounded problem chunk; every archived debt chunk is also marked historical. Existing indexes are not automatically rebuilt when source documents change. Follow every search result back to the current ledger before acting.
 
 ## Checks
 

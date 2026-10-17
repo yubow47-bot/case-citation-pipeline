@@ -1,0 +1,42 @@
+{
+  "schema": "ledger-maintenance-checks-v1",
+  "as_of": "2026-10-16",
+  "status": "passed",
+  "tests": [
+    {
+      "command": "python -m unittest discover -s audit/tests -p 'test_*.py'",
+      "cases": 17,
+      "result": "passed"
+    },
+    {
+      "command": "python -m unittest discover -s tools/recall -p test_ledger_chunks.py -v",
+      "cases": 8,
+      "result": "passed"
+    },
+    {
+      "command": "python -m unittest discover -s tools/tests -p test_verification_tools.py -v",
+      "cases": 6,
+      "result": "passed"
+    }
+  ],
+  "test_cases": 31,
+  "isolation": {
+    "command": "python tools/recall/check_isolation.py",
+    "violations": 0,
+    "review_mentions": 6,
+    "review_disposition": "Existing comments/explicit reader exclusions reviewed; no new production data input."
+  },
+  "static_checks": {
+    "ledger_structure": "passed",
+    "original_history_preservation": "passed",
+    "current_evidence_portability": "passed",
+    "python_compile": "passed",
+    "git_diff_check": "passed"
+  },
+  "historical_path_warnings": 11,
+  "limits": [
+    "Targeted maintenance and runner fixture tests only.",
+    "No full offline pipeline sweep, real-corpus run, database rebuild, adoption or embedding/index rebuild.",
+    "No new accuracy estimate or human labeling."
+  ]
+}

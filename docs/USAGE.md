@@ -34,7 +34,8 @@ The N in "cited N times" is a **number of judgments** (`distinct_decisions_count
 
 | Column | Meaning | When to use it |
 |---|---|---|
-| `occurrence_count` | The **number of rows in which this citation form is mentioned** in the corpus | When you want to measure "how often it appears" |
+| `occurrence_count` | At merge: counted mentions for that key. At decide/select: the group total, repeated on every member row | Deduplicate by group before summing group totals; final edge mentions also exclude self-citations |
+| `key_occurrence_count` | The member row's original merge-layer mention count, retained through adjudication | Sum these member counts when reconstructing a group total; it is neither DD nor the repeated group total |
 | `distinct_decisions_count` (**dd** for short) | **How many different judgments** cite it (one judgment citing it ten times counts once) | This is what the product threshold uses |
 
 Why dd: citing the same case ten times in one judgment is common, but it is still **one legal act
@@ -72,7 +73,7 @@ To study "the influence of foreign law on Canadian courts", split by `case_origi
 so they stayed `UNDETERMINED` under that table-only assessment. Beyond Canadian Privy Council cases, that snapshot of the table covered no other place of origin.
 See PROBLEMS #59. This describes the historical coverage of that manual table only. Current origin assessment also uses verified member-level country evidence, as described in §6b.
 
-The current `decisions/reporter_jurisdiction.csv` has **201 rows** (checked 2026-10-14): 105 marked `verified_print_evidence`, 30 `verified_authority`, 56 `name_inference`, 9 `authority_identity_only`, and 1 `authority_country_only`. All still carry `confidence=estimated`; confidence and verification status are separate fields. This replaces the historical claim that every entry was unverified. Filters and analyses should retain both fields and the source evidence.
+The current `decisions/reporter_jurisdiction.csv` has **202 rows** (recounted 2026-10-16): 106 marked `verified_print_evidence`, 30 `verified_authority`, 56 `name_inference`, 9 `authority_identity_only`, and 1 `authority_country_only`. All still carry `confidence=estimated`; confidence and verification status are separate fields. This replaces the historical claim that every entry was unverified. Filters and analyses should retain both fields and the source evidence.
 
 ## 5. Columns you need to know
 
@@ -87,9 +88,9 @@ The current `decisions/reporter_jurisdiction.csv` has **201 rows** (checked 2026
 | `split_reason` | How this group was split off: `span` (year span) / `decision` (split by judgment using neutral citations) / `unanchored` (no neutral anchor, grouped by co-citation) |
 | `same_name_near_year_peers` | Group ids of **other groups** with the same name (equal after normalization) and a year within ±1. **A flag only, not a merge suggestion** (PROBLEMS #62, see §6) |
 
-## 6. Under-count list: each item below means the real citation count is **not lower than** the number in the table
+## 6. Historical limitation measurements and current review boundaries
 
-When a number looks low, check this list first instead of concluding "this case is rarely cited".
+The numerical examples below belong to the historical two-court runs cited by the original problem entries. They have not been remeasured for the current three-court snapshot or later source fixes. These mechanisms can under-count, over-count or misassign links; they do not establish a universal lower bound. Use [the current problem index](../PROBLEMS.md#当前状态索引) before treating an item as unresolved.
 
 1. **Two groups with the same name and years within ±1 are not merged** (PROBLEMS #62). Measured (group-level counts): across all groups
    there are 8,329 pairs with the same name and primary-row years within ±1, of which **225 pairs** have both sides over the threshold. They mix two kinds:
@@ -98,16 +99,15 @@ When a number looks low, check this list first instead of concluding "this case 
    links them). The `same_name_near_year_peers` column was added for this;
    it also flags genuinely different same-name judgments. A machine cannot tell them apart; **a human has to decide**.
 2. **Co-citation units with no neutral anchor** (PROBLEMS #49/#55). Forms that have no neutral citation and zero co-citation with any identity anchor
-   can only be grouped with each other and are marked `unanchored`. In the current output, groups over the threshold whose `split_reason` contains `unanchored`
+   can only be grouped with each other and are marked `unanchored`. In the historical output, groups over the threshold whose `split_reason` contains `unanchored`
    number **69, with dd totalling 648**. (A narrower count when #55 was recorded gave 56 units, dd totalling 262, of which
    18 had dd ≥5 — the two counts use different definitions; say which one you quote.)
 3. **Residual self-citation** (PROBLEMS #54). A judgment's header prints its own citation; the merge layer no longer counts it in dd, but
    `occurrence_count` still includes "self-citation mentions in a parallel form" — when a judgment mentions itself in another reporter's form,
    that mention is still in occurrence; only dd is fully cleaned.
-4. **A 1.2% under-count from the extraction layer** (PROBLEMS #63). Against the upstream ground truth shipped with the corpus (74,750 bare neutral citations),
+4. **Historical 1.2% gap against upstream bare-neutral metadata** (PROBLEMS #63). Against the upstream ground truth shipped with the corpus (74,750 bare neutral citations),
    recall counting only the finally kept spans is **98.80%**. The **872 missed are not unextracted; they lost deduplication to a longer span
-   with the case name stuck to it** (`Kvello Estate 2009 SCC 51` displaces `2009 SCC 51`). These **do not become
-   wrong answers**: the winning string is always classified `UNSUPPORTED` (some with `unrecognized_series_prefix`),
+   with the case name stuck to it** (`Kvello Estate 2009 SCC 51` displaces `2009 SCC 51`). In that historical review, the examined winning strings were classified `UNSUPPORTED` (some with `unrecognized_series_prefix`),
    a visible, honest refusal. The effect size is about "1.2% of the bare neutral citations".
    **Definition warning (added in the 2026-09 demo repair round)**: 98.80% is **coverage of the upstream automatic neutral-citation pairs (judgment, citation string)**
    — it measures how well extraction plus deduplication covers the metadata entries shipped with the corpus; it is **not** the
