@@ -1357,11 +1357,16 @@ def solve_identity(rows, did_idx, prefix, stats, registry=None, typo_over=None,
     for row in rows:
         row["co_printed_run_ids"] = ""
         row["ruling_identity_status"] = ""
+        row["reporter_identity_conflict"] = "false"
+        row.setdefault("identity_source_status", "eligible")
         for field in ('document_alias_decision_id','document_alias_evidence_ids','document_alias_source_rows'):
             row[field] = ''
         row.setdefault('document_alias_holdout_doc_ids','')
         row.setdefault('document_alias_holdout_evidence_ids','')
         row.setdefault('identity_separation_evidence_ids','')
+    excluded_rows = [r for r in rows if r['identity_source_status'] == 'excluded_source_only']
+    rows = [r for r in rows if r['identity_source_status'] != 'excluded_source_only']
+    stats['identity_source_excluded_member_rows'] += len(excluded_rows)
     mark_reporter_context_conflicts(rows, stats, trace)
     start = neutral_start(rows)
     stats["neutral_rows_before_court_start"] = sum(
@@ -1470,6 +1475,9 @@ def solve_identity(rows, did_idx, prefix, stats, registry=None, typo_over=None,
                 r["name_rejected_reason"] = (prev + "|mixed_identity"
                                              if prev else "mixed_identity")
                 stats["mixed_identity_names_suppressed"] += 1
+    # Retain quarantined observations after all positive identity routes. A
+    # zero-measurable-source title/key must not alter eligible components.
+    clusters.extend(([row], 'excluded_source_only', '') for row in excluded_rows)
     mark_uncertain_ruling_identity(clusters, registry, own_cites, stats, trace)
     clusters.sort(key=lambda c: min(row_key(m) for m in c[0]))
 

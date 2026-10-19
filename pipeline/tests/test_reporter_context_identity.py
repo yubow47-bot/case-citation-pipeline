@@ -89,6 +89,24 @@ class ReporterContextIdentityTests(unittest.TestCase):
         self.assertEqual(stats['parallel_blocked_reporter_context_conflict'], 1)
         self.assertTrue(all(not r['co_printed_run_ids'] for r in rows))
 
+    def test_excluded_source_only_observation_cannot_supply_identity_bridge(self):
+        collision = '1997||bcj||2543'
+        rows = [member('1997|99|bcac||22', year='1997', name='Alpha v. Beta', court='BCCA'),
+                member(collision, year='1997', name='Alpha v. Beta', court='BCCA'),
+                member(collision, year='1997', name='Gamma v. Delta', court='BCSC'),
+                member('1997|99|bcac||134', year='1997', name='Gamma v. Delta', court='BCSC')]
+        rows[1]['identity_source_status'] = 'excluded_source_only'
+        sources = {row_key(r): {r['court']+'_eligible'} for r in rows if r is not rows[1]}
+        out, stats, _ = self.solve(rows, sources=sources)
+        self.assertEqual(len(out), 3)
+        self.assertEqual(stats['identity_source_excluded_member_rows'], 1)
+        self.assertEqual(stats['reporter_identity_conflicted_keys'], 0)
+        quarantined, = [c for c in out if rows[1] in c[0]]
+        self.assertEqual(quarantined[0], [rows[1]])
+        self.assertEqual(quarantined[1], 'excluded_source_only')
+        # Eligible same-title reports continue to form their own component.
+        self.assertTrue(any(rows[2] in c[0] and rows[3] in c[0] for c in out))
+
     def bottineau_fixture(self):
         # Native disclosure (BCSC member) and conviction (ONCA member).
         return [member('2005||oj||4034', year='2005', name='R. v. Bottineau', court='BCSC'),
