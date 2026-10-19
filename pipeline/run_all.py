@@ -50,6 +50,7 @@ SCHEMA_VERSIONS = {
     "edges": "3 (member country independent of identity support; history and zone annotations)",
     # #88/#89：run 级全局判决登记簿（merge 之后、decide 之前生成）
     "registry": "3 (native English/French metadata/header proof; canonical source identity)",
+    "source_integrity": "1 (native date, source binding, measurable-source disposition)",
 }
 
 
@@ -371,6 +372,16 @@ def main():
     r.write_manifest("running")
     r.manifest["storage_preflight"] = budget
 
+    source_cmd = [os.path.join("pipeline", "source_integrity.py"),
+                  "--corpus-dir", corpus_dir, "--text-policy", args.text_policy,
+                  "--out", os.path.join(args.out, "source_integrity"),
+                  "--batch-size", str(args.batch_size)]
+    if args.limit_batches is not None:
+        source_cmd += ["--limit-batches", str(args.limit_batches)]
+    for court in courts:
+        source_cmd += ["--court", court]
+    r.run_step("source_integrity", source_cmd)
+
     ex = [os.path.join("pipeline", "extract.py"),
           "--out", os.path.join(args.out, "extract_out"),
           "--batch-size", str(args.batch_size)]
@@ -429,6 +440,9 @@ def run_downstream(r):
         cmd = [os.path.join("pipeline", "decide.py")] + court_args
         # PROBLEMS #105：判决自己印的引证，只用于剔自引（与笔误闸的登记簿无关，总是传）
         cmd += ["--own-citations", own_citations_file, "--corpus-dir", corpus_dir]
+        source_records = os.path.join(args.out, "source_integrity", "source_records.csv")
+        if os.path.isfile(source_records):
+            cmd += ["--source-records", source_records]
         # Every court consumes the global registry, including the main line.
         cmd += ["--registry", registry_file, "--registry-gate", args.registry_gate,
                 "--parallel-min-sources", str(getattr(args, "parallel_min_sources", 1))]

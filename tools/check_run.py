@@ -193,7 +193,7 @@ class RunCheck:
         self.metrics["group_foreign_status"] = dict(Counter(g[2] for g in groups.values()))
         self.metrics["group_origin_status"] = dict(Counter(g[4] for g in groups.values()))
 
-        effective, excluded = {}, {}
+        effective, excluded, quarantined = {}, {}, {}
         effective_fields = ("merged_group_id", "source_decision", "status", "exclusion_reason", "identity_status")
         for row in self.rows("decide_out/cross_court/effective_sources.csv", effective_fields):
             pair = (row["source_decision"], row["merged_group_id"])
@@ -201,6 +201,8 @@ class RunCheck:
                 totals["duplicate_effective"] += 1
             if row["status"] == "counted":
                 effective[pair] = row["identity_status"]
+            elif row["status"] == "excluded_source":
+                quarantined[pair] = row["exclusion_reason"]
             elif row["status"] == "excluded_self":
                 excluded[pair] = row["exclusion_reason"]
             else:
@@ -281,6 +283,17 @@ class RunCheck:
         self.difference("self_view_extra", set(observed_excluded), set(excluded), "Audit view includes unknown excluded sources")
         if any(observed_excluded[p] != excluded[p] for p in set(excluded) & set(observed_excluded)):
             totals["self_view_reason_mismatch"] += 1
+        if quarantined:
+            observed_quarantine = {}
+            for row in self.rows("edges/source_excluded_edges.csv", ("source_decision", "resolved_cited_case", "exclusion_reason")):
+                pair = (row["source_decision"], row["resolved_cited_case"])
+                if pair in observed_quarantine:
+                    self.issue("error", "duplicate_source_exclusion", "Duplicate quarantined source link")
+                observed_quarantine[pair] = row["exclusion_reason"]
+            if observed_quarantine != quarantined:
+                self.issue("error", "source_exclusion_mismatch", "Quarantined source links differ from their evidence")
+            if set(quarantined) & set(edges):
+                self.issue("error", "quarantined_source_reintroduced", "Unmeasurable sources cannot contribute edges")
         for code in ("duplicate_effective", "invalid_effective_status", "invalid_effective_reference", "duplicate_edges",
                      "edge_group_missing", "edge_group_disagreement", "heuristic_origin_leak", "invalid_edge_support",
                      "supported_origin_mismatch", "edge_identity_support_mismatch", "edge_identity_label_mismatch", "invalid_foreign_status",

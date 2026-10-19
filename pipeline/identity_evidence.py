@@ -254,7 +254,7 @@ def parse_name_classes(raw):
 def _self_of(m):
     return {x for x in (m.get("self_citation_of") or "").split("|") if x}
 
-def load_registry(path):
+def load_registry(path, excluded_sources=None):
     """Load exact registry key claims, retaining all document IDs and source courts in deterministic semicolon order. Registry claims authorize only the configured typo guard; they never become local self-citation roots."""
     idx = defaultdict(set)
     if path and (os.path.exists(path) or os.path.exists(path+'.gz')):
@@ -262,7 +262,7 @@ def load_registry(path):
             for r in csv.DictReader(f):
                 k = r.get("merge_key") or ""
                 did = r.get("decision_id") or ""
-                if k and did:
+                if k and did and did not in (excluded_sources or ()):
                     idx[k].add((did, r.get("source_court") or ""))
     return {k: (";".join(sorted(d for d, _c in v)),
                 ";".join(sorted({c for _d, c in v if c})))
@@ -276,7 +276,7 @@ class OwnCitations(defaultdict):
         self.evidence = defaultdict(list)
         self.diagnostics = Counter()
 
-def load_own_citations(path):
+def load_own_citations(path, excluded_sources=None):
     """Load self-citation facts and separately qualified source-unique metadata/header document aliases. Legacy rows supply self-exclusion only, without changing local anchor eligibility or the typo guard."""
     idx = OwnCitations()
     qualified = defaultdict(list)
@@ -290,6 +290,9 @@ def load_own_citations(path):
                         if r['evidence_id'] != expected:
                             raise ValueError('Own-citation evidence hash mismatch')
                     idx.diagnostics['claim_'+r.get('claim_status', 'legacy_self_only')] += 1
+                    if r['decision_id'] in (excluded_sources or ()):
+                        idx.diagnostics['excluded_source_claims'] += 1
+                        continue
                     if r.get('claim_status', '').startswith('rejected_'):
                         continue
                     idx[r["merge_key"]].add(r["decision_id"])

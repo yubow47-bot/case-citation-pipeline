@@ -1002,6 +1002,8 @@ def main():
                          "**只授权笔误闸使用**（规格 2.3）")
     ap.add_argument("--corpus-dir", default=None,
                     help="Native corpus used to validate source-bound separation facts")
+    ap.add_argument("--source-records", default=None,
+                    help="Source integrity dispositions; quarantined sources cannot support identity or DD")
     ap.add_argument("--own-citations", default=None,
                     help="判决自己印的引证表（<run>/registry/decision_own_citations.csv）："
                          "剔自引；仅新qualified metadata/header证据可连接平行身份；旧四列只剔自引")
@@ -1034,14 +1036,23 @@ def main():
     a = ap.parse_args()
 
     stats = Counter()
+    from source_measurement import prepare_sources, filter_instances, restore_source_audit
+    excluded_sources = {}
+    if a.source_records:
+        from source_integrity import load_source_records
+        source_records = load_source_records(a.source_records)
+        excluded_sources = {k: v['quarantine_reason'] for k, v in source_records.items()
+                            if not v['source_measurable']}
     history = load_history_instances(a.history_pairs, a.history_input_mode)
+    history = filter_instances(history, excluded_sources)
     stats["history_instances_loaded"] = len(history)
     if a.parallel_min_sources < 1:
         ap.error("parallel-min-sources must be positive")
     parallels = load_parallel_runs(a.parallel_runs)
+    parallels = filter_instances(parallels, excluded_sources)
     stats["parallel_instances_loaded"] = len(parallels)
-    registry = load_registry(a.registry)
-    own_cites = load_own_citations(a.own_citations)
+    registry = load_registry(a.registry, excluded_sources)
+    own_cites = load_own_citations(a.own_citations, excluded_sources)
     separations = load_identity_separations()
     separations_path = os.path.join(DECISIONS,'identity_separations.csv')
     with open(separations_path,'rb') as separation_source:
@@ -1085,6 +1096,9 @@ def main():
         prefix, label, redo = a.court, a.court, True
 
     stats["input_rows"] = len(rows)
+    raw_did_idx = did_idx
+    did_idx = prepare_sources(rows, raw_did_idx, excluded_sources)
+    stats['unmeasurable_sources'] = len(excluded_sources)
     in_occ_total = sum(key_occ(r) for r in rows)
     pair_separations = load_pair_separations(keys={r['merge_key'] for r in rows},
                                              corpus_dir=a.corpus_dir)
@@ -1097,6 +1111,7 @@ def main():
                                         holdout,
                                         a.registry_gate, own_cites, separations, trace,
                                         history, pair_separations, parallels, a.parallel_min_sources)
+    restore_source_audit(out, out_ids, eff_rows, raw_did_idx, excluded_sources)
     trace_manifest = trace.close()
     # PROBLEMS #62：同名、年份相差 ≤1 的同级组。只在跨法院轮算——跨院合并跑完才是
     # 最终分组；院内轮该列留空（它不是产品列，选取层读的是跨院产出）

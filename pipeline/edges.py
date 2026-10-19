@@ -155,7 +155,7 @@ def main():
                 stats["mentions_in_edges"] += 1
 
     # 有效来源关联 → 边
-    all_rows, tentative, self_excluded = [], [], []
+    all_rows, tentative, self_excluded, source_excluded = [], [], [], []
     per_group_counted = Counter()
     with open_csv(a.effective) as f:
         for e in csv.DictReader(f):
@@ -164,7 +164,10 @@ def main():
             if g is None:
                 raise ValueError("Effective source has no decided group: " + gid)
             if e["status"] != "counted":
-                self_excluded.append({
+                if e["status"] not in ("excluded_self", "excluded_source"):
+                    raise ValueError("Unknown effective source disposition: " + e["status"])
+                excluded_view = source_excluded if e["status"] == "excluded_source" else self_excluded
+                excluded_view.append({
                     "source_decision": e["source_decision"],
                     "resolved_cited_case": gid,
                     "exclusion_reason": e["exclusion_reason"],
@@ -172,7 +175,7 @@ def main():
                     "mention_count": len(mention_edges.get(
                         (e["source_decision"], gid), [])),
                 })
-                stats["self_excluded_sources"] += 1
+                stats["source_excluded_sources" if e["status"] == "excluded_source" else "self_excluded_sources"] += 1
                 continue
             per_group_counted[gid] += 1
             supported = basis_of(e["identity_status"])
@@ -236,7 +239,10 @@ def main():
                                ("self_excluded_edges.csv",
                                 ["source_decision", "resolved_cited_case",
                                  "exclusion_reason", "identity_status",
-                                 "mention_count"], self_excluded)):
+                                 "mention_count"], self_excluded),
+                               ("source_excluded_edges.csv",
+                                ["source_decision", "resolved_cited_case", "exclusion_reason",
+                                 "identity_status", "mention_count"], source_excluded)):
         path = os.path.join(a.output, name)
         tmp = path + ".tmp"
         with open(tmp, "w", encoding="utf-8", newline="") as f:
