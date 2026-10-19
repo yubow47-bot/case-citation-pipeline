@@ -5,7 +5,7 @@ from identity_constraints import _proposal, _block, document_union_constraint
 
 
 def merge_parallel_clusters(clusters, parallels, did_idx, start, registry,
-                            own_cites, history, stats, trace, min_sources=1):
+                            own_cites, history, stats, trace, min_sources=1, gate="literal"):
     if not parallels:
         return clusters
     if min_sources < 1 or trace is None:
@@ -65,15 +65,18 @@ def merge_parallel_clusters(clusters, parallels, did_idx, start, registry,
         if blocker is None:
             if any(m.get('court_designation_conflict') == 'true' for m in combined):
                 blocker = _block(trace,'co_printed_run',left,right,proposal,'printed_court_conflict')
+        roots = decisions_of(combined, did_idx, start, registry, gate=gate, trace=trace)[0]
+        neutral_roots = {m['merge_key']: roots.get(m['merge_key'], m['merge_key'])
+                         for m in combined if m.get('citation_kind') == 'neutral'}
         if blocker is None:
             blocker = document_union_constraint(combined,aliases,registry,courts,
-                {'trace':trace,'phase':'co_printed_run','left':left,'right':right,'proposal':proposal})
+                {'trace':trace,'phase':'co_printed_run','left':left,'right':right,
+                 'proposal':proposal,'neutral_roots':neutral_roots})
         years = {row_year(m) for m in combined if row_year(m) is not None}
         if blocker is None and years and max(years)-min(years)>1:
             blocker = _block(trace,'co_printed_run',left,right,proposal,'printed_year_span',
                              {'years':sorted(years)})
         if blocker is None:
-            roots = decisions_of(combined,did_idx,start,registry)[0]
             if len(set(roots.values()))>1:
                 blocker = _block(trace,'co_printed_run',left,right,proposal,'distinct_decision_roots')
         all_keys = {m['merge_key'] for m in combined}

@@ -74,6 +74,34 @@ class ParallelTests(unittest.TestCase):
         self.assertEqual(sorted(map(row_key,rows)),sorted(row_key(m) for c in out for m in c[0]))
         return out,stats,trace
 
+    def test_accepted_neutral_variant_survives_parallel_guard(self):
+        # F6: accepted 333 -> 33 must be reused by the later printed-run guard.
+        from identity_solve import solve_identity
+        a, typo, reporter = '2016||scc||33', '2016||scc||333', '|330|ccc|3d|1'
+        path, _, _ = self.fixture((a, reporter))
+        par = load_parallel_runs([path])
+        rows = [member(a, 'neutral', '2016', 'R. v. Villaroman'),
+                member(typo, 'neutral', '2016', 'R. v. Villaroman'), member(reporter)]
+        sources = {row_key(rows[0]): {'D1', 'D2', 'D3', 'D4'},
+                   row_key(rows[1]): {'D1'}, row_key(rows[2]): {'D1'}}
+        for registry, expected in [({}, 1), ({typo: ('SCC_2016scc333', 'SCC')}, 2)]:
+            with self.subTest(registered=bool(registry)):
+                current = copy.deepcopy(rows)
+                stats = Counter()
+                trace = ConstraintLedger(EvidenceSnapshot(current, sources, 'TEST',
+                                         registry=registry, parallels=par))
+                out, _ = solve_identity(current, sources, 'TEST', stats,
+                    registry=registry, gate='registered', holdout=[],
+                    identity_separations=[], trace=trace, history={}, parallels=par)
+                # An independently registered number remains a real distinct root;
+                # the correct neutral and reporter may still join each other.
+                self.assertEqual(len(out), expected)
+                self.assertFalse(any({a, typo} <= {m['merge_key'] for m in c[0]}
+                                     for c in out) if registry else False)
+                if not registry:
+                    self.assertEqual(stats['parallel_cluster_unions'], 1)
+                    self.assertEqual(stats['parallel_blocked_different_neutral_numbers'], 0)
+
     def test_structural_positive_and_boundaries(self):
         for gap,expected in [(', ',2),(',\n',2),('; ',0),(', aff\'d ',0),
                              (', R. v. X, ',0),(' (QL), ',0),('',0)]:

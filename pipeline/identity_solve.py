@@ -1339,7 +1339,7 @@ def solve_identity(rows, did_idx, prefix, stats, registry=None, typo_over=None,
     if parallels:
         from identity_parallel import merge_parallel_clusters
         clusters = merge_parallel_clusters(clusters, parallels, did_idx, start, registry,
-            own_cites, history, stats, trace, parallel_min_sources)
+            own_cites, history, stats, trace, parallel_min_sources, gate)
 
     if holdout:
         mixed = {h[0] for h in holdout}
