@@ -1303,12 +1303,60 @@ def partition(members, did_idx, evidence, row_key, stats, bar=0.8, trace=None,
                         [blocker.constraint_id for blocker in blockers])
     return result
 
+def mark_uncertain_ruling_identity(clusters, registry, own_cites, stats, trace=None):
+    """Flag unanchored same-title adjacent-year groups without splitting them.
+
+    A connected accepted printed-run proof supplies judgment-level positive
+    evidence. A shared title/year window alone does not distinguish rulings
+    within a litigation (the known Bottineau / #49 / #106 residual).
+    """
+    aliases = getattr(own_cites, 'aliases', {})
+    for members, _, _ in clusters:
+        keys = {m['merge_key'] for m in members}
+        if len(keys) < 2:
+            continue
+        if any((registry or {}).get(m['merge_key']) or _self_of(m) or
+               m['merge_key'] in aliases or m.get('citation_kind') == 'neutral'
+               for m in members):
+            continue
+        by_name = defaultdict(set)
+        for m in members:
+            name, year = nk(m.get('case_name_modal') or ''), row_year(m)
+            if name and year is not None:
+                by_name[name].add(year)
+        if not any(len(years) > 1 and max(years) - min(years) <= 1
+                   for years in by_name.values()):
+            continue
+        runs = defaultdict(set)
+        for m in members:
+            for iid in filter(None, m.get('co_printed_run_ids', '').split(';')):
+                runs[iid].add(m['merge_key'])
+        connected = {min(keys)}
+        changed = True
+        while changed:
+            changed = False
+            for run_keys in runs.values():
+                if connected & run_keys and not run_keys <= connected:
+                    connected.update(run_keys)
+                    changed = True
+        if keys <= connected:
+            continue
+        for m in members:
+            m['ruling_identity_status'] = 'uncertain_ruling_identity'
+        stats['uncertain_ruling_identity_groups'] += 1
+        stats['uncertain_ruling_identity_members'] += len(members)
+        if trace:
+            trace.event('ruling_identity', members, 'unresolved',
+                        'uncertain_ruling_identity')
+
+
 def solve_identity(rows, did_idx, prefix, stats, registry=None, typo_over=None,
                    holdout=None, gate="literal", own_cites=None,
                    identity_separations=None, trace=None, history=None,
                    parallels=None, parallel_min_sources=1):
     for row in rows:
         row["co_printed_run_ids"] = ""
+        row["ruling_identity_status"] = ""
         for field in ('document_alias_decision_id','document_alias_evidence_ids','document_alias_source_rows'):
             row[field] = ''
         row.setdefault('document_alias_holdout_doc_ids','')
@@ -1422,6 +1470,7 @@ def solve_identity(rows, did_idx, prefix, stats, registry=None, typo_over=None,
                 r["name_rejected_reason"] = (prev + "|mixed_identity"
                                              if prev else "mixed_identity")
                 stats["mixed_identity_names_suppressed"] += 1
+    mark_uncertain_ruling_identity(clusters, registry, own_cites, stats, trace)
     clusters.sort(key=lambda c: min(row_key(m) for m in c[0]))
 
     if trace:

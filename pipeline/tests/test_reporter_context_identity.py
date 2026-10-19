@@ -89,6 +89,43 @@ class ReporterContextIdentityTests(unittest.TestCase):
         self.assertEqual(stats['parallel_blocked_reporter_context_conflict'], 1)
         self.assertTrue(all(not r['co_printed_run_ids'] for r in rows))
 
+    def bottineau_fixture(self):
+        # Native disclosure (BCSC member) and conviction (ONCA member).
+        return [member('2005||oj||4034', year='2005', name='R. v. Bottineau', court='BCSC'),
+                member('2006||oj||1864', year='2006', name='R. v. Bottineau', court='ONCA')]
+
+    def test_bottineau_unanchored_neighboring_rulings_are_flagged(self):
+        rows = self.bottineau_fixture()
+        out, stats, _ = self.solve(rows)
+        self.assertEqual(len(out), 1)  # C-tier policy: flag, do not guess a split.
+        self.assertEqual(stats['uncertain_ruling_identity_groups'], 1)
+        self.assertTrue(all(m['ruling_identity_status'] == 'uncertain_ruling_identity'
+                            for m in rows))
+
+    @unittest.expectedFailure
+    def test_bottineau_distinct_rulings_remain_known_unresolved(self):
+        # The appeal identifies conviction and sentence as distinct judgments.
+        # This round deliberately adds uncertainty, not an unsupported split.
+        out, _, _ = self.solve(self.bottineau_fixture())
+        self.assertEqual(len(out), 2)
+
+    def test_real_printed_parallel_reports_do_not_gain_ruling_flag(self):
+        rows = self.bottineau_fixture()
+        fixture = parallel_fixture.ParallelTests(); fixture.setUp()
+        self.addCleanup(fixture.doCleanups)
+        path, _, _ = fixture.fixture(tuple(m['merge_key'] for m in rows))
+        out, stats, _ = self.solve(rows, parallels=load_parallel_runs([path]))
+        self.assertEqual(len(out), 1)
+        self.assertEqual(stats['uncertain_ruling_identity_groups'], 0)
+        self.assertTrue(all(not m['ruling_identity_status'] for m in rows))
+
+    def test_same_year_parallel_reports_are_not_neighboring_ruling_candidate(self):
+        rows = [member('2005||oj||4034', year='2005', name='R. v. Bottineau'),
+                member('2005|32|cr|6d|70', year='2005', name='R. v. Bottineau')]
+        out, _, _ = self.solve(rows)
+        self.assertEqual(len(out), 1)
+        self.assertTrue(all(not m['ruling_identity_status'] for m in rows))
+
 
 if __name__ == '__main__':
     unittest.main()
