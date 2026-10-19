@@ -403,25 +403,43 @@ def classify_court_designation(raw, cd_idx, scope_idx=None, reporter=""):
 
 
 def load_volume_systems():
-    """R3 Stage 3：`reporter_origin_scope.csv` 的 volume_system 列 → {nk(印刷缩写):
-    year_volume|continuous}。
-
-    只收**已核实**行（verification_status ∈ 白名单，与 decide 同口径）；同一缩写
-    的多行若给出**不一致**的 volume_system → 该缩写**不给值**（保守：不拿两个互相
-    矛盾的体系去改键）。本层盖章，归并层只读行字段——归并层依旧不读决策表。"""
+    """Retain verified reporter volume systems together with their date/volume windows."""
     allowed = {"verified_exclusive_statute", "verified_exclusive_publisher"}
     path = os.path.join(DECISIONS, "reporter_origin_scope.csv")
-    vals = defaultdict(set)
+    rules = defaultdict(list)
     if os.path.exists(path):
         with open(path, encoding="utf-8", newline="") as f:
-            for r in csv.DictReader(f):
-                if (r.get("verification_status") or "").strip() not in allowed:
+            for row in csv.DictReader(f):
+                if (row.get("verification_status") or "").strip() not in allowed:
                     continue
-                vs = (r.get("volume_system") or "").strip()
-                k = nk(r.get("printed_abbreviation") or "")
-                if k and vs in ("year_volume", "continuous"):
-                    vals[k].add(vs)
-    return {k: next(iter(v)) for k, v in vals.items() if len(v) == 1}
+                system = (row.get("volume_system") or "").strip()
+                key = nk(row.get("printed_abbreviation") or "")
+                if key and system in ("year_volume", "continuous"):
+                    rules[key].append(row)
+    return dict(rules)
+
+
+def _reporter_range_compatible(row, rule):
+    """A printed numeric date/volume can refute a reporter rule, even at one jurisdiction."""
+    for field, prefix in (("year_start", "year"), ("vol", "vol")):
+        value = (row.get(field) or "").strip()
+        if not value.isdigit():
+            continue
+        number = int(value)
+        low = (rule.get(prefix + "_range_start") or "").strip()
+        high = (rule.get(prefix + "_range_end") or "").strip()
+        if (low.isdigit() and number < int(low)) or (high.isdigit() and number > int(high)):
+            return False
+    return True
+
+
+def reporter_volume_system(row, rules):
+    """Do not erase a historical key's year using a modern reporter's volume system."""
+    if isinstance(rules, str):  # Existing explicitly supplied fixture/API policies.
+        return rules
+    systems = {rule.get("volume_system", "") for rule in rules
+               if _reporter_range_compatible(row, rule)}
+    return next(iter(systems)) if len(systems) == 1 else ""
 
 
 def load_runtime_tables():
@@ -1546,8 +1564,14 @@ class Classifier(object):
             return
 
         if len(juris) == 1:
+            compatible = [c for c in candidates if _reporter_range_compatible(row, c)]
+            if not compatible:
+                row["jurisdiction"] = "UNSUPPORTED"
+                row["jurisdiction_confidence"] = "unsupported"
+                self.stats["reporter_jurisdiction_out_of_window"] += 1
+                return
             row["jurisdiction"] = next(iter(juris)) or "UNSUPPORTED"
-            row["jurisdiction_confidence"] = _weaker(candidates, None)
+            row["jurisdiction_confidence"] = _weaker(compatible, None)
             return
 
         has_vol = bool((row.get("vol") or "").strip())
@@ -1588,7 +1612,7 @@ class Classifier(object):
         split_case_name(row)
         row.pop("_prefix_jur", None)
         # R3 Stage 3：把该汇编的卷/年体系盖在行上（与法域同源：都来自已核实决策表）。
-        vs = self.vol_system.get(nk(row.get("abbreviation") or ""), "")
+        vs = reporter_volume_system(row, self.vol_system.get(nk(row.get("abbreviation") or ""), ()))
         row["volume_system"] = vs
         if vs:
             self.stats["volume_system_" + vs] += 1
