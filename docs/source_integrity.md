@@ -28,3 +28,33 @@ calendar errors while preserving the 2012 date of NSSC 2011/506 and the 2011
 date of FC 2016/18. Extraction uses the same date resolver. Consumers should use
 `source_decision_year` instead of reading provider dates again. G-side consumers
 are outside this implementation round.
+
+## Source-to-text bindings (S2)
+
+Every physical source row receives `own_citation_checked=True`. A printed
+`Citation:` / `CITATION:` / `Référence:` block inside the judicial header, with
+a separate Date or Docket label, supplies own-citation evidence. Only registered
+neutral codes and accepted `bilingual_neutral_codes.csv` equivalences are used.
+Leading zeros in the numerical decision identifier do not create a conflict.
+An unlabelled web metadata field or a citation in the judgment body is insufficient.
+
+One unambiguous native citation conflicting with one unambiguous metadata citation
+sets `own_citation_status=MISMATCH`, `source_measurable=False`, and
+`quarantine_reason=SOURCE_CITATION_MISMATCH`. Missing, ambiguous, and uncomparable
+headers remain explicit review states; absence of a verified header is not proof
+of a wrong binding. `native_citation_evidence_json` provides original spans.
+The mismatch check is independent of duplicate-text detection and therefore also
+catches incorrectly attached texts that differ from other corpus records.
+
+Exact nonempty selected-text SHA-256 groups are compared across all source IDs.
+`duplicate_text_source_count` and `duplicate_text_sources` retain their membership,
+and `duplicate_text_groups.json` lists every group. Equality alone never merges
+metadata IDs or quarantines a source. `own_citation_mismatches.csv` lists every
+mismatch, including cases with no duplicate. `citation_provider_year_conflict`
+retains the original year-screening queue, which is not itself proof of an error.
+
+Consumers load the source-ID mapping with `load_source_records(path_or_directory)`;
+it converts `source_measurable` to a Python boolean and rejects conflicting
+dispositions for repeated source IDs. Quarantined rows and extracted candidates
+remain available for inspection, but these sources cannot count as measured
+observations or supply positive global identity evidence. No raw row is deleted.

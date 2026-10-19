@@ -7,6 +7,7 @@ from collections import Counter, defaultdict
 import argparse
 import csv
 import datetime as dt
+from functools import lru_cache
 import hashlib
 import json
 from pathlib import Path
@@ -21,6 +22,9 @@ FIELDS = ['source_id', 'source_decision_citation', 'court', 'corpus_row_index',
           'provider_date', 'provider_decision_year', 'native_decision_date',
           'native_date_status', 'date_conflict_status', 'source_decision_year',
           'decision_year_basis', 'native_date_evidence_json',
+          'own_citation_checked', 'native_own_citation', 'own_citation_status',
+          'native_citation_evidence_json', 'citation_provider_year_conflict',
+          'duplicate_text_source_count', 'duplicate_text_sources',
           'source_measurable', 'quarantine_reason']
 
 CONTENT = re.compile(r'(?im)^[ \t]*(?:Decision Content|Contenu de la décision)[ \t]*$')
@@ -30,6 +34,89 @@ BODY = re.compile(r'(?im)^[ \t]*(?:\[\d{1,5}\][ \t]*|'
 FORMAL = re.compile(r'(?im)^[ \t]*(?:CITATION|RÉFÉRENCE|DOCKETS?)[ \t]*:')
 DATE = re.compile(r'(?im)^[ \t]*DATE[ \t]*:[ \t]*(?:\r?\n[ \t]*)?'
                   r'\(?(?P<date>\d{4}(?:[-/]\d{2}[-/]\d{2}|\d{4}))\)?[ \t]*\r?$')
+CITATION = re.compile(r'(?im)^[ \t]*(?:CITATION|RÉFÉRENCE)[ \t]*:')
+HEADER_FIELD = re.compile(r'(?m)^[ \t]*[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ /()-]{1,60}[ \t]*:')
+NEUTRAL = re.compile(r'(?<!\w)(?P<year>(?:18|19|20)\d{2})[ \t]*'
+                     r'(?P<code>[A-Z][A-Z.]{1,11})[ \t]*(?P<number>\d{1,7})(?!\w)')
+
+
+@lru_cache(maxsize=1)
+def _neutral_policy():
+    """Use only registered codes and already accepted bilingual equivalences."""
+    from identity_evidence import load_bilingual
+    path = Path(__file__).resolve().parents[1] / 'decisions/neutral_court_codes.csv'
+    with path.open(encoding='utf-8-sig', newline='') as stream:
+        codes = {nk(row['court_code']) for row in csv.DictReader(stream)}
+    parent = {code: code for code in codes}
+
+    def root(code):
+        parent.setdefault(code, code)
+        while parent[code] != code:
+            parent[code] = parent[parent[code]]
+            code = parent[code]
+        return code
+
+    for pair in load_bilingual():
+        left, right = sorted(pair)
+        a, b = root(left), root(right)
+        parent[max(a, b)] = min(a, b)
+    return codes, {code: root(code) for code in parent}
+
+
+def _neutral_matches(text):
+    codes, aliases = _neutral_policy()
+    result = []
+    for match in NEUTRAL.finditer(text):
+        code = nk(match['code'])
+        if code in codes:
+            key = '%s:%s:%d' % (match['year'], aliases.get(code, code), int(match['number']))
+            result.append((key, match))
+    return result
+
+
+def inspect_own_citation(selected):
+    """Compare explicit own-header neutral citations with selected metadata.
+
+    A body reference or an unlabelled web metadata field cannot establish an
+    own citation. Unknown and ambiguous headers are retained as review states.
+    """
+    text = selected.get('text') or ''
+    start, end = header_region(text)
+    header = text[start:end]
+    native = {}
+    evidence = []
+    # A Citation label by itself could be a quoted reference. Require another
+    # printed judicial-header field before accepting it as source evidence.
+    formal = re.search(r'(?im)^[ \t]*(?:DATE|DOCKETS?)[ \t]*:', header)
+    if formal:
+        for label in CITATION.finditer(header):
+            following = HEADER_FIELD.search(header, label.end())
+            stop = following.start() if following else len(header)
+            block = header[label.end():stop]
+            for key, match in _neutral_matches(block):
+                native[key] = match.group()
+                evidence.append({'citation': match.group(),
+                                 'start': start + label.end() + match.start(),
+                                 'end': start + label.end() + match.end()})
+    metadata = {key for key, _ in _neutral_matches(selected.get('citation') or '')}
+    if not native:
+        status = 'NO_VERIFIED_NATIVE_CITATION'
+    elif len(native) > 1:
+        status = 'AMBIGUOUS_NATIVE_CITATION'
+    elif len(metadata) != 1:
+        status = 'METADATA_NOT_COMPARABLE'
+    elif set(native) == metadata:
+        status = 'MATCH'
+    else:
+        status = 'MISMATCH'
+    provider = selected.get('date')
+    year = str(provider.year) if isinstance(provider, dt.date) else ''
+    return {'own_citation_checked': True,
+            'native_own_citation': ' | '.join(native[k] for k in sorted(native)),
+            'own_citation_status': status,
+            'native_citation_evidence_json': json.dumps(evidence, ensure_ascii=False),
+            'citation_provider_year_conflict': bool(year and len(metadata) == 1 and
+                                                   next(iter(metadata)).split(':')[0] != year)}
 
 
 def header_region(text):
@@ -90,12 +177,31 @@ def inspect_source(selected, court, row_index):
         reasons.append('MISSING_TEXT')
     if not citation.strip():
         reasons.append('MISSING_SOURCE_CITATION')
+    own = inspect_own_citation(selected)
+    if own['own_citation_status'] == 'MISMATCH':
+        reasons.append('SOURCE_CITATION_MISMATCH')
     return {'source_id': sid, 'source_decision_citation': sid, 'court': court,
             'corpus_row_index': row_index, 'selected_citation': citation,
             'text_field': selected.get('text_field', ''),
             'text_sha256': hashlib.sha256(text.encode('utf-8')).hexdigest(),
-            'text_characters': len(text), **resolve_date(selected),
+            'text_characters': len(text), **resolve_date(selected), **own,
+            'duplicate_text_source_count': 1, 'duplicate_text_sources': '[]',
             'source_measurable': not reasons, 'quarantine_reason': ';'.join(reasons)}
+
+
+def annotate_duplicate_texts(records):
+    """Cross-source equality is evidence for review, never authority to merge IDs."""
+    by_hash = defaultdict(set)
+    for row in records:
+        if row['text_characters']:
+            by_hash[row['text_sha256']].add(row['source_id'])
+    groups = {key: sorted(ids) for key, ids in by_hash.items() if len(ids) > 1}
+    for row in records:
+        ids = groups.get(row['text_sha256'])
+        if ids:
+            row['duplicate_text_source_count'] = len(ids)
+            row['duplicate_text_sources'] = json.dumps(ids)
+    return groups
 
 
 def _write(path, records):
@@ -124,11 +230,18 @@ def build_source_records(courts, corpus_dir, text_policy, output,
             for i, raw in enumerate(batch.to_pylist(), offset):
                 records.append(inspect_source(select_record(raw, text_policy), court, i))
             offset += batch.num_rows
+    duplicate_groups = annotate_duplicate_texts(records)
     _write(output / 'source_records.csv', records)
     anomalies = [r for r in records if not r['source_measurable'] or
                  r['date_conflict_status'] in {'YEAR_CONFLICT', 'DATE_CONFLICT'} or
-                 r['native_date_status'] in {'AMBIGUOUS_NATIVE_DATES', 'INVALID_NATIVE_DATE'}]
+                 r['native_date_status'] in {'AMBIGUOUS_NATIVE_DATES', 'INVALID_NATIVE_DATE'} or
+                 r['own_citation_status'] in {'MISMATCH', 'AMBIGUOUS_NATIVE_CITATION'} or
+                 r['citation_provider_year_conflict'] or r['duplicate_text_source_count'] > 1]
     _write(output / 'source_anomalies.csv', anomalies)
+    _write(output / 'own_citation_mismatches.csv',
+           [r for r in records if r['own_citation_status'] == 'MISMATCH'])
+    (output / 'duplicate_text_groups.json').write_text(
+        json.dumps(duplicate_groups, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     by_court = defaultdict(Counter)
     for r in records:
         count = by_court[r['court']]
@@ -138,10 +251,15 @@ def build_source_records(courts, corpus_dir, text_policy, output,
         count['year_changed'] += r['source_decision_year'] != r['provider_decision_year']
         count['native_date_' + r['native_date_status']] += 1
         count['date_' + r['date_conflict_status']] += 1
+        count['own_citation_checked'] += r['own_citation_checked']
+        count['own_citation_' + r['own_citation_status']] += 1
+        count['duplicate_text_rows'] += r['duplicate_text_source_count'] > 1
     summary = {'schema_version': VERSION, 'courts': list(courts),
                'text_policy': text_policy, 'corpus_dir': str(Path(corpus_dir).resolve()),
                'batch_size': batch_size, 'limit_batches': limit_batches,
                'rows': len(records), 'anomaly_rows': len(anomalies),
+               'own_citation_checked': sum(r['own_citation_checked'] for r in records),
+               'duplicate_text_groups': len(duplicate_groups),
                'by_court': dict(by_court)}
     (output / 'summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=2) + '\n',
                                        encoding='utf-8')
