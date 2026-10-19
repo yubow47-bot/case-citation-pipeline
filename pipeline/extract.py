@@ -63,6 +63,7 @@ FALLBACK_SHAPE = "shape_paren_year_abbr_page"
 
 
 from corpus_fields import POLICY_EN, POLICIES, projection, select_record
+from source_integrity import resolve_date
 COLUMNS = ["citation_en", "document_date_en", "unofficial_text_en"]   # Legacy policy
 COURTS = tuple(c for c in os.environ.get("PIPELINE_COURTS", "SCC,ONCA,BCCA").split(",") if c)  # 2026-09-18 用户裁定 BCCA 并入主线语料范围；PIPELINE_COURTS 仍可覆盖（临时/实验用）
 
@@ -516,7 +517,7 @@ def run_corpus(court, out_root, batch_size=500, year_from=None,
                 continue
             if not cite.strip():
                 raise ValueError('Source text has no source citation: %s row %d' % (court,doc_index))
-            year = decision_year(date)
+            year = resolve_date(selected)['source_decision_year']
             if year_from and year and int(year) < year_from:
                 continue                                    # §7.6 显式过滤
             stats["docs_extracted"] += 1
