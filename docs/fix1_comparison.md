@@ -34,3 +34,7 @@ python tools/fix1_baseline/b2_parallel_run_splits.py --reference-root $paperRoot
 ```
 
 Use the same arguments for b1, b3 and b4. The original saved Run B b1–b4 values remain historical references; rerunning the local adaptations on Run B provides the source-conditioned-mapping check. Differences from saved diagnostics must be explained. b4 labels are reused from the frozen sample and are not a new independent review. The C3 native-locator difference-reading package remains a separate deliverable.
+
+`top20_changes.csv` compares exact member-and-source signatures. A merge or changed supporting-source set changes that signature: the output records membership-signature changes, not established case entries/exits. Use C3 stable-overlap mappings if case continuity or rank movement is reported.
+
+After a new comparison completes, `python -B tools/fix1_zone_views.py --comparison-dir <D-comparison-directory> --out <new-D-json-path>` supplements SCC with all links, without-own-history and without-headnote-only views. Every view retains the same measurable source denominator, including zero-edge sources. Only `zone_profile=headnote_only` is excluded in the third view; unknown zones remain. The first two N/E/K/O totals must match the main comparison. Old schemas are marked unavailable and no old/new delta is invented. These mechanical counts do not repair or supersede W2's failed seed-position recall gate.
