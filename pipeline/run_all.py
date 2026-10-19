@@ -42,12 +42,12 @@ ACTIVE_RUNNER = None
 # 不再声称沿用 v1.4（约束十）。
 SCHEMA_VERSIONS = {
     "extract_legacy_kept_superseded": "v1.4 (frozen, diagnostic only)",
-    "extract_candidates": "candidates-2.3 + structural suffix annotation spans; explicit English/French fallback",
+    "extract_candidates": "candidates-2.4 + native decision year and bounded following context",
     "classify": "10 + source-verified compound locator and document zones",
     "merge": "10 + in-source arbitration, identity keys v2, bound parallel runs",
-    "decide": "16 (country assessment independent of identity support; guarded co-printed runs)",
+    "decide": "17 (conflicted-key guards, ruling uncertainty and source quarantine)",
     "select": "12 (full-data default; optional frequency profiles)",
-    "edges": "3 (member country independent of identity support; history and zone annotations)",
+    "edges": "4 (positive mention provenance; separate source quarantine audit)",
     # #88/#89：run 级全局判决登记簿（merge 之后、decide 之前生成）
     "registry": "3 (native English/French metadata/header proof; canonical source identity)",
     "source_integrity": "1 (native date, source binding, measurable-source disposition)",
@@ -441,7 +441,7 @@ def run_downstream(r):
         # PROBLEMS #105：判决自己印的引证，只用于剔自引（与笔误闸的登记簿无关，总是传）
         cmd += ["--own-citations", own_citations_file, "--corpus-dir", corpus_dir]
         source_records = os.path.join(args.out, "source_integrity", "source_records.csv")
-        if os.path.isfile(source_records):
+        if os.path.isfile(source_records) or os.path.isfile(source_records + '.gz'):
             cmd += ["--source-records", source_records]
         # Every court consumes the global registry, including the main line.
         cmd += ["--registry", registry_file, "--registry-gate", args.registry_gate,
