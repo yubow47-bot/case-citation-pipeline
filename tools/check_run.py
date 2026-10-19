@@ -214,9 +214,14 @@ class RunCheck:
         supports = Counter()
         edge_fields = ("source_decision", "resolved_cited_case", "foreign_status", "edge_support",
                        "origin_country", "origin_evidence_ids", "group_origin_status",
-                       "group_origin_country", "group_foreign_status", "distinct_decisions_count", "identity_status")
+                       "group_origin_country", "group_foreign_status", "distinct_decisions_count", "identity_status",
+                       "mention_count", "mention_detail_key")
         for row in self.rows("edges/citation_edges.csv", edge_fields):
             pair = (row["source_decision"], row["resolved_cited_case"])
+            if not str(row.get("mention_count", "")).isdigit() or int(row["mention_count"]) <= 0:
+                totals["edge_without_positive_mentions"] += 1
+            if not row.get("mention_detail_key", "").strip():
+                totals["edge_without_mention_provenance"] += 1
             if pair in edges:
                 totals["duplicate_edges"] += 1
             edges[pair] = row_digest(row)
@@ -279,7 +284,8 @@ class RunCheck:
         for code in ("duplicate_effective", "invalid_effective_status", "invalid_effective_reference", "duplicate_edges",
                      "edge_group_missing", "edge_group_disagreement", "heuristic_origin_leak", "invalid_edge_support",
                      "supported_origin_mismatch", "edge_identity_support_mismatch", "edge_identity_label_mismatch", "invalid_foreign_status",
-                     "foreign_without_support", "self_citation_reintroduced", "duplicate_self_view", "self_view_reason_mismatch"):
+                     "foreign_without_support", "self_citation_reintroduced", "duplicate_self_view", "self_view_reason_mismatch",
+                     "edge_without_positive_mentions", "edge_without_mention_provenance"):
             if totals[code]:
                 self.issue("error", code, "Effective membership/edge evidence contract violated", totals[code])
         actual = dict(edges_total=sum(statuses.values()), edges_foreign=statuses["FOREIGN"],

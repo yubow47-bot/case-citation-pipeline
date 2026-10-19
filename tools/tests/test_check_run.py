@@ -44,6 +44,7 @@ class RunCheckTests(unittest.TestCase):
                            edge_support="supported" if g == "g1" else "heuristic_only",
                            identity_status="anchor" if g == "g1" else "cocitation_candidate",
                            origin_evidence_ids="e1" if g == "g1" else "", mention_count="1",
+                           mention_detail_key="SCC|2001||scc||1",
                            distinct_decisions_count="2" if g == "g1" else "1", case_name_modal="Example")
                       for s, g in (("s1", "g1"), ("s2", "g1"), ("s1", "g2"))]
         self.write_rows("edges/citation_edges.csv", self.edges)
@@ -84,6 +85,12 @@ class RunCheckTests(unittest.TestCase):
         self.write_rows("edges/citation_edges.csv", self.edges)
         _, codes = self.codes()
         self.assertTrue({"effective_without_edge", "edge_without_effective"} <= codes)
+
+    def test_zero_mentions_and_empty_provenance_are_rejected(self):
+        self.edges[0].update(mention_count="0", mention_detail_key="")
+        self.write_rows("edges/citation_edges.csv", self.edges)
+        _, codes = self.codes()
+        self.assertTrue({"edge_without_positive_mentions", "edge_without_mention_provenance"} <= codes)
 
     def test_self_citation_reintroduced(self):
         self.edges[0]["source_decision"] = "s0"

@@ -130,13 +130,16 @@ def main():
     mention_zones = defaultdict(list)
     mention_edges = defaultdict(list)
     stats = Counter()
+    for court in sorted({court for court, _ in row2group}):
+        # A missing file cannot mean that every member had zero mentions.
+        resolve(os.path.join(a.merge_out, court, "mentions_candidates.csv"))
     for court in sorted(d for d in os.listdir(a.merge_out)
                         if os.path.isdir(os.path.join(a.merge_out, d))):
         path = os.path.join(a.merge_out, court, "mentions_candidates.csv")
         try:
             resolve(path)
         except FileNotFoundError:
-            continue
+            raise ValueError("Missing mention provenance: " + path)
         with open_csv(path) as f:
             for m in csv.DictReader(f):
                 stats["mentions_scanned"] += 1
@@ -144,8 +147,8 @@ def main():
                     continue
                 gid = row2group.get((court, m["merge_key"]))
                 if gid is None:
-                    stats["mentions_without_group"] += 1
-                    continue
+                    raise ValueError("Counted mention has no decided member: "
+                                     + court + "|" + m["merge_key"])
                 mention_edges[(m["source_decision_citation"], gid)].append(
                     "%s|%s" % (court, m["merge_key"]))
                 mention_zones[(m["source_decision_citation"], gid)].append(m.get("zone") or "unknown")
@@ -159,8 +162,7 @@ def main():
             gid = e["merged_group_id"]
             g = group_attr.get(gid)
             if g is None:
-                stats["effective_rows_without_group"] += 1
-                continue
+                raise ValueError("Effective source has no decided group: " + gid)
             if e["status"] != "counted":
                 self_excluded.append({
                     "source_decision": e["source_decision"],
@@ -175,6 +177,9 @@ def main():
             per_group_counted[gid] += 1
             supported = basis_of(e["identity_status"])
             mkey = (e["source_decision"], gid)
+            if not mention_edges.get(mkey):
+                raise ValueError("Effective link has no positive mention provenance: "
+                                 + repr(mkey))
             observations = [member_origin[k] for k in set(mention_edges.get(mkey, []))
                             if k in member_origin]
             foreign_status, country, origin_basis, origin_ids = origin_for_edge(
