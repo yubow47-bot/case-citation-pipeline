@@ -428,7 +428,7 @@ def run_downstream(r):
     def decide_cmd(court_args):
         cmd = [os.path.join("pipeline", "decide.py")] + court_args
         # PROBLEMS #105：判决自己印的引证，只用于剔自引（与笔误闸的登记簿无关，总是传）
-        cmd += ["--own-citations", own_citations_file]
+        cmd += ["--own-citations", own_citations_file, "--corpus-dir", corpus_dir]
         # Every court consumes the global registry, including the main line.
         cmd += ["--registry", registry_file, "--registry-gate", args.registry_gate,
                 "--parallel-min-sources", str(getattr(args, "parallel_min_sources", 1))]

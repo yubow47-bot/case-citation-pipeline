@@ -10,6 +10,7 @@ import copy
 import csv
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 
@@ -54,7 +55,7 @@ def _native_row(path, index, columns):
     raise ValueError('Pair separation corpus row is outside the source')
 
 
-def load_pair_separations(path=None, root=None, keys=None):
+def load_pair_separations(path=None, root=None, keys=None, corpus_dir=None):
     """Return verified negative facts, failing closed on missing/stale provenance.
 
     A repository predating the optional table has no reviewed pair facts. An
@@ -63,7 +64,12 @@ def load_pair_separations(path=None, root=None, keys=None):
     Source byte hashes are checked on every call. Only native Parquet parsing
     and citation binding are cached for identical table and source bytes.
     """
+    # The policy table belongs to the checkout; native proofs belong to the
+    # explicitly selected run corpus. Never silently substitute a stale copy.
+    if corpus_dir is None and root is None:
+        corpus_dir = os.environ.get('PIPELINE_CORPUS_DIR')
     root = Path(root or ROOT).resolve()
+    corpus = Path(corpus_dir).resolve() if corpus_dir else root / 'corpus'
     explicit = path is not None
     path = Path(path) if explicit else root / 'decisions/identity_pair_separations.csv'
     if not path.is_file():
@@ -126,7 +132,7 @@ def load_pair_separations(path=None, root=None, keys=None):
                     or any(not re.fullmatch(r'[0-9a-f]{64}', proof[k]) for k in
                            ('corpus_sha256', 'text_sha256', 'span_sha256'))):
                 raise ValueError('Pair separation right source proof is malformed')
-            source_path = root / proof['source_corpus']
+            source_path = corpus / (proof['source_court'] + '.parquet')
             if not source_path.is_file() or source_path.is_symlink():
                 raise ValueError('Pair separation source corpus is missing or linked')
             source_paths.add(source_path)
@@ -155,7 +161,7 @@ def load_pair_separations(path=None, root=None, keys=None):
         classifier = Classifier(tables, Counter())
         for side in ('left', 'right'):
             proof = row if side == 'left' else right_proof
-            source_path = root / proof['source_corpus']
+            source_path = corpus / (proof['source_court'] + '.parquet')
             if digests[source_path] != proof['corpus_sha256']:
                 raise ValueError('Pair separation source corpus hash changed')
             locale = proof['text_field'].rsplit('_', 1)[1]

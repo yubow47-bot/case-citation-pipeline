@@ -980,6 +980,8 @@ def main():
                     help="全局判决登记簿（#88/#89）：<run>/registry/"
                          "decision_registry.csv。不传 = 空登记簿 = 行为不变；"
                          "**只授权笔误闸使用**（规格 2.3）")
+    ap.add_argument("--corpus-dir", default=None,
+                    help="Native corpus used to validate source-bound separation facts")
     ap.add_argument("--own-citations", default=None,
                     help="判决自己印的引证表（<run>/registry/decision_own_citations.csv）："
                          "剔自引；仅新qualified metadata/header证据可连接平行身份；旧四列只剔自引")
@@ -1064,7 +1066,8 @@ def main():
 
     stats["input_rows"] = len(rows)
     in_occ_total = sum(key_occ(r) for r in rows)
-    pair_separations = load_pair_separations(keys={r['merge_key'] for r in rows})
+    pair_separations = load_pair_separations(keys={r['merge_key'] for r in rows},
+                                             corpus_dir=a.corpus_dir)
     stats["verified_pair_separations_loaded"] = len(pair_separations)
     trace = ConstraintLedger(EvidenceSnapshot(rows, did_idx, prefix, registry,
                                              own_cites, separations, history, pair_separations, parallels), a.output)

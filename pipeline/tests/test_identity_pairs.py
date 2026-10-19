@@ -73,6 +73,18 @@ class PairSourceTests(unittest.TestCase):
         result[0]['left_merge_key'] = 'forged'
         self.assertEqual(self.load()[0]['left_merge_key'], self.row['left_merge_key'])
 
+    def test_explicit_corpus_preserves_binding_without_overwriting_checkout(self):
+        self.write()
+        external = self.root / 'selected_corpus'
+        external.mkdir()
+        (external / self.corpus.name).write_bytes(self.corpus.read_bytes())
+        self.corpus.write_bytes(b'stale local corpus')
+        result = pairs.load_pair_separations(self.path, self.root, corpus_dir=external)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(self.corpus.read_bytes(), b'stale local corpus')
+        with self.assertRaisesRegex(ValueError, 'hash changed'):
+            self.load()
+
     def test_rehashed_false_key_is_not_native_evidence(self):
         self.row['right_merge_key'] = '2009||carswellont||7020'
         self.write()
