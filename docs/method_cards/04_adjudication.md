@@ -1,5 +1,15 @@
 # Layer 4: adjudication
 
+## Engineering fix v1 additions (2026-10-19)
+
+Adjudication schema 16 accepts validated `--parallel-runs` evidence. `co_printed_run` is a positive, source-bound identity basis separate from the unchanged missing-name/year restriction on heuristic matching. The production runner supplies every court's native run ledger to its court round and all such ledgers to the cross-court round. Explicit direct calls omitting this input retain a recorded legacy path.
+
+`identity_parallel.py` checks each proposed union against the entire existing components: persistent mixed/held identity state, conflicting printed courts, qualified court and reporter scope, aliases and complete identifiers, distinct corpus judgment roots, a maximum one-year printed span, curated negative pairs and source-bound appeal-history exclusions. Rejection reasons and accepted proofs enter the identity trace. Only actual run participants gain `co_printed_run_ids`; heuristic passengers do not gain this identity basis. Conflicting court designations are also excluded from the older name/year route.
+
+`--parallel-min-sources` defaults to one distinct source judgment. The 42-seed diagnosis established missing year or name as the principal barrier, but does not estimate merge precision. The manifest reports accepted evidence sets, component unions and their single-source subsets. Population adoption requires the separately specified 150-pair blind review; passing fixtures is not that review.
+
+`group_deciding_court`, its status and evidence JSON combine only eligible identity members' positive court evidence from verified neutral codes, exclusive reporters and printed designations. One compatible token yields `DETERMINED`; contradictory evidence yields `CONFLICT`; absent evidence yields `UNSUPPORTED`. There is no vote and no keyword-based court or origin inference. The older observed-label audit columns remain available with their narrower meaning.
+
 Current operational rules were extended on 2026-10-15. The dated historical measurements below remain historical; the first reliable release is recorded in `audit/findings/project_review_20261014/release_summary_final.json` and subsequent identity review in `audit/findings/project_review_20261015/release_summary_final.json`.
 
 ## Current evidence contracts (2026-10-16)

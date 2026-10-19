@@ -96,6 +96,7 @@ CAND_SCHEMA = [
     "trailing_paren",
     # R4（D1）：法院标注零宽前瞻捕获（reporter 形状；可空）——原文原样，不解释；
     #   含义由 classify 对 decisions/court_designations.csv 精确匹配得出
+    "suffix_annotations_json",
     "court_designation_raw",
     "court_designation_span",
     # 同一段落两种读法的区分签名
@@ -221,6 +222,7 @@ def extract_candidates(text, sdc, year, row_index, court, stats=None):
     （兜底语义，见 FALLBACK_SHAPE 注）。返回 (cands, blocked_by_guard)。
     stats 给出时按两档累加 fallback_suppressed_structural /
     fallback_suppressed_overlap（仅在实际抑制时写入）。"""
+    from suffix_annotations import capture_suffix
     cands = []
     blocked = 0
     for name, rx in SHAPES:
@@ -268,6 +270,7 @@ def extract_candidates(text, sdc, year, row_index, court, stats=None):
                 "trailing_paren": g.get("trailing_paren") or "",
                 # R4（D1）：法院标注（零宽前瞻捕获；reporter 形状）。span =
                 # 标注原文的绝对偏移（捕获组真实位置，含前瞻内）；未捕获为 -1:-1
+                "suffix_annotations_json": json.dumps(capture_suffix(text, end), ensure_ascii=False),
                 "court_designation_raw": g.get("court_designation") or "",
                 "court_designation_span": "%d:%d" % m.span("court_designation")
                                           if "court_designation" in rx.groupindex
@@ -655,7 +658,7 @@ def write_manifest(out_root, run_stats, merge_counts, args):
                           "+ #21 fallback shape_paren_year_abbr_page (fallback-only: "
                           "structural predicate + overlap suppression at generation; "
                           "guards tested on real typography, see r21_fix_report)",
-        "candidates_schema": "candidates-2.2 (candidates-2.1 + court_designation "
+        "candidates_schema": "candidates-2.3 (structural suffix annotations + court_designation "
                              "zero-width lookahead capture on reporter shapes; "
                              "legacy kept/superseded retained as diagnostic only)",
         "params": {"batch_size": args.batch_size,

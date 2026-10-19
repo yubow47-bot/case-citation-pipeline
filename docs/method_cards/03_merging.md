@@ -1,5 +1,13 @@
 # Layer 3: merging
 
+## Engineering fix v1 additions (2026-10-19)
+
+Merge schema 10 emits `parallel_runs.csv` after arbitration and key normalization. A run consists of adjacent counted candidates in one source document, separated by a comma and optionally up to two already classified service/court suffixes. Prose, semicolons, pinpoints in the gap and history connectors break the run. This producer reads row fields only, including classified suffix evidence; it loads no decision table and makes no identity determination.
+
+Every run member retains source ID, corpus row, instance ID, ordinal, counted key, candidate ID, native offsets, raw text and preceding gap. The instance ID binds the source and first/last candidate. The adjudication loader independently checks exact counted membership, adjacency, classified text and suffix proofs, then binds logical CSV hashes of all three input ledgers. These hashes remain valid after gzip compaction. The existing history-instance output remains a separate negative identity input.
+
+`mentions_candidates.csv` preserves the classification layer's `zone` and `document_zone_evidence_id` for counted and uncounted rows. Merge never removes a row because of its zone. Contradictory recognized court labels are retained as `court_designation_conflict`, without a majority vote.
+
 ## What this layer does
 
 **Cross-row statistics: counting, voting, folding.** It makes no cross-judgment judgements and **loads no file under `decisions/`** (this is the boundary with the classification layer; the merge layer reads only the fields in the rows).

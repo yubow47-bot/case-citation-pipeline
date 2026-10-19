@@ -107,7 +107,7 @@ NEW_COLUMNS = ["citation_kind", "abbreviation", "jurisdiction",
                "court_designation_evidence_id",
                # Verified syntax only, never jurisdiction. Merge consumes the
                # row proof without reading a source-policy table itself.
-               "compound_locator_rule_id"]
+               "compound_locator_rule_id", "parallel_suffix_annotations_json"]
 
 # 年份形状（4 位数字），用于 year/vol 同形判定
 _YEAR_SHAPE_RE = re.compile(r"^(?:1[6-9]|20)\d{2}$")
@@ -432,7 +432,8 @@ def load_runtime_tables():
                   non_citation_words=load_non_citation_words(), non_case_sources=load_non_case_sources(),
                   volume_system=load_volume_systems(), court_designations=load_court_designations(),
                   court_designation_reporter_scope=load_court_designation_reporter_scope(),
-                  reporter_compound_locators=load_compound_locator_rows())
+                  reporter_compound_locators=load_compound_locator_rows(),
+                  citation_service_labels=load_table("citation_service_labels.csv"))
     return tables
 
 
@@ -1231,6 +1232,8 @@ class Classifier(object):
         # R4（D1）：法院标注决策表（封闭集合，精确匹配）
         self.court_desig = tables.get("court_designations") or {}
         self.court_desig_scope = tables.get("court_designation_reporter_scope") or {}
+        self.service_labels = {nk(r["printed_label"]): r for r in tables.get("citation_service_labels", [])
+                               if r.get("source") and r.get("source_locator")}
         self.compound_locators = tables.get("reporter_compound_locators") or []
         self.stats = stats
 
@@ -1599,11 +1602,17 @@ class Classifier(object):
             row["court_designation_status"] = st
             row["observed_deciding_court"] = oc
             row["court_designation_evidence_id"] = ev
-            if st:
-                self.stats["court_designation_" + st] += 1
-                if st == "recognized":
-                    self.stats["court_designation_court_" +
-                               oc.replace(" ", "_")] += 1
+        from suffix_annotations import classify_suffix
+        classify_suffix(row, lambda raw: classify_court_designation(raw, self.court_desig,
+                        self.court_desig_scope, row.get("abbreviation") or ""),
+                        self.service_labels, nk)
+        # Count the final designation after the structural suffix evidence is classified.
+        st = row.get("court_designation_status") or ""
+        if st:
+            self.stats["court_designation_" + st] += 1
+            if st == "recognized":
+                self.stats["court_designation_court_" +
+                           row["observed_deciding_court"].replace(" ", "_")] += 1
         # PROBLEMS #13/#54：判决头部必印自身引证，抽取层照单全收。本行抽出串 == 本判决
         # 自身引证（source_decision_citation 即「法院_nk(citation_en)」）即自引。它是真
         # 引证，故不进 rejected_reason（§8.3 要求「不是引证」与其他含义分开），只打标记；
@@ -1654,11 +1663,15 @@ class Classifier(object):
 
 
 def main():
+    from document_zones import build_index, position_zone
+    from corpus_fields import POLICIES, POLICY_FALLBACK
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--court", required=True,
                     help="法院前缀，按 source_decision_citation 的 {COURT}_ 过滤（§7.3）")
     ap.add_argument("--input", required=True)
     ap.add_argument("--output", required=True)
+    ap.add_argument("--corpus", help="Native parquet for table-driven document zones")
+    ap.add_argument("--text-policy", choices=POLICIES, default=POLICY_FALLBACK)
     args = ap.parse_args()
 
     stats = Counter()
@@ -1666,13 +1679,14 @@ def main():
     clf = Classifier(tables, stats)
 
     os.makedirs(args.output, exist_ok=True)
+    zone_index = build_index(args.corpus, args.court, args.text_policy, args.output) if args.corpus else {}
     out_path = os.path.join(args.output, "classified.csv")
     tmp = out_path + ".tmp"
     prefix = args.court + "_"
 
     with open(args.input, encoding="utf-8", newline="") as fin:
         reader = csv.DictReader(fin)
-        fieldnames = list(reader.fieldnames) + NEW_COLUMNS
+        fieldnames = list(reader.fieldnames) + NEW_COLUMNS + ["zone", "document_zone_evidence_id"]
         with open(tmp, "w", encoding="utf-8", newline="") as fout:
             w = csv.DictWriter(fout, fieldnames=fieldnames, extrasaction="ignore")
             w.writeheader()
@@ -1681,11 +1695,23 @@ def main():
                 if not (row.get("source_decision_citation") or "").startswith(prefix):
                     continue
                 stats["court_rows"] += 1
+                row["zone"] = "unknown"
+                row["document_zone_evidence_id"] = ""
+                if args.corpus:
+                    sid, boundary = zone_index[int(row["corpus_row_index"])]
+                    if sid != row["source_decision_citation"]:
+                        raise ValueError("Document-zone corpus/source mismatch")
+                    row["zone"] = position_zone(boundary, int(row["match_start_offset"]),
+                                                int(row["match_end_offset"]))
+                    row["document_zone_evidence_id"] = "document_zones:%s:%s" % (args.court, row["corpus_row_index"])
+                stats["zone_" + row["zone"]] += 1
                 w.writerow(clf.run_row(row))
     os.replace(tmp, out_path)
 
     manifest = {
-        "schema_version": 9,
+        "schema_version": 10,
+        "document_zones": "native_corpus" if args.corpus else "legacy_unknown",
+        "text_policy": args.text_policy,
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
         "court": args.court,
         "input": _relpath(args.input),

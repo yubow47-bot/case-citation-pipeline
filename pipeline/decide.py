@@ -141,6 +141,7 @@ from artifacts import (open_csv, resolve as resolve_artifact,
 from identity_constraints import ConstraintLedger
 from identity_evidence import EvidenceSnapshot
 from identity_pairs import load_pair_separations
+from parallel_runs import load_parallel_runs
 from identity_evidence import (
     load_identity_separations,
     load_case_origin,
@@ -610,7 +611,7 @@ def _scope_origin(row, scope_idx, stats):
 
 
 # ---- R2-1/R2-9：身份基础、组聚合、有效来源关联 ----
-BASIS_RANK = {"anchor": 6, "singleton": 6, "document_alias": 6, "same_citation": 5,
+BASIS_RANK = {"anchor": 6, "singleton": 6, "document_alias": 6, "co_printed_run": 5, "same_citation": 5,
               "anchor_variant_bilingual": 4, "anchor_variant_typo_number": 3,
               "anchor_variant_typo_year": 3,
               "name_year": 2, "cocitation": 1, "unanchored": 1}
@@ -621,7 +622,7 @@ BASIS_RANK = {"anchor": 6, "singleton": 6, "document_alias": 6, "same_citation":
 # These are identity/court propagation rules. Country assessment uses all member
 # observations independently; it does not upgrade an identity link to proved.
 ELIGIBLE_BASES = frozenset(("anchor", "singleton", "same_citation",
-                            "anchor_variant_bilingual", "document_alias"))
+                            "anchor_variant_bilingual", "document_alias", "co_printed_run"))
 
 
 
@@ -724,17 +725,17 @@ def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin
                scope_idx=None, reporter_idx=None, registry=None, typo_over=None,
                holdout=None,
                gate="literal", own_cites=None, identity_separations=None, trace=None,
-               history=None, pair_separations=None):
+               history=None, pair_separations=None, parallels=None, parallel_min_sources=1):
     if trace is None:
         if pair_separations is None:
             pair_separations = load_pair_separations(
                 keys={r['merge_key'] for r in rows})
         trace = ConstraintLedger(EvidenceSnapshot(rows, did_idx, prefix, registry,
                                                   own_cites, identity_separations, history,
-                                                  pair_separations))
+                                                  pair_separations, parallels))
     clusters, start = solve_identity(rows, did_idx, prefix, stats, registry,
                                     typo_over, holdout, gate, own_cites,
-                                    identity_separations, trace, history)
+                                    identity_separations, trace, history, parallels, parallel_min_sources)
 
     out, out_ids, eff_rows = [], [], []
     for gseq, (members, reason, seq) in enumerate(clusters):
@@ -913,6 +914,24 @@ def add_court_designation_columns(group_rows, stats):
     if conflict:
         stats["groups_court_designation_conflict"] += 1
 
+    # Preserve the observed-label column above. Adjudicated court tokens also
+    # include verified neutral codes and exclusive reporter court evidence.
+    qualified = [m for m in group_rows if m.get("identity_basis") in ELIGIBLE_BASES]
+    proof = {row_key(m): m.get("identity_court_evidence", "") for m in qualified
+             if m.get("identity_court_evidence")}
+    tokens = {part.split("=", 1)[0] for value in proof.values()
+              for part in value.split("|") if part.startswith("court:") and "=" in part}
+    contradictory = len(tokens) > 1 or any(
+        m.get("identity_court_conflict") == "true" or
+        m.get("court_designation_conflict") == "true" for m in qualified)
+    status = "CONFLICT" if contradictory else "DETERMINED" if len(tokens) == 1 else "UNSUPPORTED"
+    token = next(iter(tokens)) if status == "DETERMINED" else ""
+    for m in group_rows:
+        m["group_deciding_court"] = token
+        m["group_deciding_court_status"] = status
+        m["group_deciding_court_evidence"] = json.dumps(proof, sort_keys=True)
+    stats["groups_deciding_court_" + status.lower()] += 1
+
 
 def add_peer_column(out, stats):
     """PROBLEMS #62：给每个组填 `same_name_near_year_peers`——同名（nk 后相等）、
@@ -986,12 +1005,19 @@ def main():
     ap.add_argument("--history-input-mode", choices=("required", "legacy-none"),
                     default="required",
                     help="required for current runs; explicitly use legacy-none only for pre-history runs")
+    ap.add_argument("--parallel-runs", nargs="+", default=None,
+                    help="Bound merge-stage printed parallel-run evidence; omission is legacy-none")
+    ap.add_argument("--parallel-min-sources", type=int, default=1)
     ap.add_argument("--output", required=True)
     a = ap.parse_args()
 
     stats = Counter()
     history = load_history_instances(a.history_pairs, a.history_input_mode)
     stats["history_instances_loaded"] = len(history)
+    if a.parallel_min_sources < 1:
+        ap.error("parallel-min-sources must be positive")
+    parallels = load_parallel_runs(a.parallel_runs)
+    stats["parallel_instances_loaded"] = len(parallels)
     registry = load_registry(a.registry)
     own_cites = load_own_citations(a.own_citations)
     separations = load_identity_separations()
@@ -1041,13 +1067,13 @@ def main():
     pair_separations = load_pair_separations(keys={r['merge_key'] for r in rows})
     stats["verified_pair_separations_loaded"] = len(pair_separations)
     trace = ConstraintLedger(EvidenceSnapshot(rows, did_idx, prefix, registry,
-                                             own_cites, separations, history, pair_separations), a.output)
+                                             own_cites, separations, history, pair_separations, parallels), a.output)
     out, out_ids, eff_rows = adjudicate(rows, did_idx, origin_idx, folded_idx,
                                         prefix, stats, redo, scope_idx,
                                         reporter_idx, registry, typo_over,
                                         holdout,
                                         a.registry_gate, own_cites, separations, trace,
-                                        history, pair_separations)
+                                        history, pair_separations, parallels, a.parallel_min_sources)
     trace_manifest = trace.close()
     # PROBLEMS #62：同名、年份相差 ≤1 的同级组。只在跨法院轮算——跨院合并跑完才是
     # 最终分组；院内轮该列留空（它不是产品列，选取层读的是跨院产出）
@@ -1145,7 +1171,10 @@ def main():
         "mode": "cross_court" if a.cross_court else "in_court",
         "label": label,
         "spec_section": "10",
-        "schema_version": 15,
+        "schema_version": 16,
+        "parallel_input_mode": "required" if a.parallel_runs else "legacy-none",
+        "parallel_runs_files": a.parallel_runs or [],
+        "parallel_min_sources": a.parallel_min_sources,
         "identity_trace": trace_manifest,
         "document_alias_policy": "Qualified source-unique metadata/header proof only; whole-component neutral/vendor/court cannot-links remain enforced.",
         "registry_file": a.registry or "",

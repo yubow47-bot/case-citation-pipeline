@@ -1,5 +1,15 @@
 # Decision tables: what to know before adding rows
 
+## Engineering fix v1 additions (2026-10-19)
+
+`document_zone_markers.csv` stores court-specific printed heading and paragraph patterns with the exact columns `court, marker, zone_role, source, source_locator`. Marker roles describe document structure only. Source locators identify the native corpus inventory used to establish each format. Missing or contradictory structure remains unknown.
+
+`citation_service_labels.csv` classifies printed service labels such as QL and CanLII, with authority and locator fields. It authorizes their treatment as suffix annotations; it supplies no jurisdiction or deciding court. The extraction layer contains no service/court abbreviation vocabulary.
+
+Court-designation additions and reporter-qualified scope rows cite the Department of Justice abbreviation list, UBC's legal citation guide and official court histories where needed. Generic C.A., T.D., S.C.J., Q.B. and F.C.A. remain ambiguous without sourced qualifying evidence. A reporter's publication location alone is not a deciding-court fact. Canonical designation names and sourced code bridges are consumed consistently by `CourtEvidence`.
+
+New rows distinguish source verification by Codex from the pending independent repair audit. Counts in the older dated inventory below are historical; the current files and run input fingerprint govern the new execution. Table coverage does not establish population accuracy.
+
 ## General rules
 
 - Directory `decisions/`, **all committed to git**; the only irreproducible thing in the project. `data/` can be deleted wholesale and rebuilt; these tables cannot.

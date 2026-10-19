@@ -33,6 +33,7 @@ ALLOW_CHANGED = frozenset({
     'pipeline/decide.py', 'pipeline/registry.py', 'pipeline/registry_report.py',
     'pipeline/edges.py', 'pipeline/coverage_report.py', 'pipeline/run_all.py', 'pipeline/replay_decide.py',
     'pipeline/identity_pairs.py', 'pipeline/reporter_identity_scope.py',
+    'pipeline/identity_parallel.py',
     'tools/check_run.py',
     'tools/storage.py',  # Runtime capacity/deletion accounting, not upstream parsing.
     'pipeline/select_layer.py', 'select_config.yaml',  # Selection only; upstream rows unchanged.
@@ -349,6 +350,7 @@ def main(argv=None):
     parser.add_argument('--out', required=True)
     parser.add_argument('--registry-gate', default='registered', choices=('literal', 'own_or_registry', 'registered_only', 'registered'))
     parser.add_argument('--mixed-key-holdout', action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument('--parallel-min-sources', type=int, default=1)
     parser.add_argument('--compact', action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument('--storage-budget-gb', type=float, default=12)
     parser.add_argument('--copy-upstream', action='store_true',
@@ -356,6 +358,8 @@ def main(argv=None):
     parser.add_argument('--country-only', action='store_true',
                         help='Reuse sealed identities/DD and reassess unresolved countries without executing identity matching')
     args = parser.parse_args(argv)
+    if args.parallel_min_sources < 1:
+        parser.error('parallel-min-sources must be positive')
     if not math.isfinite(args.storage_budget_gb) or args.storage_budget_gb <= 0:
         parser.error('Storage budget must be finite and positive')
     target = run_path(args.out)

@@ -46,6 +46,15 @@ class CourtIdentityTests(unittest.TestCase):
         evidence = CourtEvidence()
         self.assertEqual(evidence.evidence(member("|10|dlr|4th|12", "reporter", citing="SCC")), {})
 
+    def test_conflicting_designations_do_not_supply_name_year_link(self):
+        anchor = member('2005||onca||23')
+        reporter = member('|10|dlr|4th|12', 'reporter')
+        reporter['court_designation_conflict'] = 'true'
+        rows = [anchor, reporter]
+        ids = {decide.row_key(r): {'S'} for r in rows}
+        self.assertEqual(len(self.cluster(rows, ids)), 2)
+        self.assertEqual(reporter['identity_court_conflict'], 'true')
+
     def test_unknown_reporter_not_split_without_positive_conflict(self):
         rows = [member("2005||scc||23"), member("|10|dlr|4th|12", "reporter")]
         ids = {decide.row_key(r): {"S"} for r in rows}

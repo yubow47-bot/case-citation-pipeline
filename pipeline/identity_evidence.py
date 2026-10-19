@@ -380,6 +380,7 @@ class CourtEvidence:
             if not (r.get("source") and r.get("source_locator")) or code not in self.known:
                 raise ValueError("Court designation code row lacks a source or a known court code")
             self.union(_court_nk(r.get("normalized_key")), code)
+            self.union(_court_nk(r.get("canonical_court")), code)
         components = defaultdict(set)
         for code in self.known:
             components[self.find(code)].add(code)
@@ -476,12 +477,13 @@ class EvidenceSnapshot:
     POLICY_FILES = ('identifier_systems.csv', 'bilingual_neutral_codes.csv',
                     'neutral_court_codes.csv', 'court_designations.csv',
                     'court_designation_codes.csv', 'court_designation_reporter_scope.csv',
+                    'citation_service_labels.csv',
                     'identity_court_scope.csv', 'identity_court_facts.csv',
                     'identity_separations.csv', 'bilingual_reporter_abbreviations.csv',
                     'reporter_identity_court_sets.csv')
 
     def __init__(self, rows, did_idx, scope, registry=None, own_cites=None,
-                 separations=None, history=None, pair_separations=None):
+                 separations=None, history=None, pair_separations=None, parallels=None):
         self.scope, self.records = scope, []
         self.evidence_ids = set()
         self.qualified_native_facts = defaultdict(set)
@@ -494,6 +496,7 @@ class EvidenceSnapshot:
         self.policy_exact = defaultdict(list)
         self.policy_cache = {}
         self.history_facts_by_instance = {}
+        self.parallel_facts_by_instance = {}
         self.bilingual_reporter_facts = {}
         self.pair_cannot_links = []
         self.reporter_scope_by_row = {}
@@ -551,6 +554,17 @@ class EvidenceSnapshot:
                              ('printed_token', 'code_en', 'code_fr', 'court_code',
                               'normalized_key', 'canonical_court', 'printed_key')} - {''}:
                     self.policy_candidates[code].append(record)
+        if parallels:
+            from parallel_runs import ParallelRuns
+            if not isinstance(parallels, ParallelRuns):
+                raise ValueError("Parallel evidence must be loaded from bound artifacts")
+            parallels.verify()
+            for iid, record in sorted(parallels.items()):
+                self.parallel_facts_by_instance[iid] = tuple(self.add(
+                    "", "", item["merge_key"], "co_printed_run",
+                    {k:v for k,v in item.items() if k != "_source_locator"},
+                    {**item["_source_locator"], "dependencies": parallels.artifacts})
+                    for item in record["records"])
         self._add_history_facts(history or {})
         self._add_pair_separation_facts(pair_separations or ())
         from identity_courts import CourtEvidence

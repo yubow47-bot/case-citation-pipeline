@@ -39,7 +39,8 @@ EDGE_FIELDS = ["source_decision", "resolved_cited_case", "foreign_status",
                "group_foreign_status", "edge_support", "identity_status",
                "origin_basis", "origin_evidence_ids", "noncore_origin_evidence",
                "mention_count", "distinct_decisions_count",
-               "case_name_modal", "mention_detail_key"]
+               "case_name_modal", "mention_detail_key", "own_case_history",
+               "zone_profile"]
 
 TENTATIVE_FIELDS = ["source_decision", "resolved_cited_case", "identity_status",
                     "group_origin_country", "group_foreign_status",
@@ -125,6 +126,8 @@ def main():
     assert bad == 0, "组级 foreign_status/origin_country 逐行不一致（%d 行）——上游违约" % bad
 
     # 逐候选提及（counted）→ (source, group) 提及数；提及细节经 mention_detail_key 回连
+    from document_zones import edge_zones
+    mention_zones = defaultdict(list)
     mention_edges = defaultdict(list)
     stats = Counter()
     for court in sorted(d for d in os.listdir(a.merge_out)
@@ -145,6 +148,7 @@ def main():
                     continue
                 mention_edges[(m["source_decision_citation"], gid)].append(
                     "%s|%s" % (court, m["merge_key"]))
+                mention_zones[(m["source_decision_citation"], gid)].append(m.get("zone") or "unknown")
                 stats["mentions_in_edges"] += 1
 
     # 有效来源关联 → 边
@@ -194,6 +198,7 @@ def main():
                 "case_name_modal": g["case_name_modal"],
                 "mention_detail_key": ";".join(sorted(set(mention_edges.get(mkey, [])))),
             }
+            row["own_case_history"], row["zone_profile"] = edge_zones(mention_zones.get(mkey, []))
             all_rows.append(row)
             if not supported and g["group_origin_status"] == "DETERMINED":
                 tentative.append({k: row[k] for k in TENTATIVE_FIELDS})
@@ -215,6 +220,9 @@ def main():
     stats["edges_supported"] = sc["supported"]
     stats["edges_heuristic_only"] = sc["heuristic_only"]
 
+    stats["edges_own_case_history"] = sum(r["own_case_history"] == "true" for r in all_rows)
+    for zone, count in Counter(r["zone_profile"] for r in all_rows).items():
+        stats["edge_zone_" + zone] = count
     os.makedirs(a.output, exist_ok=True)
     for name, fields, rows in (("citation_edges.csv", EDGE_FIELDS, all_rows),
                                ("foreign_edges.csv", EDGE_FIELDS,

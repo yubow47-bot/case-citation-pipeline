@@ -49,6 +49,7 @@ candidates 路线输出
     支持一种读法 → 归它；相持或全无支持 → 谁也不归（整组 undecided，不计数）。
     把「弃权」落成 0 计数而非 0.5/重复计，是约束四（无证据不给判定）的计数版。
 """
+from parallel_runs import FIELDS as PARALLEL_FIELDS, extract_runs
 import argparse
 import csv
 import datetime
@@ -223,7 +224,7 @@ MENTION_FIELDS = ["candidate_id", "corpus_row_index", "source_decision_citation"
                   "self_citation", "candidate_case_name",
                   # R4（D1）：法院标注（classify 识别结果，随提及带给归并层聚合）
                   "court_designation_status", "observed_deciding_court",
-                  "court_designation_evidence_id"]
+                  "court_designation_evidence_id", "zone", "document_zone_evidence_id"]
 
 SHAPE_RANK = {name: i for i, name in enumerate([
     "shape_bracket", "shape_vol_page_year", "shape_year_vol_page",
@@ -1069,6 +1070,7 @@ def run_candidates(args, stats, pool_mode=None):
     # 台账（逐候选一行，约束五：不删候选）+ 跨行聚合（只数 counted）
     mentions = []
     history = []
+    parallels = []
     key_mapping = Counter()            # (old_key, new_key) -> 候选数
     per_key_counted = defaultdict(list)
     per_key_members = defaultdict(list)
@@ -1096,10 +1098,11 @@ def run_candidates(args, stats, pool_mode=None):
                 per_key_counted[new_key].append(row)
                 doc_counted.append(row)
         history.extend(history_instances(doc_counted, stats))
+        parallels.extend(extract_runs(doc_counted, _gap_text, stats))
 
     _emit(args, stats, per_key_counted, per_key_members, mentions,
           key_mapping, pool_mode=pool_mode or getattr(args, 'name_vote_pool', 'current'),
-          history=history)
+          history=history, parallels=parallels)
 
 
 def name_vote_pool(members, pool_mode):
@@ -1134,7 +1137,7 @@ def name_vote_pool(members, pool_mode):
 
 
 def _emit(args, stats, per_key_counted, per_key_members, mentions,
-          key_mapping=None, pool_mode="current", history=None):
+          key_mapping=None, pool_mode="current", history=None, parallels=None):
     """聚合并写五张表。计数只看 counted；案名投票与自引归属用全键成员。"""
     merged, folded, decision_ids = [], [], []
     member_total = len(mentions)
@@ -1191,8 +1194,8 @@ def _emit(args, stats, per_key_counted, per_key_members, mentions,
         des_courts = sorted({m.get("observed_deciding_court") for m in counted
                              if m.get("court_designation_status") == "recognized"
                              and (m.get("observed_deciding_court") or "").strip()})
-        des_conflict = len(des_courts) > 1
-        des_court = des_courts[0] if len(des_courts) == 1 else ""
+        des_conflict = len(des_courts) > 1 or any(m.get("court_designation_status") == "conflict" for m in counted)
+        des_court = des_courts[0] if len(des_courts) == 1 and not des_conflict else ""
         des_support = sum(1 for m in counted
                           if m.get("court_designation_status") == "recognized")
         des_citing = len({m["source_decision_citation"] for m in counted
@@ -1291,7 +1294,8 @@ def _emit(args, stats, per_key_counted, per_key_members, mentions,
                                ("mentions_candidates.csv", MENTION_FIELDS, mentions),
                                ("folded_log.csv", FOLDED_FIELDS, folded),
                                ("decision_ids.csv", DECISION_FIELDS, decision_ids),
-                               ("history_pairs.csv", HISTORY_FIELDS, history)):
+                               ("history_pairs.csv", HISTORY_FIELDS, history),
+                               ("parallel_runs.csv", PARALLEL_FIELDS, parallels)):
         if rows is None:
             continue
         path = os.path.join(args.output, name)

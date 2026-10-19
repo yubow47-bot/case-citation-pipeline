@@ -1,5 +1,15 @@
 # Layer 2: classification
 
+## Engineering fix v1 additions (2026-10-19)
+
+Classification schema 10 adds two independent annotations. Neither annotation changes jurisdiction by reading prose.
+
+`extract.py` supplies bounded structural `suffix_annotations_json` with native offsets, including labels after a pinpoint, line breaks and one nested parenthesis. Classification interprets these spans through `court_designations.csv`, reporter-qualified scope rows and `citation_service_labels.csv`. A pure ordinal such as `(4th)` is a reporter-series component, not a suffix label. Conflicting recognized courts remain `conflict`; unresolved labels do not acquire a default court. `parallel_suffix_annotations_json` retains only table-classified court or service labels with evidence IDs for downstream gap checks.
+
+When `--corpus` is supplied, `document_zones.py` reads the same native text selection policy as extraction and interprets `document_zone_markers.csv`. The document index records the selected text field, text hash, marker/table evidence and unmodified offsets. Each candidate receives `zone` and `document_zone_evidence_id`. Formal delivery headings precede paragraph fallback; ambiguous paragraph order and missing reliable boundaries remain `unknown`. Citation meaning is not used to locate a boundary. Production `run_all.py` supplies the corpus and policy explicitly; a legacy direct classification call without a corpus records unknown zones.
+
+The nine-court format inventory contains 20 source documents per court. This is source-based rule development, not independent boundary validation. See `test_document_zones.py`, `test_suffix_annotations.py` and the engineering report for the distinct execution and review gates.
+
 ## What this layer does
 
 **Each row is judged independently**, looking only at the fields the row carries: what kind of citation it is, which jurisdiction it belongs to, whether it is a false positive, and what the case name is. Decision-table lookups happen in this layer; the extraction layer does none.

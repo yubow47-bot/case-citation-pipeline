@@ -1,5 +1,13 @@
 # Layer 5: selection, and the edge files
 
+## Engineering fix v1 additions (2026-10-19)
+
+Edge schema 3 adds `own_case_history` and `zone_profile` from all counted positions of each existing effective source/group link. `own_case_history=true` requires a nonempty set of positions all inside a verified `appeal_block`. `zone_profile` is `headnote_only`, `reasons_only`, `both`, or `unknown`; appeal-block positions count as headnote positions, and any unresolved position keeps the profile unknown. No edge or mention is removed by these fields. Exclusion belongs to an explicitly labeled analysis view.
+
+The pre-existing foundation `same_case_history` relation has a different identity-based definition. It is not interchangeable with this position-based flag. The engineering baseline B1 heuristic also uses a different appeal-only definition; its historical denominator must be retained and disclosed when comparing results.
+
+`co_printed_run` joins the shared `decide.ELIGIBLE_BASES` contract. It can support a link and qualified propagation only for actual participants admitted by the whole-component identity guards. Effective source membership remains exclusively controlled by adjudication; zones neither create membership nor alter selection thresholds.
+
 ## What the selection layer does
 
 **One threshold, on `distinct_decisions_count` (DD); no rows are deleted, only flagged with `kept`.**

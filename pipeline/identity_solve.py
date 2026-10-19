@@ -439,6 +439,8 @@ def cluster_same_case(rows, did_idx, stats, start=None, registry=None,
         row["identity_court_evidence"] = "|".join(
             c + "=" + ";".join(sorted(e)) for c, e in sorted(found.items()))
         row.setdefault("identity_court_conflict", "false")
+        if row.get("court_designation_conflict") == "true":
+            row["identity_court_conflict"] = "true"
         return found
     for row in rows:
         court_evidence(row)
@@ -482,7 +484,8 @@ def cluster_same_case(rows, did_idx, stats, start=None, registry=None,
         names = {nk(r.get("case_name_modal") or "") for r in members} - {""}
 
         years = {row_year(r) for r in members if row_year(r) is not None}
-        if len(names) == 1 and len(years) == 1 and len(court_tokens) <= 1:
+        conflicted = len(court_tokens) > 1 or any(r.get("identity_court_conflict") == "true" for r in members)
+        if len(names) == 1 and len(years) == 1 and not conflicted:
             name, y = next(iter(names)), next(iter(years))
             unit_keys = tuple(sorted(row_key(r) for r in members))
             for r in members:
@@ -491,7 +494,7 @@ def cluster_same_case(rows, did_idx, stats, start=None, registry=None,
         else:
             # Exact ID is enough to join its own court rows, but conflicting or
             # absent metadata supplies no name/year link to a different key.
-            reason = "identity_court_conflict" if len(court_tokens) > 1 else "identity_metadata_variants" if len(names) > 1 else ""
+            reason = "identity_court_conflict" if conflicted else "identity_metadata_variants" if len(names) > 1 else ""
             out.append((members, reason, ""))
             if len(members) > 1:
                 stats["identifier_exact_key_groups_without_name_link"] += 1
@@ -1100,6 +1103,8 @@ def assign_identity_basis(members, did_idx, start, reason):
             b = "anchor_variant_" + root_kind.get(k, "typo")
         elif single_key_group:
             b = "same_citation"
+        elif m.get("co_printed_run_ids"):
+            b = "co_printed_run"
         elif "unanchored" in (reason or ""):
             b = "unanchored"
         elif "identifier_uncoited" in (reason or ""):
@@ -1229,8 +1234,10 @@ def partition(members, did_idx, evidence, row_key, stats, bar=0.8, trace=None,
 
 def solve_identity(rows, did_idx, prefix, stats, registry=None, typo_over=None,
                    holdout=None, gate="literal", own_cites=None,
-                   identity_separations=None, trace=None, history=None):
+                   identity_separations=None, trace=None, history=None,
+                   parallels=None, parallel_min_sources=1):
     for row in rows:
+        row["co_printed_run_ids"] = ""
         for field in ('document_alias_decision_id','document_alias_evidence_ids','document_alias_source_rows'):
             row[field] = ''
         row.setdefault('document_alias_holdout_doc_ids','')
@@ -1328,6 +1335,11 @@ def solve_identity(rows, did_idx, prefix, stats, registry=None, typo_over=None,
                                 pair_cannot_links=pair_links)
     clusters = merge_same_key_clusters(clusters, did_idx, stats, start, registry, gate,
                                        own_cites, trace, history)
+
+    if parallels:
+        from identity_parallel import merge_parallel_clusters
+        clusters = merge_parallel_clusters(clusters, parallels, did_idx, start, registry,
+            own_cites, history, stats, trace, parallel_min_sources)
 
     if holdout:
         mixed = {h[0] for h in holdout}

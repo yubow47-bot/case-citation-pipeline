@@ -42,12 +42,12 @@ ACTIVE_RUNNER = None
 # 不再声称沿用 v1.4（约束十）。
 SCHEMA_VERSIONS = {
     "extract_legacy_kept_superseded": "v1.4 (frozen, diagnostic only)",
-    "extract_candidates": "candidates-2.2 + explicit English/French fallback scope (row offsets unchanged)",
-    "classify": "9 + source-verified compound locator policy column",
-    "merge": "9 + in-source arbitration, identity keys v2",
-    "decide": "15 (country assessment independent of identity support)",
+    "extract_candidates": "candidates-2.3 + structural suffix annotation spans; explicit English/French fallback",
+    "classify": "10 + source-verified compound locator and document zones",
+    "merge": "10 + in-source arbitration, identity keys v2, bound parallel runs",
+    "decide": "16 (country assessment independent of identity support; guarded co-printed runs)",
     "select": "12 (full-data default; optional frequency profiles)",
-    "edges": "2 (member country independent of identity support)",
+    "edges": "3 (member country independent of identity support; history and zone annotations)",
     # #88/#89：run 级全局判决登记簿（merge 之后、decide 之前生成）
     "registry": "3 (native English/French metadata/header proof; canonical source identity)",
 }
@@ -192,6 +192,7 @@ class Runner(object):
                        "corpus_dir": self.corpus_dir,
                        "text_policy": getattr(args, "text_policy", POLICY_EN),
                        "registry_gate": getattr(args, "registry_gate", "literal"),
+                       "parallel_min_sources": getattr(args, "parallel_min_sources", 1),
                        "compact": getattr(args, "compact", True),
                        "storage_budget_gb": getattr(args, "storage_budget_gb", 12),
                        "min_free_gb": getattr(args, "min_free_gb", 2),
@@ -329,6 +330,7 @@ def main():
                     choices=("literal", "own_or_registry", "registered_only", "registered"),
                     help="#88：登记簿在笔误闸里的参与方式。默认 registered 使用全局"
                          "登记簿保护真实判决编号；其他取值保留供实验与历史复现")
+    ap.add_argument("--parallel-min-sources", type=int, default=1)
     ap.add_argument("--compact", action=argparse.BooleanOptionalAction, default=True,
                     help="Verify and gzip output CSVs before completing; default on")
     ap.add_argument('--text-policy', choices=POLICIES, default=POLICY_FALLBACK,
@@ -349,6 +351,8 @@ def main():
         ap.error("New run must be a direct plain directory in this project's data/ folder")
     if not os.path.basename(target).startswith("run_"):
         ap.error("Run directory name must start with run_")
+    if args.parallel_min_sources < 1:
+        ap.error("parallel-min-sources must be positive")
     if args.storage_budget_gb <= 0 or args.batch_size <= 0 or (args.limit_batches is not None and args.limit_batches <= 0):
         ap.error("Storage budget, batch size and limit must be positive")
     if not math.isfinite(args.min_free_gb) or args.min_free_gb < 0:
@@ -387,7 +391,9 @@ def main():
         r.run_step("classify_" + court,
                    [os.path.join("pipeline", "classify.py"),
                     "--court", court, "--input", cand_in,
-                    "--output", os.path.join(args.out, "classify_out", court)])
+                    "--output", os.path.join(args.out, "classify_out", court),
+                    "--corpus", os.path.join(corpus_dir, court + ".parquet"),
+                    "--text-policy", args.text_policy])
     for court in courts:
         r.run_step("merge_" + court,
                    [os.path.join("pipeline", "merge.py"),
@@ -424,7 +430,8 @@ def run_downstream(r):
         # PROBLEMS #105：判决自己印的引证，只用于剔自引（与笔误闸的登记簿无关，总是传）
         cmd += ["--own-citations", own_citations_file]
         # Every court consumes the global registry, including the main line.
-        cmd += ["--registry", registry_file, "--registry-gate", args.registry_gate]
+        cmd += ["--registry", registry_file, "--registry-gate", args.registry_gate,
+                "--parallel-min-sources", str(getattr(args, "parallel_min_sources", 1))]
         # PROBLEMS #88：与登记簿无关，单独开关；默认开启（decide.py 同默认），
         # 只在用户显式 --no-mixed-key-holdout 时才需要透传关闭
         if not getattr(args, "mixed_key_holdout", True):
@@ -442,6 +449,7 @@ def run_downstream(r):
                                                               "decision_ids.csv"),
                                "--history-pairs", os.path.join(args.out, "merge_out", court,
                                                                "history_pairs.csv"),
+                               "--parallel-runs", os.path.join(args.out, "merge_out", court, "parallel_runs.csv"),
                                "--output", os.path.join(args.out, "decide_out", court)]))
     r.run_step("decide_cross",
                decide_cmd(["--cross-court", "--inputs"] +
@@ -450,6 +458,8 @@ def run_downstream(r):
                           ["--history-pairs"] +
                           [os.path.join(args.out, "merge_out", c, "history_pairs.csv")
                            for c in courts] +
+                          ["--parallel-runs"] +
+                          [os.path.join(args.out, "merge_out", c, "parallel_runs.csv") for c in courts] +
                           ["--output", os.path.join(args.out, "decide_out", "cross_court")]))
     # 天花板监测仪（规格 2.4，必做）：foreign 计数是「登记簿这条数据驱动路径
     # 的边界指示器」——外国法院判决原文在语料里不存在，补语料补不出来。
