@@ -13,7 +13,7 @@ def merge_parallel_clusters(clusters, parallels, did_idx, start, registry,
     parallels.verify()
     from identity_solve import (decisions_of, history_conflict_instances,
         history_instance_binding, pair_separation_conflicts, pair_separation_detail,
-        SAME_KEY_HELD_REASONS)
+        SAME_KEY_HELD_REASONS, conflicting_case_context)
     courts = CourtEvidence()
     aliases = getattr(own_cites, 'aliases', {})
     parent = list(range(len(clusters)))
@@ -66,6 +66,18 @@ def merge_parallel_clusters(clusters, parallels, did_idx, start, registry,
         if blocker is None and any(any(held in reason for held in SAME_KEY_HELD_REASONS)
                for i in indices for reason in reasons[i]):
             blocker = _block(trace,'co_printed_run',left,right,proposal,'persistent_identity_holdout')
+        if blocker is None:
+            participating = [m for m in combined if m['merge_key'] in keys]
+            conflicts = [(a, b) for n, a in enumerate(participating)
+                         for b in participating[n + 1:]
+                         if a['merge_key'] != b['merge_key'] and conflicting_case_context(a, b)]
+            if conflicts:
+                a, b = conflicts[0]
+                blocker = _block(trace,'co_printed_run',left,right,proposal,
+                    'different_case_contexts',
+                    {'left_key': a['merge_key'], 'right_key': b['merge_key'],
+                     'left_title': a.get('case_name_modal', ''),
+                     'right_title': b.get('case_name_modal', '')}, strength='heuristic')
         if blocker is None:
             if any(m.get('court_designation_conflict') == 'true' for m in combined):
                 blocker = _block(trace,'co_printed_run',left,right,proposal,'printed_court_conflict')

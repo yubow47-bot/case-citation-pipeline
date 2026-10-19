@@ -109,6 +109,29 @@ class ParallelTests(unittest.TestCase):
                 p,rs,out=self.fixture(gap=gap,directory='shape'+str(len(gap))+str(expected))
                 self.assertEqual(len(out),expected)
 
+    def test_bare_comma_cannot_override_conflicting_case_contexts(self):
+        # R1: different pages alone are not a negative identity fact. Here the
+        # independent party contexts conflict as well as the complete locators.
+        a, b = '2010|2|scr||3', '2010|2|scr||420'
+        path, _, _ = self.fixture((a, b))
+        out, stats, _ = self.solve([
+            member(a, year='2010', name='Alpha v. Beta'),
+            member(b, year='2010', name='Gamma v. Delta')], load_parallel_runs([path]))
+        self.assertEqual(len(out), 2)
+        self.assertEqual(stats['parallel_blocked_different_case_contexts'], 1)
+        self.assertTrue(all(not m['co_printed_run_ids'] for c in out for m in c[0]))
+        # Pinpoint-like different locators and genuine title variants are not
+        # blanket-blocked by publication/page inequality.
+        out, stats, _ = self.solve([
+            member(a, year='2010', name='Alpha v. Beta'),
+            member(b, year='2010', name='Alpha Ltd v Beta')], load_parallel_runs([path]))
+        self.assertEqual(len(out), 1)
+
+    def test_intervening_case_name_is_never_a_printed_run(self):
+        path, _, runs = self.fixture(gap=', Gamma v. Delta, ')
+        self.assertEqual(runs, [])
+        self.assertEqual(load_parallel_runs([path]), {})
+
     def test_native_gap_tampering_fails_closed(self):
         p,rows,runs=self.fixture()
         rows[1]['preceding_text']=rows[1]['preceding_text'][:-2]+'; '
