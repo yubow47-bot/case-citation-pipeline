@@ -1067,10 +1067,11 @@ def reporter_mapping_provenance(rows, trace):
         parts = row['merge_key'].split('|')
         if len(parts) < 3:
             continue
-        alias = nk(parts[2])
+        alias = parts[2]
         target = report_key(row).split('|')[2]
         if alias == target:
             continue
+        alias = nk(alias)
         evidence_id = trace.snapshot.bilingual_reporter_fact(alias, target)
         normalizations.append({'row_key': row_key(row), 'from': alias, 'to': target,
                                'policy_evidence_id': evidence_id})
