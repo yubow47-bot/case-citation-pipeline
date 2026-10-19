@@ -12,7 +12,7 @@ The pre-existing foundation `same_case_history` relation has a different identit
 
 **One threshold, on `distinct_decisions_count` (DD); no rows are deleted, only flagged with `kept`.**
 
-- Input: `decide_out/cross_court/decided.csv`. Configuration: `select_config.yaml`, chosen with `--profile` (`default` threshold 5, `loose` 2, `strict` 10).
+- Input: `decide_out/cross_court/decided.csv`. Configuration: `select_config.yaml`, chosen with `--profile` (`default` threshold 1, `loose` 2, `strict` 10). DD ≥ 5 is an optional research filter, not the default or a calibrated accuracy threshold.
 - Output (`select_out/`) [verified: directory listing]: `selected.csv` (all rows plus `kept`; the product reads only `kept=true`; the full table is always kept), `dd_profile.csv` (DD distribution), `manifest.json` (the threshold and its text).
 - **DD, not `occurrence_count`**: one judge citing ten times in one judgment is a single legal act; DD also resists OCR noise by construction (a noise string almost always appears in a single judgment, DD=1).
 - **The threshold must come after the last merge** (after the adjudication layer's parallel-reporter and cross-court merging). Placed earlier, the same case with 2 under `A.C.` and 2 under `All E.R.` would see both groups cut for missing the threshold, while the truth is 4.
@@ -48,7 +48,7 @@ One edge = `(source_decision, resolved_cited_case)`, where the latter is a `merg
 | `foreign_edges.csv` | Foreign-related edges |
 
 - Invariant: the number of counted sources per group == that group's DD (same definition, checked by `edge_dd_mismatch`).
-- `edge_support`: a path through `ELIGIBLE_BASES` (`anchor`/`singleton`/`same_citation`/`anchor_variant_bilingual`) → `supported`, and the group-level place of origin can be used; only through heuristic paths → `heuristic_only`, which **does not inherit** FOREIGN/DOMESTIC, `foreign_status=UNDETERMINED`.
+- `edge_support`: a path through `ELIGIBLE_BASES` → `supported`, allowing qualified group origin to be used when this edge has no direct origin evidence. A heuristic path is `heuristic_only` and cannot inherit group origin; direct member evidence can still determine country independently of identity support. Country uncertainty and identity uncertainty are separate fields.
 - **Relation type** (`tools/foundation/relations.py`, not in the pipeline): if the cited group also contains a citation the source judgment prints for itself → `same_case_history` (another instance of the same litigation, e.g. a Supreme Court judgment citing the lower-court judgment it is an appeal from), otherwise `other_judgment`. Decided by identity, **not by wording such as "APPEAL from"**.
 
 ## When adding a court
