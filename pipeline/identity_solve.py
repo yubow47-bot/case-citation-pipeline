@@ -1,5 +1,7 @@
 """Ordered identity proposals, guards, and partitions (legacy semantics)."""
 from collections import Counter, defaultdict
+import re
+import unicodedata
 
 from normalize import nk
 from identity_constraints import (
@@ -705,6 +707,70 @@ def report_key(row):
     return '|'.join(parts)
 
 
+def case_context_tokens(name):
+    """Comparable party words from an observed adversarial title.
+
+    Empty titles, initials and non-adversarial captions cannot establish a
+    conflict. Shared party words, abbreviations and one-edit spelling variants
+    keep the relation unresolved rather than declaring different judgments.
+    """
+    text = ''.join(c for c in unicodedata.normalize('NFKD', name or '')
+                   if not unicodedata.combining(c)).lower()
+    if not re.search(r'(?<![a-z])(?:v|vs|c)\.?(?![a-z])', text):
+        return set()
+    generic = {'the', 'and', 'with', 'for', 'her', 'his', 'majesty', 'queen',
+               'king', 'regina', 'rex', 'ltd', 'limited', 'inc', 'incorporated',
+               'corp', 'corporation', 'company', 'versus', 'les', 'des'}
+    return {word for word in re.findall(r'[a-z]+', text)
+            if len(word) >= 3 and word not in generic}
+
+
+def conflicting_case_context(left, right):
+    """Whether two usable titles supply disjoint party contexts, not just unequal strings."""
+    a = case_context_tokens(left.get('case_name_modal'))
+    b = case_context_tokens(right.get('case_name_modal'))
+    if not a or not b or a & b:
+        return False
+    # Preserve ordinary spelling changes and shortened corporate party names.
+    if any(_one_edit(x, y) or (min(len(x), len(y)) >= 4 and
+                              (x.startswith(y) or y.startswith(x)))
+           for x in a for y in b):
+        return False
+    return True
+
+
+def mark_reporter_context_conflicts(rows, stats, trace=None):
+    """A conflicted printed key cannot transfer identity between title contexts.
+
+    Keep every observation in its existing contextual cluster. This is a
+    holdout of the positive key bridge, not a correction of the source's number
+    or a claim that unequal titles always identify different judgments.
+    """
+    by_key = defaultdict(list)
+    for row in rows:
+        row['reporter_identity_conflict'] = 'false'
+        if complete_reporter_key(row):
+            by_key[report_key(row)].append(row)
+    conflicts = {}
+    for key, members in by_key.items():
+        pairs = [(left, right) for i, left in enumerate(members)
+                 for right in members[i + 1:] if conflicting_case_context(left, right)]
+        if not pairs:
+            continue
+        conflicts[key] = [{'left_row_key': row_key(left),
+                           'right_row_key': row_key(right),
+                           'left_title': left.get('case_name_modal', ''),
+                           'right_title': right.get('case_name_modal', '')}
+                          for left, right in pairs]
+        for row in members:
+            row['reporter_identity_conflict'] = 'true'
+        if trace:
+            trace.event('reporter_context', members, 'unresolved',
+                        'reporter_context_conflict')
+    stats['reporter_identity_conflicted_keys'] += len(conflicts)
+    return conflicts
+
+
 def merge_same_key_clusters(clusters, did_idx, stats, start=None, registry=None,
                             gate='literal', own_cites=None, trace=None, history=None):
     """Join clusters that hold the same complete printed reporter citation.
@@ -748,6 +814,11 @@ def merge_same_key_clusters(clusters, did_idx, stats, start=None, registry=None,
         stats['same_key_split_keys'] += 1
         rows = [m for i in indices for m in clusters[i][0]
                 if complete_reporter_key(m) and report_key(m) == key]
+        if any(m.get('reporter_identity_conflict') == 'true' for m in rows):
+            stats['same_key_union_blocked_reporter_context_conflict'] += 1
+            if trace:
+                trace.event('same_key_union', rows, 'unresolved', 'reporter_context_conflict')
+            continue
         known = {m.get('jurisdiction') for m in rows if not _unknown(m.get('jurisdiction') or '')}
         if len(known) > 1:
             stats['same_key_union_jurisdiction_disagree'] += 1
@@ -1243,6 +1314,7 @@ def solve_identity(rows, did_idx, prefix, stats, registry=None, typo_over=None,
         row.setdefault('document_alias_holdout_doc_ids','')
         row.setdefault('document_alias_holdout_evidence_ids','')
         row.setdefault('identity_separation_evidence_ids','')
+    mark_reporter_context_conflicts(rows, stats, trace)
     start = neutral_start(rows)
     stats["neutral_rows_before_court_start"] = sum(
         1 for r in rows if r.get("citation_kind") == "neutral" and _before_start(r["merge_key"], start))

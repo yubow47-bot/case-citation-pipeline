@@ -59,7 +59,11 @@ def merge_parallel_clusters(clusters, parallels, did_idx, start, registry,
         proposal = _proposal(trace,'co_printed_run',left,right,'co_printed_run',
                              'explicit',detail,refs)
         blocker = None
-        if any(any(held in reason for held in SAME_KEY_HELD_REASONS)
+        if any(m.get('reporter_identity_conflict') == 'true'
+               for m in combined if m['merge_key'] in keys):
+            blocker = _block(trace,'co_printed_run',left,right,proposal,
+                             'reporter_context_conflict', strength='heuristic')
+        if blocker is None and any(any(held in reason for held in SAME_KEY_HELD_REASONS)
                for i in indices for reason in reasons[i]):
             blocker = _block(trace,'co_printed_run',left,right,proposal,'persistent_identity_holdout')
         if blocker is None:
