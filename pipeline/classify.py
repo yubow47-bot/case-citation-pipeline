@@ -523,6 +523,35 @@ def date_form_hit(row):
     return None
 
 
+def abbreviated_date_form_hit(row):
+    """Recognize printed abbreviated-month dates without collapsing A.P.R. to Apr.
+
+    The abbreviated token must be one word, followed by a day/year structure.
+    Internal punctuation or all-capital reporter initials are not month evidence.
+    Right context is an unchanged generic extraction field, never a new citation parse.
+    """
+    printed = (row.get("abbreviation") or "").strip()
+    match = _MONTH_RE.fullmatch(printed)
+    if not match:
+        return False
+    token = match.group(1)
+    if token.isupper() or len(token) not in (3, 4):
+        return False
+    months = [month for month in MONTH_NAMES if month.startswith(token.lower())]
+    if len(months) != 1 or token.lower() == months[0]:
+        return False  # Full names retain the existing date_form rule.
+    vol, page = (row.get("vol") or "").strip(), (row.get("page") or "").strip()
+    if not page.isdigit():
+        return False
+    if (vol.isdigit() and 1 <= int(vol) <= 31 and len(page) == 4
+            and DATE_FORM_PAGE_MIN <= int(page) <= DATE_FORM_PAGE_MAX):
+        return True  # 28 Apr. 1995, a day-month-year date.
+    if not 1 <= int(page) <= 31:
+        return False
+    return bool(re.match(r"^\s*(?:/\s*(?:[0-9]{4}|[0-9]{2})\b|,\s*(?:1[6-9][0-9]{2}|20[0-9]{2})\b)",
+                         row.get("following_text") or ""))
+
+
 # --------------------------------------------------------------- §8.7 案名清洗
 # PROBLEMS #58：没有 v. 的案名。只在**本行引证所在那一段的段首**认一个闭集标记：
 #   Reference re X / Re X / In re X / Ex parte X  —— 名称从标记起；
@@ -1504,6 +1533,9 @@ class Classifier(object):
         if date_form_hit(row):
             append_reason(row, "rejected_reason", "date_form")
             self.stats["date_form_rejected"] += 1
+        if abbreviated_date_form_hit(row):
+            append_reason(row, "rejected_reason", "abbreviated_date_form")
+            self.stats["abbreviated_date_form_rejected"] += 1
         # v1.6：缩写位是结构词/日历词/案名片段（`7 Section 69`、`3 See Villani v`、`1 May 2014`）
         if self._non_citation_word(row):
             append_reason(row, "rejected_reason", "non_citation_word")

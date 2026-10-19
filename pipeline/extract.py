@@ -73,7 +73,7 @@ SCHEMA = [
     "token", "leading_abbr", "abbr", "serial_marker", "vol", "page",
     "page_prefix", "page_roman", "page_suffix", "series",
     "year_raw", "year_start",
-    "preceding_text", "source_decision_citation", "source_decision_year",
+    "preceding_text", "following_text", "source_decision_citation", "source_decision_year",
     "match_start_offset", "match_end_offset", "match_span",
 ]
 SCHEMA_SUPER = SCHEMA + ["superseded_by"]
@@ -102,7 +102,7 @@ CAND_SCHEMA = [
     "court_designation_span",
     # 同一段落两种读法的区分签名
     "parse_signature",
-    "preceding_text",
+    "preceding_text", "following_text",
     # D3 跨界解析标注（extract 有判决内跨候选视野，classify 只读本行标注）
     "structural_conflict", "conflict_with_candidate", "conflict_note",
 ]
@@ -279,6 +279,7 @@ def extract_candidates(text, sdc, year, row_index, court, stats=None):
                                           else "-1:-1",
                 "parse_signature": parse_signature(name, g),
                 "preceding_text": text[max(0, start - 120):start],
+                "following_text": text[end:end + 60],
                 "structural_conflict": "",
                 "conflict_with_candidate": "",
                 "conflict_note": "",
@@ -409,6 +410,7 @@ def extract_rows(text, sdc, year, stats=None):
                 # 不得编写 year_raw.split("-") 之类的永不执行代码
                 "year_start": g.get("year") or "",
                 "preceding_text": text[max(0, m.start() - 120):m.start()],
+                "following_text": text[m.end():m.end() + 60],
                 "source_decision_citation": sdc,
                 "source_decision_year": year,
                 "match_start_offset": m.start(),

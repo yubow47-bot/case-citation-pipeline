@@ -233,8 +233,8 @@ def test_classifier():
         check("date_form" not in (r["rejected_reason"] or ""),
               "#85 三条件不齐不拦：%s（卷 1-31 与页 1600-2099 两界都要成立）" % raw)
     r = c.run_row(_row("shape_vol_abbr_page", "28 Feb. 1995", abbr="Feb.", vol="28", page="1995"))
-    check("date_form" not in (r["rejected_reason"] or ""),
-          "#85 缩写月份刻意不拦（#86：与报告集缩写同形，留第二期）")
+    check("abbreviated_date_form" in (r["rejected_reason"] or ""),
+          "Fix1 F3：缩写月份与完整日-月-年结构共同排除日期；A.P.R. 内部点号保留")
     r = c.run_row(_row("shape_vol_abbr_page", "22 Janvier 1834", abbr="Janvier", vol="22", page="1834"))
     check("date_form" not in (r["rejected_reason"] or ""),
           "#85 法文月份刻意不拦（留第二期）")
