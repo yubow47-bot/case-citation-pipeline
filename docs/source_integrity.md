@@ -58,3 +58,18 @@ it converts `source_measurable` to a Python boolean and rejects conflicting
 dispositions for repeated source IDs. Quarantined rows and extracted candidates
 remain available for inspection, but these sources cannot count as measured
 observations or supply positive global identity evidence. No raw row is deleted.
+
+## Incomplete content (S3)
+
+`text_integrity_status=INCOMPLETE_HEADER_SIGNATURE` requires all nonblank native
+content lines to be accounted for as an exact metadata title/citation or a
+printed judicial signature, with both roles present. This identifies the
+reviewed 2004 BCSC 937 remnant. Its `source_measurable` is False and its quarantine
+reason is INCOMPLETE_TEXT. Original line spans are retained in
+`text_integrity_evidence_json`.
+
+Any remaining text, including a brief operative disposition, prevents this
+classification. Short oral rulings therefore remain measurable. No minimum word
+count or absence of numbered paragraphs is a reason to exclude a source.
+PRESENT_UNVERIFIED means that this narrow incompleteness mechanism did not fire;
+it is not certification that the original judgment is complete.

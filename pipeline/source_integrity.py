@@ -25,6 +25,7 @@ FIELDS = ['source_id', 'source_decision_citation', 'court', 'corpus_row_index',
           'own_citation_checked', 'native_own_citation', 'own_citation_status',
           'native_citation_evidence_json', 'citation_provider_year_conflict',
           'duplicate_text_source_count', 'duplicate_text_sources',
+          'text_integrity_status', 'text_integrity_evidence_json',
           'source_measurable', 'quarantine_reason']
 
 CONTENT = re.compile(r'(?im)^[ \t]*(?:Decision Content|Contenu de la décision)[ \t]*$')
@@ -38,6 +39,52 @@ CITATION = re.compile(r'(?im)^[ \t]*(?:CITATION|RÉFÉRENCE)[ \t]*:')
 HEADER_FIELD = re.compile(r'(?m)^[ \t]*[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ /()-]{1,60}[ \t]*:')
 NEUTRAL = re.compile(r'(?<!\w)(?P<year>(?:18|19|20)\d{2})[ \t]*'
                      r'(?P<code>[A-Z][A-Z.]{1,11})[ \t]*(?P<number>\d{1,7})(?!\w)')
+SIGNATURE = re.compile(
+    r'^(?:["“”\']\s*[A-Z][\w .,\'’()-]{0,80},\s*(?:[A-Z]\.){1,4}["“”\']|'
+    r'The Honourable (?:Mr\.? |Madam |Chief )?(?:Justice|Judge) [A-Z][\w .,\'’()-]{0,80})$')
+
+
+def inspect_content(selected):
+    """Recognize positively identified header-and-signature remnants.
+
+    No word-count threshold is used. Any unaccounted-for text keeps a short
+    order observable; absent reasons markers alone never establish truncation.
+    """
+    text = selected.get('text') or ''
+    if not text.strip():
+        return {'text_integrity_status': 'MISSING_TEXT', 'text_integrity_evidence_json': '[]'}
+    name = nk(selected.get('name') or '')
+    citation = nk(selected.get('citation') or '')
+    content = CONTENT.search(text)
+    offset = content.end() if content else 0
+    evidence = []
+    roles = set()
+    for raw in text[offset:].splitlines(keepends=True):
+        line = raw.strip()
+        start = offset
+        offset += len(raw)
+        if not line:
+            continue
+        role = ''
+        if SIGNATURE.fullmatch(line):
+            role = 'judicial_signature'
+        elif (name and nk(line) == name) or (citation and nk(line) == citation):
+            role = 'metadata_title'
+        else:
+            matches = _neutral_matches(line)
+            if len(matches) == 1 and matches[0][1].start() == 0:
+                match = matches[0][1]
+                title = nk(line[match.end():])
+                if nk(match.group()) == citation and name and title == name:
+                    role = 'metadata_title'
+        if not role:
+            return {'text_integrity_status': 'PRESENT_UNVERIFIED',
+                    'text_integrity_evidence_json': '[]'}
+        roles.add(role)
+        evidence.append({'role': role, 'start': start, 'end': offset})
+    incomplete = roles == {'metadata_title', 'judicial_signature'}
+    return {'text_integrity_status': 'INCOMPLETE_HEADER_SIGNATURE' if incomplete else 'PRESENT_UNVERIFIED',
+            'text_integrity_evidence_json': json.dumps(evidence if incomplete else [])}
 
 
 @lru_cache(maxsize=1)
@@ -180,11 +227,14 @@ def inspect_source(selected, court, row_index):
     own = inspect_own_citation(selected)
     if own['own_citation_status'] == 'MISMATCH':
         reasons.append('SOURCE_CITATION_MISMATCH')
+    content = inspect_content(selected)
+    if content['text_integrity_status'] == 'INCOMPLETE_HEADER_SIGNATURE':
+        reasons.append('INCOMPLETE_TEXT')
     return {'source_id': sid, 'source_decision_citation': sid, 'court': court,
             'corpus_row_index': row_index, 'selected_citation': citation,
             'text_field': selected.get('text_field', ''),
             'text_sha256': hashlib.sha256(text.encode('utf-8')).hexdigest(),
-            'text_characters': len(text), **resolve_date(selected), **own,
+            'text_characters': len(text), **resolve_date(selected), **own, **content,
             'duplicate_text_source_count': 1, 'duplicate_text_sources': '[]',
             'source_measurable': not reasons, 'quarantine_reason': ';'.join(reasons)}
 
@@ -254,6 +304,7 @@ def build_source_records(courts, corpus_dir, text_policy, output,
         count['own_citation_checked'] += r['own_citation_checked']
         count['own_citation_' + r['own_citation_status']] += 1
         count['duplicate_text_rows'] += r['duplicate_text_source_count'] > 1
+        count['text_' + r['text_integrity_status']] += 1
     summary = {'schema_version': VERSION, 'courts': list(courts),
                'text_policy': text_policy, 'corpus_dir': str(Path(corpus_dir).resolve()),
                'batch_size': batch_size, 'limit_batches': limit_batches,
