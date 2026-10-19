@@ -50,7 +50,7 @@ POLICY_PATH = Path(__file__).resolve().parents[1] / 'decisions/source_integrity_
 def source_policy():
     with POLICY_PATH.open(encoding='utf-8-sig', newline='') as stream:
         rows = list(csv.DictReader(stream))
-    expected = {'native_year_min', 'native_year_ahead_allowance', 'uncorroborated_year_gap'}
+    expected = {'native_year_min', 'native_year_ahead_allowance', 'year_conflict_requires_citation_support'}
     if {r['policy'] for r in rows} != expected or len(rows) != len(expected):
         raise ValueError('Invalid source integrity policy keys')
     if any(not r.get('source') or not r.get('source_locator') or not r.get('notes') for r in rows):
@@ -245,7 +245,8 @@ def resolve_date(selected):
                 native_year > max(supported_years) + policy['native_year_ahead_allowance']):
             adopted = False
             native_status = 'OUT_OF_RANGE_NATIVE_DATE'
-        elif provider_day and abs(native_year - provider_day.year) > policy['uncorroborated_year_gap'] and native_year not in metadata_years:
+        elif (provider_day and native_year != provider_day.year and
+              policy['year_conflict_requires_citation_support'] and metadata_years != {native_year}):
             adopted = False
             native_status = 'UNRESOLVED_NATIVE_YEAR_CONFLICT'
     year = native[:4] if adopted else provider_year

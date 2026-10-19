@@ -29,18 +29,30 @@ date of FC 2016/18. Extraction uses the same date resolver. Consumers should use
 `source_decision_year` instead of reading provider dates again. G-side consumers
 are outside this implementation round.
 
-The full-corpus check also found misprinted native dates. A native year before
-1800 or more than one year after both the provider year and the registered
-metadata neutral-citation year is OUT_OF_RANGE_NATIVE_DATE. A difference from
-the provider exceeding five years, without independent agreement between the
-native year and metadata citation year, is UNRESOLVED_NATIVE_YEAR_CONFLICT.
-Both preserve the native date/span for review and retain the provider year with
-`decision_year_basis=PROVIDER_UNRESOLVED_NATIVE_DATE`. These are consistency
-guards, not inferred replacement dates: citation years never supply a date.
-Smaller conflicts remain explicit and the formal-date rule still applies.
-The three bounds are loaded from `decisions/source_integrity_policy.csv`, with
-source locators and rationale; the summary records its SHA-256. They are
-engineering review thresholds, not a judicial-date certification standard.
+The full-corpus check and C3 source reading also found misprinted native dates,
+including one-year errors, hearing dates, and dates of amended judgments. A native
+year before 1800 or more than one year after both the provider year and the
+registered metadata neutral-citation year is OUT_OF_RANGE_NATIVE_DATE.
+
+When the formal native DATE and provider years differ, the native year may replace
+the provider only if it agrees with the unique selected metadata neutral-citation year.
+Otherwise the result is UNRESOLVED_NATIVE_YEAR_CONFLICT, retaining the provider
+year and `decision_year_basis=PROVIDER_UNRESOLVED_NATIVE_DATE`. Native date/span
+evidence remains available. This does not replace dates with citation years: a
+real, unique valid formal DATE is always required, and agreement between native
+and provider dates remains valid even when the citation year differs (NSSC
+2011/506 and FC 2016/18 are controls).
+
+This round dates the selected written judgment/reasons rather than reconstructing
+the earliest oral disposition. For example, NSSC 2002/27 records an oral decision
+in 2001 and written release in 2002; its formal written-source DATE is 2002.
+Amendment dates conflicting with original metadata stay unresolved under the
+corroboration gate. The rule does not certify all accepted dates as error-free.
+
+Bounds and the corroboration rule are loaded from
+`decisions/source_integrity_policy.csv`, with source locators and rationale; the
+summary records its SHA-256. The previous five-year discrepancy threshold was
+insufficient and was replaced after the C3 sample exposed small native-date errors.
 
 ## Source-to-text bindings (S2)
 

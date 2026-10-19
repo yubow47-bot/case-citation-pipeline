@@ -93,5 +93,45 @@ class SourceDateTests(unittest.TestCase):
         self.assertEqual(result['source_decision_year'], '2018')
 
 
+    def test_c3_native_header_misprints_and_hearing_dates_do_not_override(self):
+        # Real C3 source facts, reconstructed with synthetic formal headers.
+        for cite, provider, native in [
+                ('2007 BCCA 385', '2007-06-22', '20060622'),
+                ('2005 BCSC 306', '2005-01-25', '20040304'),
+                ('2010 BCSC 1610', '2010-11-17', '20111117'),
+                ('2004 FC 467', '2004-03-26', '20030326'),
+                ('2022 FC 379', '2022-03-21', '20230321'),
+                ('2001 FCT 1081', '2001-10-02', '20021002'),
+                ('2001 FCT 11', '2001-02-02', '20000202'),
+                ('2004 FCA 277', '2004-08-24', '20030824'),
+                ('1999 NSCA 65', '1999-03-23', '19970323'),
+                ('2006 NSSC 186', '2006-04-12', '20050412'),
+                ('2006 NSSC 272', '2006-07-08', '20050708'),
+                ('2009 ONCA 341', '2009-04-29', '20080428'),
+                ('2008 ONCA 422', '2008-05-29', '20050529')]:
+            with self.subTest(citation=cite):
+                result = resolve_date(record(cite, provider, native))
+                self.assertEqual(result['source_decision_year'], provider[:4])
+                self.assertEqual(result['native_date_status'], 'UNRESOLVED_NATIVE_YEAR_CONFLICT')
+                self.assertEqual(result['date_conflict_status'], 'YEAR_CONFLICT_UNRESOLVED')
+
+    def test_c3_amendment_years_remain_unresolved(self):
+        for cite, provider, native in [
+                ('2009 FC 1277', '2009-12-16', '20101029'),
+                ('2008 FC 1399', '2008-12-19', '20090106'),
+                ('2022 FC 1759', '2022-12-19', '20230203')]:
+            result = resolve_date(record(cite, provider, native))
+            self.assertEqual(result['source_decision_year'], provider[:4])
+            self.assertEqual(result['native_date_status'], 'UNRESOLVED_NATIVE_YEAR_CONFLICT')
+
+    def test_three_way_year_disagreement_does_not_choose_a_replacement(self):
+        result = resolve_date(record('2019 FC 1', '2020-01-01', '20210101'))
+        self.assertEqual(result['source_decision_year'], '2020')
+        self.assertEqual(result['native_date_status'], 'UNRESOLVED_NATIVE_YEAR_CONFLICT')
+        result = resolve_date(record('2019 FC 1; 2021 FC 2', '2020-01-01', '20210101'))
+        self.assertEqual(result['source_decision_year'], '2020')
+        self.assertEqual(result['native_date_status'], 'UNRESOLVED_NATIVE_YEAR_CONFLICT')
+
+
 if __name__ == '__main__':
     unittest.main()
