@@ -544,6 +544,15 @@ def _reporter_country_consensus():
             if len(values) == 1 and "" not in values}
 
 
+@lru_cache(maxsize=1)
+def _mixed_reporter_origin_rules():
+    """Mixed-report constraints survive even though they cannot supply origin facts."""
+    return {key: tuple(rule for rule in rules
+                       if rule.get("verification_status") == "verified_mixed")
+            for key, rules in load_reporter_origin(include_mixed=True).items()
+            if any(rule.get("verification_status") == "verified_mixed" for rule in rules)}
+
+
 def _classified_origin(row, stats):
     """Use an accepted citation's existing jurisdiction as a country assessment.
 
@@ -557,6 +566,17 @@ def _classified_origin(row, stats):
     parts = row.get("merge_key", "").split("|")
     if row.get("citation_kind") == "neutral" and len(parts) >= 3 and parts[2] in ("ukpc", "jcpc"):
         return  # A transnational appeal court's location does not identify the appeal's origin.
+    if row.get("citation_kind") == "reporter" and len(parts) >= 5:
+        code = nk(parts[2])
+        year = "" if row_year(row) is None else str(row_year(row))
+        mixed = _mixed_reporter_origin_rules().get(code, ())
+        if any(_reporter_window_ok(parts[1], year, rule) for rule in mixed):
+            # Missing year/volume cannot override a known mixed-origin constraint.
+            # Exact case-origin facts have already been considered by the caller.
+            row["member_origin_ambiguous_basis"] = "mixed_reporter_scope"
+            row["member_origin_evidence_ids"] = "reporter_origin_scope:" + code + ":mixed"
+            stats["case_origin_mixed_reporter_withheld"] += 1
+            return
     jurisdiction = (row.get("jurisdiction") or "").strip()
     country = _jurisdiction_country(jurisdiction)
     basis = "classification_jurisdiction"

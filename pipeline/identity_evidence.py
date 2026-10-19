@@ -126,8 +126,8 @@ def load_scope():
                 idx.setdefault(k, []).append(r)
     return idx
 
-def load_reporter_origin():
-    """Load verified exclusive reporter-origin rules with their own volume/year windows."""
+def load_reporter_origin(include_mixed=False):
+    """Load exclusive origin facts, optionally retaining mixed-origin constraints."""
     path = os.path.join(DECISIONS, "reporter_origin_scope.csv")
     if not os.path.exists(path):
         return {}
@@ -135,7 +135,8 @@ def load_reporter_origin():
     with open(path, encoding="utf-8", newline="") as f:
         for r in csv.DictReader(f):
             st = (r.get("verification_status") or "").strip()
-            if st not in REPORTER_ORIGIN_ALLOWED_STATUSES:
+            if (st not in REPORTER_ORIGIN_ALLOWED_STATUSES
+                    and not (include_mixed and st == "verified_mixed")):
                 continue
             k = nk(r.get("printed_abbreviation") or "")
             if k:

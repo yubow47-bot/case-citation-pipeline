@@ -1852,7 +1852,7 @@ def test_reporter_origin_real_table_stage1_rows():
           "R3：[1995] 2 S.C.R. 3 → CA（exclusive_statute 排他汇编）")
     r, _ = _rep_verdict("1930|45|kb||129", idx)
     check(r["member_origin_status"] == "UNDETERMINED"
-          and r["member_origin_ambiguous_basis"] == "",
+          and r["member_origin_ambiguous_basis"] == "mixed_reporter_scope",
           "R3：(1930), 45 K.B. 129 → UNDETERMINED（**计划原期望 CA 的前提已被证据推翻**："
           "计划写这条时用的是**未核实**区间表的 QC 窗 vol 5–100/1892–1941；已溯源的"
           "魁北克 K.B. 窗是 1892–1898/卷 1–7 且英国侧卷首题名页未取得（判 mixed），"
