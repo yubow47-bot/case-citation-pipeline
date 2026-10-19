@@ -1,11 +1,13 @@
 """S2: every source is checked; equal texts do not merge independent metadata IDs."""
 import datetime as dt
+import gzip
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from source_integrity import inspect_source, annotate_duplicate_texts
+from source_integrity import inspect_source, annotate_duplicate_texts, load_source_records
 
 
 def source(metadata, native, row=0):
@@ -62,6 +64,22 @@ class SourceBindingTests(unittest.TestCase):
         self.assertEqual(row['corpus_row_index'], 7)
         self.assertFalse(row['source_measurable'])
         self.assertTrue(row['own_citation_checked'])
+
+    def test_malformed_native_code_is_not_truncated_to_a_false_identity(self):
+        row = source('2002 BCCA 402', '2002 BCCA0 402')
+        self.assertEqual(row['own_citation_status'], 'MALFORMED_NATIVE_CITATION')
+        self.assertTrue(row['source_measurable'])
+        self.assertEqual(source('2002 BCCA 402', '2002 BCCA 0402')['own_citation_status'], 'MATCH')
+
+    def test_compressed_finalized_source_contract_loads_by_logical_path(self):
+        with tempfile.TemporaryDirectory(dir=Path(__file__).resolve().parents[2] / 'implementation') as temp:
+            root = Path(temp)
+            with gzip.open(root / 'source_records.csv.gz', 'wt', encoding='utf-8', newline='') as stream:
+                stream.write('source_id,source_measurable,source_decision_year,quarantine_reason\n'
+                             'SCC_2020scc1,True,2020,\nSCC_2020scc2,False,2020,SOURCE_CITATION_MISMATCH\n')
+            result = load_source_records(root)
+            self.assertTrue(result['SCC_2020scc1']['source_measurable'])
+            self.assertFalse(result['SCC_2020scc2']['source_measurable'])
 
 
 if __name__ == '__main__':

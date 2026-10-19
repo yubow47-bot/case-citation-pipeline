@@ -77,6 +77,21 @@ class SourceDateTests(unittest.TestCase):
             self.assertEqual(exported['source_decision_year'], '2018')
             self.assertTrue(exported['source_measurable'])
 
+    def test_obvious_native_year_misprints_remain_unresolved(self):
+        for native in ['21070101', '02190101', '22050101']:
+            result = resolve_date(record('2017 FC 1', '2017-01-01', native))
+            self.assertEqual(result['source_decision_year'], '2017')
+            self.assertEqual(result['native_date_status'], 'OUT_OF_RANGE_NATIVE_DATE')
+            self.assertEqual(result['date_conflict_status'], 'YEAR_CONFLICT_UNRESOLVED')
+            self.assertTrue(result['native_decision_date'])
+        result = resolve_date(record('2024 FC 1', '2024-01-01', '20140101'))
+        self.assertEqual(result['source_decision_year'], '2024')
+        self.assertEqual(result['native_date_status'], 'UNRESOLVED_NATIVE_YEAR_CONFLICT')
+        # Reviewed large publication delays have independent citation-year
+        # corroboration; the actual adopted date still comes from DATE itself.
+        result = resolve_date(record('2018 ONCA 238', '2026-10-06', '20180312'))
+        self.assertEqual(result['source_decision_year'], '2018')
+
 
 if __name__ == '__main__':
     unittest.main()

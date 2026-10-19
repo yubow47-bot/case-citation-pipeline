@@ -14,6 +14,7 @@ from pathlib import Path
 import re
 
 from corpus_fields import POLICY_EN, POLICIES, projection, select_record
+from artifacts import open_csv
 from normalize import nk
 
 VERSION = 'source-integrity-1'
@@ -42,6 +43,22 @@ NEUTRAL = re.compile(r'(?<!\w)(?P<year>(?:18|19|20)\d{2})[ \t]*'
 SIGNATURE = re.compile(
     r'^(?:["“”\']\s*[A-Z][\w .,\'’()-]{0,80},\s*(?:[A-Z]\.){1,4}["“”\']|'
     r'The Honourable (?:Mr\.? |Madam |Chief )?(?:Justice|Judge) [A-Z][\w .,\'’()-]{0,80})$')
+POLICY_PATH = Path(__file__).resolve().parents[1] / 'decisions/source_integrity_policy.csv'
+
+
+@lru_cache(maxsize=1)
+def source_policy():
+    with POLICY_PATH.open(encoding='utf-8-sig', newline='') as stream:
+        rows = list(csv.DictReader(stream))
+    expected = {'native_year_min', 'native_year_ahead_allowance', 'uncorroborated_year_gap'}
+    if {r['policy'] for r in rows} != expected or len(rows) != len(expected):
+        raise ValueError('Invalid source integrity policy keys')
+    if any(not r.get('source') or not r.get('source_locator') or not r.get('notes') for r in rows):
+        raise ValueError('Source integrity policy needs evidence and rationale')
+    values = {r['policy']: int(r['value']) for r in rows}
+    if any(value < 1 for value in values.values()):
+        raise ValueError('Invalid source integrity policy value')
+    return values
 
 
 def inspect_content(selected):
@@ -115,10 +132,16 @@ def _neutral_matches(text):
     result = []
     for match in NEUTRAL.finditer(text):
         code = nk(match['code'])
-        if code in codes:
+        if code in codes and not _malformed_neutral(match, text):
             key = '%s:%s:%d' % (match['year'], aliases.get(code, code), int(match['number']))
             result.append((key, match))
     return result
+
+
+def _malformed_neutral(match, text):
+    # A zero followed by another integer is a malformed code/number boundary,
+    # not decision zero (e.g. printed "2002 BCCA0 402").
+    return int(match['number']) == 0 or bool(re.match(r'[ \t]+\d', text[match.end():]))
 
 
 def inspect_own_citation(selected):
@@ -132,6 +155,7 @@ def inspect_own_citation(selected):
     header = text[start:end]
     native = {}
     evidence = []
+    malformed = False
     # A Citation label by itself could be a quoted reference. Require another
     # printed judicial-header field before accepting it as source evidence.
     formal = re.search(r'(?im)^[ \t]*(?:DATE|DOCKETS?)[ \t]*:', header)
@@ -140,13 +164,22 @@ def inspect_own_citation(selected):
             following = HEADER_FIELD.search(header, label.end())
             stop = following.start() if following else len(header)
             block = header[label.end():stop]
+            codes, _ = _neutral_policy()
+            for raw in NEUTRAL.finditer(block):
+                if nk(raw['code']) in codes and _malformed_neutral(raw, block):
+                    malformed = True
+                    evidence.append({'citation': raw.group(), 'malformed': True,
+                                     'start': start + label.end() + raw.start(),
+                                     'end': start + label.end() + raw.end()})
             for key, match in _neutral_matches(block):
                 native[key] = match.group()
                 evidence.append({'citation': match.group(),
                                  'start': start + label.end() + match.start(),
                                  'end': start + label.end() + match.end()})
     metadata = {key for key, _ in _neutral_matches(selected.get('citation') or '')}
-    if not native:
+    if malformed:
+        status = 'MALFORMED_NATIVE_CITATION'
+    elif not native:
         status = 'NO_VERIFIED_NATIVE_CITATION'
     elif len(native) > 1:
         status = 'AMBIGUOUS_NATIVE_CITATION'
@@ -201,16 +234,33 @@ def resolve_date(selected):
                      'AMBIGUOUS_NATIVE_DATES' if len(dates) > 1 else
                      'INVALID_NATIVE_DATE' if invalid else 'NO_VERIFIED_NATIVE_DATE')
     provider_year = str(provider_day.year) if provider_day else ''
-    year = native[:4] if native else provider_year
+    adopted = bool(native)
+    if native:
+        policy = source_policy()
+        native_year = int(native[:4])
+        metadata_years = {int(key.split(':')[0])
+                          for key, _ in _neutral_matches(selected.get('citation') or '')}
+        supported_years = metadata_years | ({provider_day.year} if provider_day else set())
+        if native_year < policy['native_year_min'] or (supported_years and
+                native_year > max(supported_years) + policy['native_year_ahead_allowance']):
+            adopted = False
+            native_status = 'OUT_OF_RANGE_NATIVE_DATE'
+        elif provider_day and abs(native_year - provider_day.year) > policy['uncorroborated_year_gap'] and native_year not in metadata_years:
+            adopted = False
+            native_status = 'UNRESOLVED_NATIVE_YEAR_CONFLICT'
+    year = native[:4] if adopted else provider_year
     conflict = 'NOT_COMPARABLE'
     if native and provider_day:
         conflict = ('MATCH' if native == provider_day.isoformat() else
                     'YEAR_CONFLICT' if native[:4] != provider_year else 'DATE_CONFLICT')
+        if not adopted and conflict != 'MATCH':
+            conflict += '_UNRESOLVED'
     return {'provider_date': provider.isoformat() if isinstance(provider, dt.date) else '',
             'provider_decision_year': provider_year, 'native_decision_date': native,
             'native_date_status': native_status, 'date_conflict_status': conflict,
             'source_decision_year': year,
-            'decision_year_basis': 'NATIVE_FORMAL_HEADER' if native else
+            'decision_year_basis': 'NATIVE_FORMAL_HEADER' if adopted else
+                                   'PROVIDER_UNRESOLVED_NATIVE_DATE' if native and provider_day else
                                    'PROVIDER_DATE' if provider_day else 'UNAVAILABLE',
             'native_date_evidence_json': json.dumps(evidence, ensure_ascii=False)}
 
@@ -243,7 +293,7 @@ def annotate_duplicate_texts(records):
     """Cross-source equality is evidence for review, never authority to merge IDs."""
     by_hash = defaultdict(set)
     for row in records:
-        if row['text_characters']:
+        if row['text_characters'] and row.get('text_integrity_status') != 'MISSING_TEXT':
             by_hash[row['text_sha256']].add(row['source_id'])
     groups = {key: sorted(ids) for key, ids in by_hash.items() if len(ids) > 1}
     for row in records:
@@ -283,9 +333,11 @@ def build_source_records(courts, corpus_dir, text_policy, output,
     duplicate_groups = annotate_duplicate_texts(records)
     _write(output / 'source_records.csv', records)
     anomalies = [r for r in records if not r['source_measurable'] or
-                 r['date_conflict_status'] in {'YEAR_CONFLICT', 'DATE_CONFLICT'} or
-                 r['native_date_status'] in {'AMBIGUOUS_NATIVE_DATES', 'INVALID_NATIVE_DATE'} or
-                 r['own_citation_status'] in {'MISMATCH', 'AMBIGUOUS_NATIVE_CITATION'} or
+                 'CONFLICT' in r['date_conflict_status'] or
+                 r['native_date_status'] in {'AMBIGUOUS_NATIVE_DATES', 'INVALID_NATIVE_DATE',
+                                            'OUT_OF_RANGE_NATIVE_DATE', 'UNRESOLVED_NATIVE_YEAR_CONFLICT'} or
+                 r['own_citation_status'] in {'MISMATCH', 'AMBIGUOUS_NATIVE_CITATION',
+                                             'MALFORMED_NATIVE_CITATION'} or
                  r['citation_provider_year_conflict'] or r['duplicate_text_source_count'] > 1]
     _write(output / 'source_anomalies.csv', anomalies)
     _write(output / 'own_citation_mismatches.csv',
@@ -306,6 +358,7 @@ def build_source_records(courts, corpus_dir, text_policy, output,
         count['duplicate_text_rows'] += r['duplicate_text_source_count'] > 1
         count['text_' + r['text_integrity_status']] += 1
     summary = {'schema_version': VERSION, 'courts': list(courts),
+               'policy_sha256': hashlib.sha256(POLICY_PATH.read_bytes()).hexdigest(),
                'text_policy': text_policy, 'corpus_dir': str(Path(corpus_dir).resolve()),
                'batch_size': batch_size, 'limit_batches': limit_batches,
                'rows': len(records), 'anomaly_rows': len(anomalies),
@@ -323,7 +376,7 @@ def load_source_records(path):
     if path.is_dir():
         path /= 'source_records.csv'
     result = {}
-    with path.open(encoding='utf-8-sig', newline='') as stream:
+    with open_csv(path) as stream:
         reader = csv.DictReader(stream)
         required = {'source_id', 'source_measurable', 'source_decision_year', 'quarantine_reason'}
         if not required.issubset(reader.fieldnames or []):
