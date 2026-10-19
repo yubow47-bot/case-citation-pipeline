@@ -86,7 +86,11 @@ class PipelineArgumentTests(unittest.TestCase):
         manifest = json.loads((target/'run_manifest.json').read_text(encoding='utf-8'))
         self.assertEqual(manifest['params']['courts'], ['BCCA', 'ONCA'])
         self.assertEqual(manifest['params']['min_free_gb'], 0.25)
-        extract = children.call_args_list[0].args[0]
+        source_check = children.call_args_list[0].args[0]
+        self.assertTrue(source_check[1].endswith('source_integrity.py'))
+        self.assertEqual([source_check[i + 1] for i, value in enumerate(source_check) if value == '--court'], ['BCCA', 'ONCA'])
+        extract = next(call.args[0] for call in children.call_args_list
+                       if call.args[0][1].endswith('extract.py'))
         self.assertEqual(extract[extract.index('--corpus-dir') + 1], str(self.root/'corpus'))
         self.assertEqual([extract[i + 1] for i, value in enumerate(extract) if value == '--corpus'], ['BCCA', 'ONCA'])
         self.assertEqual(manifest['steps_done'][-2:], ['edges', 'coverage_report'])
