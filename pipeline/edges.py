@@ -40,7 +40,11 @@ EDGE_FIELDS = ["source_decision", "resolved_cited_case", "foreign_status",
                "origin_basis", "origin_evidence_ids", "noncore_origin_evidence",
                "mention_count", "distinct_decisions_count",
                "case_name_modal", "mention_detail_key", "own_case_history",
-               "zone_profile"]
+               "zone_profile", "reporter_occurrence_status",
+               "reporter_ambiguous_member_keys", "reporter_ambiguous_mention_count",
+               "reviewed_edge_support", "reviewed_identity_status",
+               "reviewed_foreign_status", "reviewed_origin_country",
+               "reviewed_origin_basis", "reviewed_origin_evidence_ids"]
 
 TENTATIVE_FIELDS = ["source_decision", "resolved_cited_case", "identity_status",
                     "group_origin_country", "group_foreign_status",
@@ -86,6 +90,27 @@ def origin_for_edge(group, members, identity_supported):
     return "UNDETERMINED", "", "", ""
 
 
+
+def reporter_occurrence_assessment(observations, supported):
+    """Assess only members actually cited by this source; preserve canonical authority.
+
+    A conflicted complete reporter key does not independently support assigning
+    this source's occurrence to the group's judgment. Another actual, eligible,
+    non-conflicted member can still support the target. No occurrence is moved.
+    """
+    ambiguous = sorted(m["row_key"] for m in observations
+                       if str(m.get("reporter_identity_conflict", "")).lower() == "true")
+    if not ambiguous:
+        return supported, "none", ambiguous
+    clean_support = any(m["row_key"] not in ambiguous
+                        and basis_of(m.get("identity_basis", ""))
+                        and m.get("identity_source_status") != "excluded_source_only"
+                        for m in observations)
+    return (supported if clean_support else False,
+            "ambiguous_member_present" if clean_support else "uncertain_only_support",
+            ambiguous)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--decided", required=True)
@@ -104,7 +129,11 @@ def main():
             row2group[(r.get("court") or "", r["merge_key"])] = r["merged_group_id"]
             member_origin[(r.get("court") or "") + "|" + r["merge_key"]] = {
                 k: r.get(k, "") for k in ("member_origin_country", "member_origin_status",
-                                          "member_origin_basis", "member_origin_evidence_ids")}
+                                          "member_origin_basis", "member_origin_evidence_ids",
+                                          "identity_basis", "reporter_identity_conflict",
+                                          "identity_source_status")}
+            member_origin[(r.get("court") or "") + "|" + r["merge_key"]]["row_key"] = (
+                (r.get("court") or "") + "|" + r["merge_key"])
             g = group_attr.setdefault(r["merged_group_id"], {
                 "group_foreign_status": r.get("group_foreign_status") or "UNDETERMINED",
                 "group_origin_country": r.get("group_origin_country") or "",
@@ -187,6 +216,18 @@ def main():
                             if k in member_origin]
             foreign_status, country, origin_basis, origin_ids = origin_for_edge(
                 g, observations, supported)
+            reviewed_supported, occurrence_status, ambiguous_keys = reporter_occurrence_assessment(
+                observations, supported)
+            reviewed_foreign, reviewed_country, reviewed_basis, reviewed_ids = origin_for_edge(
+                g, observations, reviewed_supported)
+            reviewed_identity = ("reporter_occurrence_uncertain"
+                if occurrence_status == "uncertain_only_support"
+                else e["identity_status"] if reviewed_supported
+                else candidate_label(e["identity_status"]))
+            stats["reporter_occurrence_" + occurrence_status] += 1
+            stats["reporter_reviewed_supported_downgraded"] += int(supported and not reviewed_supported)
+            stats["reporter_reviewed_country_changed"] += int(
+                (foreign_status, country) != (reviewed_foreign, reviewed_country))
             row = {
                 "source_decision": e["source_decision"],
                 "resolved_cited_case": gid,
@@ -205,6 +246,16 @@ def main():
                 "distinct_decisions_count": g["dd"],
                 "case_name_modal": g["case_name_modal"],
                 "mention_detail_key": ";".join(sorted(set(mention_edges.get(mkey, [])))),
+                "reporter_occurrence_status": occurrence_status,
+                "reporter_ambiguous_member_keys": ";".join(ambiguous_keys),
+                "reporter_ambiguous_mention_count": sum(
+                    key in ambiguous_keys for key in mention_edges.get(mkey, [])),
+                "reviewed_edge_support": "supported" if reviewed_supported else "heuristic_only",
+                "reviewed_identity_status": reviewed_identity,
+                "reviewed_foreign_status": reviewed_foreign,
+                "reviewed_origin_country": reviewed_country,
+                "reviewed_origin_basis": reviewed_basis,
+                "reviewed_origin_evidence_ids": reviewed_ids,
             }
             row["own_case_history"], row["zone_profile"] = edge_zones(mention_zones.get(mkey, []))
             all_rows.append(row)
@@ -256,6 +307,11 @@ def main():
         "decided_input": a.decided,
         "effective_input": a.effective,
         "stats": dict(sorted(stats.items())),
+        "reporter_occurrence_review": {
+            "canonical_fields": "Unchanged effective-source authority; checked by check_run",
+            "reviewed_fields": "Source-actual member confidence; conflicted-only support cannot inherit group country",
+            "scope": "No reassignment, grouping, DD, membership or mention-count changes",
+        },
         "note": ("边成员资格只来自 decide 的 effective_sources（R2-9）；"
                  "国别使用本边成员的来源观察，与 identity support 分开；"
                  "select 的 dd 门槛不进本层（约束六）"),
