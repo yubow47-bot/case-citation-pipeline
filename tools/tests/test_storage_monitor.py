@@ -13,6 +13,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT/'tools'))
+sys.path.insert(0, str(ROOT))
 import storage
 from pipeline import run_all
 

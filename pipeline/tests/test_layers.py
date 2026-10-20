@@ -785,7 +785,7 @@ def test_mini_chain():
          "--output", os.path.join(tmp, "decide", "cross"))
     for scope in ("SCC", "ONCA", "cross"):
         with open(os.path.join(tmp, "decide", scope, "manifest.json"), encoding="utf-8") as f:
-            check(json.load(f)["schema_version"] == 16,
+            check(json.load(f)["schema_version"] == 17,
                   "decide manifest reports the same current schema for full and replay runs")
     cfg = os.path.join(tmp, "select.yaml")
     with open(cfg, "w", encoding="utf-8") as f:

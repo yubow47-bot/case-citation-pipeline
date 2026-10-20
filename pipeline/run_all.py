@@ -47,7 +47,7 @@ SCHEMA_VERSIONS = {
     "merge": "10 + in-source arbitration, identity keys v2, bound parallel runs",
     "decide": "17 (conflicted-key guards, ruling uncertainty and source quarantine)",
     "select": "12 (full-data default; optional frequency profiles)",
-    "edges": "5 (positive provenance, source quarantine and reporter occurrence review fields)",
+    "edges": "6 (positive provenance, source quarantine, reporter occurrence review and history assessment fields)",
     # #88/#89：run 级全局判决登记簿（merge 之后、decide 之前生成）
     "registry": "3 (native English/French metadata/header proof; canonical source identity)",
     "source_integrity": "1 (native date, source binding, measurable-source disposition)",
