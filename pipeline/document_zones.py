@@ -53,11 +53,14 @@ def locate(text, markers):
         first = hits['reasons_delivery'][0]
     elif hits['reasons_paragraph']:
         first = hits['reasons_paragraph'][0]
-        # An earlier numbered paragraph makes a later [1] a possible footnote.
-        if any(h['start'] < first['start'] for h in hits['numbered_paragraph']):
+        titles = [h for h in hits['reasons_title'] if h['start'] <= first['start']]
+        # Printed reasons headings separate front-matter bracketed citations
+        # from body paragraphs. A later [1] still abstains if another numbered
+        # paragraph occurs after that heading (or anywhere without a heading).
+        body_floor = titles[-1]['start'] if titles else 0
+        if any(body_floor <= h['start'] < first['start'] for h in hits['numbered_paragraph']):
             return {'status': 'ambiguous_paragraph_order', 'reasons_start': -1,
                     'appeal_spans': [], 'evidence': []}
-        titles = [h for h in hits['reasons_title'] if h['start'] <= first['start']]
         if titles:
             used.append(first)
             first = titles[-1]
@@ -124,6 +127,16 @@ def build_index(corpus, court, policy, output):
             offset += batch.num_rows
     temporary.replace(target)
     return index
+
+
+def history_assessment(zones):
+    """Printed appeal blocks confirm history; other zones remain unassessed."""
+    zones = list(zones)
+    if not zones or any(z not in {'headnote', 'appeal_block', 'reasons'} for z in zones):
+        return 'unassessed_missing_zone_evidence'
+    if all(z == 'appeal_block' for z in zones):
+        return 'confirmed_formal_history'
+    return 'unassessed_outside_formal_span'
 
 
 def edge_zones(zones):

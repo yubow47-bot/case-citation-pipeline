@@ -40,7 +40,7 @@ EDGE_FIELDS = ["source_decision", "resolved_cited_case", "foreign_status",
                "origin_basis", "origin_evidence_ids", "noncore_origin_evidence",
                "mention_count", "distinct_decisions_count",
                "case_name_modal", "mention_detail_key", "own_case_history",
-               "zone_profile", "reporter_occurrence_status",
+               "zone_profile", "history_assessment", "reporter_occurrence_status",
                "reporter_ambiguous_member_keys", "reporter_ambiguous_mention_count",
                "reviewed_edge_support", "reviewed_identity_status",
                "reviewed_foreign_status", "reviewed_origin_country",
@@ -155,7 +155,7 @@ def main():
     assert bad == 0, "组级 foreign_status/origin_country 逐行不一致（%d 行）——上游违约" % bad
 
     # 逐候选提及（counted）→ (source, group) 提及数；提及细节经 mention_detail_key 回连
-    from document_zones import edge_zones
+    from document_zones import edge_zones, history_assessment
     mention_zones = defaultdict(list)
     mention_edges = defaultdict(list)
     stats = Counter()
@@ -258,6 +258,7 @@ def main():
                 "reviewed_origin_evidence_ids": reviewed_ids,
             }
             row["own_case_history"], row["zone_profile"] = edge_zones(mention_zones.get(mkey, []))
+            row["history_assessment"] = history_assessment(mention_zones.get(mkey, []))
             all_rows.append(row)
             if not supported and g["group_origin_status"] == "DETERMINED":
                 tentative.append({k: row[k] for k in TENTATIVE_FIELDS})
