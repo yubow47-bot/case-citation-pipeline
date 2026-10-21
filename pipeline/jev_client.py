@@ -16,6 +16,7 @@ import json
 import os
 import random
 import sqlite3
+import sys
 import time
 import urllib.error
 import urllib.request
@@ -180,6 +181,10 @@ class JevClient:
         if self._db is None:
             self.cache_path.parent.mkdir(parents=True, exist_ok=True)
             self._db = sqlite3.connect(str(self.cache_path))
+            try:  # lets a monitor read the cache while a long run writes to it
+                self._db.execute("PRAGMA journal_mode=WAL")
+            except sqlite3.DatabaseError:
+                pass
             self._db.execute(
                 "CREATE TABLE IF NOT EXISTS answers(key TEXT PRIMARY KEY, node TEXT, "
                 "spec_version TEXT, model_requested TEXT, model_answered TEXT, "
@@ -229,8 +234,19 @@ class JevClient:
                     return key, None, time.monotonic() - start, str(exc)[:200]
             seen = set()
             unique = [p for p in missing if not (p[0] in seen or seen.add(p[0]))]
+            # Long nodes run for hours: commit answers as they arrive so a crash
+            # loses at most a few, and report progress on stderr.
+            commit_every = max(1, int(self.cfg.get("commit_every", 200)))
+            progress_every = max(1, int(self.cfg.get("progress_every", 2000)))
+            started = time.monotonic()
             with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
-                for key, resp, elapsed, err in pool.map(call, unique):
+                for done, (key, resp, elapsed, err) in enumerate(pool.map(call, unique), 1):
+                    if done % commit_every == 0:
+                        db.commit()
+                    if done % progress_every == 0 or done == len(unique):
+                        print("[jev] %s %d/%d calls, %d failures, %.0f s" % (
+                            node, done, len(unique), self.stats[node + ":failures"],
+                            time.monotonic() - started), file=sys.stderr, flush=True)
                     self.stats[node + ":calls"] += 1
                     self.timings.append((node, elapsed))
                     if resp is None or "answers" not in resp:

@@ -62,6 +62,20 @@ class JevClientTests(unittest.TestCase):
         self.assertEqual(second[0][1], first[0][1])
         self.assertEqual(replay.stats["N2_case_name:cache_hits"], 1)
 
+    def test_answers_are_committed_before_close(self):
+        # A long node must not lose its answers if the process dies before close().
+        import sqlite3
+        fake = FakeTransport()
+        c = jc.JevClient("live", config=dict(CFG, commit_every=1), cache_path=Path(self.tmp) / "c.sqlite",
+                         transport=fake)
+        self.addCleanup(c.close)
+        c.ask_many("N2_case_name", [("s%d" % i, QUESTIONS) for i in range(3)])
+        other = sqlite3.connect(str(Path(self.tmp) / "c.sqlite"))
+        try:
+            self.assertEqual(other.execute("SELECT COUNT(*) FROM answers").fetchone()[0], 3)
+        finally:
+            other.close()
+
     def test_cache_only_miss_is_no_answer(self):
         out = self.client("cache-only", FakeTransport()).ask_many(
             "N2_case_name", [("new", QUESTIONS)])
