@@ -8,6 +8,12 @@ The pre-existing foundation `same_case_history` relation has a different identit
 
 `co_printed_run` joins the shared `decide.ELIGIBLE_BASES` contract. It can support a link and qualified propagation only for actual participants admitted by the whole-component identity guards. Effective source membership remains exclusively controlled by adjudication; zones neither create membership nor alter selection thresholds.
 
+## Pair-level history and model judgments (2026-10-20, edges schema 7)
+
+`history_basis` judges a (source, cited group) pair, not a single position. `formal_all` means every counted mention sits in a printed appeal block. `formal_pair` means at least one does: the block names the cited ruling as this case's history, so the other mentions refer to the same ruling. `model` comes from Jev node N4. `none` means no basis. `own_case_history_pair` is true for the first three. `own_case_history` and `zone_profile` keep their earlier all-mentions definition.
+
+N4 asks only when the cited court is the citing court or a lower court in [court_hierarchy.csv](../../decisions/court_hierarchy.csv), and the cited year is not later than the citing year. Every hierarchy row carries the statute section that grants the appeal. An edge whose effective identity is `model_confirmed` (N6) is `supported`. See [method card 09](09_model_judgments.md).
+
 ## What the selection layer does
 
 **One threshold, on `distinct_decisions_count` (DD); no rows are deleted, only flagged with `kept`.**

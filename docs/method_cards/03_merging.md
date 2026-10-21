@@ -31,6 +31,10 @@ Each run member retains source ID, corpus row, instance ID, ordinal, candidate I
 
 History connectors identify distinct rulings within proceedings and remain a separate negative identity input. An apparent printed parallel is accepted only after the whole-component identity guards in [adjudication](04_adjudication.md).
 
+## Model-judged classification inputs
+
+Merge reads the classification layer's final `rejected_reason` and `candidate_case_name`, so a Jev-adopted name (N2/N5) enters the name vote and a Jev-adopted rejection or readmission (N1) changes counting. Merge itself makes no model judgment and loads no Jev artifact. Provenance stays on the classified row (`case_name_source`, `row_status_source`, `rule_*`).
+
 ## Verification and limits
 
 Checks: [parallel runs](../../pipeline/tests/test_parallel_runs.py), [candidate/arbitration contracts](../../pipeline/tests/test_candidates.py), [layers](../../pipeline/tests/test_layers.py), and [source measurement](../../pipeline/tests/test_source_measurement.py). Preserving a native run is provenance, not a population precision claim. New-merge review and duplicated-link measurements remain pending for the new Fix1 run.

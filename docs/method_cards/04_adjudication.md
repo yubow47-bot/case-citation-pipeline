@@ -1,6 +1,6 @@
 # Layer 4: adjudication
 
-Current contract: 2026-10-19, adjudication schema 17; implementation: [decide.py](../../pipeline/decide.py), [identity_solve.py](../../pipeline/identity_solve.py) and [identity_parallel.py](../../pipeline/identity_parallel.py). Identity, country evidence and source measurability are separate dimensions.
+Current contract: 2026-10-20, adjudication schema 18; implementation: [decide.py](../../pipeline/decide.py), [identity_solve.py](../../pipeline/identity_solve.py) and [identity_parallel.py](../../pipeline/identity_parallel.py). Identity, country evidence and source measurability are separate dimensions.
 
 ## Scope, output and DD
 
@@ -35,6 +35,12 @@ Eligible identity bases are `anchor`, `singleton`, `same_citation`, `anchor_vari
 Member country assessment first respects exact case records and applicable sourced scope evidence. Accepted classification jurisdiction can provide country evidence, except where guards such as a matching `verified_mixed` reporter scope block that inference. Mixed publication geography is not a case-origin fact; an exact Canadian case record remains usable. Every member's own country observation participates in group country assessment independently of identity eligibility; contradictions remain conflicts. An edge can use its own member country even when identity is heuristic, while group-only propagation requires eligible support.
 
 `group_deciding_court` combines eligible members' verified neutral, exclusive reporter and printed-designation evidence. Compatible evidence yields `DETERMINED`, contradictions `CONFLICT`, absence `UNSUPPORTED`. There is no majority vote. `probable_same_litigation` remains a retrieval label, separate from judgment identity and DD.
+
+## Joint judgments and model judgments (schema 18)
+
+A complete report key that is a corpus judgment's own citation is checked against that judgment's native A2AJ title (`load_native_titles`). When both disagreeing observed titles share party words with the native title, they are halves of one style of cause, e.g. `R. v. Seaboyer; R. v. Gayme` ([1991] 2 S.C.R. 577). They do not mark `reporter_identity_conflict`; `reporter_context_conflict_exempt_native_title` counts these keys. The four confirmed native collisions are not own citations, so they remain separated. A rule of "only a contradictory parallel citation is a collision" was rejected: two of the four confirmed collisions print no parallel in their source (e.g. `Goudie v. Goudie, [1993] B.C.J. No. 1408`, BCSC_2004bcsc72).
+
+The cross-court round always writes `rule_identity_basis`, `model_identity_doubt`, `model_ruling_relation` and `model_peer_relation`. With Jev on, N6 may set `identity_basis=model_confirmed`, which counts as identity support for edges (`MODEL_ELIGIBLE_BASES`) but not for group country/court aggregation. N7 may set `ruling_identity_status=model_same_ruling`. No model judgment splits or merges groups, and DD is unchanged by N6. See [method card 09](09_model_judgments.md).
 
 ## Residual edge annotations
 

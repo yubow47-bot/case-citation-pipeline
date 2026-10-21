@@ -1,6 +1,6 @@
 # Layer 2: classification
 
-Current contract: 2026-10-19, classification schema 10. The executable schema inventory is in [run_all.py](../../pipeline/run_all.py).
+Current contract: 2026-10-20, classification schema 11. The executable schema inventory is in [run_all.py](../../pipeline/run_all.py).
 
 ## Boundary and artifacts
 
@@ -23,6 +23,12 @@ The abbreviated-date guard recognizes closed calendar structures using bounded s
 Reporter windows are individual sourced facts. Fix1 corrects eight affected windows and limits historical A.R. interpretation without deleting the real citation. A publication's place or abbreviation alone does not establish a judgment's court. Decision-year resolution and source-text quarantine are separate source-integrity contracts; a neutral year is not a blanket substitute for the source decision date.
 
 Adjudication can use an accepted classification jurisdiction as member country evidence, subject to its explicit-case, mixed-reporter and jurisdiction guards. This does not upgrade identity support; see [adjudication](04_adjudication.md).
+
+## Row status and model judgments (schema 11)
+
+`row_status` separates three meanings that `rejected_reason` used to mix (#111): `not_citation` (dates, word-list hits, versus-as-page, party initials, dockets, statutes, non-case material, secondary sources), `citation_uncounted` (a citation this pipeline cannot count, e.g. an unverified prefix or compound locator) and `citation_counted`. The mapping is in [jev_nodes.py](../../pipeline/jev_nodes.py). `rejected_reason` keeps its meaning for every downstream consumer.
+
+With `--jev-mode` other than `off`, the layer runs nodes N1, N2, N5 and N3 of [method card 09](09_model_judgments.md) as a second pass over its own output. The rule's values remain in `rule_rejected_reason`, `rule_candidate_case_name` and `rule_name_rejected_reason`. `row_status_source` and `case_name_source` (`rule`, `jev`, `jev_owner`) say which one produced the final value. `suffix_meanings_json` holds L0 suffix labels. With Jev off, every final column equals the rule column.
 
 ## Verification and limits
 

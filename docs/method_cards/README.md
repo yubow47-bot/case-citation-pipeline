@@ -16,6 +16,7 @@ Purpose: before rereading the full specification and problem history, read the c
 | Adding rows to a decision table | `06_decision_tables.md` |
 | How to verify nothing broke after a change | `07_verification_gates.md` |
 | Whether someone has hit a given pitfall before | `08_pitfalls_by_layer.md` |
+| Hand a per-case judgment to Jev, read a Jev ledger, change its thresholds | `09_model_judgments.md` |
 
 ## Card format (every card follows this order)
 
