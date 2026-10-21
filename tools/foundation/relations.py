@@ -1,8 +1,13 @@
 """Label every citation edge with a relation type, by identity rather than by wording.
 
-  same_case_history  the cited group also contains a citation printed by the source judgment itself
-                     (its citation_en / citation2_en): the source and the cited judgment are two levels of
-                     the same litigation (the Supreme Court judgment naming the appeal court below it).
+  same_case_history  printed evidence that the cited judgment is part of the source's own case: the cited
+                     group also contains a citation printed by the source judgment itself (its citation_en /
+                     citation2_en), or the edge's pair-level history_basis is formal_all / formal_pair (a
+                     printed appeal block names the cited ruling, so every mention of it refers to that ruling).
+  same_case_history_model
+                     the source does not print it as history, but a Jev model judgment (history_basis=model,
+                     pipeline node N4, method card 09) says the passage names the cited ruling as the case's own
+                     history. Kept apart so a researcher can drop model judgments.
   probable_same_litigation
                      the source judgment's own title equals the cited group's title (case-insensitive,
                      punctuation and a final citation year ignored) and the cited group's printed year is
@@ -43,10 +48,12 @@ def year_of(text):
     return int(m.group(1)) if m else None
 
 
-def relation_of(own_hit, source_title, source_year, cited_title, cited_year):
-    """One edge's relation type from identity first, then the dated title match."""
-    if own_hit:
+def relation_of(own_hit, source_title, source_year, cited_title, cited_year, history_basis=''):
+    """One edge's relation type: printed identity first, then model history, then the dated title match."""
+    if own_hit or history_basis in ('formal_all', 'formal_pair'):
         return 'same_case_history'
+    if history_basis == 'model':
+        return 'same_case_history_model'
     if (source_title and source_title == cited_title and source_year is not None
             and cited_year is not None and 0 <= source_year - cited_year <= HISTORY_WINDOW_YEARS):
         return 'probable_same_litigation'
@@ -76,19 +83,23 @@ def label(run_dir, db_path=DEFAULT_DB):
             'SELECT group_id,name,year_printed FROM case_groups WHERE run_id=?', (run_id,))}
         counts = collections.Counter()
         records = []
-        for s, g in db.execute('SELECT source_decision,resolved_cited_case FROM citation_edges WHERE run_id=?', (run_id,)):
+        # Runs made before pair-level history (edges schema 7) have no history_basis column.
+        has_basis = 'history_basis' in [r['name'] for r in db.execute('PRAGMA table_info(citation_edges)')]
+        basis_sql = 'history_basis' if has_basis else "'' AS history_basis"
+        for s, g, basis in db.execute('SELECT source_decision,resolved_cited_case,%s FROM citation_edges WHERE run_id=?' % basis_sql, (run_id,)):
             if not have_own:
                 t = 'unknown'
             else:
                 st, sy = sources.get(s, ('', None))
                 gt, gy = groups.get(g, ('', None))
-                t = relation_of(any(s in own.get(k, ()) for k in keys_of[g]), st, sy, gt, gy)
+                t = relation_of(any(s in own.get(k, ()) for k in keys_of[g]), st, sy, gt, gy, basis or '')
             counts[t] += 1
             records.append((run_id, s, g, t))
         with db:
             db.execute('DELETE FROM edge_relations WHERE run_id=?', (run_id,))
             db.executemany('INSERT INTO edge_relations VALUES(?,?,?,?)', records)
-        return {'run_id': run_id, 'edges': len(records), 'by_relation': dict(counts), 'own_citations_file': have_own}
+        return {'run_id': run_id, 'edges': len(records), 'by_relation': dict(counts), 'own_citations_file': have_own,
+                'pair_level_history': has_basis}
     finally:
         db.close()
 

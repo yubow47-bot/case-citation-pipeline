@@ -157,6 +157,17 @@ def search(db, q, collection, k, mode, layer=None, english=None,
     return out
 
 
+def jev_banner(manifest):
+    """One line when the run used Jev model judgments (method card 09); empty for rule-only runs."""
+    layers = (manifest.get('jev') or {}).get('layers') or {}
+    models = sorted({s.get('model') for s in layers.values() if s.get('model')})
+    if not models or manifest.get('params', {}).get('jev', 'off') == 'off':
+        return ''
+    return ('model judgments: %s (%s). Case names, own-history edges and some identity links may come from the model; '
+            'columns case_name_source, history_basis, identity_basis=model_confirmed say which. See docs/method_cards/09_model_judgments.md'
+            % (', '.join(models), manifest['params']['jev']))
+
+
 def _has_relations(db):
     return db.execute("SELECT 1 FROM sqlite_master WHERE name='edge_relations'").fetchone() is not None
 
@@ -184,11 +195,12 @@ def show_case(db, run, gid, rec=None, citing=5):
         WHERE e.run_id=? AND e.resolved_cited_case=? ORDER BY d.decision_date DESC LIMIT ?''', (run, gid, citing)).fetchall()
     rel = dict(db.execute("SELECT relation_type,COUNT(*) FROM edge_relations WHERE run_id=? AND resolved_cited_case=? GROUP BY 1",
                           (run, gid)).fetchall()) if _has_relations(db) else {}
-    if rel.get('same_case_history') or rel.get('probable_same_litigation'):
-        print('    of the %d citing judgments, %d are the same litigation (procedural history), '
+    if rel.get('same_case_history') or rel.get('same_case_history_model') or rel.get('probable_same_litigation'):
+        print('    of the %d citing judgments, %d are the same litigation (printed procedural history), '
+              '%d judged by the model to be its own history, '
               '%d probably the same litigation (same title, 0-6 years later), %d other judgments'
-              % (g['dd'], rel.get('same_case_history', 0), rel.get('probable_same_litigation', 0),
-                 rel.get('other_judgment', 0)))
+              % (g['dd'], rel.get('same_case_history', 0), rel.get('same_case_history_model', 0),
+                 rel.get('probable_same_litigation', 0), rel.get('other_judgment', 0)))
     if rows:
         print('    cited by (latest %d of %d): ' % (len(rows), g['dd']) + '; '.join(
             '%s %s (%s)' % (r[0], (r[1] or '')[:40], (r[2] or '')[:10]) for r in rows))
@@ -362,7 +374,8 @@ def main():
     p.add_argument('--cited-name', help='edges: cited case name contains this text')
     p.add_argument('--court', help='edges: citing court, e.g. BCCA')
     p.add_argument('--year-from', type=int); p.add_argument('--year-to', type=int)
-    p.add_argument('--relation', choices=['same_case_history', 'probable_same_litigation', 'other_judgment'],
+    p.add_argument('--relation', choices=['same_case_history', 'same_case_history_model',
+                                          'probable_same_litigation', 'other_judgment'],
                    help='edges: relation type')
     p.add_argument('--run')
     p.add_argument('--db', default=str(DEFAULT_DB))
@@ -375,8 +388,12 @@ def main():
         record = db.execute('SELECT status,manifest_json,input_fingerprint FROM runs WHERE run_id=?', (run,)).fetchone()
         if not record or record['status'] != 'ready':
             raise ValueError('No published run is available for this query; finish offline acceptance first.')
-        courts = json.loads(record['manifest_json']).get('params', {}).get('courts', [])
+        manifest = json.loads(record['manifest_json'])
+        courts = manifest.get('params', {}).get('courts', [])
         print('run %s | courts %s | input %s' % (run, ','.join(courts), record['input_fingerprint']))
+        banner = jev_banner(manifest)
+        if banner:
+            print(banner)
     if not (a.count or a.case):
         a.mode = available_mode(db, run, a.collection, a.mode)
     if not (a.count or a.case) and a.mode == 'vector':

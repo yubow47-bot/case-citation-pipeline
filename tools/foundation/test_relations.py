@@ -30,6 +30,25 @@ class RelationTests(unittest.TestCase):
         self.assertEqual(self.label(False, '', 2010, '', 2010), 'other_judgment')
         self.assertEqual(self.label(False, 'R. v. Smith', None, 'R. v. Smith', 2009), 'other_judgment')
 
+    def test_pair_level_history_basis(self):
+        def rel(basis, own=False):
+            return relations.relation_of(own, '', None, '', None, basis)
+        self.assertEqual(rel('formal_all'), 'same_case_history')
+        self.assertEqual(rel('formal_pair'), 'same_case_history')
+        self.assertEqual(rel('model'), 'same_case_history_model')
+        self.assertEqual(rel('none'), 'other_judgment')
+        self.assertEqual(rel(''), 'other_judgment')
+        # Printed identity outranks a model judgment.
+        self.assertEqual(rel('model', own=True), 'same_case_history')
+
+    def test_jev_banner_only_for_model_runs(self):
+        import query
+        off = {'params': {'jev': 'off'}}
+        live = {'params': {'jev': 'live'}, 'jev': {'layers': {'edges': {'model': 'jev-1.13.0'}}}}
+        self.assertEqual(query.jev_banner(off), '')
+        self.assertEqual(query.jev_banner({'params': {}}), '')
+        self.assertIn('jev-1.13.0', query.jev_banner(live))
+
     def test_inner_year_is_part_of_the_title(self):
         self.assertNotEqual(relations.title_key('Voyageur (1969) Inc. v. X'), relations.title_key('Voyageur Inc. v. X'))
         self.assertEqual(relations.year_of('2004-05-01 00:00:00+00:00'), 2004)

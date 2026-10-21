@@ -50,7 +50,8 @@ KEYWORDS = {
 CARD_LAYER = {'README': 'all', '00_new_court_playbook': 'all', '01_extraction': 'extraction',
               '02_classification': 'classification', '03_merging': 'merging', '04_adjudication': 'adjudication',
               '05_selection_and_edges': 'selection', '06_decision_tables': 'decision_tables',
-              '07_verification_gates': 'verification', '08_pitfalls_by_layer': 'pitfalls'}
+              '07_verification_gates': 'verification', '08_pitfalls_by_layer': 'pitfalls',
+              '09_model_judgments': 'model_judgments'}
 MAX = 1800
 
 
