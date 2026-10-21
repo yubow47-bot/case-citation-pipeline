@@ -1,0 +1,44 @@
+# Jev (TypeSafe System One) judgment policy — method card 09.
+# Thresholds are configuration, not judgments: they do not belong in decisions/.
+# Changing any value changes the run's input identity.
+
+model: jev-1.13.0          # pinned version; aliases such as jev-latest move silently
+api_url: https://api.typesafe.ai/v1/systemone
+concurrency: 8
+timeout_seconds: 30
+max_retries: 4
+english_only: true         # French-fallback texts are recorded, never adopted
+state_char_limit: 6000     # keep each state well under ~1,500 tokens
+
+# Adoption tiers use the selected option's probability (p_max) and its ratio to
+# the runner-up, not Jev's option-count-dependent confidence.
+gates:
+  T1: {p_max: 0.80, ratio: 3.0}             # L1 gap filling; conservative L2
+  T2: {p_max: 0.90, ratio: 5.0, noul: 0.90} # assertive L2 and L3, plus agreement Noul
+  review_floor: 0.60                        # between floor and tier -> review queue
+  label_p_max: 0.80                         # L0 labels below this are "unclassified"
+
+levels:
+  allow_L1: true
+  allow_L2: true
+  allow_L3_count: true     # only N6 may change counts this round
+count_model_confirmed: true  # false -> model_confirmed members do not count toward DD
+
+alarms:
+  L2_adoption_rate: 0.20
+  L3_adoption_rate: 0.50
+  rule_family_override_rate: 0.10
+
+# Cost control (BCCA+BCSC A/B, 2026-10-20: about $1.09 for the first full set of nodes):
+# - N1 readmit (reversing a word-list rejection) asked 3,627 questions and reversed none: off.
+# - N3 only writes labels and N5 changed 34 names: both off by default; set enabled: true to run them.
+# - N1 audits are samples (0.5% of kept rows, 1% of lexical rejections), not scans.
+nodes:
+  N1_candidate_type:  {enabled: true, spec_version: 2, max_questions_per_run: 200000, readmit: false, audit_rate: 0.005, audit_rate_lexical: 0.01}
+  N2_case_name:       {enabled: true, spec_version: 1, max_questions_per_run: 400000}
+  N3_suffix_meaning:  {enabled: false, spec_version: 1, max_questions_per_run: 200000}
+  N4_case_history:    {enabled: true, spec_version: 2, max_questions_per_run: 200000}
+  N5_name_owner:      {enabled: false, spec_version: 1, max_questions_per_run: 200000}
+  N6_identity:        {enabled: true, spec_version: 1, max_questions_per_run: 100000}
+  N7_ruling:          {enabled: true, spec_version: 1, max_questions_per_run: 50000}
+  N8_source_date:     {enabled: true, spec_version: 1, max_questions_per_run: 50000}

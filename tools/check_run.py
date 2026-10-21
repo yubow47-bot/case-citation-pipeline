@@ -35,6 +35,10 @@ class RunCheck:
                 self.eligible_bases = frozenset(ast.literal_eval(node.value.args[0]))
         if self.eligible_bases is None:
             raise ValueError("Cannot read decide.ELIGIBLE_BASES contract")
+        # Method card 09: a Jev-confirmed member (N6) also supports an edge.
+        for node in tree.body:
+            if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "MODEL_ELIGIBLE_BASES" for t in node.targets):
+                self.eligible_bases |= frozenset(ast.literal_eval(node.value.args[0]))
         tree = ast.parse((ROOT / "pipeline" / "edges.py").read_text(encoding="utf-8-sig"))
         self.candidate_labels = None
         for node in tree.body:

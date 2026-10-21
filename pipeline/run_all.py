@@ -43,14 +43,14 @@ ACTIVE_RUNNER = None
 SCHEMA_VERSIONS = {
     "extract_legacy_kept_superseded": "v1.4 (frozen, diagnostic only)",
     "extract_candidates": "candidates-2.4 + native decision year and bounded following context",
-    "classify": "10 + source-verified compound locator and document zones",
+    "classify": "11 (row_status for #111; rule_* columns; Jev nodes N1/N2/N5/N3 when enabled)",
     "merge": "10 + in-source arbitration, identity keys v2, bound parallel runs",
-    "decide": "17 (conflicted-key guards, ruling uncertainty and source quarantine)",
+    "decide": "18 (native-title collision exemption; rule_identity_basis; Jev N6/N7 when enabled)",
     "select": "12 (full-data default; optional frequency profiles)",
-    "edges": "6 (positive provenance, source quarantine, reporter occurrence review and history assessment fields)",
+    "edges": "7 (pair-level history_basis; own_case_history_pair; Jev N4 when enabled)",
     # #88/#89：run 级全局判决登记簿（merge 之后、decide 之前生成）
     "registry": "3 (native English/French metadata/header proof; canonical source identity)",
-    "source_integrity": "1 (native date, source binding, measurable-source disposition)",
+    "source_integrity": "2 (native date, source binding, measurable-source disposition; N8 model date corroboration)",
 }
 
 
@@ -76,9 +76,10 @@ def input_identity(root=ROOT, courts=COURTS, params=None, corpus_dir=None):
         for n in sorted(os.listdir(dec)):
             if n.endswith(".csv"):
                 files["decisions/" + n] = sha256_file(os.path.join(dec, n))
-    cfg = os.path.join(root, "select_config.yaml")
-    if os.path.exists(cfg):
-        files["select_config.yaml"] = sha256_file(cfg)
+    for name in ("select_config.yaml", "jev_config.yaml"):
+        cfg = os.path.join(root, name)
+        if os.path.exists(cfg):
+            files[name] = sha256_file(cfg)
     for relative in ("tools/storage.py", "tools/check_run.py"):
         path = os.path.join(root, relative)
         if os.path.isfile(path):
@@ -198,6 +199,8 @@ class Runner(object):
                        "storage_budget_gb": getattr(args, "storage_budget_gb", 12),
                        "min_free_gb": getattr(args, "min_free_gb", 2),
                        "mixed_key_holdout": bool(getattr(args, "mixed_key_holdout", False)),
+                       # method card 09: off reproduces the rule pipeline exactly.
+                       "jev": getattr(args, "jev", "off"),
                        "select_config": "select_config.yaml (verbatim in select manifest)",
                        "threshold_dd_semantics": "unchanged (constraint 6)"}
         if reused_upstream is not None:
@@ -340,6 +343,8 @@ def main():
                     help="Project peak budget in GiB; checked before and between steps")
     ap.add_argument("--min-free-gb", type=float, default=2,
                     help="Disk free-space reserve in GiB; checked before and between steps")
+    ap.add_argument("--jev", choices=("off", "cache-only", "live"), default="off",
+                    help="Jev judgments for bounded per-case nodes (method card 09); default off")
     args = ap.parse_args()
 
     courts = tuple(args.court) if args.court else \
@@ -380,6 +385,7 @@ def main():
         source_cmd += ["--limit-batches", str(args.limit_batches)]
     for court in courts:
         source_cmd += ["--court", court]
+    source_cmd += jev_args(args)
     r.run_step("source_integrity", source_cmd)
 
     ex = [os.path.join("pipeline", "extract.py"),
@@ -404,7 +410,7 @@ def main():
                     "--court", court, "--input", cand_in,
                     "--output", os.path.join(args.out, "classify_out", court),
                     "--corpus", os.path.join(corpus_dir, court + ".parquet"),
-                    "--text-policy", args.text_policy])
+                    "--text-policy", args.text_policy] + jev_args(args))
     for court in courts:
         r.run_step("merge_" + court,
                    [os.path.join("pipeline", "merge.py"),
@@ -415,6 +421,25 @@ def main():
 
     run_downstream(r)
     finalize(r)
+
+
+def jev_args(args):
+    """Layer flags for Jev; absent (= off) unless the run asked for it."""
+    mode = getattr(args, "jev", "off")
+    return [] if mode == "off" else ["--jev-mode", mode]
+
+
+def collect_jev(out):
+    """Aggregate each layer's jev_summary.json into the run manifest."""
+    summaries = {}
+    for directory, _, names in os.walk(out):
+        if "jev_summary.json" in names:
+            relative = os.path.relpath(directory, out).replace(os.sep, "/")
+            with open(os.path.join(directory, "jev_summary.json"), encoding="utf-8") as f:
+                summaries[relative] = json.load(f)
+    cache = os.path.join(ROOT, "data", "jev_cache.sqlite")
+    return {"layers": summaries,
+            "cache_sha256": sha256_file(cache) if summaries and os.path.isfile(cache) else ""}
 
 
 def run_downstream(r):
@@ -450,7 +475,7 @@ def run_downstream(r):
         # 只在用户显式 --no-mixed-key-holdout 时才需要透传关闭
         if not getattr(args, "mixed_key_holdout", True):
             cmd += ["--no-mixed-key-holdout"]
-        return cmd
+        return cmd + jev_args(args)
 
     for court in courts:
         r.run_step("decide_" + court,
@@ -494,7 +519,10 @@ def run_downstream(r):
                 "--effective", os.path.join(args.out, "decide_out", "cross_court",
                                             "effective_sources.csv"),
                 "--merge-out", os.path.join(args.out, "merge_out"),
-                "--output", os.path.join(args.out, "edges")])
+                "--registry", registry_file,
+                "--corpus-dir", corpus_dir,
+                "--text-policy", getattr(r, "params", {}).get("text_policy", POLICY_EN),
+                "--output", os.path.join(args.out, "edges")] + jev_args(args))
     r.run_step("coverage_report",
                [os.path.join("pipeline", "coverage_report.py"), "--run-dir", args.out])
 
@@ -514,6 +542,8 @@ def finalize(r, before_seal=None):
                          "不标 complete。重试用新目录。")
     if before_seal is not None:
         before_seal()
+    if getattr(args, "jev", "off") != "off":
+        r.manifest["jev"] = collect_jev(args.out)
     r.write_manifest("finalizing")
     if args.compact:
         r.manifest["storage_compaction"] = compact_run(args.out)

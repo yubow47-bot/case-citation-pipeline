@@ -144,6 +144,42 @@ class ReporterContextIdentityTests(unittest.TestCase):
         self.assertEqual(len(out), 1)
         self.assertTrue(all(not m['ruling_identity_status'] for m in rows))
 
+    def test_joint_judgment_titles_are_not_a_reporter_collision(self):
+        # [1991] 2 S.C.R. 577 is one SCC judgment whose native A2AJ name_en is
+        # "R. v. Seaboyer;  R. v. Gayme" (corpus/SCC.parquet, SCC_19912scr577).
+        # Citing courts printing either half of the joint title are not a collision.
+        from identity_evidence import OwnCitations
+        key = '1991|2|scr||577'
+        def rows():
+            return [member(key, year='1991', name='R. v. Seaboyer', court='BCCA'),
+                    member(key, year='1991', name='R. v. Gayme', court='NSCA')]
+        plain = rows()
+        _, stats, _ = self.solve(plain)
+        self.assertEqual(stats['reporter_identity_conflicted_keys'], 1)
+        own = OwnCitations()
+        own[key].add('SCC_19912scr577')
+        own.titles = {'SCC_19912scr577': 'R. v. Seaboyer;  R. v. Gayme'}
+        joint = rows()
+        sources = {row_key(r): {r['court'] + '_source'} for r in joint}
+        stats = Counter()
+        trace = ConstraintLedger(EvidenceSnapshot(joint, sources, 'TEST'))
+        solve_identity(joint, sources, 'TEST', stats, registry={}, gate='registered', holdout=[],
+                       own_cites=own, identity_separations=[], trace=trace, history={})
+        self.assertEqual(stats['reporter_identity_conflicted_keys'], 0)
+        self.assertEqual(stats['reporter_context_conflict_exempt_native_title'], 1)
+        self.assertTrue(all(r['reporter_identity_conflict'] == 'false' for r in joint))
+
+    def test_native_title_exemption_needs_both_halves(self):
+        # A misattributed neighbour (verified on CanLII: Morris v. Saxelby is
+        # [1916] 1 A.C. 688; Mason v. Provident Clothing is [1913] A.C. 724) is
+        # not part of an unrelated native title and stays a conflict.
+        from identity_solve import conflicting_case_context
+        left = {'case_name_modal': 'Morris v. Saxelby'}
+        right = {'case_name_modal': 'Mason v. Provident Clothing & Supply Co. Ltd.'}
+        native = [{'morris', 'saxelby'}]
+        self.assertTrue(conflicting_case_context(left, right, native))
+        self.assertFalse(conflicting_case_context(left, right, [{'morris', 'saxelby', 'mason', 'provident'}]))
+
 
 if __name__ == '__main__':
     unittest.main()

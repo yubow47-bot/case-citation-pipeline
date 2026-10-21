@@ -128,6 +128,7 @@ import datetime
 import json
 import hashlib
 import os
+from pathlib import Path
 import re
 import sys
 from collections import Counter, defaultdict
@@ -643,6 +644,9 @@ BASIS_RANK = {"anchor": 6, "singleton": 6, "document_alias": 6, "co_printed_run"
 # observations independently; it does not upgrade an identity link to proved.
 ELIGIBLE_BASES = frozenset(("anchor", "singleton", "same_citation",
                             "anchor_variant_bilingual", "document_alias", "co_printed_run"))
+# method card 09, N6: a heuristic member Jev confirmed at tier T2. It supports an
+# edge, but group country/court aggregation does not consume it this round.
+MODEL_ELIGIBLE_BASES = frozenset(("model_confirmed",))
 
 
 
@@ -705,6 +709,27 @@ def aggregate_group_origin(group_rows, stats):
         r["case_origin"] = g_country if g_status == "DETERMINED" else g_status
         r["origin_basis"] = "+".join(bases)
         r["origin_evidence_id"] = eids[0] if eids else ""
+
+
+def load_native_titles(corpus_dir, decision_ids):
+    """Corpus judgments' own titles (A2AJ name_en), keyed by decision ID; metadata only."""
+    import pyarrow.parquet as pq
+    from corpus_fields import POLICY_FALLBACK, projection, select_record
+    courts = {d.split("_", 1)[0] for d in decision_ids}
+    titles = {}
+    for court in sorted(courts):
+        path = os.path.join(corpus_dir, court + ".parquet")
+        if not os.path.exists(path):
+            continue
+        parquet = pq.ParquetFile(path)
+        for batch in parquet.iter_batches(batch_size=2048,
+                columns=projection(parquet.schema_arrow.names, include_text=False)):
+            for native in batch.to_pylist():
+                record = select_record(native, POLICY_FALLBACK)
+                did = court + "_" + nk(record["citation"] or "")
+                if did in decision_ids and record["name"]:
+                    titles[did] = record["name"]
+    return titles
 
 
 def build_effective_sources(group_rows, ids, selfd, did_idx, stats):
@@ -1033,7 +1058,10 @@ def main():
                     help="Bound merge-stage printed parallel-run evidence; omission is legacy-none")
     ap.add_argument("--parallel-min-sources", type=int, default=1)
     ap.add_argument("--output", required=True)
+    import jev_client
+    jev_client.add_cli(ap)
     a = ap.parse_args()
+    jev = jev_client.from_args(a)
 
     stats = Counter()
     from source_measurement import prepare_sources, filter_instances, restore_source_audit
@@ -1053,6 +1081,9 @@ def main():
     stats["parallel_instances_loaded"] = len(parallels)
     registry = load_registry(a.registry, excluded_sources)
     own_cites = load_own_citations(a.own_citations, excluded_sources)
+    if a.corpus_dir:
+        own_cites.titles = load_native_titles(a.corpus_dir, {d for ids in own_cites.values() for d in ids})
+        stats["native_titles_loaded"] = len(own_cites.titles)
     separations = load_identity_separations()
     separations_path = os.path.join(DECISIONS,'identity_separations.csv')
     with open(separations_path,'rb') as separation_source:
@@ -1115,8 +1146,17 @@ def main():
     trace_manifest = trace.close()
     # PROBLEMS #62：同名、年份相差 ≤1 的同级组。只在跨法院轮算——跨院合并跑完才是
     # 最终分组；院内轮该列留空（它不是产品列，选取层读的是跨院产出）
+    jev_summary = None
     if a.cross_court:
         add_peer_column(out, stats)
+        # method card 09: N6/N7 on the final cross-court partition only.
+        import jev_decide
+        jev_decide.stamp_rule(out)
+        if jev.enabled("N6_identity") or jev.enabled("N7_ruling"):
+            jev_decide.apply(out, eff_rows, Path(a.output).resolve().parents[1], jev, stats,
+                             own_cites, a.output)
+            jev.close()
+            jev_summary = jev.summary()
     stats["output_rows"] = len(out)
     stats["decision_id_rows"] = len(out_ids)
     # #88/#89 机制 A 留痕：键是真判决自己的引证（登记簿命中或本轮 own）、
@@ -1209,7 +1249,8 @@ def main():
         "mode": "cross_court" if a.cross_court else "in_court",
         "label": label,
         "spec_section": "10",
-        "schema_version": 17,
+        "schema_version": 18,
+        "jev": jev_summary or {"mode": "off"},
         "source_records_file": a.source_records or "",
         "parallel_input_mode": "required" if a.parallel_runs else "legacy-none",
         "parallel_runs_files": a.parallel_runs or [],
@@ -1230,6 +1271,10 @@ def main():
     with open(os.path.join(a.output, "manifest.json"), "w",
               encoding="utf-8", newline="\n") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=1)
+    if jev_summary:
+        with open(os.path.join(a.output, "jev_summary.json"), "w",
+                  encoding="utf-8", newline="\n") as f:
+            json.dump(jev_summary, f, ensure_ascii=False, indent=1)
 
     print("%s  %d rows -> %d groups -> %s" % (label, len(rows), stats["groups_out"], a.output))
     for k, v in sorted(stats.items()):

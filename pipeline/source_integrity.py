@@ -17,7 +17,7 @@ from corpus_fields import POLICY_EN, POLICIES, projection, select_record
 from artifacts import open_csv
 from normalize import nk
 
-VERSION = 'source-integrity-1'
+VERSION = 'source-integrity-2'
 FIELDS = ['source_id', 'source_decision_citation', 'court', 'corpus_row_index',
           'selected_citation', 'text_field', 'text_sha256', 'text_characters',
           'provider_date', 'provider_decision_year', 'native_decision_date',
@@ -27,6 +27,9 @@ FIELDS = ['source_id', 'source_decision_citation', 'court', 'corpus_row_index',
           'native_citation_evidence_json', 'citation_provider_year_conflict',
           'duplicate_text_source_count', 'duplicate_text_sources',
           'text_integrity_status', 'text_integrity_evidence_json',
+          # method card 09, N8: a model-selected header date only corroborates the
+          # provider year; it never changes source_decision_year.
+          'model_native_date', 'model_date_p', 'model_date_status',
           'source_measurable', 'quarantine_reason']
 
 CONTENT = re.compile(r'(?im)^[ \t]*(?:Decision Content|Contenu de la décision)[ \t]*$')
@@ -314,13 +317,68 @@ def _write(path, records):
     temporary.replace(path)
 
 
+N8_STATUSES = {'NO_VERIFIED_NATIVE_DATE', 'AMBIGUOUS_NATIVE_DATES', 'INVALID_NATIVE_DATE'}
+
+
+def _queue_date(jev, record, selected, asks):
+    """N8 scope: no single verified header date, or a provider/native disagreement."""
+    import jev_nodes as jn
+    if not (record['native_date_status'] in N8_STATUSES or
+            'CONFLICT' in record['date_conflict_status']):
+        return
+    if not record['provider_decision_year']:
+        return  # nothing to corroborate
+    if jev.cfg.get('english_only', True) and not jn.is_english(record.get('text_field')):
+        record['model_date_status'] = 'MODEL_SKIPPED_FRENCH'
+        return
+    text = selected.get('text') or ''
+    start, end = header_region(text)
+    header = text[start:min(end, start + 3000)]
+    dates = jn.header_dates(header)
+    if not dates:
+        record['model_date_status'] = 'MODEL_NO_CANDIDATE_DATES'
+        return
+    asks.append((record, dates, jn.n8_state(header, dates), jn.n8_question(dates)))
+
+
+def _ask_dates(jev, asks, output):
+    import jev_client as jc
+    import jev_nodes as jn
+    asks, dropped = jc.cap(asks, jev.node_cfg('N8_source_date').get('max_questions_per_run'), 'N8')
+    answers = jev.ask_many('N8_source_date', [(st, qs) for _, _, st, qs in asks])
+    ledger = []
+    for (record, dates, state, qs), (ckey, resp) in zip(asks, answers):
+        ans = ((resp or {}).get('answers') or {}).get('judgment_date')
+        decision, why = jc.gate(jev.cfg, 'T1', ans, abstain={'none'})
+        if decision == 'adopt' and not jc.level_allowed(jev.cfg, 'L1'):
+            decision, why = 'reject', 'level_disabled'
+        status = 'MODEL_NOT_ADOPTED'
+        pick = jn.option_index((ans or {}).get('choice', ''), 'D', len(dates))
+        if decision == 'adopt' and pick is None:
+            decision, why = 'reject', 'unknown_option'
+        if decision == 'adopt':
+            iso = dates[pick][0]
+            record['model_native_date'] = iso
+            record['model_date_p'] = round(jc.choice_metrics(ans)[1], 4)
+            # Corroboration only: a different year is a conflict flag, never an override.
+            if iso[:4] == record['provider_decision_year']:
+                status = 'MODEL_SELECTED_HEADER_DATE'
+            else:
+                status, decision, why = 'MODEL_DATE_CONFLICT', 'reject', 'year_differs_from_provider'
+        record['model_date_status'] = status
+        ledger.append(jc.ledger_row('N8_source_date', record['source_id'], 'L1', 'judgment_date',
+                                    qs, resp, decision, why, ckey, state=state))
+    jc.write_ledger(Path(output) / 'jev' / 'N8_source_date.csv', ledger)
+
+
 def build_source_records(courts, corpus_dir, text_policy, output,
-                         batch_size=500, limit_batches=None):
+                         batch_size=500, limit_batches=None, jev=None):
     """Inspect every physical row, including zero-citation and missing-text rows."""
     import pyarrow.parquet as pq
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     records = []
+    date_asks = []
     for court in courts:
         parquet = pq.ParquetFile(Path(corpus_dir) / (court + '.parquet'))
         offset = 0
@@ -329,8 +387,15 @@ def build_source_records(courts, corpus_dir, text_policy, output,
             if limit_batches is not None and batch_index >= limit_batches:
                 break
             for i, raw in enumerate(batch.to_pylist(), offset):
-                records.append(inspect_source(select_record(raw, text_policy), court, i))
+                selected = select_record(raw, text_policy)
+                record = inspect_source(selected, court, i)
+                record.update(model_native_date='', model_date_p='', model_date_status='')
+                if jev is not None and jev.enabled('N8_source_date'):
+                    _queue_date(jev, record, selected, date_asks)
+                records.append(record)
             offset += batch.num_rows
+    if date_asks:
+        _ask_dates(jev, date_asks, output)
     duplicate_groups = annotate_duplicate_texts(records)
     _write(output / 'source_records.csv', records)
     anomalies = [r for r in records if not r['source_measurable'] or
@@ -358,6 +423,8 @@ def build_source_records(courts, corpus_dir, text_policy, output,
         count['own_citation_' + r['own_citation_status']] += 1
         count['duplicate_text_rows'] += r['duplicate_text_source_count'] > 1
         count['text_' + r['text_integrity_status']] += 1
+        if r.get('model_date_status'):
+            count['model_date_' + r['model_date_status']] += 1
     summary = {'schema_version': VERSION, 'courts': list(courts),
                'policy_sha256': hashlib.sha256(POLICY_PATH.read_bytes()).hexdigest(),
                'text_policy': text_policy, 'corpus_dir': str(Path(corpus_dir).resolve()),
@@ -401,9 +468,16 @@ def main(argv=None):
     parser.add_argument('--out', required=True)
     parser.add_argument('--batch-size', type=int, default=500)
     parser.add_argument('--limit-batches', type=int)
+    import jev_client
+    jev_client.add_cli(parser)
     args = parser.parse_args(argv)
+    jev = jev_client.from_args(args)
     summary = build_source_records(args.courts, args.corpus_dir, args.text_policy,
-                                   args.out, args.batch_size, args.limit_batches)
+                                   args.out, args.batch_size, args.limit_batches, jev=jev)
+    if jev.mode != 'off':
+        jev.close()
+        (Path(args.out) / 'jev_summary.json').write_text(
+            json.dumps(jev.summary(), ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     print(json.dumps(summary, ensure_ascii=False))
 
 

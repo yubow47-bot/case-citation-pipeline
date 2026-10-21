@@ -725,11 +725,18 @@ def case_context_tokens(name):
             if len(word) >= 3 and word not in generic}
 
 
-def conflicting_case_context(left, right):
-    """Whether two usable titles supply disjoint party contexts, not just unequal strings."""
+def conflicting_case_context(left, right, native_titles=()):
+    """Whether two usable titles supply disjoint party contexts, not just unequal strings.
+
+    A key that is a corpus judgment's own citation has a native title. When both
+    observed titles share party words with that title (a joint judgment such as
+    "R. v. Seaboyer; R. v. Gayme"), they are parts of one style of cause.
+    """
     a = case_context_tokens(left.get('case_name_modal'))
     b = case_context_tokens(right.get('case_name_modal'))
     if not a or not b or a & b:
+        return False
+    if any(a & native and b & native for native in native_titles):
         return False
     # Preserve ordinary spelling changes and shortened corporate party names.
     if any(_one_edit(x, y) or (min(len(x), len(y)) >= 4 and
@@ -739,7 +746,7 @@ def conflicting_case_context(left, right):
     return True
 
 
-def mark_reporter_context_conflicts(rows, stats, trace=None):
+def mark_reporter_context_conflicts(rows, stats, trace=None, own_cites=None):
     """A conflicted printed key cannot transfer identity between title contexts.
 
     Keep every observation in its existing contextual cluster. This is a
@@ -752,10 +759,16 @@ def mark_reporter_context_conflicts(rows, stats, trace=None):
         if complete_reporter_key(row):
             by_key[report_key(row)].append(row)
     conflicts = {}
+    titles = getattr(own_cites, 'titles', {}) or {}
     for key, members in by_key.items():
+        native = [case_context_tokens(titles[d]) for m in members
+                  for d in sorted((own_cites or {}).get(m['merge_key'], ())) if titles.get(d)]
         pairs = [(left, right) for i, left in enumerate(members)
-                 for right in members[i + 1:] if conflicting_case_context(left, right)]
+                 for right in members[i + 1:] if conflicting_case_context(left, right, native)]
         if not pairs:
+            if native and any(conflicting_case_context(l, r) for i, l in enumerate(members)
+                              for r in members[i + 1:]):
+                stats['reporter_context_conflict_exempt_native_title'] += 1
             continue
         conflicts[key] = [{'left_row_key': row_key(left),
                            'right_row_key': row_key(right),
@@ -1367,7 +1380,7 @@ def solve_identity(rows, did_idx, prefix, stats, registry=None, typo_over=None,
     excluded_rows = [r for r in rows if r['identity_source_status'] == 'excluded_source_only']
     rows = [r for r in rows if r['identity_source_status'] != 'excluded_source_only']
     stats['identity_source_excluded_member_rows'] += len(excluded_rows)
-    mark_reporter_context_conflicts(rows, stats, trace)
+    mark_reporter_context_conflicts(rows, stats, trace, own_cites)
     start = neutral_start(rows)
     stats["neutral_rows_before_court_start"] = sum(
         1 for r in rows if r.get("citation_kind") == "neutral" and _before_start(r["merge_key"], start))

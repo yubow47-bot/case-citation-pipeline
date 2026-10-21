@@ -1728,7 +1728,15 @@ def main():
     ap.add_argument("--output", required=True)
     ap.add_argument("--corpus", help="Native parquet for table-driven document zones")
     ap.add_argument("--text-policy", choices=POLICIES, default=POLICY_FALLBACK)
+    import jev_client
+    from jev_classify import RULE_COLUMNS, postpass, stamp_rule
+    jev_client.add_cli(ap)
     args = ap.parse_args()
+    jev = jev_client.from_args(args)
+    jev_nodes = ("N1_candidate_type", "N2_case_name", "N5_name_owner", "N3_suffix_meaning")
+    use_jev = any(jev.enabled(n) for n in jev_nodes)
+    if use_jev and not args.corpus:
+        ap.error("Jev nodes need --corpus for source text")
 
     stats = Counter()
     tables = load_runtime_tables()
@@ -1742,7 +1750,8 @@ def main():
 
     with open(args.input, encoding="utf-8", newline="") as fin:
         reader = csv.DictReader(fin)
-        fieldnames = list(reader.fieldnames) + NEW_COLUMNS + ["zone", "document_zone_evidence_id"]
+        fieldnames = (list(reader.fieldnames) + NEW_COLUMNS + ["zone", "document_zone_evidence_id"]
+                      + RULE_COLUMNS)
         with open(tmp, "w", encoding="utf-8", newline="") as fout:
             w = csv.DictWriter(fout, fieldnames=fieldnames, extrasaction="ignore")
             w.writeheader()
@@ -1761,11 +1770,20 @@ def main():
                                                 int(row["match_end_offset"]))
                     row["document_zone_evidence_id"] = "document_zones:%s:%s" % (args.court, row["corpus_row_index"])
                 stats["zone_" + row["zone"]] += 1
-                w.writerow(clf.run_row(row))
-    os.replace(tmp, out_path)
+                w.writerow(stamp_rule(clf.run_row(row)))
+    jev_summary = None
+    if use_jev:
+        # method card 09: Jev nodes owned by this layer, applied in the same run.
+        jev_summary = postpass(tmp, out_path, fieldnames, args, jev, stats)
+        jev.close()
+        with open(os.path.join(args.output, "jev_summary.json"), "w", encoding="utf-8", newline="\n") as f:
+            json.dump(jev_summary, f, ensure_ascii=False, indent=1)
+    else:
+        os.replace(tmp, out_path)
 
     manifest = {
-        "schema_version": 10,
+        "schema_version": 11,
+        "jev": jev_summary or {"mode": "off"},
         "document_zones": "native_corpus" if args.corpus else "legacy_unknown",
         "text_policy": args.text_policy,
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),

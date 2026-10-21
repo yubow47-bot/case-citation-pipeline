@@ -29,7 +29,7 @@ from collections import Counter, defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk                                      # noqa: E402
-from decide import ELIGIBLE_BASES                             # noqa: E402  (R2 闭环 4.4 共享契约)
+from decide import ELIGIBLE_BASES, MODEL_ELIGIBLE_BASES       # noqa: E402  (R2 闭环 4.4 共享契约)
 from artifacts import open_csv, resolve
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,7 +40,8 @@ EDGE_FIELDS = ["source_decision", "resolved_cited_case", "foreign_status",
                "origin_basis", "origin_evidence_ids", "noncore_origin_evidence",
                "mention_count", "distinct_decisions_count",
                "case_name_modal", "mention_detail_key", "own_case_history",
-               "zone_profile", "history_assessment", "reporter_occurrence_status",
+               "zone_profile", "history_assessment", "own_case_history_pair", "history_basis",
+               "reporter_occurrence_status",
                "reporter_ambiguous_member_keys", "reporter_ambiguous_mention_count",
                "reviewed_edge_support", "reviewed_identity_status",
                "reviewed_foreign_status", "reviewed_origin_country",
@@ -54,7 +55,8 @@ TENTATIVE_FIELDS = ["source_decision", "resolved_cited_case", "identity_status",
 
 def basis_of(identity_status):
     # R2 闭环 4.4：资格集合来自 decide.ELIGIBLE_BASES（同一来源，防止漂移）
-    return identity_status in ELIGIBLE_BASES
+    # method card 09: a Jev-confirmed heuristic member (N6) also supports the edge.
+    return identity_status in ELIGIBLE_BASES or identity_status in MODEL_ELIGIBLE_BASES
 
 
 def candidate_label(identity_status):
@@ -118,7 +120,13 @@ def main():
                     help="decide 跨法院轮 effective_sources.csv（R2-9 唯一成员资格来源）")
     ap.add_argument("--merge-out", required=True)
     ap.add_argument("--output", required=True)
+    ap.add_argument("--registry", default=None, help="Run decision registry (reserved for N4 context)")
+    ap.add_argument("--corpus-dir", default=None, help="Native corpus for Jev N4 passages")
+    ap.add_argument("--text-policy", default="en_then_fr")
+    import jev_client
+    jev_client.add_cli(ap)
     a = ap.parse_args()
+    jev = jev_client.from_args(a)
 
     # 组级属性（每行都带组结论，取任一行即可）
     group_attr = {}
@@ -143,7 +151,11 @@ def main():
                 "noncore_origin_evidence": r.get("noncore_origin_evidence") or "",
                 "case_name_modal": r.get("case_name_modal") or "",
                 "dd": int(r["distinct_decisions_count"] or 0),
+                "deciding_court": r.get("group_deciding_court") or "",
+                "year": "",
             })
+            if r.get("is_primary") == "true":
+                g["year"] = r.get("year_printed") or ""
     # 决策组的组级列是逐行一致的——不一致即上游违约，拒绝写表
     bad = 0
     with open_csv(a.decided) as f:
@@ -158,6 +170,7 @@ def main():
     from document_zones import edge_zones, history_assessment
     mention_zones = defaultdict(list)
     mention_edges = defaultdict(list)
+    first_mention = {}
     stats = Counter()
     for court in sorted({court for court, _ in row2group}):
         # A missing file cannot mean that every member had zero mentions.
@@ -181,6 +194,10 @@ def main():
                 mention_edges[(m["source_decision_citation"], gid)].append(
                     "%s|%s" % (court, m["merge_key"]))
                 mention_zones[(m["source_decision_citation"], gid)].append(m.get("zone") or "unknown")
+                if (m.get("corpus_row_index") or "").isdigit():  # legacy fixtures lack offsets
+                    first_mention.setdefault((m["source_decision_citation"], gid), (
+                        m["source_decision_citation"].split("_", 1)[0], int(m["corpus_row_index"]),
+                        int(m["match_start_offset"]), int(m["match_end_offset"])))
                 stats["mentions_in_edges"] += 1
 
     # 有效来源关联 → 边
@@ -259,6 +276,12 @@ def main():
             }
             row["own_case_history"], row["zone_profile"] = edge_zones(mention_zones.get(mkey, []))
             row["history_assessment"] = history_assessment(mention_zones.get(mkey, []))
+            # The printed appeal block names the cited ruling as this case's history;
+            # the relation holds for the pair, not only for the block position.
+            zones = mention_zones.get(mkey, [])
+            row["history_basis"] = ("formal_all" if zones and all(z == "appeal_block" for z in zones)
+                                    else "formal_pair" if "appeal_block" in zones else "none")
+            row["own_case_history_pair"] = str(row["history_basis"] != "none").lower()
             all_rows.append(row)
             if not supported and g["group_origin_status"] == "DETERMINED":
                 tentative.append({k: row[k] for k in TENTATIVE_FIELDS})
@@ -269,6 +292,18 @@ def main():
            if per_group_counted[gid] != g["dd"]]
     assert not bad, "R2-9 违约：%d 个组的 counted 来源数 != dd，如 %r" % (
         len(bad), bad[:5])
+
+    jev_summary = None
+    if jev.enabled("N4_case_history"):
+        if not a.corpus_dir:
+            ap.error("Jev N4 needs --corpus-dir")
+        import jev_edges
+        jev_edges.apply(all_rows, group_attr, first_mention, a.corpus_dir, a.text_policy,
+                        jev, stats, a.output)
+        jev.close()
+        jev_summary = jev.summary()
+    for basis, count in Counter(r["history_basis"] for r in all_rows).items():
+        stats["edge_history_basis_" + basis] = count
 
     stats["edges_total"] = len(all_rows)
     fc = Counter(r["foreign_status"] for r in all_rows)
@@ -308,6 +343,7 @@ def main():
         "decided_input": a.decided,
         "effective_input": a.effective,
         "stats": dict(sorted(stats.items())),
+        "jev": jev_summary or {"mode": "off"},
         "reporter_occurrence_review": {
             "canonical_fields": "Unchanged effective-source authority; checked by check_run",
             "reviewed_fields": "Source-actual member confidence; conflicted-only support cannot inherit group country",
@@ -320,6 +356,10 @@ def main():
     with open(os.path.join(a.output, "manifest.json"), "w",
               encoding="utf-8", newline="\n") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=1)
+    if jev_summary:
+        with open(os.path.join(a.output, "jev_summary.json"), "w",
+                  encoding="utf-8", newline="\n") as f:
+            json.dump(jev_summary, f, ensure_ascii=False, indent=1)
 
     print("edges: %d (FOREIGN %d / DOMESTIC_CA %d / UNDETERMINED %d / CONFLICT %d; "
           "supported %d / heuristic_only %d)"

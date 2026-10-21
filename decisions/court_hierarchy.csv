@@ -1,0 +1,12 @@
+higher_court,lower_court,source,source_locator
+CSC,CAF,"Supreme Court Act, RSC 1985, c S-26, s 40(1): appeal lies from any final or other judgment of the Federal Court of Appeal or of the highest court of final resort in a province","CanLII/A2AJ LEGISLATION-FED RSC 1985 c S-26 s 40 (fetched 2026-10-20)"
+CSC,BCCA,"Supreme Court Act, RSC 1985, c S-26, s 40(1): highest court of final resort in a province","CanLII/A2AJ LEGISLATION-FED RSC 1985 c S-26 s 40 (fetched 2026-10-20)"
+CSC,ONCA,"Supreme Court Act, RSC 1985, c S-26, s 40(1): highest court of final resort in a province","CanLII/A2AJ LEGISLATION-FED RSC 1985 c S-26 s 40 (fetched 2026-10-20)"
+CSC,NSCA,"Supreme Court Act, RSC 1985, c S-26, s 40(1): highest court of final resort in a province","CanLII/A2AJ LEGISLATION-FED RSC 1985 c S-26 s 40 (fetched 2026-10-20)"
+CSC,YKCA,"Supreme Court Act, RSC 1985, c S-26, s 40(1): highest court of final resort in a province or territory","CanLII/A2AJ LEGISLATION-FED RSC 1985 c S-26 s 40 (fetched 2026-10-20)"
+CAF,CF,"Federal Courts Act, RSC 1985, c F-7, s 27(1): an appeal lies to the Federal Court of Appeal from decisions of the Federal Court","CanLII/A2AJ LEGISLATION-FED RSC 1985 c F-7 s 27 (fetched 2026-10-20)"
+CAF,CCI,"Federal Courts Act, RSC 1985, c F-7, s 27(1.1)-(1.2): an appeal lies to the Federal Court of Appeal from judgments of the Tax Court of Canada","CanLII/A2AJ LEGISLATION-FED RSC 1985 c F-7 s 27 (fetched 2026-10-20)"
+BCCA,BCSC,"Court of Appeal Act, SBC 2021, c 6, s 13(1)(a): an appeal may be brought to the court from an order of the Supreme Court or a judge of the Supreme Court","CanLII/A2AJ LEGISLATION-BC SBC 2021 c 6 s 13 (fetched 2026-10-20)"
+ONCA,ONSC,"Courts of Justice Act, RSO 1990, c C.43, s 6(1)(b): an appeal lies to the Court of Appeal from a final order of a judge of the Superior Court of Justice","CanLII/A2AJ LEGISLATION-ON RSO 1990 c C43 s 6 (fetched 2026-10-20)"
+NSCA,NSSC,"Judicature Act, RSNS 1989, c 240, s 38(1): an appeal lies to the Court of Appeal from any decision, verdict, judgment or order of the Supreme Court","CanLII/A2AJ LEGISLATION-NS RSNS 1989 c 240 s 38 (searched 2026-10-20)"
+YKCA,YKSC,"Court of Appeal Act, RSY 2002, c 47, s 2(a): an appeal lies to the Court of Appeal from every judgment, order or decree made by the Supreme Court or a judge thereof","CanLII/A2AJ LEGISLATION-YT RSY 2002 c 47 s 2 (fetched 2026-10-20)"
