@@ -1,5 +1,17 @@
 # Changes
 
+## v1.2.0 — 2026-10-20
+
+- Added optional model-assisted judgments with TypeSafe Jev (`--jev`, off by default) for per-case calls that rules cannot write completely: where a case name begins, whether a span is a citation, whether a cited ruling is part of the same litigation, heuristic identity, near-year rulings and header dates. Rule results are kept, model-judged values are marked, and answers are cached so a run can be replayed without the API.
+- Added a source-integrity stage: native date headers, source-text bindings, and quarantine of sources whose text conflicts with their own citation.
+- Strengthened case identity: guarded parallel-citation unions, reporter-key collision holds with an exemption for joint judgments, reporter date windows, and uncertainty marks for neighbouring-year rulings.
+- Added document zones and pair-level own-case history; citation links now require a counted mention.
+- Separated "not a citation" from "a citation that is not counted"; abbreviated dates no longer become reporter links.
+- Added a sourced court-hierarchy table citing the statute behind each appeal route.
+- Rewrote the README as a short introduction; method card 09 documents model judgments.
+
+This is a software source release. Output schemas changed (classify 11, decide 18, edges 7, source integrity 2), so runs made by earlier versions are not comparable column for column. No new full-corpus run is part of this release.
+
 ## v1.1.2 — 2026-10-16
 
 - Refactored identity evidence, constraints, and solving; strengthened proof-bound separation, reporter court envelopes, and appeal-history and same-key guards.
