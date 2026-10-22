@@ -51,6 +51,7 @@ sys.path.insert(0, PIPE)
 
 import normalize                                    # noqa: E402
 import shapes                                       # noqa: E402
+from artifacts import replace_file                  # noqa: E402
 
 SHAPES = [(name, re.compile(rx)) for name, rx in shapes.SHAPES]
 SHAPE_ORDER = list(shapes.SHAPE_ORDER)
@@ -439,7 +440,7 @@ def _atomic_write_json(path, obj):
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8", newline="\n") as f:
         json.dump(obj, f, ensure_ascii=False, indent=1)
-    os.replace(tmp, path)
+    replace_file(tmp, path)
 
 
 def write_batch(path, rows, schema=None):
@@ -452,7 +453,7 @@ def write_batch(path, rows, schema=None):
         w.writerow(schema)
         for r in rows:
             w.writerow(["" if r[k] is None else r[k] for k in schema])
-    os.replace(tmp, path)
+    replace_file(tmp, path)
 
 
 def batch_path(run_dir, idx):
@@ -629,9 +630,9 @@ def merge(out_root, courts=COURTS, text_policy=None):
                             counts["kept_rows"] += 1
                             bc["kept_rows"] += 1
                             bc["raw_rows"] += 1
-    os.replace(tmp_k, kept_path)
-    os.replace(tmp_s, sup_path)
-    os.replace(tmp_c, cand_path)
+    replace_file(tmp_k, kept_path)
+    replace_file(tmp_s, sup_path)
+    replace_file(tmp_c, cand_path)
     return counts
 
 

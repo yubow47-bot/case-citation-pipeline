@@ -74,7 +74,7 @@ import classify                                               # noqa: E402
 import extract                                                # noqa: E402
 import merge as merge_mod                                     # noqa: E402
 from normalize import nk                                      # noqa: E402
-from artifacts import open_csv, resolve                      # noqa: E402
+from artifacts import open_csv, replace_file, resolve        # noqa: E402
 from corpus_fields import POLICY_EN, POLICY_FALLBACK, POLICIES, select_record, projection  # noqa: E402
 
 REGISTRY_FIELDS = ["merge_key", "decision_id", "source_court", "source"]
@@ -110,7 +110,7 @@ def _write_csv(path, fields, rows):
         w.writeheader()
         for r in rows:
             w.writerow(r)
-    os.replace(tmp, path)
+    replace_file(tmp, path)
 
 
 def build_classifier():

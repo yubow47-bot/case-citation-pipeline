@@ -50,7 +50,7 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk, normalize_code                      # noqa: E402
-from artifacts import open_csv                               # noqa: E402
+from artifacts import open_csv, replace_file                 # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DECISIONS = os.path.join(ROOT, "decisions")
@@ -141,7 +141,7 @@ def legacy_report(a):
             w.writerow([i, k, forms[k].most_common(1)[0][0], rows[k], len(dd[k]),
                         round(run / total * 100, 2) if total else 0.0,
                         "in_table_unresolved" if k in in_table else "absent"])
-    os.replace(tmp, a.out)
+    replace_file(tmp, a.out)
 
     print("kind=%s  待填 %d 行 / %d 族 -> %s" % (a.kind, total, len(order), a.out))
     run = 0
@@ -315,7 +315,7 @@ def write_family_report(path, kind, families):
                 **{"candidate_%s_rows" % group: stats["groups"][group]
                    for group in ARBITRATION_GROUPS},
             })
-    os.replace(tmp, path)
+    replace_file(tmp, path)
     return {"path": "coverage/" + path.name, "families": len(order), "report_scope": scope}
 
 
@@ -441,7 +441,7 @@ def run_report(run_dir):
     with open(tmp, "w", encoding="utf-8", newline="\n") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
         f.write("\n")
-    os.replace(tmp, path)
+    replace_file(tmp, path)
     print("coverage: %d candidate rows / %d exact-span positions; %d counted positions (%d UNSUPPORTED); %d final relations -> %s"
           % (candidates["rows"], len(candidates["positions"]), len(counted["positions"]),
              len(unsupported["positions"]), relations["unique_relations"], output))

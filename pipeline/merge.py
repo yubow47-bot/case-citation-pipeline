@@ -61,6 +61,7 @@ from collections import Counter, defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk                                      # noqa: E402
+from artifacts import replace_file                            # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -1304,7 +1305,7 @@ def _emit(args, stats, per_key_counted, per_key_members, mentions,
             w = csv.DictWriter(f, fieldnames=fields)
             w.writeheader()
             w.writerows(rows)
-        os.replace(tmp, path)
+        replace_file(tmp, path)
     if mapping_rows is not None:
         path = os.path.join(args.output, "key_mapping.csv")
         tmp = path + ".tmp"
@@ -1313,7 +1314,7 @@ def _emit(args, stats, per_key_counted, per_key_members, mentions,
                                               "candidate_count"])
             w.writeheader()
             w.writerows(mapping_rows)
-        os.replace(tmp, path)
+        replace_file(tmp, path)
 
     manifest = {
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
@@ -1489,7 +1490,7 @@ def run_legacy(args, stats):
             w = csv.DictWriter(f, fieldnames=fields)
             w.writeheader()
             w.writerows(rows)
-        os.replace(tmp, path)
+        replace_file(tmp, path)
 
     manifest = {
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),

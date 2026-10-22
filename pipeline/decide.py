@@ -137,7 +137,7 @@ from urllib.parse import quote
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk                                      # noqa: E402
-from artifacts import (open_csv, resolve as resolve_artifact,
+from artifacts import (open_csv, replace_file, resolve as resolve_artifact,
                        sha256_logical_csv_bytes)  # noqa: E402
 from identity_constraints import ConstraintLedger
 from identity_evidence import EvidenceSnapshot
@@ -1242,7 +1242,7 @@ def main():
             w = csv.DictWriter(f, fieldnames=flds, extrasaction="ignore")
             w.writeheader()
             w.writerows(data)
-        os.replace(tmp, path)
+        replace_file(tmp, path)
 
     manifest = {
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),

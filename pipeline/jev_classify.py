@@ -11,6 +11,7 @@ from collections import Counter, defaultdict
 
 import jev_client as jc
 import jev_nodes as jn
+from artifacts import replace_file
 
 RULE_COLUMNS = ["row_status", "row_status_source", "rule_rejected_reason",
                 "case_name_source", "rule_candidate_case_name", "rule_name_rejected_reason",
@@ -320,7 +321,7 @@ def postpass(tmp_path, out_path, fieldnames, args, jev, stats, keep_input=False)
                 for k in upd:
                     stats["jev_applied_" + k] += 1
             w.writerow(row)
-    os.replace(out_path + ".jev", out_path)
+    replace_file(out_path + ".jev", out_path)
     if not keep_input:  # tests replay one input under several configurations
         os.remove(tmp_path)
 

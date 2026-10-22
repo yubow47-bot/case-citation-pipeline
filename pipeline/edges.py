@@ -30,7 +30,7 @@ from collections import Counter, defaultdict
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk                                      # noqa: E402
 from decide import ELIGIBLE_BASES, MODEL_ELIGIBLE_BASES       # noqa: E402  (R2 闭环 4.4 共享契约)
-from artifacts import open_csv, resolve
+from artifacts import open_csv, replace_file, resolve
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -57,6 +57,16 @@ def basis_of(identity_status):
     # R2 闭环 4.4：资格集合来自 decide.ELIGIBLE_BASES（同一来源，防止漂移）
     # method card 09: a Jev-confirmed heuristic member (N6) also supports the edge.
     return identity_status in ELIGIBLE_BASES or identity_status in MODEL_ELIGIBLE_BASES
+
+
+def group_case_name(candidates):
+    """Name a group from all identity-supported members, not from whichever row comes first.
+
+    candidates: Counter {case_name_modal: summed key_occurrence_count}. The most-cited
+    name wins; ties break on the name itself so the result does not depend on row order."""
+    if not candidates:
+        return ""
+    return min(candidates.items(), key=lambda kv: (-kv[1], kv[0]))[0]
 
 
 def candidate_label(identity_status):
@@ -132,8 +142,14 @@ def main():
     group_attr = {}
     row2group = {}
     member_origin = {}
+    # case_name_modal 是成员列不是组列：首行恰好无名时整组无名（Dunsmuir、Vavilov），
+    # 故汇总所有身份有依据成员的名字，按出现次数选
+    group_names = defaultdict(Counter)
     with open_csv(a.decided) as f:
         for r in csv.DictReader(f):
+            name = (r.get("case_name_modal") or "").strip()
+            if name and basis_of(r.get("identity_basis") or ""):
+                group_names[r["merged_group_id"]][name] += int(r.get("key_occurrence_count") or 0)
             row2group[(r.get("court") or "", r["merge_key"])] = r["merged_group_id"]
             member_origin[(r.get("court") or "") + "|" + r["merge_key"]] = {
                 k: r.get(k, "") for k in ("member_origin_country", "member_origin_status",
@@ -149,13 +165,15 @@ def main():
                 "group_origin_basis": r.get("group_origin_basis") or "",
                 "group_origin_evidence_ids": r.get("group_origin_evidence_ids") or "",
                 "noncore_origin_evidence": r.get("noncore_origin_evidence") or "",
-                "case_name_modal": r.get("case_name_modal") or "",
+                "case_name_modal": "",
                 "dd": int(r["distinct_decisions_count"] or 0),
                 "deciding_court": r.get("group_deciding_court") or "",
                 "year": "",
             })
             if r.get("is_primary") == "true":
                 g["year"] = r.get("year_printed") or ""
+    for gid, g in group_attr.items():
+        g["case_name_modal"] = group_case_name(group_names.get(gid))
     # 决策组的组级列是逐行一致的——不一致即上游违约，拒绝写表
     bad = 0
     with open_csv(a.decided) as f:
@@ -336,7 +354,7 @@ def main():
             w = csv.DictWriter(f, fieldnames=fields)
             w.writeheader()
             w.writerows(rows)
-        os.replace(tmp, path)
+        replace_file(tmp, path)
 
     manifest = {
         "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),

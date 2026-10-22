@@ -1,7 +1,34 @@
-"""Read retained plain or compressed artifact CSVs without unpacking them."""
+"""Read retained plain or compressed artifact CSVs without unpacking them, and
+replace finished artifacts atomically."""
+import csv
 import gzip
 import hashlib
+import os
+import time
 from pathlib import Path
+
+# Member lists can be long: on the nine-court corpus the Dunsmuir group's
+# co_printed_run_ids is about 250 KB, past Python's default 131,072-byte field limit.
+# Every pipeline step imports this module, so the limit is raised once here.
+csv.field_size_limit(10 ** 9)
+
+# Windows reports a just-written file as busy while Defender or the search indexer
+# scans it (seen on exFAT): WinError 5 (access denied) or 32 (sharing violation).
+_BUSY_WINERRORS = (5, 32)
+
+
+def replace_file(src, dst, attempts=6, delay=0.5):
+    """os.replace that waits briefly while Windows reports the target busy.
+
+    Any other error, or the last attempt, is raised unchanged."""
+    for attempt in range(1, attempts + 1):
+        try:
+            os.replace(src, dst)
+            return
+        except OSError as exc:
+            if getattr(exc, "winerror", None) not in _BUSY_WINERRORS or attempt == attempts:
+                raise
+            time.sleep(delay * attempt)
 
 
 def resolve(path):

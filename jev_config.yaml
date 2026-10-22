@@ -33,12 +33,14 @@ alarms:
 # - N1 readmit (reversing a word-list rejection) asked 3,627 questions and reversed none: off.
 # - N3 only writes labels and N5 changed 34 names: both off by default; set enabled: true to run them.
 # - N1 audits are samples (0.5% of kept rows, 1% of lexical rejections), not scans.
+# max_questions_per_run: null asks every eligible question. A number makes the node answer a
+# fixed-seed sample instead; the nine-court run stopped N7 at 50,000, so release runs leave it null.
 nodes:
-  N1_candidate_type:  {enabled: true, spec_version: 2, max_questions_per_run: 200000, readmit: false, audit_rate: 0.005, audit_rate_lexical: 0.01}
-  N2_case_name:       {enabled: true, spec_version: 1, max_questions_per_run: 400000}
-  N3_suffix_meaning:  {enabled: false, spec_version: 1, max_questions_per_run: 200000}
-  N4_case_history:    {enabled: true, spec_version: 2, max_questions_per_run: 200000}
-  N5_name_owner:      {enabled: false, spec_version: 1, max_questions_per_run: 200000}
-  N6_identity:        {enabled: true, spec_version: 1, max_questions_per_run: 100000}
-  N7_ruling:          {enabled: true, spec_version: 1, max_questions_per_run: 50000}
-  N8_source_date:     {enabled: true, spec_version: 1, max_questions_per_run: 50000}
+  N1_candidate_type:  {enabled: true, spec_version: 2, max_questions_per_run: null, readmit: false, audit_rate: 0.005, audit_rate_lexical: 0.01}
+  N2_case_name:       {enabled: true, spec_version: 1, max_questions_per_run: null}
+  N3_suffix_meaning:  {enabled: false, spec_version: 1, max_questions_per_run: null}
+  N4_case_history:    {enabled: true, spec_version: 2, max_questions_per_run: null}
+  N5_name_owner:      {enabled: false, spec_version: 1, max_questions_per_run: null}
+  N6_identity:        {enabled: true, spec_version: 1, max_questions_per_run: null}
+  N7_ruling:          {enabled: true, spec_version: 1, max_questions_per_run: null}
+  N8_source_date:     {enabled: true, spec_version: 1, max_questions_per_run: null}

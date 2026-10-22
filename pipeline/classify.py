@@ -68,6 +68,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from normalize import nk, normalize_code                      # noqa: E402
 from shapes import SHAPES as _CONTEXT_SHAPES                  # noqa: E402
 from shapes import load_compound_locator_rows                # noqa: E402
+from artifacts import replace_file                            # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -1779,7 +1780,7 @@ def main():
         with open(os.path.join(args.output, "jev_summary.json"), "w", encoding="utf-8", newline="\n") as f:
             json.dump(jev_summary, f, ensure_ascii=False, indent=1)
     else:
-        os.replace(tmp, out_path)
+        replace_file(tmp, out_path)
 
     manifest = {
         "schema_version": 11,

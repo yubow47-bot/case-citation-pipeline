@@ -17,7 +17,11 @@ import re
 import shutil
 import stat
 import subprocess
+import sys
 import tempfile
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'pipeline'))
+from artifacts import replace_file  # noqa: E402  (retries while Windows scanners hold the file)
 
 GiB = 1024 ** 3
 MiB = 1024 ** 2
@@ -187,7 +191,7 @@ def _atomic_json(path, value):
             stream.write('\n')
             stream.flush()
             os.fsync(stream.fileno())
-        os.replace(temporary, path)
+        replace_file(temporary, path)
     finally:
         if os.path.exists(temporary):
             os.unlink(temporary)
@@ -247,7 +251,7 @@ def compact_run(run_dir, compresslevel=6):
                 _, current_sha = _manifest(run_dir, {'complete', 'failed', 'finalizing'})
                 if current_sha != manifest_sha:
                     raise StorageError('Run manifest changed during compaction: ' + str(run_dir))
-                os.replace(temporary, target)
+                replace_file(temporary, target)
                 path.unlink()
             finally:
                 if temporary.exists():

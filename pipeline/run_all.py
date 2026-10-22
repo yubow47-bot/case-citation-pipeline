@@ -33,6 +33,7 @@ sys.path.insert(0, PIPE)
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 from storage import preflight, compact_run, GiB, StorageLimitError
 from corpus_fields import POLICY_EN, POLICY_FALLBACK, POLICIES
+from artifacts import replace_file
 
 COURTS = tuple(c for c in os.environ.get("PIPELINE_COURTS", "SCC,ONCA,BCCA").split(",") if c)  # 2026-09-18 用户裁定 BCCA 并入主线语料范围；PIPELINE_COURTS 仍可覆盖（临时/实验用）
 ACTIVE_RUNNER = None
@@ -232,7 +233,7 @@ class Runner(object):
         tmp = self.manifest_path + ".tmp"
         with open(tmp, "w", encoding="utf-8", newline="\n") as f:
             json.dump(m, f, ensure_ascii=False, indent=1)
-        os.replace(tmp, self.manifest_path)
+        replace_file(tmp, self.manifest_path)
 
     def run_step(self, name, cmd):
         print("[run_all] %s: %s" % (name, " ".join(cmd)))

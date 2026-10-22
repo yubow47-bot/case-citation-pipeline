@@ -40,6 +40,8 @@ from collections import Counter
 
 import yaml
 
+from artifacts import replace_file
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -117,7 +119,7 @@ def main():
             w = csv.DictWriter(f, fieldnames=flds, extrasaction="ignore")
             w.writeheader()
             w.writerows(data)
-        os.replace(tmp, path)
+        replace_file(tmp, path)
 
     # 不删行（§11.3）：完整表始终留存，任何时候都能回答「某案为什么不在结果里」
     assert stats["kept"] + stats["dropped"] == len(rows), "行数不守恒"
