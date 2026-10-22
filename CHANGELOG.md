@@ -4,7 +4,7 @@
 
 - Fixed group names in edges: a group is named from all identity-supported members, so cases such as Dunsmuir and Vavilov are no longer exported unnamed.
 - Long CSV fields no longer stop the nine-court registry report; atomic file replacement retries briefly when Windows scanners hold a file.
-- Jev nodes have no per-run question caps.
+- Jev nodes have no per-run question caps. The pinned model is `typesafe/jev-1.14`; the endpoint is no longer in the repository and is read from `JEV_API_URL`.
 - Case names lose closed citation signals (`cf.`, `see,`, `relying on`, `the decision in`); table-of-contents headings and docket, lot and count numbers are no longer read as reporters.
 - Sourced English Law Reports windows (K.B., Q.B., Ch., Q.B.D., Ch. D.) and U.S. Reports windows give a country where homonyms allow it.
 - Appeal Cases, All England and Weekly Law Reports from the 1961 volume, and a printed House of Lords label, now prove a case is not Canadian; such links are FOREIGN with an empty country.

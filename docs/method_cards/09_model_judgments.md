@@ -70,12 +70,12 @@ Rule values are kept: `rule_rejected_reason`, `rule_candidate_case_name`, `rule_
 
 ## Reproducibility and control
 
-- The model is pinned to a versioned ID (`jev-1.13.0`), never an alias. Each answer records the versioned `model` field of its response.
+- The model is pinned to a versioned ID (`typesafe/jev-1.14`), never an alias. Each answer records the versioned `model` field of its response.
 - The cache (`data/jev_cache.sqlite`) is keyed by model, node, spec version, state and questions. `cache-only` replays a live run exactly; a miss is "no answer".
 - Each layer writes `jev/<node>.csv` ledgers (choice, probabilities, `p_max`, ratio, Noul, level, adoption, reason, state excerpt) and `jev_summary.json` (calls, cache hits, failures, tokens, latency). The run manifest aggregates them with the cache hash.
 - Each node has `enabled` and `max_questions_per_run` (`null`, the release setting, asks every eligible question; a number answers a fixed-seed sample above it). Each level has a switch (`allow_L1`, `allow_L2`). `count_model_confirmed: false` disables N6 support.
 - API failures, cache misses and throttling produce "no answer" for that item. They do not fail the layer and do not become a default value.
-- The key is read only from `TYPESAFE_API_KEY`.
+- The key is read only from `TYPESAFE_API_KEY` and the endpoint only from `JEV_API_URL`; neither is stored in the repository.
 
 ## Alarms
 

@@ -2,8 +2,8 @@
 # Thresholds are configuration, not judgments: they do not belong in decisions/.
 # Changing any value changes the run's input identity.
 
-model: jev-1.13.0          # pinned version; aliases such as jev-latest move silently
-api_url: https://api.typesafe.ai/v1/systemone
+model: typesafe/jev-1.14   # pinned version; aliases such as jev-latest move silently
+# The endpoint is not part of the repository: set JEV_API_URL in the run environment.
 concurrency: 8
 timeout_seconds: 30
 max_retries: 4

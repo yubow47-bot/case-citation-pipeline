@@ -7,7 +7,8 @@ replays a live run exactly. `off` never calls anything and is the rule pipeline.
 
 The wire format follows POST /v1/systemone (typesafe-sdk 0.7.5 schema); the
 standard library is used so production environments need no extra dependency.
-The API key is read only from TYPESAFE_API_KEY and is never written anywhere.
+The API key is read only from TYPESAFE_API_KEY and the endpoint only from JEV_API_URL;
+neither is written anywhere or kept in the repository.
 """
 import concurrent.futures
 import datetime
@@ -118,7 +119,7 @@ def cap(items, limit, seed):
 
 
 def _http_transport(cfg):
-    url = cfg.get("api_url", "https://api.typesafe.ai/v1/systemone")
+    url = os.environ.get("JEV_API_URL", "")
     timeout = float(cfg.get("timeout_seconds", 30))
     retries = int(cfg.get("max_retries", 4))
 
@@ -126,6 +127,8 @@ def _http_transport(cfg):
         key = os.environ.get("TYPESAFE_API_KEY", "")
         if not key:
             raise RuntimeError("TYPESAFE_API_KEY is not set")
+        if not url:
+            raise RuntimeError("JEV_API_URL is not set")
         data = json.dumps(body, ensure_ascii=False).encode("utf-8")
         delay = 0.5
         for attempt in range(retries + 1):

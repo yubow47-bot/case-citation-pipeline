@@ -50,13 +50,22 @@ class JevClientTests(unittest.TestCase):
         self.assertEqual(out[0][1], None)
         self.assertEqual(fake.bodies, [])
 
+    def test_endpoint_comes_only_from_the_environment(self):
+        import os
+        from unittest import mock
+        self.assertNotIn("api_url", CFG)
+        with mock.patch.dict(os.environ, {"TYPESAFE_API_KEY": "k"}, clear=False):
+            os.environ.pop("JEV_API_URL", None)
+            with self.assertRaisesRegex(RuntimeError, "JEV_API_URL"):
+                jc._http_transport(CFG)({"model": CFG["model"]})
+
     def test_live_caches_and_cache_only_replays(self):
         fake = FakeTransport()
         live = self.client("live", fake)
         first = live.ask_many("N2_case_name", [("s", QUESTIONS), ("s", QUESTIONS)])
         live.close()
         self.assertEqual(len(fake.bodies), 1)  # identical items are sent once
-        self.assertEqual(fake.bodies[0]["model"], "jev-1.13.0")
+        self.assertEqual(fake.bodies[0]["model"], CFG["model"])
         replay = self.client("cache-only", FakeTransport(fail=True))
         second = replay.ask_many("N2_case_name", [("s", QUESTIONS)])
         self.assertEqual(second[0][1], first[0][1])
