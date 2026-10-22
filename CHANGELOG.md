@@ -1,5 +1,17 @@
 # Changes
 
+## Unreleased
+
+- Fixed group names in edges: a group is named from all identity-supported members, so cases such as Dunsmuir and Vavilov are no longer exported unnamed.
+- Long CSV fields no longer stop the nine-court registry report; atomic file replacement retries briefly when Windows scanners hold a file.
+- Jev nodes have no per-run question caps.
+- Case names lose closed citation signals (`cf.`, `see,`, `relying on`, `the decision in`); table-of-contents headings and docket, lot and count numbers are no longer read as reporters.
+- Sourced English Law Reports windows (K.B., Q.B., Ch., Q.B.D., Ch. D.) and U.S. Reports windows give a country where homonyms allow it.
+- Appeal Cases, All England and Weekly Law Reports from the 1961 volume, and a printed House of Lords label, now prove a case is not Canadian; such links are FOREIGN with an empty country.
+- Added provincial court labels (Alberta, Manitoba and New Brunswick Queen's Bench, Newfoundland Court of Appeal, Quebec Superior Court, Ontario Superior Court of Justice).
+
+Output schemas are unchanged apart from two new `reporter_origin_scope.csv` columns. Runs from earlier versions differ in names, country and court columns.
+
 ## v1.2.0 — 2026-10-20
 
 - Added optional model-assisted judgments with TypeSafe Jev (`--jev`, off by default) for per-case calls that rules cannot write completely: where a case name begins, whether a span is a citation, whether a cited ruling is part of the same litigation, heuristic identity, near-year rulings and header dates. Rule results are kept, model-judged values are marked, and answers are cached so a run can be replayed without the API.
