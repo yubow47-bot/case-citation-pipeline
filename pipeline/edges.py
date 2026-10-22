@@ -85,13 +85,17 @@ def origin_for_edge(group, members, identity_supported):
     known = [m for m in members if m.get("member_origin_status") == "DETERMINED"
              and m.get("member_origin_country")]
     conflict = [m for m in members if m.get("member_origin_status") == "CONFLICT"]
+    # PROBLEMS #181: "not Canadian" with no country (decide._not_domestic_origin).
+    notdom = [m for m in members if m.get("member_origin_status") == "NOT_DOMESTIC"]
     countries = {m["member_origin_country"] for m in known}
-    if known or conflict:
-        evidence = sorted({e for m in known + conflict
+    if known or conflict or notdom:
+        evidence = sorted({e for m in known + conflict + notdom
                            for e in m.get("member_origin_evidence_ids", "").split("|") if e})
         basis = "member:" + "+".join(sorted({m.get("member_origin_basis", "")
-                                            for m in known + conflict}))
-        if conflict or len(countries) != 1:
+                                            for m in known + conflict + notdom}))
+        if not countries and not conflict:
+            return "FOREIGN", "", basis, "|".join(evidence)
+        if conflict or len(countries) != 1 or (notdom and "CA" in countries):
             return "CONFLICT", "", basis, "|".join(evidence)
         country = next(iter(countries))
         return ("DOMESTIC_CA" if country == "CA" else "FOREIGN",

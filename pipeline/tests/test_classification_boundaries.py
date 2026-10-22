@@ -240,6 +240,28 @@ class LaterCaseNameTests(unittest.TestCase):
             with self.subTest(pre=pre):
                 self.assertEqual(split(pre)['candidate_case_name'], expected)
 
+    def test_nine_court_lead_in_signals_are_not_part_of_the_name(self):
+        # PROBLEMS #179: closed citation signals that the nine-court run exported
+        # as the first words of a group name.
+        for pre, expected in (
+            ('; cf. Dalglish v. Jarvie, ', 'Dalglish v. Jarvie'),
+            ('; Relying on R. v. Sheppard, ', 'R. v. Sheppard'),
+            ('; the case of Goldsoll v. Goldman, ', 'Goldsoll v. Goldman'),
+            ('; The decision in Child & Gower Piano Company Ltd. v. Gambrel, ',
+             'Child & Gower Piano Company Ltd. v. Gambrel'),
+            ('; see, Diligenti v. McAlpine, ', 'Diligenti v. McAlpine'),
+            ('; Next, relying on Toronto (City) v. Ontario (Attorney General), ',
+             'Toronto (City) v. Ontario (Attorney General)'),
+            ('; As in the case of Rogers v. Rogers, ', 'Rogers v. Rogers'),
+            ('; quoting from Revenue & Customs v. Cozens, ', 'Revenue & Customs v. Cozens'),
+            ('; Applying R. v. Crevier, ', 'R. v. Crevier'),
+        ):
+            with self.subTest(pre=pre):
+                self.assertEqual(split(pre)['candidate_case_name'], expected)
+        # A bare Next can open a company name; only `Next,` is a signal.
+        self.assertEqual(split('; Next Generation Inc. v. Smith, ')['candidate_case_name'],
+                         'Next Generation Inc. v. Smith')
+
     def test_new_french_crown_route_excludes_explicit_citation_prose(self):
         # ONCA_2020onca106, ONCA_2023onca706, BCCA_2025bcca430.
         for pre, expected in (

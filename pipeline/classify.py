@@ -166,16 +166,20 @@ DATE_FORM_PAGE_MIN, DATE_FORM_PAGE_MAX = 1600, 2099
 # to the Crown's printed R.; a bare c. remains a chapter/section marker.
 V_RE = re.compile(r"\bv\.?(?=\s)|\bR\.\s*c\.(?=\s)")
 _ADMIT_LEAD_CHARS = set("[(«\"'‘“….")
+# PROBLEMS #179: `cf.` with its period, `see,` and the participles quoting/applying/
+# relying on were missing; the nine-court run exported `cf. Dalglish v. Jarvie`.
 _ADMIT_VERB_RE = re.compile(
-    r"(?:citing|see also|see|per|applied|considered|referred to|"
-    r"following|approving|distinguished|overruled|cf)\s+", re.IGNORECASE)
+    r"(?:citing|quoting(?:\s+(?:from|with\s+approval))?|applying|relying\s+on|see also|see,?|per|applied|considered|referred to|"
+    r"following|approving|distinguished|overruled|cf\.?)\s+", re.IGNORECASE)
 _ADMIT_IN_RE = re.compile(r"in\s+(?!re\s)", re.IGNORECASE)
 # PROBLEMS #137: list connectors and signals that open a citation segment
 # (`; and R. v. Last`, `see, e.g., Smith v. Jones`, `As noted in R. v. Brand`).
 # Each needs a following comma/space, so names such as Andrews or Orr survive.
+# `Next,` needs its comma: a bare Next can open a company name.
 _ADMIT_LEADIN_RE = re.compile(
-    r"(?:and|or|but|also|as\s+(?:noted\s+in|per)|see,?\s+(?:for\s+example|for\s+instance|e\.\s?g\.|generally|"
-    r"also|in\s+particular)|e\.\s?g\.|i\.\s?e\.|for\s+example|for\s+instance|compare)[,:]?\s+",
+    r"(?:and|or|but|also|as\s+(?:noted\s+in|per|in)|see,?\s+(?:for\s+example|for\s+instance|e\.\s?g\.|generally|"
+    r"also|in\s+particular)|e\.\s?g\.|i\.\s?e\.|for\s+example|for\s+instance|compare|next,|"
+    r"the\s+(?:case|decision|judgment)\s+(?:of|in))[,:]?\s+",
     re.IGNORECASE)
 # PROBLEMS #57：分号后以这些词起头，是**同一案子**的上诉沿革（R. v. Grover (1990), 56 C.C.C.
 #   (3d) 532 (Ont. C.A.); aff'd [1991] 3 S.C.R. 387），本行引证仍属分号前的案名。词表取自

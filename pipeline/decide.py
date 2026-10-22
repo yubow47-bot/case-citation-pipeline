@@ -149,6 +149,7 @@ from identity_evidence import (
     load_case_origin_manual,
     load_scope,
     load_reporter_origin,
+    load_not_domestic_rules,
     year_of,
     row_year,
     row_key,
@@ -243,7 +244,13 @@ def _in_span(v, lo, hi):
 def _reporter_window_ok(vol, year, row):
     """维度式包含：仅当**引证与表行该维度都有值**时才可判、才可否决。
     两维都不可比 → 该行无约束（它靠「排他性」本身作证据，窗口只用来切分候选）。
-    行号/年号非数字 → 该维度不可判（不否决，也不据此命中）。"""
+    行号/年号非数字 → 该维度不可判（不否决，也不据此命中）。
+    PROBLEMS #181：`window_requires`（year / volume / year+volume）要求引证**印了**该维度——
+    同形汇编（魁北克 K.B./Q.B.、加拿大 Western Law Reporter）只能靠窗口排除，缺维度不能
+    当作在窗内。"""
+    required = {t.strip() for t in (row.get("window_requires") or "").split("+") if t.strip()}
+    if ("year" in required and not year) or ("volume" in required and not vol):
+        return False
     vs = (row.get("vol_range_start") or "").strip()
     ve = (row.get("vol_range_end") or "").strip()
     ys = (row.get("year_range_start") or "").strip()
@@ -328,6 +335,46 @@ def _reporter_origin(row, reporter_idx, stats):
             or (best.get("year_range_start") or "").strip()
             or (best.get("year_range_end") or "").strip()):
         stats["reporter_scope_from_row_without_window"] += 1
+
+
+NOT_DOMESTIC_EXCLUSIVITY = ("not_domestic_window", "not_domestic_printed_court")
+
+
+def _not_domestic_origin(row, not_domestic_idx, stats):
+    """PROBLEMS #181：只证明「不是加拿大案件」、不给国别的汇编证据。
+
+    表行（verified_not_domestic）两种：
+      * not_domestic_window：该汇编在窗内不刊登加拿大判决（A.C./All E.R./W.L.R. 印年
+        ≥ 1961：加拿大对枢密院的最后一件上诉 1959-10-07 判，印在 [1960] A.C. 18）；
+      * not_domestic_printed_court：窗内且本行印出的已识别法院在表行
+        `qualifying_printed_courts` 里（House of Lords 不受理加拿大上诉）。
+    写 member_origin_status=NOT_DOMESTIC、国别留空；组聚合与 CA 证据并存即 CONFLICT。"""
+    if (row.get("citation_kind") or "") != "reporter":
+        return
+    p = row["merge_key"].split("|")
+    if len(p) < 5:
+        return
+    year = "" if row_year(row) is None else str(row_year(row))
+    printed_court = ((row.get("observed_deciding_court") or "").strip()
+                     if str(row.get("court_designation_conflict", "")).lower() != "true" else "")
+    for rule in not_domestic_idx.get(nk(p[2]), ()):
+        kind = (rule.get("exclusivity") or "").strip()
+        if kind not in NOT_DOMESTIC_EXCLUSIVITY or not _reporter_window_ok(p[1], year, rule):
+            continue
+        if kind == "not_domestic_printed_court":
+            courts = {c.strip() for c in (rule.get("qualifying_printed_courts") or "").split("|")
+                      if c.strip()}
+            if printed_court not in courts:
+                continue
+        row["member_origin_country"] = ""
+        row["member_origin_status"] = "NOT_DOMESTIC"
+        row["member_origin_basis"] = kind
+        row["member_origin_evidence_ids"] = "not_domestic:%s:%s" % (
+            (rule.get("printed_abbreviation") or "").strip(), kind)
+        row["member_origin_conflict_detail"] = ""
+        row["member_origin_subdivision"] = ""
+        stats["case_origin_" + kind] += 1
+        return
 
 
 
@@ -440,7 +487,7 @@ BAR = 0.8   # 「几乎总是一起印」。待定审计实测覆盖率双峰，
 
 
 def decide_case_origin(row, member_strings, origin_idx, stats, scope_idx=None,
-                       reporter_idx=None):
+                       reporter_idx=None, not_domestic_idx=None):
     """§10.2（R2-1 订正）：**成员级来源地观察**——只观察本行键自己，不继承组结论。
     结果写 member_origin_* 字段；组级结论由 aggregate_group_origin 从成员观察聚合。
     案件/范围表没有结论时，使用已接受引证的 jurisdiction 作国别推断。
@@ -512,6 +559,8 @@ def decide_case_origin(row, member_strings, origin_idx, stats, scope_idx=None,
             _scope_origin(row, scope_idx, stats)
         if row["member_origin_status"] == "UNDETERMINED" and reporter_idx:
             _reporter_origin(row, reporter_idx, stats)
+        if row["member_origin_status"] == "UNDETERMINED" and not_domestic_idx:
+            _not_domestic_origin(row, not_domestic_idx, stats)
         if row["member_origin_status"] == "UNDETERMINED":
             _classified_origin(row, stats)
         if row["member_origin_status"] == "UNDETERMINED":
@@ -662,8 +711,11 @@ def aggregate_group_origin(group_rows, stats):
     pos = [r for r in core if r.get("member_origin_status") == "DETERMINED"
            and (r.get("member_origin_country") or "").strip()]
     conf = [r for r in core if r.get("member_origin_status") == "CONFLICT"]
+    # PROBLEMS #181: "not Canadian" without a country. It agrees with any foreign
+    # country, contradicts CA, and alone makes the group FOREIGN with no country.
+    notdom = [r for r in core if r.get("member_origin_status") == "NOT_DOMESTIC"]
     noncore = [r for r in group_rows if r.get("identity_basis") not in ELIGIBLE_BASES
-               and r.get("member_origin_status") == "DETERMINED"]
+               and r.get("member_origin_status") in ("DETERMINED", "NOT_DOMESTIC")]
     noncore_ev = ";".join(sorted(
         {"%s:%s:%s" % (r.get("identity_basis"), r.get("member_origin_country"),
                        r.get("member_origin_evidence_ids")) for r in noncore}))
@@ -671,13 +723,13 @@ def aggregate_group_origin(group_rows, stats):
     eids, bases = [], []
     # A local conflict still supplies essential evidence even when another core
     # member has one determined country. Group status and evidence must agree.
-    for r in pos + conf:
+    for r in pos + conf + notdom:
         for e in (r.get("member_origin_evidence_ids") or "").split("|"):
             if e and e not in eids:
                 eids.append(e)
         if r.get("member_origin_basis") and r["member_origin_basis"] not in bases:
             bases.append(r["member_origin_basis"])
-    if conf or len(countries) > 1:
+    if conf or len(countries) > 1 or (notdom and "CA" in countries):
         g_country = ""
         g_status = "CONFLICT"
         g_foreign = "CONFLICT"
@@ -687,6 +739,11 @@ def aggregate_group_origin(group_rows, stats):
         g_status = "DETERMINED"
         g_foreign = "DOMESTIC_CA" if g_country == "CA" else "FOREIGN"
         stats["group_origin_determined"] += 1
+    elif notdom:
+        g_country = ""
+        g_status = "UNDETERMINED"
+        g_foreign = "FOREIGN"
+        stats["group_origin_foreign_country_unknown"] += 1
     else:
         g_country = ""
         g_status = "UNDETERMINED"
@@ -770,7 +827,8 @@ def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin
                scope_idx=None, reporter_idx=None, registry=None, typo_over=None,
                holdout=None,
                gate="literal", own_cites=None, identity_separations=None, trace=None,
-               history=None, pair_separations=None, parallels=None, parallel_min_sources=1):
+               history=None, pair_separations=None, parallels=None, parallel_min_sources=1,
+               not_domestic_idx=None):
     if trace is None:
         if pair_separations is None:
             pair_separations = load_pair_separations(
@@ -821,7 +879,8 @@ def adjudicate(rows, did_idx, origin_idx, folded_idx, prefix, stats, redo_origin
                 # 成员级观察（R2-1）：只看本行键自己的证据，不继承组结论
                 decide_case_origin(r, folded_idx.get(m["merge_key"],
                                                      [m["canonical_string"]]),
-                                   origin_idx, stats, scope_idx, reporter_idx)
+                                   origin_idx, stats, scope_idx, reporter_idx,
+                                   not_domestic_idx)
             else:
                 # 跨法院轮：成员观察沿用院内轮的 member_origin_*（组结论不作
                 # 新成员证据）；缺列的输入按 UNDETERMINED 兜底
@@ -1102,6 +1161,8 @@ def main():
     stats["case_origin_manual_rows"] = sum(len(v) for v in manual_idx.values())
     scope_idx = load_scope()
     reporter_idx = load_reporter_origin()
+    not_domestic_idx = load_not_domestic_rules()
+    stats["reporter_not_domestic_rows"] = sum(len(v) for v in not_domestic_idx.values())
     stats["scope_rules_verified"] = sum(len(v) for v in scope_idx.values())
     stats["reporter_scope_rows_verified"] = sum(len(v)
                                                 for v in reporter_idx.values())
@@ -1141,7 +1202,8 @@ def main():
                                         reporter_idx, registry, typo_over,
                                         holdout,
                                         a.registry_gate, own_cites, separations, trace,
-                                        history, pair_separations, parallels, a.parallel_min_sources)
+                                        history, pair_separations, parallels, a.parallel_min_sources,
+                                        not_domestic_idx=not_domestic_idx)
     restore_source_audit(out, out_ids, eff_rows, raw_did_idx, excluded_sources)
     trace_manifest = trace.close()
     # PROBLEMS #62：同名、年份相差 ≤1 的同级组。只在跨法院轮算——跨院合并跑完才是

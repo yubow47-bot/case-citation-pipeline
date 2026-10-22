@@ -25,6 +25,9 @@ REPORTER_ORIGIN_ALLOWED_STATUSES = frozenset((
     "verified_exclusive_statute",
     "verified_exclusive_publisher",
 ))
+# PROBLEMS #181: a sourced window in which a reporter prints no Canadian judgment.
+# It proves "not Canadian" only; it never supplies a country.
+REPORTER_NOT_DOMESTIC_STATUS = "verified_not_domestic"
 
 ALLOWED_IDENTIFIER_STATUSES = {
     "verified_official_source",
@@ -137,6 +140,21 @@ def load_reporter_origin(include_mixed=False):
             st = (r.get("verification_status") or "").strip()
             if (st not in REPORTER_ORIGIN_ALLOWED_STATUSES
                     and not (include_mixed and st == "verified_mixed")):
+                continue
+            k = nk(r.get("printed_abbreviation") or "")
+            if k:
+                idx.setdefault(k, []).append(r)
+    return idx
+
+def load_not_domestic_rules():
+    """Load verified not-domestic reporter windows (PROBLEMS #181), keyed like load_reporter_origin."""
+    path = os.path.join(DECISIONS, "reporter_origin_scope.csv")
+    if not os.path.exists(path):
+        return {}
+    idx = {}
+    with open(path, encoding="utf-8", newline="") as f:
+        for r in csv.DictReader(f):
+            if (r.get("verification_status") or "").strip() != REPORTER_NOT_DOMESTIC_STATUS:
                 continue
             k = nk(r.get("printed_abbreviation") or "")
             if k:

@@ -264,9 +264,12 @@ class RunCheck:
                 totals["invalid_foreign_status"] += 1
             if row["foreign_status"] == "FOREIGN":
                 foreign[pair] = edges[pair]
+                # PROBLEMS #181: FOREIGN may lack a country only on a not-domestic basis.
                 if ((row["edge_support"] != "supported"
                      and not row.get("origin_basis", "").startswith("member:"))
-                        or row["origin_country"] in ("", "CA") or not row["origin_evidence_ids"]):
+                        or row["origin_country"] == "CA"
+                        or (not row["origin_country"] and "not_domestic" not in row.get("origin_basis", ""))
+                        or not row["origin_evidence_ids"]):
                     totals["foreign_without_support"] += 1
             if pair in excluded:
                 totals["self_citation_reintroduced"] += 1
