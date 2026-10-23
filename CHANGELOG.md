@@ -1,6 +1,6 @@
 # Changes
 
-## Unreleased
+## v1.3.0 — 2026-10-23
 
 - Fixed group names in edges: a group is named from all identity-supported members, so cases such as Dunsmuir and Vavilov are no longer exported unnamed.
 - Long CSV fields no longer stop the nine-court registry report; atomic file replacement retries briefly when Windows scanners hold a file.
@@ -9,8 +9,9 @@
 - Sourced English Law Reports windows (K.B., Q.B., Ch., Q.B.D., Ch. D.) and U.S. Reports windows give a country where homonyms allow it.
 - Appeal Cases, All England and Weekly Law Reports from the 1961 volume, and a printed House of Lords label, now prove a case is not Canadian; such links are FOREIGN with an empty country.
 - Added provincial court labels (Alberta, Manitoba and New Brunswick Queen's Bench, Newfoundland Court of Appeal, Quebec Superior Court, Ontario Superior Court of Justice).
+- Audit outputs that nothing links to, and the CanLII cross-check reports on older runs, are no longer versioned.
 
-Output schemas are unchanged apart from two new `reporter_origin_scope.csv` columns. Runs from earlier versions differ in names, country and court columns.
+This is a software source release. Output schemas are unchanged apart from two new `reporter_origin_scope.csv` columns; runs from earlier versions differ in names, country and court columns. Effects on country were measured by re-running adjudication functions on an existing nine-court output; no new full-corpus run is part of this release.
 
 ## v1.2.0 — 2026-10-20
 
