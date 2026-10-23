@@ -2,6 +2,7 @@ corpus/
 data/
 *.parquet
 __pycache__/
+.pytest_cache/
 
 # API harvest cache of the table-building tools (machine output; every row's
 # source_locator carries a replayable endpoint, so the cache is not committed)
@@ -55,6 +56,8 @@ implementation/*
 /architecture_atlas.zh.html
 /architecture_atlas.docx
 /architecture_atlas.pdf
+# The same exports now also sit in docs/atlas/.
+/docs/atlas/
 
 # ---- Reviewed generated audit outputs (2026-10-15) ----
 # Keep final evidence and review frames; intermediate plans, snapshots and logs stay local.
