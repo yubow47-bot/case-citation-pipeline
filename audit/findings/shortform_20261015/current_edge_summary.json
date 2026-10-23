@@ -1,9 +1,0 @@
-{
-  "run_id": "run_20261015_identity_review",
-  "edges": 490577,
-  "mentions": 705476,
-  "edges_more_than_three_mentions": 22033,
-  "max_mentions_per_edge": 33,
-  "edge_passages": 490577,
-  "query": "select count(*),sum(cast(mention_count as integer)),sum(case when cast(mention_count as integer)>3 then 1 else 0 end),max(cast(mention_count as integer)) from citation_edges where run_id=?"
-}

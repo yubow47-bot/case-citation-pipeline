@@ -265,7 +265,7 @@ D:\cases data analisis\
 │   │   data/glm_audit/), append_problems_entry.py              the purpose of each tool is in audit/README.md
 │   ├── name_borrow_audit.py + name_borrow_impact.py   dedicated audit of borrowed case names (v1.8)
 │   ├── canlii_crosscheck\         CanLII API cross-check (T0–T6: extraction consistency, landmark dd comparison,
-│   │                              manually labelled edges, dd-bucket calibration; reports in audit/findings/canlii_crosscheck/)
+│   │                              manually labelled edges, dd-bucket calibration; historical reports kept locally, not versioned)
 │   └── findings\                  audit reports (proposals, not data; the production line must not read them)
 │
 ├── tools\                         In git. **Post-pipeline tools** (not in the production line; read no pipeline products outside data)
@@ -309,7 +309,7 @@ __pycache__/
 
 **Experience library and the membrane (PROBLEMS #101, user decision 2026-10-02).** "No script may read PROBLEMS.md" (4.2) gets its first adjudicated exception: `tools/recall/build.py` chunks the ledger and other material and embeds it into `data/recall/recall.db` for people to search by meaning. The exception is conditional on three limits: ① only `build.py` reads the ledger, and it is outside the pipeline; ② `tools/recall/check_isolation.py` ensures the pipeline / `decisions/` / `audit` do not reference the search database; ③ `query.py` outputs only text for people to read. Breaking any limit revokes the exception. This extends the membrane rule of 4.3: the experience library is outside the membrane, and search results are hints for people, not data.
 
-**CanLII cross-check (`audit/canlii_crosscheck/`).** External validation of the pipeline with the CanLII API: T2 extraction consistency on 5,684 pairs, T3 landmark dd comparison, T5 manually labelled edges, T6 dd-bucket calibration — weighted edge accuracy 87.0%, accuracy for dd buckets 1 / 2–4 / 5–9 / 10+ of 75 / 82 / 99 / 100% [verified, `audit/findings/canlii_crosscheck/REPORT.md` and the t6 output]. The T6 results feed the DD weights in `tools/foundation/score.py` (VERSION `canlii-t6-v1`, **experimental, not in the production threshold** — the dd threshold of §11 still uses the original value in `select_config.yaml`).
+**CanLII cross-check (`audit/canlii_crosscheck/`).** Historical external validation with the CanLII API on older runs (2026-10-02 and 2026-10-07); it has not been repeated for the current version, and its reports are kept locally but no longer versioned (2026-10-23). Results on those runs: T2 extraction consistency on 5,684 pairs, T3 landmark dd comparison, T5 manually labelled edges, T6 dd-bucket calibration — weighted edge accuracy 87.0%, accuracy for dd buckets 1 / 2–4 / 5–9 / 10+ of 75 / 82 / 99 / 100% [verified at the time against the local `REPORT.md` and t6 output]. The T6 results feed the DD weights in `tools/foundation/score.py` (VERSION `canlii-t6-v1`, **experimental, not in the production threshold** — the dd threshold of §11 still uses the original value in `select_config.yaml`).
 
 ### 4.1 The core rule of version control
 

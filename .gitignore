@@ -97,28 +97,10 @@ audit/findings/project_review_20261015/*
 audit/findings/quality_20261014/*
 
 audit/findings/quality_20261015/*
-!audit/findings/quality_20261015/samples.json
-!audit/findings/quality_20261015/manual_labels.csv
-!audit/findings/quality_20261015/labels.json
-!audit/findings/quality_20261015/evaluation.json
-!audit/findings/quality_20261015/execution_summary.json
-!audit/findings/quality_20261015/cache_cleanup_receipt_applied.json
-!audit/findings/quality_20261015/embedding_cache_usefulness_post_cleanup.json
 
 audit/findings/quality_20261015_fr/*
-!audit/findings/quality_20261015_fr/samples.json
-!audit/findings/quality_20261015_fr/manual_labels.csv
-!audit/findings/quality_20261015_fr/labels.json
-!audit/findings/quality_20261015_fr/evaluation.json
-!audit/findings/quality_20261015_fr/execution_summary.json
 
 audit/findings/receipts_20261015/*
-!audit/findings/receipts_20261015/identity_review_actual_release.json
-!audit/findings/receipts_20261015/tcc_identity_compare.json
-!audit/findings/receipts_20261015/tcc_identity_corsano.json
-!audit/findings/receipts_20261015/tcc_identity_effective_sources.json
-!audit/findings/receipts_20261015/tcc_identity_storage_release.json
-!audit/findings/receipts_20261015/tcc_identity_table_check.json
 
 audit/findings/research/*
 !audit/findings/research/court_decade_current.csv
@@ -133,32 +115,32 @@ audit/findings/research/*
 !audit/findings/research/research_validation_current.json
 
 audit/findings/research_20261015/*
-!audit/findings/research_20261015/active_case_housen.json
-!audit/findings/research_20261015/active_case_seguin.json
-!audit/findings/research_20261015/active_court_decade.csv
-!audit/findings/research_20261015/active_court_decade.json
-!audit/findings/research_20261015/active_foreign_scope.csv
-!audit/findings/research_20261015/active_foreign_scope.json
-!audit/findings/research_20261015/active_group_lookup_housen.csv
-!audit/findings/research_20261015/active_group_lookup_housen.json
-!audit/findings/research_20261015/active_group_lookup_seguin.csv
-!audit/findings/research_20261015/active_group_lookup_seguin.json
-!audit/findings/research_20261015/consumer_validation.json
-!audit/findings/research_20261015/lising_source_evidence.json
-!audit/findings/research_20261015/motorvehicle_johnson_fr_court.json
-!audit/findings/research_20261015/motorvehicle_nsr_source_evidence.json
-!audit/findings/research_20261015/retired_demo_packets.json
 
 audit/findings/storage_20261014/*
-!audit/findings/storage_20261014/cleanup.json
-!audit/findings/storage_20261014/legacy_cleanup.json
-!audit/findings/storage_20261014/retired_tables2_cleanup.json
-!audit/findings/storage_20261014/retired_tcc_verify_cleanup.json
-!audit/findings/storage_20261014/retired_v2_cleanup.json
-!audit/findings/storage_20261014/retired_20261014_release_smoke.json
-!audit/findings/storage_20261014/retired_20261014_review_smoke.json
-!audit/findings/storage_20261014/failed_v3_cleanup.json
-!audit/findings/storage_20261014/identity_review_fixtures.json
 
 # Local citation-context experiment; excluded from source releases.
 /tools/citation_context/
+
+# ---- Retired audit outputs (2026-10-23) ----
+# Not linked from decision tables, the ledger, docs or tests, or (CanLII cross-check)
+# a historical measurement on an older run. Kept on disk, no longer versioned.
+/audit/findings/canlii_crosscheck/
+/audit/findings/jurisdiction_precision_20261002/
+/audit/findings/shortform_20261015/
+/audit/findings/citation_context_20261015/
+/audit/findings/citation_context_20261015_round2/
+/audit/findings/anchor_20261003_edge4_v16/
+/audit/findings/readme_example_20261015/
+/audit/findings/*.log
+/audit/findings/reporter_handoff.md
+/audit/findings/r4_case_batch_queue.json
+/audit/findings/r3_stage1_targets_*.md
+/audit/findings/r3_reporter_origin_canadian.md
+/audit/findings/problem_verification_2026-09-11.md
+/audit/findings/prior_art_audit_citation_census.md
+/audit/findings/findings_local.md
+/audit/findings/findings_remote.md
+/audit/findings/debt4_debt6_verification_2026-09-15.md
+/audit/findings/court_designations_six_verification_2026-10-02.md
+/audit/findings/citator-audit.md
+/audit/findings/bilingual_neutral_codes_proposal.csv

@@ -29,7 +29,7 @@ N4 asks only when the cited court is the citing court or a lower court in [court
 ## DD≥5 now has a basis (CanLII calibration, 2026-10-03)
 
 - Spec §11.2 says "`threshold_dd: 5` currently has no basis; it is only a placeholder". That sentence is **out of date**.
-- Using a CanLII comparison plus manual checks of the source text (215 edges, a sample stratified by court × period), **the share of edges that are real case citations** (`audit/findings/canlii_crosscheck/run_20261002_tables2/t6_calibration.md`):
+- Historical measurement on an older run (`run_20261002_tables2`), not repeated for the current version: using a CanLII comparison plus manual checks of the source text (215 edges, a sample stratified by court × period), **the share of edges that are real case citations** was (report `t6_calibration.md`, kept locally and no longer versioned since 2026-10-23):
 
   | DD band of the cited case | 1 | 2–4 | 5–9 | 10+ |
   |---|---|---|---|---|
@@ -78,6 +78,6 @@ One edge = `(source_decision, resolved_cited_case)`, where the latter is a `merg
 
 ## Sources
 
-Spec §11, §11.2 (corrected above); code `pipeline/select_layer.py`, `pipeline/edges.py`, `select_config.yaml`; `audit/findings/canlii_crosscheck/run_20261002_tables2/t6_calibration.md`; PROBLEMS #60, #105, #106.
+Spec §11, §11.2 (corrected above); code `pipeline/select_layer.py`, `pipeline/edges.py`, `select_config.yaml`; the historical CanLII calibration report for `run_20261002_tables2` (local, unversioned); PROBLEMS #60, #105, #106.
 
 Verification status: files, threshold configuration and headers checked against an actual run (2026-10-03) [verified]; calibration numbers come from our own verification sample, see the calibration report.
